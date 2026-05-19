@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 /* ══════════════════════════════════════════════
  SABITLER
@@ -3977,7 +3977,6 @@ const ORGAN_POZISYON = {
 };
 
 function OrganVucutHaritasi({ sonuclar, gecmis }) {
-  const C = TEMA_RENKLERI;
   const [secili, setSecili] = React.useState(null);
 
   // Organ hasar hesapla (geçmiş + mevcut tarama)
@@ -4146,7 +4145,6 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
 }
 
 function TarifModal({ tarif, onKapat }) {
-  const C = TEMA_RENKLERI;
   const [sepet, setSepet] = React.useState([]);
   if (!tarif) return null;
 
@@ -4198,7 +4196,6 @@ function TarifModal({ tarif, onKapat }) {
 }
 
 function HaftalikRapor({ gecmis, onKapat }) {
-  const C = TEMA_RENKLERI;
   const simdi = new Date();
   const haftaOnce = new Date(simdi - 7 * 24 * 60 * 60 * 1000);
   const haftaGecmis = gecmis.filter(g => {
@@ -4270,7 +4267,6 @@ function HaftalikRapor({ gecmis, onKapat }) {
    MİZAÇ MARKET LİSTESİ BİLEŞENİ
    ══════════════════════════════════════════════ */
 function MizacMarket({ profil, onKapat }) {
-  const C = TEMA_RENKLERI;
   const [sekme, setSekme] = React.useState("al");
   if (!profil) return null;
   const veri = MIZAC_MARKET[profil.mizac];
@@ -4334,7 +4330,6 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
   const videoRef = React.useRef(null);
   const streamRef = React.useRef(null);
   const animRef = React.useRef(null);
-  const C = TEMA_RENKLERI;
   async function baslat() {
     try {
       setDurum("aktif");
