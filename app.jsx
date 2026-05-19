@@ -3959,25 +3959,34 @@ const DOGAL_TARIF = {
    3D ORGAN PUAN SİSTEMİ
    ══════════════════════════════════════════════ */
 const ORGAN_POZISYON = {
-  "Beyin":     { x: 50, y: 8,  r: 9,  label: "Beyin" },
-  "Kalp":      { x: 42, y: 30, r: 8,  label: "Kalp" },
-  "Akciğer":   { x: 58, y: 30, r: 8,  label: "Akciğer" },
-  "Karaciğer": { x: 44, y: 44, r: 9,  label: "Karaciğer" },
-  "Böbrek":    { x: 58, y: 46, r: 7,  label: "Böbrek" },
-  "Bağırsak":  { x: 50, y: 60, r: 8,  label: "Bağırsak" },
-  "Mide":      { x: 40, y: 56, r: 7,  label: "Mide" },
-  "Hormon":    { x: 62, y: 58, r: 7,  label: "Hormon" },
-  "Cilt":      { x: 20, y: 35, r: 6,  label: "Cilt" },
-  "Kan":       { x: 78, y: 35, r: 6,  label: "Kan" },
-  "Sinir":     { x: 22, y: 55, r: 6,  label: "Sinir" },
-  "Solunum":   { x: 78, y: 22, r: 6,  label: "Solunum" },
-  "Pankreas":  { x: 36, y: 52, r: 6,  label: "Pankreas" },
-  "Tiroid":    { x: 50, y: 20, r: 5,  label: "Tiroid" },
-  "Diş":       { x: 50, y: 15, r: 4,  label: "Diş" },
+  "Beyin":     { x: 50,   y: 16,   r: 6,   label: "Beyin" },
+  "Diş":       { x: 50,   y: 32,   r: 2.5, label: "Diş" },
+  "Tiroid":    { x: 50,   y: 41,   r: 2.5, label: "Tiroid" },
+  "Solunum":   { x: 50,   y: 50,   r: 3,   label: "Solunum" },
+  "Akciğer":   { x: 36,   y: 62,   r: 5,   label: "Akciğer" },
+  "Kalp":      { x: 56,   y: 64,   r: 5,   label: "Kalp" },
+  "Kan":       { x: 64,   y: 78,   r: 3.5, label: "Kan" },
+  "Mide":      { x: 42,   y: 90,   r: 4.5, label: "Mide" },
+  "Karaciğer": { x: 62,   y: 90,   r: 6,   label: "Karaciğer" },
+  "Pankreas":  { x: 50,   y: 100,  r: 3,   label: "Pankreas" },
+  "Böbrek":    { x: 34,   y: 104,  r: 4,   label: "Böbrek" },
+  "Hormon":    { x: 66,   y: 104,  r: 3,   label: "Hormon" },
+  "Bağırsak":  { x: 50,   y: 118,  r: 6.5, label: "Bağırsak" },
+  "Sinir":     { x: 19,   y: 70,   r: 3.5, label: "Sinir" },
+  "Cilt":      { x: 81,   y: 70,   r: 3.5, label: "Cilt" },
 };
 
-function OrganVucutHaritasi({ sonuclar, gecmis }) {
-  const [secili, setSecili] = React.useState(null);
+// Cinsiyete göre anatomik vücut silüeti (viewBox 100x200)
+const VUCUT_SILUET = {
+  "Erkek": "M50 4 C44 4 39 9 39 16 C39 22 41 27 44 30 L43 36 C41 37 38 38 36 39 C30 41 25 45 23 52 L21 60 C19 65 18 70 18 76 L19 88 C19 94 19 100 20 106 L20 120 C20 130 18 138 18 146 L19 152 L24 152 L26 165 L28 178 L30 192 L36 196 L42 196 L44 184 L46 170 L48 158 L48 152 L52 152 L52 158 L54 170 L56 184 L58 196 L64 196 L70 192 L72 178 L74 165 L76 152 L81 152 L82 146 C82 138 80 130 80 120 L80 106 C81 100 81 94 81 88 L82 76 C82 70 81 65 79 60 L77 52 C75 45 70 41 64 39 C62 38 59 37 57 36 L56 30 C59 27 61 22 61 16 C61 9 56 4 50 4 Z",
+  "Kadın": "M50 4 C44 4 39 9 39 16 C39 22 41 27 44 30 L43 36 C41 37 38 38 36 39 C31 41 26 45 24 52 L22 62 C20 68 20 73 21 79 L23 88 C23 94 22 100 22 106 C22 110 21 114 20 118 L18 130 C17 138 16 146 17 152 L23 152 L25 165 L27 178 L29 192 L36 196 L42 196 L44 184 L46 170 L48 158 L48 152 L52 152 L52 158 L54 170 L56 184 L58 196 L64 196 L71 192 L73 178 L75 165 L77 152 L83 152 C84 146 83 138 82 130 L80 118 C79 114 78 110 78 106 C78 100 77 94 77 88 L79 79 C80 73 80 68 78 62 L76 52 C74 45 69 41 64 39 C62 38 59 37 57 36 L56 30 C59 27 61 22 61 16 C61 9 56 4 50 4 Z",
+  "Çocuk": "M50 6 C42 6 36 12 36 20 C36 27 39 33 43 36 L42 42 C40 43 37 44 35 45 C29 47 25 51 23 58 L22 66 C21 72 21 78 22 84 L23 96 C23 104 22 112 22 120 L22 134 C22 142 21 150 22 156 L26 156 L28 168 L30 180 L32 192 L38 196 L44 196 L46 184 L48 172 L49 160 L49 156 L51 156 L51 160 L52 172 L54 184 L56 196 L62 196 L68 192 L70 180 L72 168 L74 156 L78 156 C79 150 78 142 78 134 L78 120 C78 112 77 104 77 96 L78 84 C79 78 79 72 78 66 L77 58 C75 51 71 47 65 45 C63 44 60 43 58 42 L57 36 C61 33 64 27 64 20 C64 12 58 6 50 6 Z"
+};
+
+function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
+  const cinsiyet = (profil && profil.cinsiyet) || "Erkek";
+  const vucutPath = VUCUT_SILUET[cinsiyet] || VUCUT_SILUET["Erkek"];
+  const [secili, setSecili] = useState(null);
 
   // Organ hasar hesapla (geçmiş + mevcut tarama)
   const organHasar = React.useMemo(() => {
@@ -4043,53 +4052,42 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
 
       {/* SVG Vücut */}
       <div style={{ position: "relative", width: "100%", maxWidth: 340, margin: "0 auto" }}>
-        <svg viewBox="0 0 100 100" style={{ width: "100%", filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))" }}>
-          {/* Vücut silueti */}
+        <svg viewBox="0 0 100 200" style={{ width: "100%", maxHeight: 460, filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.4))" }}>
           <defs>
-            <radialGradient id="bgGrad" cx="50%" cy="50%"><stop offset="0%" stopColor="#1a1a2e"/><stop offset="100%" stopColor="#0d0d1a"/></radialGradient>
-            {Object.entries(ORGAN_POZISYON).map(([k, p]) => (
+            <linearGradient id="vucutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#1c1c2e"/>
+              <stop offset="50%" stopColor="#14141f"/>
+              <stop offset="100%" stopColor="#0d0d18"/>
+            </linearGradient>
+            {Object.entries(ORGAN_POZISYON).map(([k]) => (
               <radialGradient key={k} id={`g${k}`} cx="40%" cy="35%">
-                <stop offset="0%" stopColor={organRenk(k)} stopOpacity="0.9"/>
-                <stop offset="100%" stopColor={organRenk(k)} stopOpacity="0.3"/>
+                <stop offset="0%" stopColor={organRenk(k)} stopOpacity="0.95"/>
+                <stop offset="100%" stopColor={organRenk(k)} stopOpacity="0.35"/>
               </radialGradient>
             ))}
           </defs>
 
-          {/* Vücut arka plan */}
-          <ellipse cx="50" cy="50" rx="30" ry="45" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Baş */}
-          <ellipse cx="50" cy="10" rx="10" ry="11" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Kollar */}
-          <ellipse cx="22" cy="40" rx="7" ry="16" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          <ellipse cx="78" cy="40" rx="7" ry="16" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Bacaklar */}
-          <ellipse cx="39" cy="85" rx="8" ry="17" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          <ellipse cx="61" cy="85" rx="8" ry="17" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
+          {/* Anatomik vücut silüeti (cinsiyete göre) */}
+          <path d={vucutPath} fill="url(#vucutGrad)" stroke="#3a3a55" strokeWidth="0.6" strokeLinejoin="round"/>
 
-          {/* Organlar */}
+          {/* Organlar - gerçek anatomik konumlarda */}
           {Object.entries(ORGAN_POZISYON).map(([k, p]) => {
             const renk = organRenk(k);
             const puan = organPuan(k);
             const aktif = secili === k;
             return (
               <g key={k} onClick={() => setSecili(aktif ? null : k)} style={{ cursor: "pointer" }}>
-                {/* Dış halka - 3D efekt */}
-                <circle cx={p.x} cy={p.y} r={p.r + 1.5} fill="none" stroke={renk} strokeWidth="0.4" strokeOpacity="0.3"/>
-                {/* Ana organ */}
-                <circle cx={p.x} cy={p.y} r={p.r} fill={`url(#g${k})`} stroke={renk} strokeWidth={aktif ? 0.8 : 0.4}
-                  style={{ filter: `drop-shadow(0 0 ${puan < 60 ? 3 : 1.5}px ${renk})` }}/>
-                {/* Parlak nokta - 3D */}
-                <circle cx={p.x - p.r*0.3} cy={p.y - p.r*0.3} r={p.r*0.25} fill="white" fillOpacity="0.3"/>
-                {/* Nabız animasyonu - kritikse */}
+                <circle cx={p.x} cy={p.y} r={p.r + 1.2} fill="none" stroke={renk} strokeWidth="0.3" strokeOpacity="0.35"/>
+                <circle cx={p.x} cy={p.y} r={p.r} fill={`url(#g${k})`} stroke={renk} strokeWidth={aktif ? 0.7 : 0.35}
+                  style={{ filter: `drop-shadow(0 0 ${puan < 60 ? 2.5 : 1}px ${renk})` }}/>
+                <circle cx={p.x - p.r*0.3} cy={p.y - p.r*0.3} r={p.r*0.25} fill="white" fillOpacity="0.35"/>
                 {organHasar[k]?.kritik > 0 && (
-                  <circle cx={p.x} cy={p.y} r={p.r + 2}>
+                  <circle cx={p.x} cy={p.y} r={p.r + 1.5} fill="none" stroke={renk} strokeWidth="0.5">
                     <animate attributeName="r" values={`${p.r};${p.r+3};${p.r}`} dur="1.5s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;0;0.6" dur="1.5s" repeatCount="indefinite"/>
-                    <animate attributeName="stroke" values={renk} dur="1.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.7;0;0.7" dur="1.5s" repeatCount="indefinite"/>
                   </circle>
                 )}
-                {/* İsim */}
-                <text x={p.x} y={p.y + p.r + 3.5} textAnchor="middle" fontSize="2.8" fill={renk} fontWeight="600" fontFamily="Georgia,serif">{p.label}</text>
+                <text x={p.x} y={p.y + p.r + 2.8} textAnchor="middle" fontSize="2.6" fill={aktif ? renk : "#d8d8e0"} fontWeight={aktif ? 700 : 500} fontFamily="Georgia,serif" stroke="#000" strokeWidth="0.15" paintOrder="stroke">{p.label}</text>
               </g>
             );
           })}
@@ -4725,6 +4723,7 @@ export default function App() {
  const [aileProfiller, setAileProfiller] = useState(() => { try { const a = localStorage.getItem("bd_aile"); return a ? JSON.parse(a) : []; } catch { return []; } });
  const [aktifUye, setAktifUye] = useState(null);
  const [dogum, setDogum] = useState(() => { try { return localStorage.getItem("bd_dogum") || ""; } catch { return ""; } });
+ const [cinsiyet, setCinsiyet] = useState(() => { try { return localStorage.getItem("bd_cinsiyet") || "Erkek"; } catch { return "Erkek"; } });
  const [modal, setModal] = useState(null);
  const [raporAcik, setRaporAcik] = useState(false);
  const [marketAcik, setMarketAcik] = useState(false);
@@ -4763,7 +4762,8 @@ export default function App() {
  function kaydEt() {
  if (!dogum) return;
  const b = burcHesapla(dogum);
- setProfil({ burc: b, dogum, ...BURCLAR[b] });
+ setProfil({ burc: b, dogum, cinsiyet, ...BURCLAR[b] });
+ try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
  }
 
@@ -4879,6 +4879,12 @@ export default function App() {
  </div>
  );
  })()}
+       <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 8 }}>Cinsiyet / Yaş Grubu</label>
+       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+         {["Erkek", "Kadın", "Çocuk"].map(c => (
+           <button key={c} onClick={() => setCinsiyet(c)} style={{ flex: 1, padding: "11px 8px", background: cinsiyet === c ? C.altin + "22" : C.y2, border: `1.5px solid ${cinsiyet === c ? C.altin : C.s}`, borderRadius: 10, color: cinsiyet === c ? C.altin : C.metin, fontSize: 13, fontWeight: cinsiyet === c ? 700 : 400, cursor: "pointer", fontFamily: "Georgia,serif" }}>{c}</button>
+         ))}
+       </div>
  {dogum && /^\d{4}-\d{2}-\d{2}$/.test(dogum) && (() => {
  const b = burcHesapla(dogum); if (!BURCLAR[b]) return null; const bd = BURCLAR[b];
  return (
@@ -5015,7 +5021,7 @@ export default function App() {
  </div>
 
  {/* 3D ORGAN HARİTASI */}
-         <OrganVucutHaritasi sonuclar={sonuclar} gecmis={gecmis} />
+         <OrganVucutHaritasi sonuclar={sonuclar} gecmis={gecmis} profil={profil} />
 
          {/* SAYAÇ KUTULARI */}
  {(() => {
