@@ -4631,6 +4631,65 @@ function KameraOCR({ onMetin, onIptal }) {
 }
 
 /* ══════════════════════════════════════════════
+ FOTO + İSİM İLE SORGULAMA
+ ══════════════════════════════════════════════ */
+function FotoIsim({ kategoriAd, onAra, onIptal }) {
+  const [isim, setIsim] = useState("");
+  const [foto, setFoto] = useState(null);
+  const kamRef = useRef(null);
+  const galRef = useRef(null);
+
+  function dosyaSec(e) {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setFoto(r.result);
+    r.readAsDataURL(f);
+  }
+
+  return (
+    <div>
+      <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 }}>
+        Ürünün logosunu/fotoğrafını ekleyip ismini yazarak arşivde arayabilirsin. Foto opsiyonel.
+      </div>
+
+      {foto ? (
+        <div style={{ position: "relative", marginBottom: 12 }}>
+          <img src={foto} alt="" style={{ width: "100%", maxHeight: 240, objectFit: "contain", background: C.y2, borderRadius: 12, border: `1px solid ${C.s}` }} />
+          <button onClick={() => setFoto(null)} style={{ position: "absolute", top: 8, right: 8, background: "#000000A0", border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.metin, cursor: "pointer", fontSize: 14, fontFamily: "Georgia,serif" }}>✕</button>
+        </div>
+      ) : (
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          <button onClick={() => kamRef.current && kamRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Kamera ile Çek</button>
+          <button onClick={() => galRef.current && galRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Galeriden Seç</button>
+        </div>
+      )}
+
+      <input ref={kamRef} type="file" accept="image/*" capture="environment" onChange={dosyaSec} style={{ display: "none" }} />
+      <input ref={galRef} type="file" accept="image/*" onChange={dosyaSec} style={{ display: "none" }} />
+
+      <input
+        type="text"
+        value={isim}
+        onChange={e => setIsim(e.target.value)}
+        placeholder={`${kategoriAd} ismi (örn: çikolata, krem, ilaç)`}
+        style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "13px 14px", color: C.metin, fontSize: 14, marginBottom: 10, fontFamily: "Georgia,serif" }}
+      />
+
+      <button
+        onClick={() => onAra(isim, foto)}
+        disabled={!isim.trim()}
+        style={{ width: "100%", background: "linear-gradient(135deg,#C9A84C,#E8C97A)", border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Georgia,serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
+      >
+        Arşivde Ara
+      </button>
+
+      <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid #22223A`, borderRadius: 12, padding: "11px", color: "#8A8499", fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Vazgeç</button>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
 const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,serif!important} body{background:#07070F} input,textarea,button,select{font-family:Georgia,serif!important} textarea:focus,input:focus{outline:2px solid #C9A84C50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:#22223A;border-radius:2px}`;
@@ -5143,15 +5202,17 @@ export default function App() {
  </div>
  <div style={S.kB}>{KATEGORILER[kategori].ad.toUpperCase()} ETİKETİ ANALİZİ</div>
 
- {/* MOD SEÇİMİ: METİN / KAMERA */}
- <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
- {[["metin", "Metin Gir"], ["kamera", "Kamera ile Tara"], ["barkod", "Barkod"]].map(([k, l]) => (
- <button key={k} onClick={() => setMod(k)} style={{ flex: 1, padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>{l}</button>
+ {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
+ <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
+ {[["metin", "Metin Gir"], ["kamera", "Kamera ile Tara"], ["barkod", "Barkod"], ["fotoisim", "Foto + İsim"]].map(([k, l]) => (
+ <button key={k} onClick={() => setMod(k)} style={{ padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>{l}</button>
  ))}
  </div>
 
  {mod === "kamera" ? (
  <KameraOCR onMetin={m => { setTxt(m); setMod("metin"); yapAnaliz(m); }} onIptal={() => setMod("metin")} />
+ ) : mod === "fotoisim" ? (
+ <FotoIsim kategoriAd={KATEGORILER[kategori].ad} onAra={(isim) => { setTxt(isim); yapAnaliz(isim); }} onIptal={() => setMod("metin")} />
  ) : (
  <>
  <div style={S.ipucu}>{KATEGORILER[kategori].ipucu}</div>
