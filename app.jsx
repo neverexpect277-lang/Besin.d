@@ -4585,7 +4585,7 @@ function KameraOCR({ onMetin, onIptal }) {
  const blob = await new Promise(res => c.toBlob(res, "image/jpeg", 0.85));
  const fd = new FormData();
  fd.append("file", blob, "etiket.jpg");
- fd.append("language", "eng");
+ fd.append("language", "tur");
  fd.append("OCREngine", "2");
  fd.append("scale", "true");
  fd.append("isTable", "false");
@@ -4810,16 +4810,26 @@ export default function App() {
  setEkran("sonuc");
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ac.createOscillator(); const gain = ac.createGain();
-      osc.connect(gain); gain.connect(ac.destination);
+      if (ac.state === "suspended") { ac.resume().catch(()=>{}); }
       const tmpS = analiz(metin, KATEGORILER[kategori].db);
+      const t = ac.currentTime;
       if (tmpS.some(r => r.risk === "kritik")) {
-        osc.frequency.setValueAtTime(880, ac.currentTime); osc.frequency.setValueAtTime(440, ac.currentTime+0.15); osc.frequency.setValueAtTime(880, ac.currentTime+0.3);
-        gain.gain.setValueAtTime(0.3, ac.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.5);
-        osc.start(); osc.stop(ac.currentTime+0.5);
+        // 3 bip kritik uyarı
+        [0, 0.18, 0.36].forEach(offset => {
+          const o = ac.createOscillator(); const g = ac.createGain();
+          o.connect(g); g.connect(ac.destination);
+          o.frequency.setValueAtTime(880, t + offset);
+          g.gain.setValueAtTime(0.3, t + offset);
+          g.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.13);
+          o.start(t + offset); o.stop(t + offset + 0.14);
+        });
       } else if (tmpS.length > 0) {
-        osc.frequency.setValueAtTime(523, ac.currentTime); gain.gain.setValueAtTime(0.15, ac.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.2);
-        osc.start(); osc.stop(ac.currentTime+0.2);
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.connect(g); g.connect(ac.destination);
+        o.frequency.setValueAtTime(523, t);
+        g.gain.setValueAtTime(0.15, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        o.start(t); o.stop(t + 0.2);
       }
     } catch {}
  }
@@ -5047,14 +5057,24 @@ export default function App() {
           if (kritikler.length > 0) metin += `Kritik risk: ${kritikler.map(r=>r.ad).join(", ")}. `;
           if (yuksekler.length > 0) metin += `Yüksek risk: ${yuksekler.slice(0,3).map(r=>r.ad).join(", ")}. `;
           if (sonuclar.length === 0) metin = "Tarama tamamlandı. Tehlikeli madde bulunamadı. Ürün güvenli görünüyor.";
-          const utt = new SpeechSynthesisUtterance(metin);
-          utt.lang = "tr-TR";
-          utt.rate = 0.9;
-          utt.pitch = 1;
-          const sesler = window.speechSynthesis.getVoices();
-          const trSes = sesler.find(s => s.lang.startsWith("tr"));
-          if (trSes) utt.voice = trSes;
-          window.speechSynthesis.speak(utt);
+          const konus = () => {
+            const utt = new SpeechSynthesisUtterance(metin);
+            utt.lang = "tr-TR";
+            utt.rate = 0.9;
+            utt.pitch = 1;
+            const sesler = window.speechSynthesis.getVoices();
+            const trSes = sesler.find(s => s.lang && s.lang.startsWith("tr"));
+            if (trSes) utt.voice = trSes;
+            window.speechSynthesis.speak(utt);
+          };
+          // iOS Safari: ilk çağrıda getVoices() boş döner, voiceschanged ile tekrar dene
+          if (window.speechSynthesis.getVoices().length === 0) {
+            window.speechSynthesis.onvoiceschanged = () => { konus(); window.speechSynthesis.onvoiceschanged = null; };
+            // Bazı iOS sürümlerinde voiceschanged tetiklenmez; küçük gecikme ile yine deneyelim
+            setTimeout(konus, 250);
+          } else {
+            konus();
+          }
         }}>Sesli Oku</button>
         {sonuclar.filter(r => r.risk === "kritik" || r.risk === "yuksek").length > 0 && (
           <button style={{ ...S.anaBtn, background: "#2ecc7120", border: "1px solid #2ecc71", color: "#2ecc71", marginTop: 8 }} onClick={() => {
