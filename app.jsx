@@ -5264,9 +5264,15 @@ export default function App() {
              const tarif = anahtar ? DOGAL_TARIF[anahtar] : null;
              if (!tarif) return null;
              return (
-               <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"8px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>
-                 Tarif: {tarif.baslik}
-               </button>
+               <>
+                 <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"8px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>
+                   Tarif: {tarif.baslik}
+                 </button>
+                 <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"8px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6, position:"relative" }}>
+                   Marketten Al
+                   <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
+                 </button>
+               </>
              );
            })()}
  </div>
