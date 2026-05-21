@@ -6588,32 +6588,6 @@ export default function App() {
          <b>Yerel Üretici Ağı:</b> Çevrendeki çiğ süt, ham bal, soğuk sıkım yağ, organik sebze üreticilerini harita üzerinde gösteren modül. Kısa zincir, taze ürün, doğrudan üreticiden.
        </div>
      </div>
-
-     <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginTop: 18, marginBottom: 10, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>KOLEKSİYONLAR</div>
-
-     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-         <div style={{ color: C.altin, fontSize: 14, fontWeight: 700 }}>Contemporary Steps</div>
-         <span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 6, letterSpacing: 0.3 }}>YAKINDA</span>
-       </div>
-       <div style={{ color: C.soluk, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>ERKEK KOLEKSİYONU</div>
-     </div>
-
-     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-         <div style={{ color: C.altin, fontSize: 14, fontWeight: 700 }}>Aura and Grace</div>
-         <span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 6, letterSpacing: 0.3 }}>YAKINDA</span>
-       </div>
-       <div style={{ color: C.soluk, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>KADIN KOLEKSİYONU</div>
-     </div>
-
-     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
-       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-         <div style={{ color: C.altin, fontSize: 14, fontWeight: 700 }}>Pure Footprints</div>
-         <span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 6, letterSpacing: 0.3 }}>YAKINDA</span>
-       </div>
-       <div style={{ color: C.soluk, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>ÇOCUK KOLEKSİYONU</div>
-     </div>
    </div>
  )}
 
