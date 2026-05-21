@@ -5999,96 +5999,60 @@ export default function App() {
      {
        baslik: "TIBB-I NEBEVİ & GELENEKSEL",
        hizmetler: [
-         { k: "makam", baslik: "Makam", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
-         { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
-         { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
-         { k: "rabita", baslik: "Râbıta-i Şifa", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
-         { k: "tohum", baslik: "Milli Tohum", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
-         { k: "uyku", baslik: "Uyku Kalkanı", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
-         { k: "koku", baslik: "Dijital Attar", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
-         { k: "rota", baslik: "Evliya Çelebi Rotası", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
-         { k: "yildiz", baslik: "Yıldız Saati", ozet: "Ay fazı ve gezegen saatlerine göre kan akışı, hacamat vakti." },
+         { k: "makam", baslik: "Makam", sembol: "♪", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
+         { k: "esref", baslik: "Eşref Saatleri", sembol: "☉", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
+         { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
+         { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "⧾", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
+         { k: "tohum", baslik: "Milli Tohum", sembol: "❀", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
+         { k: "uyku", baslik: "Uyku Kalkanı", sembol: "☾", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
+         { k: "koku", baslik: "Dijital Attar", sembol: "❋", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
+         { k: "rota", baslik: "Evliya Çelebi Rotası", sembol: "✧", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
+         { k: "yildiz", baslik: "Yıldız Saati", sembol: "★", ozet: "Ay fazı ve gezegen saatlerine göre kan akışı, hacamat vakti." },
        ],
      },
      {
        baslik: "TEKNOLOJİK & AI",
        hizmetler: [
-         { k: "goz", baslik: "Göz ve Yüz Analizi", ozet: "Basiret + Firaset: iris ve fizyonomi taraması." },
-         { k: "biyofoton", baslik: "Biyo-Foton Kamera", ozet: "Gıdanın yaşam enerjisini (aura) ölçen kamera." },
-         { k: "toprak", baslik: "Toprak Frekansı", ozet: "GPS ile jeopatik stres ve manyetik alan analizi." },
-         { k: "bahce", baslik: "Akıllı Bahçe", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
-         { k: "emf", baslik: "EMF Kalkanı", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
-         { k: "dopamin", baslik: "Dopamin Skoru", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
-         { k: "zihin", baslik: "Zihni İnşa", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
-         { k: "ses", baslik: "Ses Frekans Analizi", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
-         { k: "nabiz", baslik: "İlm-i Nabız", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
-         { k: "hrv", baslik: "Duygusal Nabız (HRV)", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
-         { k: "nefes", baslik: "Dijital Burun", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
-         { k: "sesrengi", baslik: "Sesin Rengi (Bio-Acoustic)", ozet: "Ses frekans/tını analizi ile çakra ve organ tıkanıklığı tespiti." },
+         { k: "goz", baslik: "Göz ve Yüz Analizi", sembol: "◉", ozet: "Basiret + Firaset: iris ve fizyonomi taraması." },
+         { k: "biyofoton", baslik: "Biyo-Foton Kamera", sembol: "✺", ozet: "Gıdanın yaşam enerjisini (aura) ölçen kamera." },
+         { k: "toprak", baslik: "Toprak Frekansı", sembol: "⏚", ozet: "GPS ile jeopatik stres ve manyetik alan analizi." },
+         { k: "bahce", baslik: "Akıllı Bahçe", sembol: "❦", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
+         { k: "emf", baslik: "EMF Kalkanı", sembol: "⚡", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
+         { k: "dopamin", baslik: "Dopamin Skoru", sembol: "✜", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
+         { k: "zihin", baslik: "Zihni İnşa", sembol: "◇", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
+         { k: "ses", baslik: "Ses Frekans Analizi", sembol: "♬", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
+         { k: "nabiz", baslik: "İlm-i Nabız", sembol: "⌇", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
+         { k: "hrv", baslik: "Duygusal Nabız (HRV)", sembol: "♥", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
+         { k: "nefes", baslik: "Dijital Burun", sembol: "≋", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
+         { k: "sesrengi", baslik: "Sesin Rengi (Bio-Acoustic)", sembol: "◍", ozet: "Ses frekans/tını analizi ile çakra ve organ tıkanıklığı tespiti." },
        ],
      },
      {
        baslik: "DESTEK & HİZMET",
        hizmetler: [
-         { k: "market", baslik: "Şifalı Market", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
-         { k: "uzman", baslik: "Görüntülü Uzman", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
+         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
+         { k: "uzman", baslik: "Görüntülü Uzman", sembol: "◐", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
        ],
      },
    ];
-   const ORNEKLER = [
-     { k: "makam", baslik: "Makam", sembol: "◈" },
-     { k: "esref", baslik: "Eşref Saatleri", sembol: "◐" },
-     { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦" },
-     { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "⧾" },
-   ];
    return (
      <div>
-       <div style={S.kB}>HİZMETLER — TASARIM ÖNİZLEMESİ</div>
-       <div style={S.ipucu}>3 farklı tasarım kalıbı, aynı 4 kartla gösterildi. Bana hangisini istediğini söyle; o kalır, diğerleri silinir ve tüm 23 modüle uygulanır.</div>
+       <div style={S.kB}>HİZMETLER PANOSU</div>
+       <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
 
-       {/* VERSİYON 1 — iOS Ayarlar tarzı tek sütun liste */}
-       <div style={{ marginBottom: 28 }}>
-         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 1 — iOS AYARLAR TARZI</div>
-         <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, overflow: "hidden" }}>
-           {ORNEKLER.map((h, i) => (
-             <button key={h.k} onClick={() => setSekme(h.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: "none", border: "none", borderTop: i > 0 ? `1px solid ${C.s}` : "none", cursor: "pointer", fontFamily: "Georgia,serif", textAlign: "left" }}>
-               <span style={{ width: 30, height: 30, borderRadius: 8, background: C.altin + "22", color: C.altin, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{h.sembol}</span>
-               <span style={{ flex: 1, color: C.metin, fontSize: 15, fontWeight: 600 }}>{h.baslik}</span>
-               <span style={{ color: C.cok, fontSize: 18 }}>›</span>
-             </button>
-           ))}
+       {HIZ_GRUPLAR.map(g => (
+         <div key={g.baslik} style={{ marginBottom: 22 }}>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 12, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
+           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+             {g.hizmetler.map(h => (
+               <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                 <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
+                 <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
+               </button>
+             ))}
+           </div>
          </div>
-       </div>
-
-       {/* VERSİYON 2 — App Store ikon grid (ortalanmış) */}
-       <div style={{ marginBottom: 28 }}>
-         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 2 — APP STORE TARZI</div>
-         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-           {ORNEKLER.map(h => (
-             <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 12px", cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-               <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
-               <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
-             </button>
-           ))}
-         </div>
-       </div>
-
-       {/* VERSİYON 3 — Stripe / Notion sol ikon 2 sütun */}
-       <div style={{ marginBottom: 28 }}>
-         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 3 — STRIPE / NOTION TARZI</div>
-         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
-           {ORNEKLER.map(h => (
-             <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", alignItems: "flex-start", gap: 10, textAlign: "left" }}>
-               <span style={{ width: 32, height: 32, borderRadius: 8, background: C.altin + "22", color: C.altin, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{h.sembol}</span>
-               <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{h.baslik}</span>
-             </button>
-           ))}
-         </div>
-       </div>
-
-       <div style={{ marginTop: 20, padding: 14, background: C.y2, borderRadius: 10, color: C.soluk, fontSize: 12, fontStyle: "italic" }}>
-         Hangi versiyonu seçersen tüm 23 modüle uygulanacak. Bana "1", "2" veya "3" de.
-       </div>
+       ))}
      </div>
    );
  })()}
