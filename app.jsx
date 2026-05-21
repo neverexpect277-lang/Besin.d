@@ -5332,6 +5332,38 @@ export default function App() {
  </div>
  )}
 
+ {(() => {
+   const oncelik = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
+   const enKritik = [...sonuclar].sort((a,b) => (oncelik[a.risk]??9) - (oncelik[b.risk]??9))[0];
+   if (!enKritik) return null;
+   const TEMIZLIK_ANAHTAR = ["klorin","amonyak","parfüm","çamaşir","deterjan","NaOH","quat","kireç","küf","plastik","şampuan","sabun","diş macunu","deodorant","yumuşatıcı","krem"];
+   const anahtar = Object.keys(DOGAL_TARIF).find(k => {
+     const temizlikMi = TEMIZLIK_ANAHTAR.includes(k);
+     if (kategori === "gida" && temizlikMi) return false;
+     if (kategori !== "gida" && !temizlikMi && kategori === "temizlik") return false;
+     const mad = (enKritik.ad + " " + (enKritik.kat||"") + " " + (enKritik.alternatif||"")).toLowerCase();
+     return mad.includes(k.toLowerCase());
+   });
+   const tarif = anahtar ? DOGAL_TARIF[anahtar] : null;
+   return (
+     <div style={{ background: "#2ecc7112", border: "1px solid #2ecc7140", borderRadius: 14, padding: 14, marginBottom: 14 }}>
+       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>DOĞAL ALTERNATİF — {enKritik.ad.toUpperCase()}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{enKritik.alternatif}</div>
+       {tarif && (
+         <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"10px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
+           Tarif: {tarif.baslik}
+         </button>
+       )}
+       {kategori === "gida" && (
+         <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"10px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", position:"relative" }}>
+           Marketten Al
+           <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
+         </button>
+       )}
+     </div>
+   );
+ })()}
+
  {sonuclar.map((r, i) => {
  const ayet = ayetSec(r.organlar);
  const makamBilgi = MAKAMLAR[r.makam] || {};
@@ -5394,35 +5426,8 @@ export default function App() {
  </div>
  </>
  )}
- <div style={{ background: "#2ecc7115", border: "1px solid #2ecc7130", borderRadius: 10, padding: 12, marginTop: 12 }}>
- <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
- <div style={{ color: C.metin, fontSize: 13 }}>{r.alternatif}</div>
-           {(kategori === "gida" || kategori === "temizlik") && (() => {
-             const TEMIZLIK_ANAHTAR = ["klorin","amonyak","parfüm","çamaşir","deterjan","NaOH","quat","kireç","küf","plastik","şampuan","sabun","diş macunu","deodorant","yumuşatıcı","krem"];
-             const anahtar = Object.keys(DOGAL_TARIF).find(k => {
-               const temizlikMi = TEMIZLIK_ANAHTAR.includes(k);
-               if (kategori === "gida" && temizlikMi) return false;
-               if (kategori === "temizlik" && !temizlikMi) return false;
-               const mad = (r.ad + " " + (r.kat||"") + " " + (r.alternatif||"")).toLowerCase();
-               return mad.includes(k.toLowerCase());
-             });
-             const tarif = anahtar ? DOGAL_TARIF[anahtar] : null;
-             if (!tarif) return null;
-             return (
-               <>
-                 <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"8px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>
-                   Tarif: {tarif.baslik}
-                 </button>
-                 <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"8px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6, position:"relative" }}>
-                   Marketten Al
-                   <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
-                 </button>
-               </>
-             );
-           })()}
- </div>
-           {(() => {
-             const destek = organDestekToparla(r.organlar);
+ {(() => {
+   const destek = organDestekToparla(r.organlar);
              if (!destek || destek.length === 0) return null;
              return (
                <div style={{ background: "#8A60C015", border: "1px solid #8A60C040", borderRadius: 10, padding: 12, marginTop: 10 }}>
