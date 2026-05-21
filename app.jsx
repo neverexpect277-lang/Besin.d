@@ -6005,6 +6005,7 @@ export default function App() {
          { k: "rabita", baslik: "Râbıta-i Şifa", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
          { k: "tohum", baslik: "Milli Tohum", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
          { k: "uyku", baslik: "Uyku Kalkanı", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
+         { k: "koku", baslik: "Dijital Attar", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
        ],
      },
      {
@@ -6017,6 +6018,7 @@ export default function App() {
          { k: "emf", baslik: "EMF Kalkanı", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
          { k: "dopamin", baslik: "Dopamin Skoru", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
          { k: "zihin", baslik: "Zihni İnşa", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
+         { k: "ses", baslik: "Ses Frekans Analizi", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
        ],
      },
      {
@@ -6051,6 +6053,53 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "koku" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DİJİTAL ATTAR — KOKU TAKVİMİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da şifa kulakla (makam), gözle (renk) ve burunla da gelirdi. Attarlık, kadim bir tıp ve psişe sanatıdır.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>❀ KOKU TAKVİMİ & TERAPİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Günlük burç-gezegen saati + tarattığın zararlı gıdaya göre kişiselleştirilmiş <b>koku terapisi</b> önerisi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bugün karaciğerin yoruldu; safravi mizacın için en uygun dengeleyici koku gül veya sandal ağacıdır."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Ticari boyut:</b> En temiz içerikli esansiyel yağ önerisi + tek tıkla sipariş.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "ses" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>SES FREKANS ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Yapay zeka sadece metin değil sesi de analiz eder. Ses titreşimi, gizli yorgunluk ve mizaç bozulmasının en hassas göstergesidir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ SESLİ DURUM TESPİTİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         "Bugün biraz yorgun hissediyorum" dediğinde, sistem sesindeki <b>frekanstan mizaç bozulmasını</b> tespit eder (sevda artışı, depresyon meyli vb.).
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sesindeki frekans düşük — şu an Neva makamına ve sarı renge ihtiyacın var. Tarattığın gıda bu yorgunluğu artırır."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "tohum" && (
    <div>
