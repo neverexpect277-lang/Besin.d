@@ -6724,6 +6724,12 @@ export default function App() {
  <div>
  <ToplulugaKatki taramaSayisi={taramaSayisi} />
 
+ <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+   <div style={{ color: C.altin, fontWeight: 700, marginBottom: 6 }}> İletişim</div>
+   <div style={{ color: C.metin, fontSize: 13 }}>besindedektifii@gmail.com</div>
+   <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}>48 saat içinde yanıtlanır.</div>
+ </div>
+
  <div style={S.kB}>HAKKINDA & BİLİMSEL DAYANAK</div>
  <BolumKart ikon={HAKKINDA.hukuki.ikon} renk={HAKKINDA.hukuki.renk} baslik={HAKKINDA.hukuki.baslik} ozet={HAKKINDA.hukuki.ozet} items={HAKKINDA.hukuki.items} />
  <BolumKart ikon={HAKKINDA.islam.ikon} renk={HAKKINDA.islam.renk} baslik={HAKKINDA.islam.baslik} ozet={HAKKINDA.islam.ozet} items={HAKKINDA.islam.items} />
@@ -6782,11 +6788,6 @@ export default function App() {
    });
  })()}
 
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginTop: 16 }}>
- <div style={{ color: C.altin, fontWeight: 700, marginBottom: 6 }}> İletişim</div>
- <div style={{ color: C.metin, fontSize: 13 }}>besindedektifii@gmail.com</div>
- <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}>48 saat içinde yanıtlanır.</div>
- </div>
  </div>
  )}
  </div>
