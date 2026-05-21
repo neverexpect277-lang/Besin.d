@@ -7,7 +7,7 @@ const C = {
  bg: "#FFFFFF", y: "#FFFFFF", y2: "#FAFAFA", s: "#E5E5E7",
  altin: "#B8862F", altinA: "#C9A84C",
  metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
- kirmizi: "#FF3B30", turuncu: "#FF9500", sari: "#FFCC00", yesil: "#34C759",
+ kirmizi: "#DC2626", turuncu: "#EA580C", sari: "#CA8A04", yesil: "#16A34A",
 };
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
