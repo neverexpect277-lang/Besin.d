@@ -6002,7 +6002,7 @@ export default function App() {
          { k: "makam", baslik: "Makam", sembol: "♪", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
          { k: "esref", baslik: "Eşref Saatleri", sembol: "☉", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
          { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
-         { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "⧾", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
+         { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "🕌", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
          { k: "tohum", baslik: "Milli Tohum", sembol: "❀", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
          { k: "uyku", baslik: "Uyku Kalkanı", sembol: "☾", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
          { k: "koku", baslik: "Dijital Attar", sembol: "❋", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
