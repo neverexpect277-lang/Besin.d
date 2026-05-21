@@ -6006,7 +6006,7 @@ export default function App() {
          { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "🕌", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
          { k: "tohum", baslik: "Milli Tohum", sembol: "❀", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
          { k: "uyku", baslik: "Uyku Kalkanı", sembol: "☾", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
-         { k: "koku", baslik: "Dijital Attar", sembol: "❋", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
+         { k: "koku", baslik: "Koku Takvimi", sembol: "❋", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
          { k: "rota", baslik: "Evliya Çelebi Rotası", sembol: "✧", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
          { k: "yildiz", baslik: "Yıldız Saati", sembol: "★", ozet: "Ay fazı ve gezegen saatlerine göre kan akışı, hacamat vakti." },
        ],
