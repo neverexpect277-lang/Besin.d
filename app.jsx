@@ -4718,7 +4718,16 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     // 1. ZXing — tüm tarayıcılar (iOS Safari dahil): EAN/UPC/Code128/Code39/QR
     if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
       try {
-        const reader = new window.ZXing.BrowserMultiFormatReader();
+        const Z = window.ZXing;
+        const hints = new Map();
+        hints.set(Z.DecodeHintType.TRY_HARDER, true);
+        hints.set(Z.DecodeHintType.POSSIBLE_FORMATS, [
+          Z.BarcodeFormat.EAN_13, Z.BarcodeFormat.EAN_8,
+          Z.BarcodeFormat.UPC_A, Z.BarcodeFormat.UPC_E,
+          Z.BarcodeFormat.CODE_128, Z.BarcodeFormat.CODE_39,
+          Z.BarcodeFormat.QR_CODE, Z.BarcodeFormat.DATA_MATRIX, Z.BarcodeFormat.ITF,
+        ]);
+        const reader = new Z.BrowserMultiFormatReader(hints);
         const url = canvas.toDataURL("image/png");
         const result = await reader.decodeFromImageUrl(url);
         if (result && result.getText) return result.getText();
@@ -4763,7 +4772,15 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     await kutuphaneleriYukle();
     if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
       try {
-        const reader = new window.ZXing.BrowserMultiFormatReader();
+        const Z = window.ZXing;
+        const hints = new Map();
+        hints.set(Z.DecodeHintType.POSSIBLE_FORMATS, [
+          Z.BarcodeFormat.EAN_13, Z.BarcodeFormat.EAN_8,
+          Z.BarcodeFormat.UPC_A, Z.BarcodeFormat.UPC_E,
+          Z.BarcodeFormat.CODE_128, Z.BarcodeFormat.CODE_39,
+          Z.BarcodeFormat.QR_CODE, Z.BarcodeFormat.ITF,
+        ]);
+        const reader = new Z.BrowserMultiFormatReader(hints);
         zxingRef.current = reader;
         reader.decodeFromVideoElementContinuously(videoRef.current, (result) => {
           if (result && result.getText) {
