@@ -5998,6 +5998,13 @@ export default function App() {
  {sekme === "hizmetler" && (() => {
    const HIZ_GRUPLAR = [
      {
+       baslik: "DESTEK & HİZMET",
+       hizmetler: [
+         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
+         { k: "uzman", baslik: "Görüntülü Uzman", sembol: "◐", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
+       ],
+     },
+     {
        baslik: "TIBB-I NEBEVİ & GELENEKSEL",
        hizmetler: [
          { k: "makam", baslik: "Makam", sembol: "♪", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
@@ -6026,13 +6033,6 @@ export default function App() {
          { k: "hrv", baslik: "Duygusal Nabız (HRV)", sembol: "♥", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
          { k: "nefes", baslik: "Dijital Burun", sembol: "≋", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
          { k: "sesrengi", baslik: "Sesin Rengi (Bio-Acoustic)", sembol: "◍", ozet: "Ses frekans/tını analizi ile çakra ve organ tıkanıklığı tespiti." },
-       ],
-     },
-     {
-       baslik: "DESTEK & HİZMET",
-       hizmetler: [
-         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
-         { k: "uzman", baslik: "Görüntülü Uzman", sembol: "◐", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
        ],
      },
    ];
