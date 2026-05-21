@@ -6191,7 +6191,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["burclar", "", "Burçlar"], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["burclar", "", "Burçlar", true], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
