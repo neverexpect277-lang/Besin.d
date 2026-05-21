@@ -5994,27 +5994,141 @@ export default function App() {
  )}
 
  {/* MARKET (Yakında) */}
- {sekme === "hizmetler" && (
-   <div>
-     <div style={S.kB}>HİZMETLER</div>
-     <div style={S.ipucu}>Uygulamadaki tüm modüller burada. Aktif olanlara hemen girebilir, yakında açılacaklara göz atabilirsin.</div>
+ {sekme === "hizmetler" && (() => {
+   const HIZ_GRUPLAR = [
+     {
+       baslik: "TIBB-I NEBEVİ & GELENEKSEL",
+       hizmetler: [
+         { k: "makam", baslik: "Makam", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
+         { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
+         { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
+         { k: "rabita", baslik: "Râbıta-i Şifa", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
+       ],
+     },
+     {
+       baslik: "TEKNOLOJİK & AI",
+       hizmetler: [
+         { k: "goz", baslik: "Göz ve Yüz Analizi", ozet: "Basiret + Firaset: iris ve fizyonomi taraması." },
+         { k: "biyofoton", baslik: "Biyo-Foton Kamera", ozet: "Gıdanın yaşam enerjisini (aura) ölçen kamera." },
+         { k: "toprak", baslik: "Toprak Frekansı", ozet: "GPS ile jeopatik stres ve manyetik alan analizi." },
+         { k: "bahce", baslik: "Akıllı Bahçe", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
+       ],
+     },
+     {
+       baslik: "DESTEK & HİZMET",
+       hizmetler: [
+         { k: "market", baslik: "Şifalı Market", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
+         { k: "uzman", baslik: "Görüntülü Uzman", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
+       ],
+     },
+   ];
+   return (
+     <div>
+       <div style={S.kB}>HİZMETLER PANOSU</div>
+       <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
 
-     {[
-       { k: "makam", baslik: "Makam", ozet: "Burcuna ve mizacına uygun şifa makamları, zikir-müzik reçetesi.", yakinda: true },
-       { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + Çin tıbbı meridyen takvimi.", yakinda: true },
-       { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu. Osmanlı Tıbb-ı Nebevi geleneği.", yakinda: true },
-       { k: "market", baslik: "Şifalı Market", ozet: "Doğal alternatif ürünler ve yerel üretici ağı.", yakinda: true },
-       { k: "uzman", baslik: "Görüntülü Uzman", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk hızlı görüşme.", yakinda: true },
-       { k: "goz", baslik: "Göz ve Yüz Analizi", ozet: "Basiret + Firaset ilmi: iris ve fizyonomi taraması ile organ haritası.", yakinda: true },
-     ].map(h => (
-       <button key={h.k} onClick={() => setSekme(h.k)} style={{ width:"100%", textAlign:"left", background:C.y, border:`1px solid ${C.s}`, borderLeft:`4px solid ${C.altin}`, borderRadius:12, padding:14, marginBottom:8, cursor:"pointer", fontFamily:"Georgia,serif", position:"relative" }}>
-         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
-           <div style={{ color:C.altin, fontSize:15, fontWeight:700 }}>{h.baslik}</div>
-           {h.yakinda && <span style={{ background:C.altin, color:"#1A1200", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>}
+       {HIZ_GRUPLAR.map(g => (
+         <div key={g.baslik} style={{ marginBottom: 18 }}>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 10, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
+           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 8 }}>
+             {g.hizmetler.map(h => (
+               <button key={h.k} onClick={() => setSekme(h.k)} style={{ textAlign: "left", background: C.y, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 10, padding: 12, cursor: "pointer", fontFamily: "Georgia,serif", position: "relative", minHeight: 110, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                 <div>
+                   <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, marginBottom: 6, lineHeight: 1.2 }}>{h.baslik}</div>
+                   <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.4 }}>{h.ozet}</div>
+                 </div>
+                 <div style={{ marginTop: 8 }}><span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 5, letterSpacing: 0.3 }}>YAKINDA</span></div>
+               </button>
+             ))}
+           </div>
          </div>
-         <div style={{ color:C.soluk, fontSize:13, lineHeight:1.5 }}>{h.ozet}</div>
-       </button>
-     ))}
+       ))}
+     </div>
+   );
+ })()}
+
+ {sekme === "toprak" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>TOPRAK FREKANSI & KONUM ŞİFASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da şifahaneler ve camiler "Leyn Hatları" (enerji hatları) üzerine kurulurdu. İnsan sadece yediğinden değil, bastığı topraktan da hasta olur.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◉ JEOPATİK STRES ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Uygulama, GPS konumunu kullanarak bulunduğun bölgenin <b>toprak yapısını ve manyetik alanını</b> analiz eder.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Şu an bulunduğun bölgenin manyetik alanı senin sevdevi mizacını ağırlaştırıyor. Çıplak ayak toprağa basman veya pozitif iyon yayan doğal taşlar kullanman önerilir."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "rabita" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>RÂBITA-İ ŞİFA — KOLEKTİF ODAK <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Aynı anda aynı şeye odaklanan binlerce insanın o şeyin frekansını değiştirdiği üzerine çalışmalar var. Uygulamayı küresel bir dijital şifa cemaatine dönüştürüyoruz.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◇ KOLEKTİF ŞİFA SAATİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Her akşam Eşref Saati'nde, tüm kullanıcılara bildirim: <i>"Şu an binlerce kişiyle aynı anda karaciğer şifası için Ney sesi eşliğinde odaklanıyoruz."</i>
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Aidiyet, ortak niyet ve aynı anda yapılan odak — yazılımı bir uygulamadan çıkarıp bir <b>şifa cemaatine</b> dönüştürür.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
+   </div>
+ )}
+
+ {sekme === "bahce" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>AKILLI BAHÇE — MİZAÇ ODAKLI BOSTAN <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Uygulama göz taraması ve mizaç sonucuna göre sana hangi bitkiye ihtiyacın olduğunu söyler. Akıllı tohum kitleri ile evde de yetiştirebilirsin.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>❀ AKILLI TOHUM KİTLERİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Mizacına uygun bitki kiti adresine gönderilir. Yapay zeka kameradan büyümeyi izler ve <i>"Bitkinin mizacı tamamlandı, şimdi kopar ve şifa niyetine iç"</i> der.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
+   </div>
+ )}
+
+ {sekme === "biyofoton" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>BİYO-FOTON KAMERA — GIDA AURASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Kamerayı sadece barkod okumak için değil, canlı gıdanın yaşam enerjisini ölçmek için kullanacağız.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ BİYO-FOTON ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Bir elmayı kameraya tut. Yapay zeka tazelikten yola çıkarak yaydığı ışınımı (biyo-foton) tahmin eder.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek çıktı:</b> "Bu elma görünüşte güzel ama yaşam enerjisi (prana / şifa) bitmiş, sadece posa yersin. Köylü pazarındaki şu elmayı seç."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
    </div>
  )}
 
