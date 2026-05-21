@@ -5993,6 +5993,65 @@ export default function App() {
  )}
 
  {/* MARKET (Yakında) */}
+ {sekme === "hizmetler" && (
+   <div>
+     <div style={S.kB}>HİZMETLER</div>
+     <div style={S.ipucu}>Uygulamadaki tüm modüller burada. Aktif olanlara hemen girebilir, yakında açılacaklara göz atabilirsin.</div>
+
+     {[
+       { k: "makam", baslik: "Makam", ozet: "Burcuna ve mizacına uygun şifa makamları, zikir-müzik reçetesi.", yakinda: false },
+       { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + Çin tıbbı meridyen takvimi.", yakinda: false },
+       { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu. Osmanlı Tıbb-ı Nebevi geleneği.", yakinda: true },
+       { k: "market", baslik: "Şifalı Market", ozet: "Doğal alternatif ürünler ve yerel üretici ağı.", yakinda: true },
+       { k: "uzman", baslik: "Görüntülü Uzman", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk hızlı görüşme.", yakinda: true },
+       { k: "goz", baslik: "Göz ve Yüz Analizi", ozet: "Basiret + Firaset ilmi: iris ve fizyonomi taraması ile organ haritası.", yakinda: true },
+     ].map(h => (
+       <button key={h.k} onClick={() => setSekme(h.k)} style={{ width:"100%", textAlign:"left", background:C.y, border:`1px solid ${C.s}`, borderLeft:`4px solid ${C.altin}`, borderRadius:12, padding:14, marginBottom:8, cursor:"pointer", fontFamily:"Georgia,serif", position:"relative" }}>
+         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
+           <div style={{ color:C.altin, fontSize:15, fontWeight:700 }}>{h.baslik}</div>
+           {h.yakinda && <span style={{ background:C.altin, color:"#1A1200", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>}
+         </div>
+         <div style={{ color:C.soluk, fontSize:13, lineHeight:1.5 }}>{h.ozet}</div>
+       </button>
+     ))}
+   </div>
+ )}
+
+ {sekme === "goz" && (
+   <div>
+     <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET</div>
+     <div style={S.ipucu}>Osmanlı hekimleri "Göz ruhun aynasıdır" derdi. İridoloji ilminde iris vücudun haritasıdır; Kıyâfetnâme (İlm-i Sîmâ) geleneğinde yüz çizgileri organ durumunu yansıtır.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◉ DİJİTAL İRİDOLOJİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kamerayı gözüne yaklaştırırsın, yapay zeka iristeki çizgileri, noktaları ve renk değişimlerini tarar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> Saat 3 yönünde koyuluk → akciğerde toksin birikimi işareti. Göz bebeği etrafında beyaz halka → aşırı asit (mizaç bozulması).
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ GÖZ TARAMASI + GIDA ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Sistem gözünü tarar, sindirim zayıflığını tespit eder. Sonra bir gıda taratınca uyarır: "DUR — bu koruyuculu gıda senin mide asidini bozabilir."
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ FİZYONOMİ (KIYÂFETNÂME) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Alın çizgileri, dudak rengi, göz altı torbaları — yapay zeka yüzden "karaciğer yorgunluğu", "böbrek susuzluğu" gibi tespitler yapar. Haftalık selfie ile doğal kürlerinin etkisini izlersin.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
  {sekme === "market" && (
    <div>
      {sonuclar.length > 0 && (
@@ -6191,7 +6250,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["burclar", "", "Burçlar", true], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
