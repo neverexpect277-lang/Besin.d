@@ -4102,34 +4102,100 @@ const DOGAL_TARIF = {
   "plastik": { baslik: "Çevre Dostu Temizlik Seti", sure: "5 dk", malzeme: ["Karbonat","Beyaz sirke","Limon","Kastil sabun"], adimlar: "4 malzemeyle mutfak, banyo, zemin temizlenebilir. Detay için her birini ayrı kullanın." },
 };
 
-// Ürün TÜRÜ tespiti — kullanıcının yapıştırdığı metinden ürün kategorisini çıkarır
+// Ürün TÜRÜ tespiti — kullanıcının yapıştırdığı metinden ürün türünü çıkarır
+// 8 kategori için ayrı türler. urun_a (ürün adı/marka) güçlü; icerik (içerik kodu ipuçları) zayıf.
 const URUN_TURLERI = [
-  { tur: "icecek_gazli", baslik: "Gazlı İçecek", anahtarlar: ["kola","cola","gazoz","fanta","sprite","soda","seven up","7up","pepsi","dr pepper","gazli icecek","gazlı içecek"], alternatif: "Ev limonatası · Şalgam suyu · Maden suyu + taze meyve · Bitki çayı", tarifKey: "kola" },
-  { tur: "icecek_meyve", baslik: "Hazır Meyve Suyu", anahtarlar: ["meyve suyu","portakal suyu","elma suyu","vişne suyu","şeftali suyu","nektar","cappy","dimes","tropicana"], alternatif: "Taze sıkılmış meyve suyu · Ev kompostu · Şerbet (gül, vişne)", tarifKey: "kola" },
-  { tur: "icecek_enerji", baslik: "Enerji İçeceği", anahtarlar: ["red bull","monster","burn","enerji içec","energy drink","ice tea","fuse tea","nestea","lipton ice"], alternatif: "Ham bal + limon karışımı · Yeşil çay · Hurma sıkması", tarifKey: "kafein" },
-  { tur: "kek_tatli", baslik: "Kek / Pasta / Tatlı", anahtarlar: ["kek","pasta","brownie","muffin","cup cake","kruvasan","milföy","tatlı","baklava","trileçe"], alternatif: "Hurmalı tam buğday kek · Ev tahini-pekmez · Helva · Lokma", tarifKey: "kek" },
-  { tur: "biskuvi", baslik: "Bisküvi / Kraker", anahtarlar: ["bisküvi","biskuvi","kraker","cracker","galeta","etimek","eti","albeni","negro"], alternatif: "Ev yulaflı kurabiye · Tam buğday galetası · Çiğ kuruyemiş", tarifKey: "bisküvi" },
-  { tur: "gofret_cikolata", baslik: "Çikolata / Gofret", anahtarlar: ["gofret","çikolata","cikolata","wafer","snickers","mars","twix","kitkat","milka","ülker çikolata","nestle çikolata"], alternatif: "Saf bitter çikolata (%70+) · Ev kakao topları · Hurma + ceviz", tarifKey: "çikolata" },
-  { tur: "cips", baslik: "Cips / Atıştırmalık", anahtarlar: ["cips","chips","patates kız","ruffles","lays","doritos","cheetos","çerezza","patos"], alternatif: "Fırında patates dilimleri · Çiğ kuruyemiş · Kuru meyve", tarifKey: "cips" },
-  { tur: "sucuk_salam", baslik: "İşlenmiş Et", anahtarlar: ["sucuk","salam","sosis","jambon","pastırma","salami","frankfurter","hot dog","kangal","döner"], alternatif: "Geleneksel kuru sucuk (nitritsiz) · Ev jambonu · Çiğ et", tarifKey: "sucuk" },
-  { tur: "yogurt", baslik: "Yoğurt", anahtarlar: ["yoğurt","yogurt","ayran","sütlü tatlı"], alternatif: "Ev mayalı tam yağlı yoğurt · Çiğ süt kefiri · Süzme yoğurt (ev)", tarifKey: "yoğurt" },
-  { tur: "peynir", baslik: "Peynir", anahtarlar: ["peynir","beyaz peynir","kaşar","cheddar","feta","mozzarella","labne","lor"], alternatif: "Çiğ süt peyniri (otlatılmış inek/koyun/keçi) · Köy peyniri", tarifKey: "peynir" },
-  { tur: "sut", baslik: "Süt", anahtarlar: ["süt","milk","laktozsuz süt","uht süt"], alternatif: "Çiğ süt (sertifikalı) · Badem sütü · Hindistan cevizi sütü · Kefir", tarifKey: "süt" },
-  { tur: "dondurma", baslik: "Dondurma", anahtarlar: ["dondurma","ice cream","magnum","cornetto","algida","golf"], alternatif: "Ev meyve sorbesi · Dondurulmuş yoğurt + bal · Maraş dondurması (geleneksel)", tarifKey: "süt" },
-  { tur: "ekmek", baslik: "Ekmek / Hamur İşi", anahtarlar: ["ekmek","tost ekmeği","sandviç ekmeği","baget","simit","poğaca","börek","francala","kepek ekmek"], alternatif: "Ekşi maya tam buğday ekmek · Siyez/kavılca ekmeği · Köy ekmeği", tarifKey: "ekmek" },
-  { tur: "tatlandirici", baslik: "Şeker / Tatlandırıcı", anahtarlar: ["şeker","sugar","tatlandırıcı","aspartam","sakarin","sukraloz","stevia","şurup","hfcs","glikoz fruktoz"], alternatif: "Ham bal · Pekmez (üzüm, keçiboynuzu, dut) · Hurma şurubu · Stevia yaprağı", tarifKey: "aspartam" },
-  { tur: "yag", baslik: "Yağ / Margarin", anahtarlar: ["margarin","sade yağ","kahvaltılık","sana","becel","ayçiçek yağı","mısır yağı","kanola","rafine yağ"], alternatif: "Ev tereyağı (krema çırparak) · Soğuk sıkım zeytinyağı · Tereyağı (hayvansal)", tarifKey: "tereyağı" },
-  { tur: "soslar", baslik: "Hazır Sos", anahtarlar: ["ketçap","ketcap","mayonez","hazır sos","barbekü","hardal","ranch","tahin sos","cesar"], alternatif: "Ev domates sosu · Ev mayonezi · Sumak + zeytinyağı · Tahin + pekmez", tarifKey: "ketçap" },
-  { tur: "konserve", baslik: "Konserve", anahtarlar: ["konserve","ton balığı","ringa","sardalye","mısır konserve","bezelye konserve"], alternatif: "Taze balık · Ev konservesi (cam kavanoz) · Taze sebze", tarifKey: "konserve" },
-  { tur: "recel_krem", baslik: "Reçel / Sürülebilir", anahtarlar: ["reçel","recel","marmelat","kahvaltı kreması","krem çikolata","nutella","sürülebilir","fıstık ezme"], alternatif: "Şekersiz ev reçeli · Tahini-pekmez · Ham bal · Saf fıstık ezmesi", tarifKey: "reçel" },
-  { tur: "kahve", baslik: "Hazır Kahve", anahtarlar: ["hazır kahve","granül kahve","3'ü 1 arada","nescafe","jacobs","3 in 1"], alternatif: "Türk kahvesi · Filtre kahve (taze çekilmiş) · Hindiba kahvesi", tarifKey: "kafein" },
+  // === GIDA ===
+  { kategori: "gida", tur: "icecek_gazli", baslik: "Gazlı İçecek", urun_a: ["kola","cola","gazoz","fanta","sprite","soda","seven up","7up","pepsi","dr pepper","gazli","gazlı","carbonated"], icerik: ["e338","fosforik asit","karbondioksit","co2","karamel renk","e150"], alternatif: "Kombucha · Şalgam suyu · Maden suyu + taze meyve · Geleneksel boza · Doğal limonata", marketUrun: "Doğal Kombucha (sade/zencefil) · Şalgam Suyu (geleneksel) · Maden Suyu", tarifKey: "kola" },
+  { kategori: "gida", tur: "icecek_meyve", baslik: "Hazır Meyve Suyu", urun_a: ["meyve suyu","portakal suyu","elma suyu","vişne suyu","şeftali suyu","nektar","cappy","dimes","tropicana","içim"], icerik: ["%100 meyve","konsantre meyve","askorbik asit (e300)"], alternatif: "Taze sıkılmış meyve suyu · Ev kompostu · Gül/vişne şerbeti · Hoşaf", marketUrun: "Taze Sıkılmış Portakal Suyu · Ev Kompostu (kavanoz) · Geleneksel Şerbet", tarifKey: "kola" },
+  { kategori: "gida", tur: "icecek_enerji", baslik: "Enerji İçeceği", urun_a: ["red bull","monster","burn","enerji içec","energy drink","ice tea","fuse tea","nestea","lipton ice"], icerik: ["taurin","glukuronolakton","inositol"], alternatif: "Ham bal + limon · Yeşil çay · Hurma sıkması · Karpuz suyu (taze)", marketUrun: "Ham Bal · Yeşil Çay (Turkey origin) · Hurma", tarifKey: "kafein" },
+  { kategori: "gida", tur: "kek_tatli", baslik: "Kek / Pasta / Tatlı", urun_a: ["kek","pasta","brownie","muffin","cup cake","kruvasan","milföy","baklava","trileçe","tiramisu"], icerik: ["kabartma tozu","glaze"], alternatif: "Hurmalı tam buğday kek · Tahin-pekmez · Helva (un/tahin) · Lokma", marketUrun: "Hurmalı Ev Keki · Tahin + Pekmez · Geleneksel Helva", tarifKey: "kek" },
+  { kategori: "gida", tur: "biskuvi", baslik: "Bisküvi / Kraker", urun_a: ["bisküvi","biskuvi","kraker","cracker","galeta","etimek","albeni","negro","oreo"], icerik: [], alternatif: "Ev yulaflı kurabiye · Tam buğday galetası · Çiğ kuruyemiş", marketUrun: "Yulaflı Ev Kurabiyesi · Tam Buğday Galeta · Çiğ Badem/Ceviz", tarifKey: "bisküvi" },
+  { kategori: "gida", tur: "gofret_cikolata", baslik: "Çikolata / Gofret", urun_a: ["gofret","çikolata","cikolata","wafer","snickers","mars","twix","kitkat","milka"], icerik: ["kakao kütlesi","palm yağı","lesitin","e322"], alternatif: "Saf bitter çikolata (%70+ kakao) · Ev kakao topları · Hurma + ceviz", marketUrun: "Bitter Çikolata %85 · Hurma + Ceviz · Ev Kakao Topları", tarifKey: "çikolata" },
+  { kategori: "gida", tur: "cips", baslik: "Cips / Atıştırmalık", urun_a: ["cips","chips","patates kız","ruffles","lays","doritos","cheetos","çerezza","patos","pop corn","popcorn"], icerik: ["msg","e621","e627","e631","aroma artırıcı"], alternatif: "Fırında patates dilimleri · Çiğ kuruyemiş · Kuru meyve · Ev mısır patlağı", marketUrun: "Çiğ Badem/Fındık/Ceviz · Kuru İncir/Kayısı · Organik Mısır", tarifKey: "cips" },
+  { kategori: "gida", tur: "sucuk_salam", baslik: "İşlenmiş Et", urun_a: ["sucuk","salam","sosis","jambon","pastırma","salami","frankfurter","hot dog","kangal"], icerik: ["e250","sodyum nitrit","nitrit","sodyum nitrat","e252"], alternatif: "Geleneksel kuru sucuk (nitritsiz) · Ev jambonu (kendi tavuğun) · Çiğ et", marketUrun: "Geleneksel Kuru Sucuk (nitritsiz) · Ev Pastırması · Köy Eti", tarifKey: "sucuk" },
+  { kategori: "gida", tur: "yogurt", baslik: "Yoğurt", urun_a: ["yoğurt","yogurt","ayran","sütlü tatlı"], icerik: ["süt mayası","l. acidophilus","probiyotik","fermente süt"], alternatif: "Ev mayalı tam yağlı yoğurt · Çiğ süt kefiri · Köy ayranı", marketUrun: "Ev Mayalı Yoğurt · Çiğ Süt Kefiri · Köy Ayranı", tarifKey: "yoğurt" },
+  { kategori: "gida", tur: "peynir", baslik: "Peynir", urun_a: ["peynir","beyaz peynir","kaşar","cheddar","feta","mozzarella","labne","lor"], icerik: ["süt tozu","peynir altı suyu"], alternatif: "Çiğ süt peyniri (otlatılmış inek/koyun/keçi) · Köy peyniri · Ev loru", marketUrun: "Köy Beyaz Peyniri · Otlatılmış Koyun Tulum · Ev Loru", tarifKey: "peynir" },
+  { kategori: "gida", tur: "sut", baslik: "Süt", urun_a: ["uht süt","uht süt","laktozsuz süt","tam yağlı süt"], icerik: ["uht","laktoz"], alternatif: "Çiğ süt (sertifikalı) · Badem sütü · Hindistan cevizi sütü · Köy sütü", marketUrun: "Sertifikalı Çiğ Süt · Ev Badem Sütü · Hindistan Cevizi Sütü", tarifKey: "süt" },
+  { kategori: "gida", tur: "dondurma", baslik: "Dondurma", urun_a: ["dondurma","ice cream","magnum","cornetto","algida","golf","milkshake"], icerik: ["e407","karagenan","e466"], alternatif: "Ev meyve sorbesi · Maraş dondurması (geleneksel salepli) · Donmuş yoğurt + bal", marketUrun: "Maraş Dondurması (geleneksel) · Ev Meyve Sorbesi · Salepli Dondurma", tarifKey: "süt" },
+  { kategori: "gida", tur: "ekmek", baslik: "Ekmek / Hamur İşi", urun_a: ["ekmek","tost ekmeği","sandviç ekmeği","baget","simit","poğaca","francala","kepek ekmek"], icerik: ["mono ve digliseritler","e472","e471"], alternatif: "Ekşi maya tam buğday ekmek · Siyez/kavılca ekmeği · Köy ekmeği", marketUrun: "Ekşi Maya Ekmek · Siyez Ekmeği · Köy Ekmeği", tarifKey: "ekmek" },
+  { kategori: "gida", tur: "sakiz", baslik: "Sakız / Şekerleme", urun_a: ["sakız","sakiz","chewing gum","falim","first","mentos","tic tac","airwaves","stride","chiclets","ülker sakız","jelly"], icerik: [], alternatif: "Doğal ağız tazeleyici: Karanfil · Kakule · Maydanoz · Şekersiz ev mastik sakızı", marketUrun: "Doğal Mastik Sakızı (Sakız Adası) · Karanfil · Kakule", tarifKey: null },
+  { kategori: "gida", tur: "yag", baslik: "Margarin / Rafine Yağ", urun_a: ["margarin","sade yağ","kahvaltılık margarin","sana","becel","ayçiçek yağı","mısır yağı","kanola","rafine yağ"], icerik: ["kısmen hidrojenize","trans yağ"], alternatif: "Ev tereyağı (krema çırparak) · Soğuk sıkım zeytinyağı · Geleneksel sade yağ", marketUrun: "Soğuk Sıkım Zeytinyağı · Ev Tereyağı · Köy Sade Yağı", tarifKey: "tereyağı" },
+  { kategori: "gida", tur: "soslar", baslik: "Hazır Sos", urun_a: ["ketçap","ketcap","mayonez","hazır sos","barbekü","hardal","ranch","cesar"], icerik: [], alternatif: "Ev domates sosu · Ev mayonezi · Sumak + zeytinyağı · Tahin-pekmez", marketUrun: "Ev Domates Sosu (kavanoz) · Sumak + Zeytinyağı Seti · Tahin", tarifKey: "ketçap" },
+  { kategori: "gida", tur: "konserve", baslik: "Konserve", urun_a: ["konserve","ton balığı","ringa","sardalye","mısır konserve","bezelye konserve"], icerik: [], alternatif: "Taze balık · Ev konservesi (cam kavanoz) · Taze sebze", marketUrun: "Cam Kavanoz Ev Konservesi · Taze Sebze (haftalık)", tarifKey: "konserve" },
+  { kategori: "gida", tur: "recel_krem", baslik: "Reçel / Sürülebilir", urun_a: ["reçel","recel","marmelat","kahvaltı kreması","krem çikolata","nutella","sürülebilir","fıstık ezme"], icerik: [], alternatif: "Şekersiz ev reçeli · Tahin-pekmez · Ham bal · Saf fıstık ezmesi", marketUrun: "Şekersiz Ev Reçeli · Tahin + Pekmez · Ham Bal", tarifKey: "reçel" },
+  { kategori: "gida", tur: "kahve", baslik: "Hazır Kahve", urun_a: ["hazır kahve","granül kahve","3'ü 1 arada","nescafe","jacobs","3 in 1"], icerik: [], alternatif: "Türk kahvesi · Filtre kahve (taze çekilmiş) · Hindiba kahvesi", marketUrun: "Türk Kahvesi (Mehmet Efendi) · Taze Çekilmiş Filtre Kahve · Hindiba", tarifKey: "kafein" },
+  { kategori: "gida", tur: "tatlandirici", baslik: "Toz / Paket Tatlandırıcı", urun_a: ["canderel","sweet n low","sweet'n low","splenda","equal","huxol","stevia tablet","stevia toz","şeker küpü","küp şeker","kesme şeker","toz tatlandırıcı"], icerik: [], alternatif: "Ham bal · Pekmez (üzüm/keçiboynuzu/dut) · Hurma şurubu · Saf stevia yaprağı", marketUrun: "Ham Bal · Pekmez · Hurma Şurubu · Stevia Yaprağı (kuru)", tarifKey: "aspartam" },
+
+  // === KOZMETİK ===
+  { kategori: "kozmetik", tur: "yuz_kremi", baslik: "Yüz Kremi / Nemlendirici", urun_a: ["yüz kremi","face cream","nemlendirici","moisturizer","anti-aging","gece kremi","gündüz kremi","krem"], icerik: [], alternatif: "Hindistan cevizi yağı · Shea yağı · Argan yağı · Aloe vera jeli", tarifKey: "krem" },
+  { kategori: "kozmetik", tur: "sampuan", baslik: "Şampuan", urun_a: ["şampuan","shampoo","saç şampuanı"], icerik: ["sls","sodium lauryl sulfate"], alternatif: "Kastil sabun (saç için) · Defne sabunu · Doğal şampuan barı · Kına suyu", tarifKey: "şampuan" },
+  { kategori: "kozmetik", tur: "sabun", baslik: "Sabun", urun_a: ["sabun","soap","el sabunu","banyo sabunu","duş jeli","shower gel"], icerik: [], alternatif: "Zeytinyağı sabunu (kastil) · Defne sabunu · Süt sabunu · Halep sabunu", tarifKey: "sabun" },
+  { kategori: "kozmetik", tur: "dis_macunu", baslik: "Diş Macunu", urun_a: ["diş macunu","toothpaste","ağız bakım"], icerik: ["florür","sodium fluoride"], alternatif: "Karbonat + nane yağı · Misvak · Karbonatlı doğal diş macunu", tarifKey: "diş macunu" },
+  { kategori: "kozmetik", tur: "deodorant", baslik: "Deodorant", urun_a: ["deodorant","antiperspirant","ter önleyici","roll-on"], icerik: ["alüminyum","aluminum chlorohydrate"], alternatif: "Karbonat + Hindistan cevizi yağı + nişasta · Şap taşı · Doğal deodorant", tarifKey: "deodorant" },
+  { kategori: "kozmetik", tur: "makyaj", baslik: "Makyaj", urun_a: ["ruj","lipstick","far","maskara","fondöten","makyaj","mascara","eyeshadow"], icerik: ["talk","mica"], alternatif: "Mineral makyaj (RMS, Ilia, BeautyCounter) · Doğal pigment kozmetik · Pancar pigmenti dudak", tarifKey: null },
+  { kategori: "kozmetik", tur: "sac_boyasi", baslik: "Saç Boyası", urun_a: ["saç boyası","hair color","saç boyama","ağartıcı"], icerik: ["ammonia","ppd","p-fenilendiamin","hidrojen peroksit"], alternatif: "Kına (saf) · Doğal bitki bazlı boya (Logona, Khadi) · Hindiba", tarifKey: null },
+  { kategori: "kozmetik", tur: "parfum", baslik: "Parfüm", urun_a: ["parfüm","perfume","eau de parfum","eau de toilette","edt","edp"], icerik: ["sentetik koku","fragrance","linalool"], alternatif: "Esansiyel yağlar (gül, lavanta, ud, sandal) · Doğal koku karışımı", tarifKey: null },
+
+  // === TEMİZLİK ===
+  { kategori: "temizlik", tur: "camasir_det", baslik: "Çamaşır Deterjanı", urun_a: ["çamaşır deterjanı","camasir deterjani","laundry detergent","ariel","persil","omo","alo"], icerik: [], alternatif: "Sabun rendesi + Karbonat + Soda külü · Sapindus (sabun fındığı)", tarifKey: "çamaşir" },
+  { kategori: "temizlik", tur: "bulasik_det", baslik: "Bulaşık Deterjanı", urun_a: ["bulaşık deterjanı","dish soap","fairy","pril","sun"], icerik: [], alternatif: "Kastil sabun + Sitrik asit + Limon · Soda külü", tarifKey: "deterjan" },
+  { kategori: "temizlik", tur: "camasir_suyu", baslik: "Çamaşır Suyu / Klorin", urun_a: ["çamaşır suyu","ace","domestos","bleach","klor","hipoklorit"], icerik: ["sodyum hipoklorit","klorin"], alternatif: "Sodyum perkarbonat (oksijenli ağartıcı) · Beyaz sirke · Güneşte kurutma", tarifKey: "klorin" },
+  { kategori: "temizlik", tur: "cam_temizleyici", baslik: "Cam Temizleyici", urun_a: ["cam temizleyici","glass cleaner","cif vitra","windex","cam parlatıcı"], icerik: ["amonyak"], alternatif: "Beyaz sirke + Su + Limon (gazete ile silme)", tarifKey: "amonyak" },
+  { kategori: "temizlik", tur: "yumusatici", baslik: "Çamaşır Yumuşatıcı", urun_a: ["çamaşır yumuşatıcı","fabric softener","yumoş","comfort","lenor"], icerik: ["quat","kuaterner amonyum"], alternatif: "Beyaz sirke + Lavanta esansiyel yağı", tarifKey: "yumuşatıcı" },
+  { kategori: "temizlik", tur: "kufu_giderici", baslik: "Küf / Yüzey Temizleyici", urun_a: ["küf giderici","mold remover","yüzey temizleyici","cif"], icerik: ["quat","kuaterner"], alternatif: "Hidrojen peroksit %3 + Çay ağacı yağı · Karbonat + sirke", tarifKey: "küf" },
+  { kategori: "temizlik", tur: "lavabo_acici", baslik: "Lavabo Açıcı", urun_a: ["lavabo açıcı","drain cleaner","sümbül","kostik"], icerik: ["naoh","sodyum hidroksit","sülfürik asit"], alternatif: "Karbonat + sirke + kaynar su · Mekanik açıcı (pompacı)", tarifKey: "NaOH" },
+  { kategori: "temizlik", tur: "zemin", baslik: "Zemin / Yüzey", urun_a: ["zemin temizleyici","yüzey temizleyici","cif crema","mr proper"], icerik: [], alternatif: "Beyaz sirke + sıcak su + lavanta yağı · Karbonat", tarifKey: "quat" },
+  { kategori: "temizlik", tur: "kirec", baslik: "Kireç Çözücü", urun_a: ["kireç çözücü","kireç sökücü","calc","kireç çözer"], icerik: [], alternatif: "Sitrik asit + sıcak su · Beyaz sirke", tarifKey: "kireç" },
+
+  // === GİYİM ===
+  { kategori: "giyim", tur: "spor_yagmurluk", baslik: "Spor / Yağmurluk", urun_a: ["spor","sportif","yağmurluk","kayak","outdoor","activewear"], icerik: ["pfas","pfoa","poliester","polyester","naylon"], alternatif: "PFAS-free spor giyim (Patagonia, Cottonique) · Doğal balmumlu pamuk yağmurluk · Yün outdoor" },
+  { kategori: "giyim", tur: "ic_camasir", baslik: "İç Çamaşırı", urun_a: ["iç çamaşırı","underwear","bra","sutyen","külot","slip","tanga"], icerik: ["spandex","elastan","poliester"], alternatif: "GOTS organik pamuk · İpek (toksin-free) · Bambu lif" },
+  { kategori: "giyim", tur: "tisort_pantolon", baslik: "Tişört / Pantolon / Gömlek", urun_a: ["tişört","gömlek","pantolon","jean","kot","hırka","kazak"], icerik: ["poliester","akrilik","viskon"], alternatif: "Organik pamuk (GOTS) · Saf keten · Türk doğal pamuğu · Yün" },
+  { kategori: "giyim", tur: "mont", baslik: "Mont / Kaban", urun_a: ["mont","kaban","palto","ceket","trenç"], icerik: ["pfas","poliester dolgu"], alternatif: "Pamuk astar mont · Yün kaban · Doğal balmumlu kanvas · Kaşmir" },
+
+  // === EV ===
+  { kategori: "ev", tur: "yatak_yorgan", baslik: "Yatak / Yorgan / Yastık", urun_a: ["yatak","yorgan","yastık","mattress","pillow","nevresim","çarşaf"], icerik: ["bromine","fr","alev geciktirici","polyürethane"], alternatif: "GOTS sertifikalı pamuk dolgu yatak · Doğal lateks · Yün dolgu yorgan · Kapok yastık" },
+  { kategori: "ev", tur: "hali", baslik: "Halı / Kilim", urun_a: ["halı","kilim","carpet","rug"], icerik: ["pvc taban","akrilik elyaf","naylon"], alternatif: "Anadolu yün halı (doğal boya) · Doğal pamuk kilim · Jüt halı · Sisal" },
+  { kategori: "ev", tur: "mobilya", baslik: "Mobilya", urun_a: ["mobilya","koltuk","kanepe","masa","dolap","yatak başı","gardırop","sehpa"], icerik: ["formaldehit","mdf","sunta","özel pres"], alternatif: "Masif ahşap (kayın, meşe, ceviz) · Formaldehit-free · Doğal cila (keten yağı, balmumu)" },
+  { kategori: "ev", tur: "perde", baslik: "Perde", urun_a: ["perde","curtain","stor","jaluzi"], icerik: ["poliester","alev geciktirici"], alternatif: "Doğal pamuk perde · Keten perde · Yün perde" },
+  { kategori: "ev", tur: "mutfak_esyasi", baslik: "Mutfak Eşyası / Tava", urun_a: ["tava","tencere","sahan","pan","cookware","teflon"], icerik: ["ptfe","pfoa","teflon","alüminyum tava"], alternatif: "Dökme demir tava · Paslanmaz çelik · Seramik (PTFE-free) · Bakır kalaylı tencere" },
+
+  // === BEBEK ===
+  { kategori: "bebek", tur: "bebek_bezi", baslik: "Bebek Bezi", urun_a: ["bebek bezi","diaper","pampers","prima","molfix","huggies"], icerik: ["klorin","sap"], alternatif: "Organik pamuk bezi · Klorin-free biodegradable bez (Bambo Nature, Naty) · Bezelli sistem" },
+  { kategori: "bebek", tur: "bebek_mamasi", baslik: "Bebek Maması", urun_a: ["bebek maması","formula","formül","bebelac","aptamil","sma","milupa"], icerik: [], alternatif: "Anne sütü (ön plan) · Organik ek gıda · Ev maması (yulaf + meyve püresi)" },
+  { kategori: "bebek", tur: "bebek_krem", baslik: "Bebek Kremi / Yağı", urun_a: ["bebek kremi","baby cream","baby oil","bebek yağı","pişik","nivea bebek"], icerik: ["mineral oil","paraben"], alternatif: "Saf Hindistan cevizi yağı · Tatlı badem yağı · Shea yağı · Bal mumu balsamı" },
+  { kategori: "bebek", tur: "bebek_giysi", baslik: "Bebek Giysi", urun_a: ["bebek tulumu","bebek giysi","baby clothes","tulum","zıbın","bebek pamuklu"], icerik: ["pfas","poliester"], alternatif: "GOTS organik pamuk · Bambu lif · Doğal renk pamuk · Saf yün" },
+  { kategori: "bebek", tur: "bebek_oyuncak", baslik: "Bebek Oyuncağı", urun_a: ["oyuncak","toy","plush","puzzle","oyuncak ayı","peluş"], icerik: ["pvc","ftalat","bpa"], alternatif: "Ahşap oyuncak (boyasız, doğal cila) · Doğal pamuk peluş · BPA-free silikon · Yün figür" },
+  { kategori: "bebek", tur: "mama_sisesi", baslik: "Mama Şişesi / Emzik", urun_a: ["biberon","mama şişesi","bottle","emzik","emzik tutucu"], icerik: ["bpa","bps"], alternatif: "BPA-free cam biberon · Paslanmaz çelik · Doğal kauçuk emzik" },
+
+  // === EVCİL HAYVAN ===
+  { kategori: "evcil", tur: "kopek_mamasi", baslik: "Köpek Maması", urun_a: ["köpek maması","dog food","royal canin","pro plan","hill's","purina","brit"], icerik: [], alternatif: "Tahılsız gerçek et maması (Acana, Orijen) · BARF (ham beslenme) · Ev maması (et+sebze)" },
+  { kategori: "evcil", tur: "kedi_mamasi", baslik: "Kedi Maması", urun_a: ["kedi maması","cat food","whiskas","felix","sheba","gourmet"], icerik: [], alternatif: "Tahılsız gerçek et maması (Acana, Orijen) · Sentetik koruyucusuz · Ev maması (tavuk/balık)" },
+  { kategori: "evcil", tur: "evcil_sampuan", baslik: "Evcil Şampuan", urun_a: ["evcil şampuan","pet shampoo","köpek şampuanı","kedi şampuanı"], icerik: [], alternatif: "Kastil sabun (sade) · Çay ağacı yağı + su · Neem yağı şampuan" },
+  { kategori: "evcil", tur: "tasma_pire", baslik: "Tasma / Pire Önleyici", urun_a: ["tasma","pire önleyici","kene","flea collar","frontline","advantix","seresto"], icerik: ["fipronil","imidakloprid","permethrin"], alternatif: "Kimyasal işlemsiz deri tasma · Doğal pire koruma (limon + sirke) · Diyatomit toprağı" },
+
+  // === İLAÇ / VİTAMİN ===
+  { kategori: "ilac", tur: "agri_kesici", baslik: "Ağrı Kesici", urun_a: ["ağrı kesici","aspirin","parol","majezik","ibuprofen","paracetamol","nurofen","apranax"], icerik: [], alternatif: "Söğüt kabuğu çayı (doğal salisilik asit) · Zerdeçal (kurkumin) · İhlamur · Zencefil çayı (DİKKAT: ciddi/sürekli ağrıda hekime başvur)" },
+  { kategori: "ilac", tur: "antiasit", baslik: "Mide İlacı / Antasit", urun_a: ["antasit","gaviscon","talcid","mide ilacı","rennie","nexium"], icerik: [], alternatif: "Karbonat + su (anlık) · Zencefil çayı · Papatya çayı · Sade aloe vera suyu" },
+  { kategori: "ilac", tur: "vitamin", baslik: "Vitamin / Multivitamin", urun_a: ["vitamin","multivitamin","supradyn","centrum","redoxon","berocca"], icerik: [], alternatif: "Taze meyve sebze · Ham balda doğal vitamin · Kuşburnu (C vit) · Güneş (D vit) · Pekmez (demir)" },
+  { kategori: "ilac", tur: "antibiyotik", baslik: "Antibiyotik", urun_a: ["antibiyotik","amoxicillin","penisilin","augmentin","cipro","klacid"], icerik: [], alternatif: "Doğal antibakteriyel: Ham bal (manuka), Sarımsak, Zerdeçal, Oregano yağı, Echinacea (DİKKAT: ciddi enfeksiyon → hekim önerisini takip et, antibiyotik atlama)" },
+  { kategori: "ilac", tur: "sogiuk_alginlik", baslik: "Soğuk Algınlığı / Grip", urun_a: ["soğuk algınlığı","grip","gripin","tylenol","theraflu","coldrex"], icerik: [], alternatif: "Zencefil-limon-bal kürü · Ihlamur çayı · Kuşburnu (C vit) · Çinko · Buharlı inhalasyon" },
+  { kategori: "ilac", tur: "uyku", baslik: "Uyku / Sakinleştirici", urun_a: ["uyku","melatonin","xanax","prozac","sakinleştirici","ansiyolitik"], icerik: [], alternatif: "Melisa çayı · Lavanta yağı (yastığa) · Magnezyum (kabak çekirdeği) · Sıcak süt + bal (DİKKAT: psikiyatrik ilaç → hekim önerisi)" },
 ];
 
-function urunTuruTespit(metin) {
+function urunTuruTespit(metin, kategori) {
   if (!metin) return null;
   const m = metin.toLowerCase();
+  // Önce GÜÇLÜ eşleşme: ürün adı/marka
   for (const tur of URUN_TURLERI) {
-    if (tur.anahtarlar.some(k => m.includes(k))) return tur;
+    if (tur.kategori !== kategori) continue;
+    if (tur.urun_a && tur.urun_a.some(k => m.includes(k))) return tur;
+  }
+  // Sonra ZAYIF eşleşme: içerik kodu ipuçları
+  for (const tur of URUN_TURLERI) {
+    if (tur.kategori !== kategori) continue;
+    if (tur.icerik && tur.icerik.length > 0 && tur.icerik.some(k => m.includes(k))) return tur;
   }
   return null;
 }
@@ -5366,23 +5432,13 @@ export default function App() {
 
  {(() => {
    if (sonuclar.length === 0) return null;
-   const urunTuru = kategori === "gida" ? urunTuruTespit(txt) : null;
-   let baslik, alternatifMetni, tarif = null;
-   if (urunTuru) {
-     baslik = urunTuru.baslik.toUpperCase() + " — DOĞAL ALTERNATİF";
-     alternatifMetni = urunTuru.alternatif;
-     tarif = urunTuru.tarifKey && DOGAL_TARIF[urunTuru.tarifKey] ? DOGAL_TARIF[urunTuru.tarifKey] : null;
-   } else {
-     const oncelik = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
-     const enKritik = [...sonuclar].sort((a,b) => (oncelik[a.risk]??9) - (oncelik[b.risk]??9))[0];
-     baslik = "DOĞAL ALTERNATİF";
-     alternatifMetni = enKritik.alternatif;
-     tarif = null;
-   }
+   const urunTuru = urunTuruTespit(txt, kategori);
+   if (!urunTuru) return null;
+   const tarif = urunTuru.tarifKey && DOGAL_TARIF[urunTuru.tarifKey] ? DOGAL_TARIF[urunTuru.tarifKey] : null;
    return (
      <div style={{ background: "#2ecc7112", border: "1px solid #2ecc7140", borderRadius: 14, padding: 14, marginBottom: 14 }}>
-       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>{baslik}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{alternatifMetni}</div>
+       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>{urunTuru.baslik.toUpperCase()} — DOĞAL ALTERNATİF</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{urunTuru.alternatif}</div>
        {tarif && (
          <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"10px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
            Tarif: {tarif.baslik}
@@ -5390,7 +5446,7 @@ export default function App() {
        )}
        {kategori === "gida" && (
          <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"10px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", position:"relative" }}>
-           Marketten Al
+           {urunTuru.marketUrun ? `Marketten Al: ${urunTuru.marketUrun.split(" · ")[0]}` : "Marketten Al"}
            <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
          </button>
        )}
