@@ -5253,11 +5253,12 @@ export default function App() {
  <div style={{ background: "#2ecc7115", border: "1px solid #2ecc7130", borderRadius: 10, padding: 12, marginTop: 12 }}>
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{r.alternatif}</div>
-           {(r.risk === "kritik" || r.risk === "yuksek") && r.alternatif && (
-             <button onClick={() => { const u = r.alternatif.split("·")[0].trim(); if(navigator.share){navigator.share({title:"Doğal Alternatif",text:`Alternatif: ${u}`}).catch(()=>{})}else{window.open(`https://www.google.com/search?q=${encodeURIComponent(u+" organik")}`, "_blank")} }} style={{ width:"100%", background:"#2ecc71", border:"none", borderRadius:8, padding:"8px 12px", color:"#000", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>Alternatifi Hemen Al</button>
-           )}
            {(kategori === "gida" || kategori === "temizlik") && (() => {
+             const TEMIZLIK_ANAHTAR = ["klorin","amonyak","parfüm","çamaşir","deterjan","NaOH","quat","kireç","küf","plastik","şampuan","sabun","diş macunu","deodorant","yumuşatıcı","krem"];
              const anahtar = Object.keys(DOGAL_TARIF).find(k => {
+               const temizlikMi = TEMIZLIK_ANAHTAR.includes(k);
+               if (kategori === "gida" && temizlikMi) return false;
+               if (kategori === "temizlik" && !temizlikMi) return false;
                const mad = (r.ad + " " + (r.kat||"") + " " + (r.alternatif||"")).toLowerCase();
                return mad.includes(k.toLowerCase());
              });
@@ -5538,6 +5539,11 @@ export default function App() {
  {/* MARKET (Yakında) */}
  {sekme === "market" && (
    <div>
+     {sonuclar.length > 0 && (
+       <button onClick={() => { setSekme("tarama"); setEkran("sonuc"); }} style={{ display:"flex", alignItems:"center", gap:6, background: C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color: C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>
+         ← Sonuçlara Dön
+       </button>
+     )}
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>★ MARKET — YAKINDA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
