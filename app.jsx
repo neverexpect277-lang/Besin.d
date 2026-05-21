@@ -6012,6 +6012,8 @@ export default function App() {
          { k: "biyofoton", baslik: "Biyo-Foton Kamera", ozet: "Gıdanın yaşam enerjisini (aura) ölçen kamera." },
          { k: "toprak", baslik: "Toprak Frekansı", ozet: "GPS ile jeopatik stres ve manyetik alan analizi." },
          { k: "bahce", baslik: "Akıllı Bahçe", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
+         { k: "emf", baslik: "EMF Kalkanı", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
+         { k: "dopamin", baslik: "Dopamin Skoru", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
        ],
      },
      {
@@ -6046,6 +6048,56 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "emf" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>EMF KALKANI — ELEKTROMANYETİK KORUMA <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Wi-Fi, 5G ve elektrik hatları hücre frekansını etkileyen modern bir kirlilik kaynağı. Telefon sensörleriyle ölçülüp kişiselleştirilmiş kalkan önerileri sunulacak.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◈ EMF ÖLÇÜM & ANALİZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Telefonun sensörleri etrafındaki <b>elektromanyetik kirliliği</b> ölçer, uyku ve beyin dalgalarına etkisini değerlendirir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Yatak odandaki baz istasyonu frekansı REM kaliteni %40 düşürüyor."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> "Gece telefonu uçak moduna al, başucuna tuz lambası veya şungit taşı koy."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "dopamin" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DOPAMİN SKORU — NÖRO-GIDA ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>MSG (E621), nişasta bazlı şeker ve yapay aromalar beynin ödül mekanizmasını manipüle eder. İnsan acıkmadığı halde yer.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◆ DOPAMİN SKORU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Ürün tarandığında sadece içerik değil, <b>Dopamin Skoru</b> verilir: ön lob (prefrontal korteks) ve irade merkezine etkisi puanlanır.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bu ürün ön lobu uyuşturuyor. 15 dakika sonra sahte mutluluk, 1 saat sonra düşüş ve agresiflik yaşarsın."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Restorasyon:</b> "Misk-i amber kokla, magnezit taşını avucunda tut, sahte sinyali kır — iradeni geri al."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "toprak" && (
    <div>
