@@ -6088,6 +6088,53 @@ export default function App() {
  </div>
  )}
 
+ {sekme === "burclar" && (
+   <div>
+     <div style={S.kB}>BURÇ ve MİZAÇ TABLOSU</div>
+     <div style={S.ipucu}>Osmanlı Tıbb-ı Nebevi ve İlm-i Nücum geleneğinde her burç belirli bir organ ve mizaç ile eşleşir. Sabuncuoğlu Şerefeddin gibi hekimbaşılar hastayı bu çerçevede değerlendirirdi: demevi (kan-ateş), safravi (öd-ateş), sevdevi (kara öd-toprak), balgami (balgam-su).</div>
+
+     {profil && BURCLAR[profil.burc] && (
+       <div style={{ background: profil.renk + "22", border: `2px solid ${profil.renk}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+         <div style={{ color: profil.renk, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN BURCUN</div>
+         <div style={{ fontSize: 22, fontWeight: 700, color: C.metin, marginBottom: 8 }}>{profil.burc}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+           <div><b style={{ color: profil.renk }}>Element:</b> {BURCLAR[profil.burc].element} · <b style={{ color: profil.renk }}>Mizaç:</b> {BURCLAR[profil.burc].mizac}</div>
+           <div><b style={{ color: profil.renk }}>Organ bölgen:</b> {BURCLAR[profil.burc].organ}</div>
+           <div><b style={{ color: profil.renk }}>Dost bitkiler:</b> {BURCLAR[profil.burc].bitki}</div>
+           <div style={{ marginTop: 6, color: C.soluk, fontSize: 12, fontStyle: "italic" }}>{BURCLAR[profil.burc].tavsiye}</div>
+         </div>
+       </div>
+     )}
+
+     {Object.entries(BURCLAR).map(([ad, b]) => (
+       <div key={ad} style={{ background: C.y, border: `1px solid ${b.renk}40`, borderLeft: `4px solid ${b.renk}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+           <div style={{ color: b.renk, fontSize: 16, fontWeight: 700 }}>{ad}</div>
+           <div style={{ color: C.soluk, fontSize: 11 }}>{b.element} · {b.mizac}</div>
+         </div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Organ:</b> {b.organ}</div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Bitki:</b> {b.bitki}</div>
+         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginBottom: 6 }}>{b.tavsiye}</div>
+         <div style={{ color: "#FF6666", fontSize: 11, fontWeight: 600 }}>⚠ Kaçın: {b.kacinmasi.join(" · ")}</div>
+       </div>
+     ))}
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginTop: 14, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>✦ HEKİMBAŞI PAKETİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Premium üyelikle burcuna özel <b>haftalık şifa şerbeti</b> tarifleri, mizaç bazlı detoks takvimi, kişisel zikir-makam reçetesi ve Osmanlı usulü mevsim önerileri açılacak.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Örnek bildirim: "Bu hafta senin burcun için karaciğer detoksu haftası — sana özel Osmanlı usulü şerbet tarifi hazır."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu bilgiler, Osmanlı tıbbı ve kadim geleneksel bilgiler ışığında kültürel ve bilgilendirme amaçlı sunulmuştur. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
  {sekme === "uzman" && (
    <div>
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
@@ -6144,7 +6191,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["burclar", "", "Burçlar"], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
