@@ -4002,10 +4002,6 @@ const ORGAN_POZISYON = {
     x: 50, y: 16, r: 7, label: "Beyin", fill: "#F2B8B8",
     path: "M44 10 Q41 13 41 17 Q41 22 47 23 L47 21 Q44 20 44 17 Q44 14 46 12 Q48 11 50 11 Q52 11 54 12 Q56 14 56 17 Q56 20 53 21 L53 23 Q59 22 59 17 Q59 13 56 10 Q53 8 50 8 Q47 8 44 10 Z M46 14 Q48 16 50 14 Q52 16 54 14 M45 17 Q48 19 50 17 Q52 19 55 17"
   },
-  "Diş": {
-    x: 50, y: 32, r: 3, label: "Diş", fill: "#FFFCF0",
-    path: "M45 30 L55 30 L55 33 L53 33 L53 32 L51 32 L51 33 L49 33 L49 32 L47 32 L47 33 L45 33 Z"
-  },
   "Tiroid": {
     x: 50, y: 41, r: 3, label: "Tiroid", fill: "#D86060",
     path: "M46 40 Q44 42 46 43 Q48 44 50 43 Q52 44 54 43 Q56 42 54 40 Q52 39 50 40 Q48 39 46 40 Z"
@@ -4222,10 +4218,6 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
                 )}
                 {/* Tıklama alanı (geniş, görünmez) */}
                 <circle cx={p.x} cy={p.y} r={p.r + 2} fill="transparent"/>
-                {/* Etiket */}
-                <text x={p.x} y={p.y + p.r + 3.2} textAnchor="middle" fontSize="2.5"
-                  fill={aktif ? "#C9A84C" : "#e8e8f0"} fontWeight={aktif ? 700 : 500}
-                  fontFamily="Georgia,serif" stroke="#000" strokeWidth="0.25" paintOrder="stroke">{p.label}</text>
               </g>
             );
           })}
