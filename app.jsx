@@ -5190,9 +5190,6 @@ export default function App() {
  </div>
  </div>
 
- {/* 3D ORGAN HARİTASI */}
-         <OrganVucutHaritasi sonuclar={sonuclar} gecmis={gecmis} profil={profil} />
-
          {/* SAYAÇ KUTULARI */}
  {(() => {
  const sayim = { kritik: 0, yuksek: 0, orta: 0, dusuk: 0 };
