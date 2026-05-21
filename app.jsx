@@ -6045,12 +6045,9 @@ export default function App() {
            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 10, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 8 }}>
              {g.hizmetler.map(h => (
-               <button key={h.k} onClick={() => setSekme(h.k)} style={{ textAlign: "left", background: C.y, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 10, padding: 12, cursor: "pointer", fontFamily: "Georgia,serif", position: "relative", minHeight: 110, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                 <div>
-                   <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, marginBottom: 6, lineHeight: 1.2 }}>{h.baslik}</div>
-                   <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.4 }}>{h.ozet}</div>
-                 </div>
-                 <div style={{ marginTop: 8 }}><span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 5, letterSpacing: 0.3 }}>YAKINDA</span></div>
+               <button key={h.k} onClick={() => setSekme(h.k)} style={{ textAlign: "left", background: C.y, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 10, padding: 12, cursor: "pointer", fontFamily: "Georgia,serif", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between", gap: 10 }}>
+                 <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>{h.baslik}</div>
+                 <span style={{ background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 5, letterSpacing: 0.3, alignSelf: "flex-start" }}>YAKINDA</span>
                </button>
              ))}
            </div>
