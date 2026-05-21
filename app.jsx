@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
  SABITLER
  ══════════════════════════════════════════════ */
 const C = {
- bg: "#07070F", y: "#0F0F1A", y2: "#161623", s: "#22223A",
- altin: "#C9A84C", altinA: "#E8C97A",
- metin: "#F0EDE8", soluk: "#8A8499", cok: "#45435A",
- kirmizi: "#FF2D55", turuncu: "#FF9500", sari: "#FFCC00", yesil: "#2ECC71",
+ bg: "#F5F0E1", y: "#FAF7EC", y2: "#EAE3D0", s: "#D6CDB6",
+ altin: "#B8862F", altinA: "#C9A84C",
+ metin: "#2D2418", soluk: "#6B5F4D", cok: "#B5A88A",
+ kirmizi: "#C0392B", turuncu: "#E67E22", sari: "#C9A024", yesil: "#1E8449",
 };
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
