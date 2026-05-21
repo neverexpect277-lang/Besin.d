@@ -4701,6 +4701,25 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
   }
 
   async function detectGoruntu(source) {
+    // 1. ZXing — tüm tarayıcılar (iOS Safari dahil), EAN/UPC/Code128/Code39/QR
+    if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
+      try {
+        let canvas;
+        if (source instanceof HTMLCanvasElement) canvas = source;
+        else {
+          canvas = document.createElement("canvas");
+          const w = source.videoWidth || source.naturalWidth;
+          const h = source.videoHeight || source.naturalHeight;
+          if (!w || !h) return null;
+          canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(source, 0, 0, w, h);
+        }
+        const reader = new window.ZXing.BrowserMultiFormatReader();
+        const result = await reader.decodeFromCanvas(canvas);
+        if (result && result.getText) return result.getText();
+      } catch {}
+    }
+    // 2. BarcodeDetector — native (Android Chrome)
     if ("BarcodeDetector" in window) {
       try {
         const det = new window.BarcodeDetector({ formats: ["ean_13","ean_8","qr_code","code_128","code_39","upc_a","upc_e","itf"] });
@@ -4708,35 +4727,47 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
         if (bc.length > 0) return bc[0].rawValue;
       } catch {}
     }
+    // 3. jsQR — sadece QR fallback
     if (window.jsQR) {
-      const c = document.createElement("canvas");
-      const w = source.videoWidth || source.naturalWidth || source.width;
-      const h = source.videoHeight || source.naturalHeight || source.height;
-      c.width = w; c.height = h;
-      c.getContext("2d").drawImage(source, 0, 0, w, h);
-      const img = c.getContext("2d").getImageData(0, 0, w, h);
+      const c = source instanceof HTMLCanvasElement ? source : document.createElement("canvas");
+      if (!(source instanceof HTMLCanvasElement)) {
+        const w = source.videoWidth || source.naturalWidth || source.width;
+        const h = source.videoHeight || source.naturalHeight || source.height;
+        c.width = w; c.height = h;
+        c.getContext("2d").drawImage(source, 0, 0, w, h);
+      }
+      const img = c.getContext("2d").getImageData(0, 0, c.width, c.height);
       const code = window.jsQR(img.data, img.width, img.height);
       if (code) return code.data;
     }
     return null;
   }
 
-  function tara() {
-    const yukle = () => {
-      if (window.jsQR || "BarcodeDetector" in window) {
-        animRef.current = setInterval(async () => {
-          if (!videoRef.current || videoRef.current.readyState < 2) return;
-          const r = await detectGoruntu(videoRef.current);
-          if (r) { clearInterval(animRef.current); kapat(); onSonuc(r); }
-        }, 400);
-      } else {
-        const s = document.createElement("script");
-        s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js";
-        s.onload = yukle;
-        document.head.appendChild(s);
-      }
-    };
-    yukle();
+  function yukleScript(src) {
+    return new Promise((resolve) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = resolve;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function kutuphaneleriYukle() {
+    const tasks = [];
+    if (!window.ZXing) tasks.push(yukleScript("https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"));
+    if (!window.jsQR) tasks.push(yukleScript("https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"));
+    await Promise.all(tasks);
+  }
+
+  async function tara() {
+    await kutuphaneleriYukle();
+    animRef.current = setInterval(async () => {
+      if (!videoRef.current || videoRef.current.readyState < 2) return;
+      const r = await detectGoruntu(videoRef.current);
+      if (r) { clearInterval(animRef.current); kapat(); onSonuc(r); }
+    }, 500);
   }
 
   function fotografCek() {
@@ -4795,16 +4826,20 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   async function kirpVeTara() {
     if (!fotoRef.current) return;
+    await kutuphaneleriYukle();
     const img = fotoRef.current;
-    const c = document.createElement("canvas");
     const iw = img.naturalWidth, ih = img.naturalHeight;
     const sx = (kirp.x / 100) * iw, sy = (kirp.y / 100) * ih;
     const sw = (kirp.w / 100) * iw, sh = (kirp.h / 100) * ih;
+    // Önce kırpılan alanı dene
+    const c = document.createElement("canvas");
     c.width = sw; c.height = sh;
     c.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-    const r = await detectGoruntu(c);
+    let r = await detectGoruntu(c);
+    // Bulamazsa tüm fotoyu dene (kullanıcı kırpmayı kaçırmış olabilir)
+    if (!r) r = await detectGoruntu(img);
     if (r) { onSonuc(r); return; }
-    setHata("Kod okunamadı. Çerçeveyi tam koda hizalayıp tekrar dene.");
+    setHata("Kod okunamadı. Daha yakın çek veya çerçeveyi tam koda hizala.");
     setTimeout(() => setHata(""), 3000);
   }
 
