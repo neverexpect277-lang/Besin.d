@@ -4404,7 +4404,7 @@ function MizacMarket({ profil, onKapat }) {
     <div style={{ position:"fixed", inset:0, background:"#000000A0", display:"flex", alignItems:"flex-end", justifyContent:"center", zIndex:1000, backdropFilter:"blur(4px)" }} onClick={onKapat}>
       <div style={{ background:C.bg, borderRadius:"20px 20px 0 0", padding:24, width:"100%", maxWidth:480, maxHeight:"88vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-          <h2 style={{ color:profil.renk, fontSize:18, margin:0 }}>🛒 {profil.burc} Mizaç Marketi</h2>
+          <h2 style={{ color:profil.renk, fontSize:18, margin:0 }}>{profil.burc} Mizaç Marketi</h2>
           <button onClick={onKapat} style={{ background:C.y2, border:`1px solid ${C.s}`, borderRadius:"50%", width:30, height:30, color:C.soluk, cursor:"pointer" }}>✕</button>
         </div>
         <div style={{ color:C.soluk, fontSize:12, marginBottom:4 }}>{profil.mizac} Mizacı</div>
@@ -4424,12 +4424,9 @@ function MizacMarket({ profil, onKapat }) {
           <div>
             <div style={{ color:C.soluk, fontSize:12, marginBottom:10 }}>Bu gıdalar {profil.mizac} mizacına faydalıdır</div>
             {veri.al.map((g,i) => (
-              <div key={i} style={{ background:C.y2, borderRadius:12, padding:12, marginBottom:8, display:"flex", alignItems:"center", gap:12, borderLeft:`3px solid ${profil.renk}` }}>
-                <div style={{ fontSize:28 }}>{g.ikon}</div>
-                <div>
-                  <div style={{ color:C.metin, fontWeight:700, fontSize:14 }}>{g.ad}</div>
-                  <div style={{ color:C.soluk, fontSize:12, marginTop:2 }}>{g.neden}</div>
-                </div>
+              <div key={i} style={{ background:C.y2, borderRadius:12, padding:12, marginBottom:8, borderLeft:`3px solid ${profil.renk}` }}>
+                <div style={{ color:C.metin, fontWeight:700, fontSize:14 }}>{g.ad}</div>
+                <div style={{ color:C.soluk, fontSize:12, marginTop:2 }}>{g.neden}</div>
               </div>
             ))}
           </div>
