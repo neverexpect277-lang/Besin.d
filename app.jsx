@@ -4060,6 +4060,40 @@ const ORGAN_POZISYON = {
   },
 };
 
+// Cinsiyete özel ek organlar (mesane, prostat, rahim, yumurtalık)
+const ORGAN_CINSIYET = {
+  "Erkek": {
+    "Mesane": {
+      x: 50, y: 132, r: 4, label: "Mesane", fill: "#FFD060",
+      path: "M44 128 Q42 132 44 136 Q47 138 50 138 Q53 138 56 136 Q58 132 56 128 Q53 126 50 126 Q47 126 44 128 Z"
+    },
+    "Prostat": {
+      x: 50, y: 140, r: 2, label: "Prostat", fill: "#C88060",
+      path: "M47 138 Q46 141 48 142 Q50 143 52 142 Q54 141 53 138 Q51 137 50 137 Q49 137 47 138 Z"
+    },
+  },
+  "Kadın": {
+    "Mesane": {
+      x: 50, y: 134, r: 3.5, label: "Mesane", fill: "#FFD060",
+      path: "M45 131 Q43 134 45 137 Q48 139 50 139 Q52 139 55 137 Q57 134 55 131 Q52 129 50 129 Q48 129 45 131 Z"
+    },
+    "Rahim": {
+      x: 50, y: 127, r: 3.5, label: "Rahim", fill: "#D86090",
+      path: "M46 124 Q45 128 48 131 Q50 132 52 131 Q55 128 54 124 Q53 121 50 121 Q47 121 46 124 Z"
+    },
+    "Yumurtalık": {
+      x: 42, y: 127, r: 2, label: "Yumurtalık", fill: "#E090B0",
+      path: "M40 126 Q39 128 41 129 Q43 128 42 126 Q41 125 40 126 Z M58 126 Q57 128 59 129 Q61 128 60 126 Q59 125 58 126 Z"
+    },
+  },
+  "Çocuk": {
+    "Mesane": {
+      x: 50, y: 130, r: 3, label: "Mesane", fill: "#FFD060",
+      path: "M46 128 Q44 131 46 134 Q49 136 50 136 Q51 136 54 134 Q56 131 54 128 Q52 126 50 126 Q48 126 46 128 Z"
+    },
+  },
+};
+
 // Cinsiyete göre anatomik vücut silüeti (viewBox 100x200)
 const VUCUT_SILUET = {
   "Erkek": "M50 4 C44 4 39 9 39 16 C39 22 41 27 44 30 L43 36 C41 37 38 38 36 39 C30 41 25 45 23 52 L21 60 C19 65 18 70 18 76 L19 88 C19 94 19 100 20 106 L20 120 C20 130 18 138 18 146 L19 152 L24 152 L26 165 L28 178 L30 192 L36 196 L42 196 L44 184 L46 170 L48 158 L48 152 L52 152 L52 158 L54 170 L56 184 L58 196 L64 196 L70 192 L72 178 L74 165 L76 152 L81 152 L82 146 C82 138 80 130 80 120 L80 106 C81 100 81 94 81 88 L82 76 C82 70 81 65 79 60 L77 52 C75 45 70 41 64 39 C62 38 59 37 57 36 L56 30 C59 27 61 22 61 16 C61 9 56 4 50 4 Z",
@@ -4070,6 +4104,8 @@ const VUCUT_SILUET = {
 function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
   const cinsiyet = (profil && profil.cinsiyet) || "Erkek";
   const vucutPath = VUCUT_SILUET[cinsiyet] || VUCUT_SILUET["Erkek"];
+  const cinsiyetOrganlari = ORGAN_CINSIYET[cinsiyet] || ORGAN_CINSIYET["Erkek"];
+  const TUM_ORGAN = React.useMemo(() => ({ ...ORGAN_POZISYON, ...cinsiyetOrganlari }), [cinsiyet]);
   const [secili, setSecili] = useState(null);
 
   // Organ hasar hesapla (geçmiş + mevcut tarama)
@@ -4081,7 +4117,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
     ];
     tumSonuclar.forEach(r => {
       (r.organlar || []).forEach(org => {
-        const anahtar = Object.keys(ORGAN_POZISYON).find(k => org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase()));
+        const anahtar = Object.keys(TUM_ORGAN).find(k => org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase()));
         if (anahtar) {
           if (!hasar[anahtar]) hasar[anahtar] = { kritik: 0, yuksek: 0, orta: 0 };
           if (r.risk === "kritik") hasar[anahtar].kritik++;
@@ -4109,7 +4145,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
   }
 
   const toplamPuan = Math.round(
-    Object.keys(ORGAN_POZISYON).reduce((s, k) => s + organPuan(k), 0) / Object.keys(ORGAN_POZISYON).length
+    Object.keys(TUM_ORGAN).reduce((s, k) => s + organPuan(k), 0) / Object.keys(TUM_ORGAN).length
   );
 
   const genel = toplamPuan >= 80 ? { renk: "#2ecc71", yazi: "Sağlıklı" } :
@@ -4153,7 +4189,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
           <path d={vucutPath} fill="url(#vucutGrad)" stroke="#3a3a55" strokeWidth="0.6" strokeLinejoin="round"/>
 
           {/* Anatomik organlar - gerçek şekil ve renklerle */}
-          {Object.entries(ORGAN_POZISYON).map(([k, p]) => {
+          {Object.entries(TUM_ORGAN).map(([k, p]) => {
             const riskRenk = organRenk(k);
             const hasar = organHasar[k];
             const hasRisk = hasar && (hasar.kritik > 0 || hasar.yuksek > 0);
@@ -5102,30 +5138,35 @@ export default function App() {
         <button style={{ ...S.anaBtn, background: "transparent", border: `1px solid ${C.s}`, color: C.soluk, marginTop: 8 }} onClick={() => {
           if (!seslerAcik) { alert("Ses kapalı. Üstteki hoparlör ikonundan açabilirsin."); return; }
           if (!("speechSynthesis" in window)) { alert("Tarayıcınız sesli okumayı desteklemiyor."); return; }
-          window.speechSynthesis.cancel();
+          const synth = window.speechSynthesis;
+          synth.cancel();
+          if (synth.paused) synth.resume();
           const kritikler = sonuclar.filter(r => r.risk === "kritik");
           const yuksekler = sonuclar.filter(r => r.risk === "yuksek");
           let metin = `Tarama tamamlandı. Toplam ${sonuclar.length} madde bulundu. `;
           if (kritikler.length > 0) metin += `Kritik risk: ${kritikler.map(r=>r.ad).join(", ")}. `;
           if (yuksekler.length > 0) metin += `Yüksek risk: ${yuksekler.slice(0,3).map(r=>r.ad).join(", ")}. `;
           if (sonuclar.length === 0) metin = "Tarama tamamlandı. Tehlikeli madde bulunamadı. Ürün güvenli görünüyor.";
+          // iOS Safari warmup: kısa sessiz utterance gönder, ses motorunu aç
+          try { const w = new SpeechSynthesisUtterance(" "); w.volume = 0; w.rate = 1; synth.speak(w); } catch {}
           const konus = () => {
             const utt = new SpeechSynthesisUtterance(metin);
             utt.lang = "tr-TR";
             utt.rate = 0.9;
             utt.pitch = 1;
-            const sesler = window.speechSynthesis.getVoices();
+            utt.volume = 1;
+            const sesler = synth.getVoices();
             const trSes = sesler.find(s => s.lang && s.lang.startsWith("tr"));
             if (trSes) utt.voice = trSes;
-            window.speechSynthesis.speak(utt);
+            utt.onerror = (e) => { console.warn("TTS error", e); };
+            synth.speak(utt);
           };
-          // iOS Safari: ilk çağrıda getVoices() boş döner, voiceschanged ile tekrar dene
-          if (window.speechSynthesis.getVoices().length === 0) {
-            window.speechSynthesis.onvoiceschanged = () => { konus(); window.speechSynthesis.onvoiceschanged = null; };
-            // Bazı iOS sürümlerinde voiceschanged tetiklenmez; küçük gecikme ile yine deneyelim
-            setTimeout(konus, 250);
+          if (synth.getVoices().length === 0) {
+            let denendi = false;
+            synth.onvoiceschanged = () => { if (!denendi) { denendi = true; konus(); } synth.onvoiceschanged = null; };
+            setTimeout(() => { if (!denendi) { denendi = true; konus(); } }, 400);
           } else {
-            konus();
+            setTimeout(konus, 50);
           }
         }}>Sesli Oku</button>
         {sonuclar.filter(r => r.risk === "kritik" || r.risk === "yuksek").length > 0 && (
