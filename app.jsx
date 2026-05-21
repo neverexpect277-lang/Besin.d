@@ -3917,6 +3917,47 @@ function ToplulugaKatki({ taramaSayisi }) {
    ══════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════
+   ORGAN DESTEK VERİTABANI
+   ══════════════════════════════════════════════ */
+// Etkilenen organa göre bitkisel/doğal destek önerileri
+// Kaynaklar: İbn Sina Kanun, fitoterapi literatürü, EFSA bitkisel
+const ORGAN_DESTEK = {
+  "Karaciğer": { bitki: "Enginar yaprağı, Deve dikeni (silymarin), Zerdeçal, Pancar suyu", not: "Detoks için 10 gün enginar kürü; yemekten önce 1 fincan." },
+  "Böbrek": { bitki: "Maydanoz suyu, Karahindiba, Mısır püskülü, Bol ılık su", not: "Sabah aç karna 1 demet maydanoz çayı; günde 2 lt su." },
+  "Akciğer": { bitki: "Hatmi kökü, Ada çayı, Bal + taze limon, Zerdeçal sütü", not: "Sıcak buhar inhalasyonu + boğmaca otu çayı; sigara bırakma şart." },
+  "Kalp": { bitki: "Alıç çayı, Sarımsak (çiğ), Soğuk sıkım zeytinyağı, Magnezyum", not: "Akşam 1 fincan alıç; haftada 3 gün balık (omega-3)." },
+  "Damarlar": { bitki: "Sarımsak, Zencefil, At kestanesi, K2 vitamini (tereyağı)", not: "Sabah aç karna 1 diş sarımsak + 1 yk zeytinyağı." },
+  "Mide": { bitki: "Rezene, Anason, Zencefil, Probiyotik yoğurt", not: "Yemekten sonra rezene çayı; ekşime için karbonatlı su değil, anason." },
+  "Bağırsak": { bitki: "Ev mayalı yoğurt, Kefir, Keten tohumu, Yulaf lifi", not: "Günde 2 kase ev yoğurt + 1 yk keten tohumu; bol lifli sebze." },
+  "Pankreas": { bitki: "Tarçın, Çörek otu, Ceviz, Yeşil çay", not: "Sabah çörek otu yağı 1 tk; tatlıdan uzak dur, kan şekeri düzenler." },
+  "Tiroid": { bitki: "Brezilya cevizi (selenyum), Yosun (iyot), Çörek otu", not: "Günde 2 Brezilya cevizi yeterli; aşırı soya yok." },
+  "Hormonal Sistem": { bitki: "Çuha çiçeği yağı, Ada çayı (kadın), Çörek otu (erkek)", not: "Plastik ambalajdan uzak dur — endokrin bozucu." },
+  "Bağışıklık": { bitki: "Karaağaç, Ekinezya, C vitamini (kuşburnu), Ham bal, Propolis", not: "Sabah 1 tk propolis + ılık su; D vitamini düzeyini kontrol ettir." },
+  "Cilt": { bitki: "Aloe vera jeli, Soğuk sıkım zeytinyağı, E vitamini (badem), Çinko (kabak çekirdeği)", not: "Bol su + dengeli omega-3; sabunlu temizleyiciden kaçın." },
+  "Beyin": { bitki: "Yaban mersini, Ceviz, Somon (omega-3), Biberiye", not: "Haftada 3 gün balık; biberiye çayı hafızaya iyi gelir." },
+  "Sinir Sistemi": { bitki: "Melisa, Lavanta, Pasiflora, Magnezyum (kabak çekirdeği)", not: "Akşam 1 fincan melisa çayı; kafeini öğleden sonra kes." },
+  "Kan": { bitki: "Pancar suyu, Ispanak, Kuru kayısı, Pekmez", not: "Demir eksikliği için sabah 1 yk pekmez + 1 limon (C vit emilim)." },
+  "Kemik": { bitki: "Susam, Pekmez, Tahin, D vitamini (güneş)", not: "Günde 2 yk tahin-pekmez; günlük 15 dk güneş." },
+  "Kaslar": { bitki: "Magnezyum, Potasyum (muz, hurma), Protein (yumurta, et)", not: "Egzersiz sonrası muz; gece magnezyum kas spazmını önler." },
+  "Hücre": { bitki: "Zerdeçal, Yeşil çay, Yaban mersini, Karadut", not: "Antioksidan: günde 2 fincan yeşil çay + zerdeçallı süt." },
+};
+
+// Sonuç maddesinin etkilediği organlara göre destek önerilerini topla
+function organDestekToparla(organlar) {
+  if (!organlar || organlar.length === 0) return null;
+  const bulunan = [];
+  organlar.forEach(org => {
+    const anahtar = Object.keys(ORGAN_DESTEK).find(k =>
+      org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase())
+    );
+    if (anahtar && !bulunan.find(b => b.organ === anahtar)) {
+      bulunan.push({ organ: anahtar, ...ORGAN_DESTEK[anahtar] });
+    }
+  });
+  return bulunan.slice(0, 2); // En fazla 2 organ göster, kalabalık olmasın
+}
+
+/* ══════════════════════════════════════════════
    DOĞAL TARİF VERİTABANI
    ══════════════════════════════════════════════ */
 const DOGAL_TARIF = {
@@ -5304,6 +5345,22 @@ export default function App() {
              );
            })()}
  </div>
+           {(() => {
+             const destek = organDestekToparla(r.organlar);
+             if (!destek || destek.length === 0) return null;
+             return (
+               <div style={{ background: "#8A60C015", border: "1px solid #8A60C040", borderRadius: 10, padding: 12, marginTop: 10 }}>
+                 <div style={{ color: "#B090E0", fontSize: 12, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>ORGAN DOSTU DESTEK</div>
+                 {destek.map((d, idx) => (
+                   <div key={idx} style={{ marginBottom: idx < destek.length - 1 ? 8 : 0 }}>
+                     <div style={{ color: C.metin, fontSize: 13, fontWeight: 600 }}>{d.organ}</div>
+                     <div style={{ color: C.metin, fontSize: 12, marginTop: 2, lineHeight: 1.4 }}>{d.bitki}</div>
+                     <div style={{ color: C.soluk, fontSize: 11, marginTop: 3, fontStyle: "italic" }}>{d.not}</div>
+                   </div>
+                 ))}
+               </div>
+             );
+           })()}
  </div>
  )}
  </div>
