@@ -5961,7 +5961,8 @@ export default function App() {
  {/* MAKAM */}
  {sekme === "makam" && (
  <div>
- <div style={S.kB}>OSMANLI TIBBI: MAKAM ARŞİVİ</div>
+ <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+ <div style={S.kB}>OSMANLI TIBBI: MAKAM ARŞİVİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
  <div style={S.ipucu}>Osmanlı darüşşifalarında kullanılan ses terapisi arşivi. Tıbbi tedavi değildir.</div>
  <div style={S.notUyari}>* Bu bölüm; Osmanlı darüşşifa geleneği ve geleneksel müzik terapisi birikimine dayanır. Modern bilimsel kanıt sınırlıdır.</div>
  {Object.entries(MAKAMLAR).map(([isim, m]) => (
@@ -5999,8 +6000,8 @@ export default function App() {
      <div style={S.ipucu}>Uygulamadaki tüm modüller burada. Aktif olanlara hemen girebilir, yakında açılacaklara göz atabilirsin.</div>
 
      {[
-       { k: "makam", baslik: "Makam", ozet: "Burcuna ve mizacına uygun şifa makamları, zikir-müzik reçetesi.", yakinda: false },
-       { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + Çin tıbbı meridyen takvimi.", yakinda: false },
+       { k: "makam", baslik: "Makam", ozet: "Burcuna ve mizacına uygun şifa makamları, zikir-müzik reçetesi.", yakinda: true },
+       { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + Çin tıbbı meridyen takvimi.", yakinda: true },
        { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu. Osmanlı Tıbb-ı Nebevi geleneği.", yakinda: true },
        { k: "market", baslik: "Şifalı Market", ozet: "Doğal alternatif ürünler ve yerel üretici ağı.", yakinda: true },
        { k: "uzman", baslik: "Görüntülü Uzman", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk hızlı görüşme.", yakinda: true },
@@ -6019,6 +6020,7 @@ export default function App() {
 
  {sekme === "goz" && (
    <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı hekimleri "Göz ruhun aynasıdır" derdi. İridoloji ilminde iris vücudun haritasıdır; Kıyâfetnâme (İlm-i Sîmâ) geleneğinde yüz çizgileri organ durumunu yansıtır.</div>
 
@@ -6054,6 +6056,7 @@ export default function App() {
 
  {sekme === "market" && (
    <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      {sonuclar.length > 0 && (
        <button onClick={() => { setSekme("tarama"); setEkran("sonuc"); }} style={{ display:"flex", alignItems:"center", gap:6, background: C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color: C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>
          ← Sonuçlara Dön
@@ -6125,7 +6128,8 @@ export default function App() {
  {/* EŞREF */}
  {sekme === "esref" && (
  <div>
- <div style={S.kB}>EŞREF SAATLERİ — ORGAN VAKTI</div>
+ <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+ <div style={S.kB}>EŞREF SAATLERİ — ORGAN VAKTI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
  <div style={S.ipucu}>Kronobiyoloji ile desteklenen organ aktivite vakitleri. Nobel 2017 sirkadiyen ritim ödülü bilimsel dayanaktır.</div>
  <div style={S.notUyari}>* Bu bölüm; Çin tıbbı meridyen saati geleneğine dayanır. Sirkadiyen ritim bilimsel olarak kanıtlıdır; spesifik organ–saat eşleşmeleri için modern bilimsel kanıt sınırlıdır.</div>
  {ESREF.map((e, i) => {
@@ -6149,7 +6153,8 @@ export default function App() {
 
  {sekme === "burclar" && (
    <div>
-     <div style={S.kB}>BURÇ ve MİZAÇ TABLOSU</div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>BURÇ ve MİZAÇ TABLOSU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı Tıbb-ı Nebevi ve İlm-i Nücum geleneğinde her burç belirli bir organ ve mizaç ile eşleşir. Sabuncuoğlu Şerefeddin gibi hekimbaşılar hastayı bu çerçevede değerlendirirdi: demevi (kan-ateş), safravi (öd-ateş), sevdevi (kara öd-toprak), balgami (balgam-su).</div>
 
      {profil && BURCLAR[profil.burc] && (
@@ -6196,6 +6201,7 @@ export default function App() {
 
  {sekme === "uzman" && (
    <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ GÖRÜNTÜLÜ UZMAN DANIŞMAN — YAKINDA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
