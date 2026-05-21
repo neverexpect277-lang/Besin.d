@@ -4857,7 +4857,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   if (durum === "kirp") return (
     <div style={{ padding:4 }}>
-      <div style={{ textAlign:"center", background:"#000", borderRadius:12, overflow:"hidden" }}>
+      <div style={{ textAlign:"center", background:C.y2, borderRadius:12, overflow:"hidden" }}>
       <div ref={kirpRef} style={{ position:"relative", display:"inline-block", width:"fit-content", verticalAlign:"top", userSelect:"none", touchAction:"none", lineHeight:0 }}>
         <img ref={fotoRef} src={fotoUrl} style={{ display:"block", maxHeight:"45vh", maxWidth:"100%", height:"auto", width:"auto", pointerEvents:"none" }} alt="" draggable={false} />
         <div style={{ position:"absolute", left:0, top:0, right:0, height:`${kirp.y}%`, background:"rgba(0,0,0,0.65)", pointerEvents:"none" }} />
@@ -4883,7 +4883,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   if (durum === "aktif") return (
     <div style={{ position:"relative" }}>
-      <div style={{ position:"relative", borderRadius:12, overflow:"hidden", background:"#000", height:"60vh", maxHeight:520 }}>
+      <div style={{ position:"relative", borderRadius:12, overflow:"hidden", background:C.y2, height:"60vh", maxHeight:520 }}>
         <video ref={videoRef} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", transform: nativeZoom ? "none" : `scale(${zoom})`, transformOrigin:"center" }} playsInline muted />
         <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:"88%", height:160, border:`2px solid ${C.altin}`, borderRadius:8, boxShadow:"0 0 0 9999px rgba(0,0,0,0.45)" }} /></div>
       </div>
@@ -5113,7 +5113,7 @@ function KameraOCR({ onMetin, onIptal }) {
  {durum === "kirp" && fotoUrl && (
  <>
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, marginBottom: 8, textAlign: "center" }}>Etiketi çerçeve ile seç, köşelerden büyüt/küçült</div>
- <div ref={kirpRef} style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: "#000", marginBottom: 10, userSelect: "none", touchAction: "none" }}>
+ <div ref={kirpRef} style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: C.y2, marginBottom: 10, userSelect: "none", touchAction: "none" }}>
  <img ref={fotoRef} src={fotoUrl} alt="" style={{ width: "100%", display: "block" }} />
  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", clipPath: `polygon(0 0, 0 100%, ${kirp.x}% 100%, ${kirp.x}% ${kirp.y}%, ${kirp.x + kirp.w}% ${kirp.y}%, ${kirp.x + kirp.w}% ${kirp.y + kirp.h}%, ${kirp.x}% ${kirp.y + kirp.h}%, ${kirp.x}% 100%, 100% 100%, 100% 0)` }} />
  <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position: "absolute", left: `${kirp.x}%`, top: `${kirp.y}%`, width: `${kirp.w}%`, height: `${kirp.h}%`, border: `2px solid ${C.altin}`, cursor: "move", boxSizing: "border-box" }} />
@@ -5131,7 +5131,7 @@ function KameraOCR({ onMetin, onIptal }) {
  )}
  {durum === "aktif" && (
  <>
- <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: "#000", marginBottom: 10 }}>
+ <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: C.y2, marginBottom: 10 }}>
  <video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", display: "block", maxHeight: 480, objectFit: "cover", transform: `scale(${zoom})`, transformOrigin: "center" }} />
  <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", background: C.altin, borderRadius: 6, padding: "4px 12px", pointerEvents: "none" }}>
  <span style={{ color: "#1A1200", fontSize: 11, fontWeight: 700 }}>Etiketi netleştir, yakınlaştır, fotoğraf çek</span>
@@ -5209,7 +5209,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
       <button
         onClick={() => onAra(isim, foto)}
         disabled={!isim.trim()}
-        style={{ width: "100%", background: "linear-gradient(135deg,#C9A84C,#E8C97A)", border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Georgia,serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
+        style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Georgia,serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
       >
         Arşivde Ara
       </button>
@@ -5222,21 +5222,21 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,serif!important} body{background:#07070F} input,textarea,button,select{font-family:Georgia,serif!important} textarea:focus,input:focus{outline:2px solid #C9A84C50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:#22223A;border-radius:2px}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,serif!important} body{background:${C.bg};color:${C.metin}} input,textarea,button,select{font-family:Georgia,serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
 
 const S = {
- anaBtn: { width: "100%", background: "linear-gradient(135deg,#C9A84C,#E8C97A)", border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Georgia,serif" },
- hayaletBtn: { width: "100%", background: "none", border: "1px solid #22223A", borderRadius: 14, padding: "12px", color: "#8A8499", fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 10 },
- geriDaire: { width: 34, height: 34, borderRadius: "50%", background: "#161623", border: "1px solid #22223A", color: "#F0EDE8", cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
- geriYazi: { color: "#8A8499", cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Georgia,serif" },
- kB: { color: "#C9A84C", fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
- mT: { color: "#8A8499", fontSize: 13, lineHeight: 1.6 },
- ipucu: { color: "#45435A", fontSize: 13, lineHeight: 1.6, background: "#0F0F1A", border: "1px solid #22223A", borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
- textarea: { width: "100%", background: "#161623", border: "1px solid #22223A", borderRadius: 12, padding: 14, color: "#F0EDE8", fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Georgia,serif" },
- ornekBtn: { width: "100%", background: "#0F0F1A", border: "1px solid #22223A", borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Georgia,serif" },
- dateInput: { width: "100%", background: "#161623", border: "1px solid #22223A", borderRadius: 12, padding: "12px 16px", color: "#F0EDE8", fontSize: 15, marginBottom: 14, colorScheme: "dark", fontFamily: "Georgia,serif" },
- orgTag: { background: "#161623", color: "#8A8499", border: "1px solid #22223A", borderRadius: 6, padding: "3px 8px", fontSize: 11 },
- notUyari: { color: "#45435A", fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
+ anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Georgia,serif" },
+ hayaletBtn: { width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 14, padding: "12px", color: C.soluk, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 10 },
+ geriDaire: { width: 34, height: 34, borderRadius: "50%", background: C.y2, border: `1px solid ${C.s}`, color: C.metin, cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
+ geriYazi: { color: C.soluk, cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Georgia,serif" },
+ kB: { color: C.altin, fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
+ mT: { color: C.soluk, fontSize: 13, lineHeight: 1.6 },
+ ipucu: { color: C.soluk, fontSize: 13, lineHeight: 1.6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
+ textarea: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, color: C.metin, fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Georgia,serif" },
+ ornekBtn: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Georgia,serif" },
+ dateInput: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px 16px", color: C.metin, fontSize: 15, marginBottom: 14, colorScheme: "light", fontFamily: "Georgia,serif" },
+ orgTag: { background: C.y, color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 6, padding: "3px 8px", fontSize: 11 },
+ notUyari: { color: C.cok, fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
 };
 
 /* ══════════════════════════════════════════════
