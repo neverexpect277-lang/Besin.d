@@ -4663,61 +4663,187 @@ function MizacMarket({ profil, onKapat }) {
 }
 
 function BarkodOkuyu({ onSonuc, onIptal }) {
-  const [durum, setDurum] = React.useState("bekle");
+  const [durum, setDurum] = React.useState("bekle"); // bekle | aktif | kirp | hata
   const [hata, setHata] = React.useState("");
+  const [zoom, setZoom] = React.useState(1);
+  const [maxZoom, setMaxZoom] = React.useState(3);
+  const [nativeZoom, setNativeZoom] = React.useState(false);
+  const [fotoUrl, setFotoUrl] = React.useState(null);
+  const [kirp, setKirp] = React.useState({ x: 5, y: 30, w: 90, h: 40 });
+  const [sur, setSur] = React.useState(null);
   const videoRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
+  const fotoRef = React.useRef(null);
+  const kirpRef = React.useRef(null);
   const streamRef = React.useRef(null);
   const animRef = React.useRef(null);
+  const trackRef = React.useRef(null);
+
   async function baslat() {
     try {
       setDurum("aktif");
-      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } } });
       streamRef.current = s;
+      const track = s.getVideoTracks()[0];
+      trackRef.current = track;
+      const caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.zoom) { setNativeZoom(true); setMaxZoom(Math.min(caps.zoom.max || 3, 5)); }
       if (videoRef.current) { videoRef.current.srcObject = s; videoRef.current.play(); }
       tara();
     } catch { setHata("Kamera açılamadı."); setDurum("hata"); }
   }
-  function tara() {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if ("BarcodeDetector" in window) {
-      const det = new window.BarcodeDetector({ formats: ["ean_13","ean_8","qr_code","code_128","upc_a"] });
-      animRef.current = setInterval(async () => {
-        if (!videoRef.current || videoRef.current.readyState < 2) return;
-        try { const bc = await det.detect(videoRef.current); if (bc.length > 0) { clearInterval(animRef.current); kapat(); onSonuc(bc[0].rawValue); } } catch {}
-      }, 500);
-    } else if (window.jsQR) {
-      animRef.current = setInterval(() => {
-        if (!videoRef.current || videoRef.current.readyState < 2) return;
-        canvas.width = videoRef.current.videoWidth;
-        canvas.height = videoRef.current.videoHeight;
-        ctx.drawImage(videoRef.current, 0, 0);
-        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = window.jsQR(img.data, img.width, img.height);
-        if (code) { clearInterval(animRef.current); kapat(); onSonuc(code.data); }
-      }, 300);
-    } else {
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js";
-      s.onload = () => tara();
-      document.head.appendChild(s);
+
+  function zoomUygula(z) {
+    setZoom(z);
+    if (nativeZoom && trackRef.current) {
+      try { trackRef.current.applyConstraints({ advanced: [{ zoom: z }] }); } catch {}
     }
   }
+
+  async function detectGoruntu(source) {
+    if ("BarcodeDetector" in window) {
+      try {
+        const det = new window.BarcodeDetector({ formats: ["ean_13","ean_8","qr_code","code_128","code_39","upc_a","upc_e","itf"] });
+        const bc = await det.detect(source);
+        if (bc.length > 0) return bc[0].rawValue;
+      } catch {}
+    }
+    if (window.jsQR) {
+      const c = document.createElement("canvas");
+      const w = source.videoWidth || source.naturalWidth || source.width;
+      const h = source.videoHeight || source.naturalHeight || source.height;
+      c.width = w; c.height = h;
+      c.getContext("2d").drawImage(source, 0, 0, w, h);
+      const img = c.getContext("2d").getImageData(0, 0, w, h);
+      const code = window.jsQR(img.data, img.width, img.height);
+      if (code) return code.data;
+    }
+    return null;
+  }
+
+  function tara() {
+    const yukle = () => {
+      if (window.jsQR || "BarcodeDetector" in window) {
+        animRef.current = setInterval(async () => {
+          if (!videoRef.current || videoRef.current.readyState < 2) return;
+          const r = await detectGoruntu(videoRef.current);
+          if (r) { clearInterval(animRef.current); kapat(); onSonuc(r); }
+        }, 400);
+      } else {
+        const s = document.createElement("script");
+        s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js";
+        s.onload = yukle;
+        document.head.appendChild(s);
+      }
+    };
+    yukle();
+  }
+
+  function fotografCek() {
+    if (!videoRef.current || !canvasRef.current) return;
+    const v = videoRef.current, c = canvasRef.current;
+    const vw = v.videoWidth, vh = v.videoHeight;
+    const z = nativeZoom ? 1 : zoom;
+    const cropW = vw / z, cropH = vh / z;
+    const cropX = (vw - cropW) / 2, cropY = (vh - cropH) / 2;
+    c.width = vw; c.height = vh;
+    c.getContext("2d").drawImage(v, cropX, cropY, cropW, cropH, 0, 0, vw, vh);
+    const url = c.toDataURL("image/jpeg", 0.95);
+    setFotoUrl(url);
+    clearInterval(animRef.current);
+    if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
+    setKirp({ x: 5, y: 30, w: 90, h: 40 });
+    setDurum("kirp");
+  }
+
+  function konum(e) {
+    const t = e.touches ? e.touches[0] : e;
+    const r = kirpRef.current.getBoundingClientRect();
+    return { x: ((t.clientX - r.left) / r.width) * 100, y: ((t.clientY - r.top) / r.height) * 100 };
+  }
+  function basla(tip) { return (e) => { e.preventDefault(); setSur({ tip, baslangic: konum(e), ilk: { ...kirp } }); }; }
+  function hareket(e) {
+    if (!sur) return;
+    e.preventDefault();
+    const p = konum(e);
+    const dx = p.x - sur.baslangic.x, dy = p.y - sur.baslangic.y;
+    const k = { ...sur.ilk };
+    if (sur.tip === "tasi") { k.x = Math.max(0, Math.min(100 - k.w, k.x + dx)); k.y = Math.max(0, Math.min(100 - k.h, k.y + dy)); }
+    else if (sur.tip === "sag") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); }
+    else if (sur.tip === "alt") { k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
+    else if (sur.tip === "saaalt") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
+    setKirp(k);
+  }
+  function bitir() { setSur(null); }
+
+  async function kirpVeTara() {
+    if (!fotoRef.current) return;
+    const img = fotoRef.current;
+    const c = document.createElement("canvas");
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const sx = (kirp.x / 100) * iw, sy = (kirp.y / 100) * ih;
+    const sw = (kirp.w / 100) * iw, sh = (kirp.h / 100) * ih;
+    c.width = sw; c.height = sh;
+    c.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    const r = await detectGoruntu(c);
+    if (r) { onSonuc(r); return; }
+    setHata("Kod okunamadı. Çerçeveyi tam koda hizalayıp tekrar dene.");
+    setTimeout(() => setHata(""), 3000);
+  }
+
+  function tekrarCek() { setFotoUrl(null); baslat(); }
+
   function kapat() { clearInterval(animRef.current); if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop()); }
   React.useEffect(() => () => kapat(), []);
+
   if (durum === "hata") return <div style={{ textAlign:"center", padding:20 }}><div style={{ color:"#FF4444", marginBottom:12 }}>{hata}</div><button onClick={onIptal} style={{ background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 20px", color:C.soluk, cursor:"pointer" }}>Geri</button></div>;
-  if (durum === "aktif") return (
-    <div style={{ position:"relative" }}>
-      <video ref={videoRef} style={{ width:"100%", borderRadius:12, maxHeight:300, objectFit:"cover" }} playsInline muted />
-      <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:200, height:100, border:`2px solid ${C.altin}`, borderRadius:8 }} /></div>
-      <div style={{ textAlign:"center", marginTop:8, color:C.soluk, fontSize:12 }}>Barkodu çerçeveye getir...</div>
-      <button onClick={() => { kapat(); onIptal(); }} style={{ width:"100%", marginTop:8, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>İptal</button>
+
+  if (durum === "kirp") return (
+    <div style={{ padding:4 }}>
+      <div ref={kirpRef} onMouseMove={hareket} onMouseUp={bitir} onMouseLeave={bitir} onTouchMove={hareket} onTouchEnd={bitir} style={{ position:"relative", width:"100%", borderRadius:12, overflow:"hidden", userSelect:"none", touchAction:"none" }}>
+        <img ref={fotoRef} src={fotoUrl} style={{ width:"100%", display:"block" }} alt="" />
+        <div style={{ position:"absolute", inset:0, background:"#000000A0", clipPath:`polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${kirp.y}%, ${kirp.x}% ${kirp.y}%, ${kirp.x}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y}%, 0 ${kirp.y}%)` }} />
+        <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`2px solid ${C.altin}`, borderRadius:6, cursor:"move", boxSizing:"border-box" }}>
+          <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-10, top:"40%", width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ew-resize" }} />
+          <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"40%", bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ns-resize" }} />
+          <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-10, bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"nwse-resize" }} />
+        </div>
+      </div>
+      {hata && <div style={{ color:"#FF8866", textAlign:"center", marginTop:8, fontSize:13 }}>{hata}</div>}
+      <div style={{ textAlign:"center", marginTop:6, color:C.soluk, fontSize:12 }}>Çerçeveyi kod üzerine getir, köşelerden boyutlandır</div>
+      <div style={{ display:"flex", gap:8, marginTop:10 }}>
+        <button onClick={tekrarCek} style={{ flex:1, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>Tekrar Çek</button>
+        <button onClick={kirpVeTara} style={{ flex:2, background:C.altin, border:"none", borderRadius:10, padding:10, color:"#000", fontWeight:700, cursor:"pointer" }}>Bu Bölgeyi Tara</button>
+      </div>
+      <button onClick={onIptal} style={{ width:"100%", marginTop:6, background:"none", border:"none", color:C.soluk, cursor:"pointer", fontSize:13 }}>İptal</button>
     </div>
   );
+
+  if (durum === "aktif") return (
+    <div style={{ position:"relative" }}>
+      <div style={{ position:"relative", borderRadius:12, overflow:"hidden", background:"#000" }}>
+        <video ref={videoRef} style={{ width:"100%", maxHeight:340, objectFit:"cover", display:"block", transform: nativeZoom ? "none" : `scale(${zoom})`, transformOrigin:"center" }} playsInline muted />
+        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:"75%", height:90, border:`2px solid ${C.altin}`, borderRadius:8, boxShadow:"0 0 0 9999px rgba(0,0,0,0.35)" }} /></div>
+      </div>
+      <canvas ref={canvasRef} style={{ display:"none" }} />
+      <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:10, padding:"0 4px" }}>
+        <span style={{ color:C.soluk, fontSize:13, minWidth:50 }}>Zoom {zoom.toFixed(1)}x</span>
+        <input type="range" min="1" max={maxZoom} step="0.1" value={zoom} onChange={e => zoomUygula(parseFloat(e.target.value))} style={{ flex:1, accentColor:C.altin }} />
+      </div>
+      <div style={{ textAlign:"center", marginTop:6, color:C.soluk, fontSize:12 }}>Kodu çerçeveye getir — otomatik okur veya foto çek</div>
+      <div style={{ display:"flex", gap:8, marginTop:10 }}>
+        <button onClick={() => { kapat(); onIptal(); }} style={{ flex:1, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:11, color:C.soluk, cursor:"pointer" }}>İptal</button>
+        <button onClick={fotografCek} style={{ flex:2, background:C.altin, border:"none", borderRadius:10, padding:11, color:"#000", fontWeight:700, cursor:"pointer" }}>📷 Fotoğraf Çek</button>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ textAlign:"center", padding:20 }}>
       <div style={{ fontSize:48, marginBottom:12 }}>🔲</div>
-      <div style={{ color:C.metin, marginBottom:16, fontSize:14 }}>Ürün barkodunu okut</div>
+      <div style={{ color:C.metin, marginBottom:6, fontSize:14 }}>Barkod veya QR kodu okut</div>
+      <div style={{ color:C.soluk, marginBottom:16, fontSize:12 }}>Yakınlaştırma, fotoğraf çekme ve kırpma destekli</div>
       <button onClick={baslat} style={{ background:C.altin, border:"none", borderRadius:12, padding:"12px 32px", color:"#000", fontWeight:700, fontSize:15, cursor:"pointer" }}>Kamerayı Aç</button>
       <div style={{ marginTop:10 }}><button onClick={onIptal} style={{ background:"none", border:"none", color:C.soluk, cursor:"pointer", fontSize:13 }}>İptal</button></div>
     </div>
@@ -5613,7 +5739,7 @@ export default function App() {
 
  {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
- {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod", false], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
+ {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", false], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
  <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
  {l}
  {yakinda && <span style={{ position: "absolute", top: -7, right: -4, background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 8, letterSpacing: 0.3 }}>YAKINDA</span>}
