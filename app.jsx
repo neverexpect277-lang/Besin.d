@@ -6021,6 +6021,8 @@ export default function App() {
          { k: "zihin", baslik: "Zihni İnşa", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
          { k: "ses", baslik: "Ses Frekans Analizi", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
          { k: "nabiz", baslik: "İlm-i Nabız", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
+         { k: "hrv", baslik: "Duygusal Nabız (HRV)", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
+         { k: "nefes", baslik: "Dijital Burun", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
        ],
      },
      {
@@ -6055,6 +6057,64 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "hrv" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DUYGUSAL NABIZ — HRV ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Nabız sadece fiziksel değil, ruhsal durumun haritasıdır. HRV (Kalp Atış Hızı Değişkenliği) milisaniye farklarını ölçer.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ HRV ÖLÇÜMÜ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kalp atışları arası milisaniyelik farklardan <b>stres / korku / huzur</b> seviyen okunur.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ MAKAM & NEFES ENTEGRASYONU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Nabız çok düzensiz ve stresliyse uygulama anında <b>Neva Makamı</b> (gönül ferahlatıcı) çalar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Yönlendirme:</b> "Nefesini 4-7-8 kuralına göre al — 4 saniye al, 7 tut, 8 ver."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "nefes" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DİJİTAL BURUN — OSMANLI BUHURDANLIĞI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Sadece gözle bakmayacak, sadece nabız dinlemeyeceğiz. Telefon elektronik burun gibi çalışacak; nefesindeki molekülleri Osmanlı'nın "Mizâc-ı Havâ" ilmiyle birleştirip okuyacak.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ NEFES MOLEKÜL ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Nefesteki <b>aseton</b> diyabeti, <b>amonyak</b> böbreği söyler. AI bu işaretleri okuyup organ durumunu yorumlar.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ MİZÂC-I HAVÂ & BUHURDANLIK — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Bulunduğun ortamın havası analiz edilir (kuru-soğuk, nemli-sıcak vb.) ve buhurdanlık önerisiyle dengelenir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Odanın havası 'kuru-soğuk' — mizacın daralıyor. Buhurdanlığa iki damla lavanta damlat, düğüm çözülsün."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "rota" && (
    <div>
