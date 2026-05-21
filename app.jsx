@@ -4102,6 +4102,38 @@ const DOGAL_TARIF = {
   "plastik": { baslik: "Çevre Dostu Temizlik Seti", sure: "5 dk", malzeme: ["Karbonat","Beyaz sirke","Limon","Kastil sabun"], adimlar: "4 malzemeyle mutfak, banyo, zemin temizlenebilir. Detay için her birini ayrı kullanın." },
 };
 
+// Ürün TÜRÜ tespiti — kullanıcının yapıştırdığı metinden ürün kategorisini çıkarır
+const URUN_TURLERI = [
+  { tur: "icecek_gazli", baslik: "Gazlı İçecek", anahtarlar: ["kola","cola","gazoz","fanta","sprite","soda","seven up","7up","pepsi","dr pepper","gazli icecek","gazlı içecek"], alternatif: "Ev limonatası · Şalgam suyu · Maden suyu + taze meyve · Bitki çayı", tarifKey: "kola" },
+  { tur: "icecek_meyve", baslik: "Hazır Meyve Suyu", anahtarlar: ["meyve suyu","portakal suyu","elma suyu","vişne suyu","şeftali suyu","nektar","cappy","dimes","tropicana"], alternatif: "Taze sıkılmış meyve suyu · Ev kompostu · Şerbet (gül, vişne)", tarifKey: "kola" },
+  { tur: "icecek_enerji", baslik: "Enerji İçeceği", anahtarlar: ["red bull","monster","burn","enerji içec","energy drink","ice tea","fuse tea","nestea","lipton ice"], alternatif: "Ham bal + limon karışımı · Yeşil çay · Hurma sıkması", tarifKey: "kafein" },
+  { tur: "kek_tatli", baslik: "Kek / Pasta / Tatlı", anahtarlar: ["kek","pasta","brownie","muffin","cup cake","kruvasan","milföy","tatlı","baklava","trileçe"], alternatif: "Hurmalı tam buğday kek · Ev tahini-pekmez · Helva · Lokma", tarifKey: "kek" },
+  { tur: "biskuvi", baslik: "Bisküvi / Kraker", anahtarlar: ["bisküvi","biskuvi","kraker","cracker","galeta","etimek","eti","albeni","negro"], alternatif: "Ev yulaflı kurabiye · Tam buğday galetası · Çiğ kuruyemiş", tarifKey: "bisküvi" },
+  { tur: "gofret_cikolata", baslik: "Çikolata / Gofret", anahtarlar: ["gofret","çikolata","cikolata","wafer","snickers","mars","twix","kitkat","milka","ülker çikolata","nestle çikolata"], alternatif: "Saf bitter çikolata (%70+) · Ev kakao topları · Hurma + ceviz", tarifKey: "çikolata" },
+  { tur: "cips", baslik: "Cips / Atıştırmalık", anahtarlar: ["cips","chips","patates kız","ruffles","lays","doritos","cheetos","çerezza","patos"], alternatif: "Fırında patates dilimleri · Çiğ kuruyemiş · Kuru meyve", tarifKey: "cips" },
+  { tur: "sucuk_salam", baslik: "İşlenmiş Et", anahtarlar: ["sucuk","salam","sosis","jambon","pastırma","salami","frankfurter","hot dog","kangal","döner"], alternatif: "Geleneksel kuru sucuk (nitritsiz) · Ev jambonu · Çiğ et", tarifKey: "sucuk" },
+  { tur: "yogurt", baslik: "Yoğurt", anahtarlar: ["yoğurt","yogurt","ayran","sütlü tatlı"], alternatif: "Ev mayalı tam yağlı yoğurt · Çiğ süt kefiri · Süzme yoğurt (ev)", tarifKey: "yoğurt" },
+  { tur: "peynir", baslik: "Peynir", anahtarlar: ["peynir","beyaz peynir","kaşar","cheddar","feta","mozzarella","labne","lor"], alternatif: "Çiğ süt peyniri (otlatılmış inek/koyun/keçi) · Köy peyniri", tarifKey: "peynir" },
+  { tur: "sut", baslik: "Süt", anahtarlar: ["süt","milk","laktozsuz süt","uht süt"], alternatif: "Çiğ süt (sertifikalı) · Badem sütü · Hindistan cevizi sütü · Kefir", tarifKey: "süt" },
+  { tur: "dondurma", baslik: "Dondurma", anahtarlar: ["dondurma","ice cream","magnum","cornetto","algida","golf"], alternatif: "Ev meyve sorbesi · Dondurulmuş yoğurt + bal · Maraş dondurması (geleneksel)", tarifKey: "süt" },
+  { tur: "ekmek", baslik: "Ekmek / Hamur İşi", anahtarlar: ["ekmek","tost ekmeği","sandviç ekmeği","baget","simit","poğaca","börek","francala","kepek ekmek"], alternatif: "Ekşi maya tam buğday ekmek · Siyez/kavılca ekmeği · Köy ekmeği", tarifKey: "ekmek" },
+  { tur: "tatlandirici", baslik: "Şeker / Tatlandırıcı", anahtarlar: ["şeker","sugar","tatlandırıcı","aspartam","sakarin","sukraloz","stevia","şurup","hfcs","glikoz fruktoz"], alternatif: "Ham bal · Pekmez (üzüm, keçiboynuzu, dut) · Hurma şurubu · Stevia yaprağı", tarifKey: "aspartam" },
+  { tur: "yag", baslik: "Yağ / Margarin", anahtarlar: ["margarin","sade yağ","kahvaltılık","sana","becel","ayçiçek yağı","mısır yağı","kanola","rafine yağ"], alternatif: "Ev tereyağı (krema çırparak) · Soğuk sıkım zeytinyağı · Tereyağı (hayvansal)", tarifKey: "tereyağı" },
+  { tur: "soslar", baslik: "Hazır Sos", anahtarlar: ["ketçap","ketcap","mayonez","hazır sos","barbekü","hardal","ranch","tahin sos","cesar"], alternatif: "Ev domates sosu · Ev mayonezi · Sumak + zeytinyağı · Tahin + pekmez", tarifKey: "ketçap" },
+  { tur: "konserve", baslik: "Konserve", anahtarlar: ["konserve","ton balığı","ringa","sardalye","mısır konserve","bezelye konserve"], alternatif: "Taze balık · Ev konservesi (cam kavanoz) · Taze sebze", tarifKey: "konserve" },
+  { tur: "recel_krem", baslik: "Reçel / Sürülebilir", anahtarlar: ["reçel","recel","marmelat","kahvaltı kreması","krem çikolata","nutella","sürülebilir","fıstık ezme"], alternatif: "Şekersiz ev reçeli · Tahini-pekmez · Ham bal · Saf fıstık ezmesi", tarifKey: "reçel" },
+  { tur: "kahve", baslik: "Hazır Kahve", anahtarlar: ["hazır kahve","granül kahve","3'ü 1 arada","nescafe","jacobs","3 in 1"], alternatif: "Türk kahvesi · Filtre kahve (taze çekilmiş) · Hindiba kahvesi", tarifKey: "kafein" },
+];
+
+function urunTuruTespit(metin) {
+  if (!metin) return null;
+  const m = metin.toLowerCase();
+  for (const tur of URUN_TURLERI) {
+    if (tur.anahtarlar.some(k => m.includes(k))) return tur;
+  }
+  return null;
+}
+
 
 /* ══════════════════════════════════════════════
    DOĞAL TARİF MODAL BİLEŞENİ
@@ -5333,22 +5365,24 @@ export default function App() {
  )}
 
  {(() => {
-   const oncelik = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
-   const enKritik = [...sonuclar].sort((a,b) => (oncelik[a.risk]??9) - (oncelik[b.risk]??9))[0];
-   if (!enKritik) return null;
-   const TEMIZLIK_ANAHTAR = ["klorin","amonyak","parfüm","çamaşir","deterjan","NaOH","quat","kireç","küf","plastik","şampuan","sabun","diş macunu","deodorant","yumuşatıcı","krem"];
-   const anahtar = Object.keys(DOGAL_TARIF).find(k => {
-     const temizlikMi = TEMIZLIK_ANAHTAR.includes(k);
-     if (kategori === "gida" && temizlikMi) return false;
-     if (kategori !== "gida" && !temizlikMi && kategori === "temizlik") return false;
-     const mad = (enKritik.ad + " " + (enKritik.kat||"") + " " + (enKritik.alternatif||"")).toLowerCase();
-     return mad.includes(k.toLowerCase());
-   });
-   const tarif = anahtar ? DOGAL_TARIF[anahtar] : null;
+   if (sonuclar.length === 0) return null;
+   const urunTuru = kategori === "gida" ? urunTuruTespit(txt) : null;
+   let baslik, alternatifMetni, tarif = null;
+   if (urunTuru) {
+     baslik = urunTuru.baslik.toUpperCase() + " — DOĞAL ALTERNATİF";
+     alternatifMetni = urunTuru.alternatif;
+     tarif = urunTuru.tarifKey && DOGAL_TARIF[urunTuru.tarifKey] ? DOGAL_TARIF[urunTuru.tarifKey] : null;
+   } else {
+     const oncelik = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
+     const enKritik = [...sonuclar].sort((a,b) => (oncelik[a.risk]??9) - (oncelik[b.risk]??9))[0];
+     baslik = "DOĞAL ALTERNATİF";
+     alternatifMetni = enKritik.alternatif;
+     tarif = null;
+   }
    return (
      <div style={{ background: "#2ecc7112", border: "1px solid #2ecc7140", borderRadius: 14, padding: 14, marginBottom: 14 }}>
-       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>DOĞAL ALTERNATİF — {enKritik.ad.toUpperCase()}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{enKritik.alternatif}</div>
+       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>{baslik}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{alternatifMetni}</div>
        {tarif && (
          <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"10px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
            Tarif: {tarif.baslik}
