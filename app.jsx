@@ -3630,6 +3630,73 @@ const KATEGORILER = {
  "ilac": { ad: "İlaç/Vitamin", db: ILAC_DB, mizacGoster: true, ipucu: "İlaç veya vitamin kutusu içeriğini yapıştır." },
 };
 
+// 8 ana başlık altında doğal/onaylı ürün önerileri (Market için)
+const MARKET_KATEGORI = {
+  "gida": [
+    { ad: "İçecekler", aciklama: "Şifalı kaynak suyu, ev limonatası, bitki çayı (melisa, ıhlamur, ada çayı)" },
+    { ad: "Gofretler & Bisküviler", aciklama: "Doğal kakao, ham bal, kuru meyve, tahıl karışımı" },
+    { ad: "Kekler", aciklama: "Tam buğday, yulaf, hurma tatlandırıcı" },
+    { ad: "Sucuk & Salam", aciklama: "Geleneksel kuru, nitritsiz, doğal bağırsak" },
+    { ad: "Peynirler", aciklama: "Çiğ süt, otlatılmış inek/koyun/keçi" },
+    { ad: "Yoğurtlar", aciklama: "Ev mayalı, tam yağlı, probiyotik" },
+    { ad: "Süt Ürünleri", aciklama: "Çiğ süt, kefir, ayran, kaymak" },
+    { ad: "Yağlar", aciklama: "Soğuk sıkım zeytinyağı, tereyağı, çörek otu yağı" },
+    { ad: "Baharatlar", aciklama: "Organik, sertifikalı, GDO-suz" },
+    { ad: "Tatlandırıcılar", aciklama: "Ham bal, pekmez, hurma şurubu" },
+    { ad: "Atıştırmalıklar", aciklama: "Kuru meyve, çiğ kuruyemiş, ev çöreği" },
+  ],
+  "giyim": [
+    { ad: "Organik Pamuklu", aciklama: "PFAS-free, OEKO-TEX sertifikalı tişört, gömlek" },
+    { ad: "Yünlü", aciklama: "Türk doğal yünü, kazak, mont astar" },
+    { ad: "Keten", aciklama: "Saf keten gömlek, pantolon, yazlık" },
+    { ad: "Spor Giyim", aciklama: "PFAS-free yağmurluk, doğal spor tişört" },
+    { ad: "İç Çamaşırı", aciklama: "GOTS organik pamuk, ipek" },
+  ],
+  "ev": [
+    { ad: "Yatak & Yorgan", aciklama: "Pamuk dolgu, organik kumaş, GOTS sertifikalı" },
+    { ad: "Halı", aciklama: "Anadolu yün halı, doğal pamuk kilim" },
+    { ad: "Mobilya", aciklama: "Masif ahşap, formaldehit-free, doğal cila" },
+    { ad: "Perde", aciklama: "Doğal pamuk, keten" },
+    { ad: "Mutfak Eşyası", aciklama: "Cam, çelik, dökme demir tava (PTFE-free)" },
+  ],
+  "kozmetik": [
+    { ad: "Yüz Kremi", aciklama: "Hindistan cevizi yağı, shea, doğal E vitamini" },
+    { ad: "Şampuan & Sabun", aciklama: "Kastil sabun, defne yağı, zeytinyağı sabunu" },
+    { ad: "Diş Macunu", aciklama: "Karbonat, nane yağı, florürsüz seçenekler" },
+    { ad: "Deodorant", aciklama: "Karbonat, mısır nişastası, çay ağacı yağı" },
+    { ad: "Saç Bakımı", aciklama: "Hindistan cevizi yağı, kına, biberiye" },
+  ],
+  "temizlik": [
+    { ad: "Bulaşık Deterjanı", aciklama: "Kastil sabun, sitrik asit, doğal limon" },
+    { ad: "Çamaşır Deterjanı", aciklama: "Sabun rendesi, karbonat, soda külü" },
+    { ad: "Çamaşır Yumuşatıcı", aciklama: "Sirke + lavanta yağı (klorin-free)" },
+    { ad: "Cam Temizleyici", aciklama: "Sirke, limon suyu, gazete" },
+    { ad: "Zemin & Yüzey", aciklama: "Beyaz sirke, çay ağacı yağı, karbonat" },
+    { ad: "Lavabo Açıcı", aciklama: "Karbonat + sirke + kaynar su" },
+  ],
+  "bebek": [
+    { ad: "Bebek Bezi", aciklama: "Organik pamuk, klorin-free, biodegradable" },
+    { ad: "Bebek Maması", aciklama: "Anne sütü ön plan, organik ek gıda" },
+    { ad: "Bebek Giysi", aciklama: "GOTS organik pamuk, doğal renk" },
+    { ad: "Bebek Yağı", aciklama: "Hindistan cevizi, tatlı badem yağı" },
+    { ad: "Mama Şişesi", aciklama: "BPA-free cam, paslanmaz çelik" },
+  ],
+  "evcil": [
+    { ad: "Köpek/Kedi Maması", aciklama: "Tahılsız, gerçek et, doğal koruyucu" },
+    { ad: "Tasma & Halat", aciklama: "Pamuk, keten, kimyasal işlemsiz deri" },
+    { ad: "Şampuan", aciklama: "Kastil sabun, çay ağacı, neem yağı" },
+    { ad: "Yatak", aciklama: "Pamuk dolgu, organik kumaş" },
+  ],
+  "ilac": [
+    { ad: "D Vitamini", aciklama: "Doğal: güneş, kuru kayısı; takviye: D3 K2" },
+    { ad: "C Vitamini", aciklama: "Kuşburnu, limon, kırmızı biber, brokoli" },
+    { ad: "Demir", aciklama: "Pekmez, ıspanak, kırmızı et, mercimek" },
+    { ad: "Probiyotik", aciklama: "Ev yoğurdu, kefir, turşu, lahana" },
+    { ad: "Omega-3", aciklama: "Balık, ceviz, keten tohumu" },
+    { ad: "Magnezyum", aciklama: "Kabak çekirdeği, badem, kakao" },
+  ],
+};
+
 const BELIRSIZ_KELIMELER = [
  { kelime: "koruyucu", uyari: "Etikette sadece 'koruyucu' yazılı, hangi koruyucu (E200, E211, E220, vb.) belirtilmemiş. Üretici gizliyor olabilir." },
  { kelime: "renklendirici", uyari: "Sadece 'renklendirici' yazılı, hangisi (E102, E110, E120, vb.) belirsiz. Sentetik boya olabilir." },
@@ -4903,6 +4970,8 @@ export default function App() {
  const [aktifUye, setAktifUye] = useState(null);
  const [dogum, setDogum] = useState(() => { try { return localStorage.getItem("bd_dogum") || ""; } catch { return ""; } });
  const [cinsiyet, setCinsiyet] = useState(() => { try { return localStorage.getItem("bd_cinsiyet") || "Erkek"; } catch { return "Erkek"; } });
+ const [marketKategoriPanel, setMarketKategoriPanel] = useState(false);
+ const [marketAcikBaslik, setMarketAcikBaslik] = useState(null);
  const [seslerAcik, setSeslerAcik] = useState(() => { try { return localStorage.getItem("bd_ses") !== "kapali"; } catch { return true; } });
  const sesToggle = () => { const yeni = !seslerAcik; setSeslerAcik(yeni); try { localStorage.setItem("bd_ses", yeni ? "acik" : "kapali"); } catch {} if (!yeni && window.speechSynthesis) window.speechSynthesis.cancel(); };
  const [modal, setModal] = useState(null);
@@ -5638,40 +5707,65 @@ export default function App() {
          ← Sonuçlara Dön
        </button>
      )}
-     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
-       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>★ MARKET — YAKINDA</div>
+     <div style={{ display:"flex", justifyContent:"flex-start", marginBottom: 14 }}>
+       <button onClick={() => setMarketKategoriPanel(true)} style={{ display:"flex", alignItems:"center", gap:8, background: C.altin, border:`1px solid ${C.altin}`, borderRadius:10, padding:"10px 16px", color:"#1A1200", cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, boxShadow:`0 2px 8px ${C.altin}44` }}>
+         ≡ Kategoriler
+       </button>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>★ ŞİFALI MARKET — YAKINDA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
-         Doğal alternatif ürünleri tek tıkla sipariş edebileceğin Şifalı Market burada açılacak. Profilinin mizacına uygun ürünler, ev yapımı tarifler, sertifikalı organik markalar.
-       </div>
-       <div style={{ color: C.soluk, fontSize: 12, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}33` }}>
-         Aşağıda kategorilerin önizlemesi var. Yakında tıklanabilir olur.
+         Doğal alternatif ürünleri tek tıkla sipariş edebileceğin Şifalı Market burada açılacak. Sol üstteki <b>Kategoriler</b> butonundan 8 ana başlığa ve önerilen doğal ürünlere göz at.
        </div>
      </div>
 
-     <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 10 }}>KATEGORİLER</div>
-     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-       {[
-         ["İçecekler", "Şifalı su, ev yapımı limonata, bitki çayı"],
-         ["Gofretler", "Doğal kakao, ham bal, kuru meyve"],
-         ["Kekler", "Tam buğday, yulaf, hurma tatlandırıcı"],
-         ["Bisküviler", "Tahıl karışımı, şekersiz, sertifikalı"],
-         ["Sucuklar", "Geleneksel kuru, nitritsiz, baharatlı"],
-         ["Peynirler", "Çiğ süt, otlatılmış inek, koyun, keçi"],
-         ["Yoğurtlar", "Ev mayalı, tam yağlı, probiyotik"],
-         ["Süt Ürünleri", "Çiğ süt, kefir, ayran, kaymak"],
-         ["Yağlar", "Soğuk sıkım zeytinyağı, tereyağı"],
-         ["Baharatlar", "Organik, sertifikalı, GDO-suz"],
-         ["Tatlandırıcılar", "Bal, pekmez, hurma şurubu"],
-         ["Atıştırmalıklar", "Kuru meyve, çiğ kuruyemiş, çörek"],
-         ["Temizlik", "Karbonat, sirke, sabun, doğal deterjan"],
-         ["Kozmetik", "Organik krem, doğal sabun, bitkisel yağ"],
-       ].map(([ad, aciklama]) => (
-         <div key={ad} style={{ background: C.y, border: `1px dashed ${C.s}`, borderRadius: 12, padding: "12px 10px", position: "relative", opacity: 0.85 }}>
-           <div style={{ color: C.metin, fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{ad}</div>
-           <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.4 }}>{aciklama}</div>
-           <span style={{ position: "absolute", top: 6, right: 6, background: C.altin, color: "#1A1200", fontSize: 8, fontWeight: 700, padding: "1px 5px", borderRadius: 6 }}>YAKINDA</span>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◈ ŞİFA HARİTASI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         <b>Yerel Üretici Ağı:</b> Çevrendeki çiğ süt, ham bal, soğuk sıkım yağ, organik sebze üreticilerini harita üzerinde gösteren modül. Kısa zincir, taze ürün, doğrudan üreticiden.
+       </div>
+     </div>
+   </div>
+ )}
+
+ {marketKategoriPanel && (
+   <div onClick={() => setMarketKategoriPanel(false)} style={{ position:"fixed", inset:0, background:"#00000099", zIndex:9998, display:"flex", justifyContent:"flex-start" }}>
+     <div onClick={(e)=>e.stopPropagation()} style={{ width:"min(420px, 92vw)", height:"100%", background: C.y2, borderRight:`2px solid ${C.altin}`, overflowY:"auto", boxShadow:"4px 0 20px #00000088" }}>
+       <div style={{ position:"sticky", top:0, background: C.y2, borderBottom:`1px solid ${C.s}`, padding:"14px 16px", display:"flex", justifyContent:"space-between", alignItems:"center", zIndex:2 }}>
+         <div style={{ color: C.altin, fontWeight:700, fontSize:15, letterSpacing:0.5 }}>KATEGORİLER</div>
+         <button onClick={() => setMarketKategoriPanel(false)} style={{ background:"transparent", border:`1px solid ${C.s}`, color:C.metin, borderRadius:8, padding:"4px 10px", cursor:"pointer", fontSize:14 }}>✕</button>
+       </div>
+       <div style={{ padding: 12 }}>
+         {Object.entries(MARKET_KATEGORI).map(([key, urunler]) => {
+           const acik = marketAcikBaslik === key;
+           const ad = KATEGORILER[key]?.ad || key;
+           return (
+             <div key={key} style={{ marginBottom: 8, border:`1px solid ${C.s}`, borderRadius: 10, background: C.y, overflow:"hidden" }}>
+               <button onClick={() => setMarketAcikBaslik(acik ? null : key)} style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", background:"transparent", border:"none", padding:"12px 14px", color: C.metin, fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"Georgia,serif" }}>
+                 <span>{ad}</span>
+                 <span style={{ color: C.altin, fontSize:12 }}>{acik ? "▼" : "▶"}</span>
+               </button>
+               {acik && (
+                 <div style={{ padding: "0 10px 10px 10px", display:"grid", gap:6 }}>
+                   {urunler.map(u => (
+                     <div key={u.ad} style={{ background: C.y2, border:`1px dashed ${C.s}`, borderRadius:8, padding:"8px 10px", position:"relative" }}>
+                       <div style={{ color: C.metin, fontWeight:700, fontSize:12, marginBottom:2 }}>{u.ad}</div>
+                       <div style={{ color: C.soluk, fontSize:11, lineHeight:1.4 }}>{u.aciklama}</div>
+                       <span style={{ position:"absolute", top:5, right:5, background:C.altin, color:"#1A1200", fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:5 }}>YAKINDA</span>
+                     </div>
+                   ))}
+                 </div>
+               )}
+             </div>
+           );
+         })}
+         <div style={{ marginTop: 14, background:`linear-gradient(135deg, ${C.altin}22, ${C.y})`, border:`1px solid ${C.altin}66`, borderRadius:10, padding:12, position:"relative" }}>
+           <div style={{ color: C.altin, fontWeight:700, fontSize:12, letterSpacing:0.5, marginBottom:4 }}>◈ ŞİFA HARİTASI</div>
+           <div style={{ color: C.metin, fontSize:11, lineHeight:1.5 }}>Yerel Üretici Ağı — çiğ süt, ham bal, soğuk sıkım yağ, organik üreticileri harita üzerinde.</div>
+           <span style={{ position:"absolute", top:8, right:8, background:C.altin, color:"#1A1200", fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:5 }}>YAKINDA</span>
          </div>
-       ))}
+       </div>
      </div>
    </div>
  )}
