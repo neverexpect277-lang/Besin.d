@@ -3936,6 +3936,43 @@ const DOGAL_TARIF = {
   "boyar": { baslik: "Doğal Meyveli Gummies", sure: "15 dk", malzeme: ["Taze meyve suyu 200ml","Jelatin 2 yemek kaşığı","Bal 1 yemek kaşığı"], adimlar: "Jelatin meyve suyunda eritin, bal ekleyin, kalıplara dökün, 1 saat buzdolabında bekletin." },
   "kafein": { baslik: "Melisa Limonata", sure: "5 dk", malzeme: ["Taze melisa 10 yaprak","Su 500ml","Limon suyu 1 adet","Bal"], adimlar: "Melisayı demleyin, soğutun, limon ve bal ekleyin." },
   "nitrit": { baslik: "Ev Pastırmalı Yumurta", sure: "10 dk", malzeme: ["Yumurta 2 adet","Pastırma (gerçek, katkısız) 50g","Zeytinyağı"], adimlar: "Pastırmayı soteleyin, üstüne yumurta kırın, pişirin." },
+  "kola": { baslik: "Ev Limonatası (Karbondioksitsiz)", sure: "5 dk", malzeme: ["Taze limon 3 adet","Su 1 litre","Bal veya hurma şurubu 2 yemek kaşığı","Nane yaprak"], adimlar: "Limon suyunu sıkın, suyla karıştırın, bal ile tatlandırın, nane ekleyin, buzlu servis edin." },
+  "gazlı": { baslik: "Doğal Komposto", sure: "10 dk", malzeme: ["Mevsim meyvesi 500g","Su 1 litre","Bal 2 yemek kaşığı"], adimlar: "Meyveyi suyla 8 dk kaynatın, soğutun, bal ekleyin, buzdolabında bekletin." },
+  "sucuk": { baslik: "Geleneksel Ev Sucuğu", sure: "7 gün kurutma", malzeme: ["Dana eti 1kg","Sarımsak 1 baş","Çemen otu, kimyon, kırmızı biber","Tuz (nitritsiz)"], adimlar: "Eti çekin, baharatlarla yoğurun, doğal bağırsağa doldurun, serin yerde 7 gün kurutun. Nitrit eklenmez." },
+  "salam": { baslik: "Ev Tavuk Jambonu", sure: "1 saat", malzeme: ["Tavuk göğüs 500g","Tuz, karabiber, sarımsak","Defne yaprağı"], adimlar: "Tavuğu baharatlayın, alüminyum folyoya sarın, 90°C'de 1 saat fırınlayın. Soğuyunca dilimleyin." },
+  "jambon": { baslik: "Ev Jambon", sure: "2 saat", malzeme: ["Hindi göğüs 1kg","Tuz, karabiber, rezene, defne"], adimlar: "Eti baharatlayın, düşük sıcaklıkta (100°C) 2 saat pişirin, soğuyunca buzdolabında saklayın." },
+  "çikolata": { baslik: "Ev Kakao Topları", sure: "15 dk", malzeme: ["Saf kakao tozu 3 yk","Hindistan cevizi yağı 2 yk","Bal 2 yk","Ceviz/badem"], adimlar: "Eritilmiş yağa kakao ve bal karıştırın, kuruyemiş ekleyin, küçük toplar yapın, dondurun." },
+  "kakao": { baslik: "Sıcak Çikolata (Doğal)", sure: "5 dk", malzeme: ["Saf kakao 1 yk","Süt 250ml","Bal 1 yk","Tarçın"], adimlar: "Sütü ısıtın, kakao ve bal ekleyin, çırpın, tarçınla servis edin." },
+  "peynir": { baslik: "Ev Lor Peyniri", sure: "20 dk", malzeme: ["Süt 1 litre","Limon suyu 3 yk","Tuz"], adimlar: "Sütü kaynatın, limon suyu ekleyip kesilmesini bekleyin, süzgeçten geçirin, tuz katın." },
+  "yoğurt": { baslik: "Ev Mayalı Yoğurt", sure: "8 saat", malzeme: ["Tam yağlı süt 1 litre","Doğal yoğurt 1 yk maya"], adimlar: "Sütü 85°C'ye ısıtın, 45°C'ye soğutun, mayayı ekleyin, sıcak yerde 6-8 saat bekletin." },
+  "süt": { baslik: "Ev Yapımı Badem Sütü", sure: "15 dk", malzeme: ["Badem 1 su bardağı","Su 1 litre","Hurma 2 adet (opsiyonel)"], adimlar: "Bademi gece ıslatın, suyla blenderden geçirin, süzün, hurma ile tatlandırın." },
+  "gofret": { baslik: "Ev Yulaflı Bar", sure: "20 dk", malzeme: ["Yulaf 1 sb","Bal 3 yk","Fıstık ezmesi 2 yk","Kuru meyve"], adimlar: "Malzemeleri karıştırın, tepsiye yayın, 180°C'de 15 dk pişirin, soğuyunca kesin." },
+  "kek": { baslik: "Hurmalı Tam Buğday Kek", sure: "40 dk", malzeme: ["Tam buğday unu 2 sb","Hurma püresi 1 sb","Yumurta 3 adet","Tereyağı 100g","Karbonat 1 tk"], adimlar: "Yaş malzemeleri karıştırın, una ekleyin, 180°C'de 30 dk pişirin." },
+  "bisküvi": { baslik: "Ev Yulaflı Kurabiye", sure: "25 dk", malzeme: ["Yulaf 1 sb","Tam buğday unu yarım sb","Muz 1 adet","Tarçın, ceviz"], adimlar: "Muz ezilip diğer malzemelerle karıştırılır, top yapılır, 180°C'de 15 dk pişirilir." },
+  "krem": { baslik: "Ev Doğal Yüz Kremi", sure: "10 dk", malzeme: ["Hindistan cevizi yağı 2 yk","Shea yağı 1 yk","E vitamini 5 damla","Lavanta yağı 3 damla"], adimlar: "Yağları benmari usulü eritin, soğurken çırpın, küçük kavanoza alın." },
+  "şampuan": { baslik: "Bitkisel Şampuan", sure: "5 dk", malzeme: ["Kastil sabun 100ml","Hindistan cevizi yağı 1 yk","Lavanta veya biberiye yağı 10 damla","Su 100ml"], adimlar: "Malzemeleri pompalı şişeye karıştırın. Saç tipinize göre yağ oranını ayarlayın." },
+  "sabun": { baslik: "Kastil Sabun (Sade)", sure: "1 gün kurutma", malzeme: ["Zeytinyağı 500ml","Su 200ml","Doğal kostik (NaOH) 70g","Lavanta yağı"], adimlar: "DİKKAT: NaOH suya yavaşça eklenir (tersi değil). Yağa katılır, kıvam alınca kalıba dökülür, 4 hafta kurutulur." },
+  "diş macunu": { baslik: "Karbonatlı Diş Macunu", sure: "3 dk", malzeme: ["Karbonat 2 yk","Hindistan cevizi yağı 2 yk","Nane yağı 5 damla"], adimlar: "Yağı eritin, karbonat ve nane ekleyin, küçük kavanoza alın. Diş fırçasına az miktarda alıp kullanın." },
+  "deodorant": { baslik: "Doğal Deodorant", sure: "5 dk", malzeme: ["Karbonat 2 yk","Mısır nişastası 2 yk","Hindistan cevizi yağı 3 yk","Çay ağacı yağı 5 damla"], adimlar: "Yağ eritip diğerleriyle karıştırın, küçük şişeye alın." },
+  "tereyağı": { baslik: "Ev Tereyağı", sure: "15 dk", malzeme: ["Tam yağlı krema 500ml","Tuz (opsiyonel)"], adimlar: "Kremayı mikserde 10-15 dk çırpın, tereyağı ve ayran ayrışır. Tereyağını soğuk suyla yıkayın, kalıba alın." },
+  "bal": { baslik: "Limonlu Bal Karışımı", sure: "2 dk", malzeme: ["Ham bal 1 yk","Taze limon suyu 1 yk","Sıcak su 200ml","Tarçın"], adimlar: "Sıcak suya bal ve limon ekleyin, karıştırın. Sabah aç karna için." },
+  "reçel": { baslik: "Şekersiz Ev Reçeli", sure: "30 dk", malzeme: ["Taze meyve 500g","Hurma 5-6 adet (tatlandırıcı)","Limon suyu 1 yk"], adimlar: "Meyveleri hurma ile kaynatın, blenderden geçirin, 15 dk daha kısık ateşte pişirin, kavanozlayın." },
+  "tuzlu balık": { baslik: "Fırın Mevsim Balığı", sure: "20 dk", malzeme: ["Taze balık 2 adet","Limon, zeytinyağı","Maydanoz, tuz, karabiber"], adimlar: "Balığı baharatlayın, alüminyum folyoya sarın, 200°C'de 15 dk pişirin." },
+  "tavuk": { baslik: "Köy Tavuğu Sote", sure: "25 dk", malzeme: ["Organik tavuk 500g","Soğan, sarımsak","Domates 2 adet","Zeytinyağı, baharat"], adimlar: "Soğanı yağda kavurun, tavuğu ekleyin, domatesle 20 dk pişirin." },
+  "ekmek": { baslik: "Ev Ekşi Maya Ekmeği", sure: "1 gün", malzeme: ["Tam buğday unu 500g","Su 350ml","Ekşi maya 100g","Tuz"], adimlar: "Malzemeleri yoğurun, 8 saat dinlendirin, şekil verin, 230°C'de 35 dk pişirin." },
+  "yumuşatıcı": { baslik: "Sirkeli Çamaşır Yumuşatıcı", sure: "2 dk", malzeme: ["Beyaz sirke 200ml","Lavanta yağı 10 damla"], adimlar: "Karıştırın, durulama bölmesine 50ml ekleyin. Sirke kokusu kurumayla geçer, yumuşaklık kalır." },
+  "fındık": { baslik: "Ev Çikolatalı Fındık Kreması", sure: "10 dk", malzeme: ["Çiğ fındık 200g","Saf kakao 3 yk","Bal 3 yk","Hindistan cevizi yağı 2 yk"], adimlar: "Fındığı blenderden püre yapın, diğerlerini ekleyin, kavanoza alın." },
+  "fıstık": { baslik: "Saf Fıstık Ezmesi", sure: "10 dk", malzeme: ["Çiğ yer fıstığı 300g","Tuz az miktar","Hindistan cevizi yağı 1 yk (opsiyonel)"], adimlar: "Fındığı 160°C'de 10 dk kavurun, blenderden krema kıvamına gelene kadar geçirin." },
+  "donut": { baslik: "Fırın Tarçınlı Çörek", sure: "30 dk", malzeme: ["Tam buğday unu 2 sb","Süt 1 sb","Yumurta 1","Bal 3 yk","Tarçın","Maya"], adimlar: "Hamuru yoğurun, 1 saat mayalayın, halka şekli verin, fırında 180°C'de 18 dk pişirin." },
+  "şipşak": { baslik: "Ev Yapımı Patates Cipsi", sure: "30 dk", malzeme: ["Patates 3 adet","Zeytinyağı 2 yk","Tuz, biberiye"], adimlar: "Patatesi çok ince dilimleyin, yağ ve baharatla karıştırın, 200°C'de 20 dk pişirin." },
+  "patates": { baslik: "Fırın Baharatlı Patates", sure: "30 dk", malzeme: ["Patates 4 adet","Zeytinyağı, kekik, biberiye, tuz"], adimlar: "Patatesi yıkayıp dilimleyin, yağ ve baharatla harmanlayın, 200°C'de 25 dk pişirin." },
+  "bira": { baslik: "Kombucha (Doğal Fermente İçecek)", sure: "7 gün", malzeme: ["Yeşil çay 1 litre","Şeker 100g","SCOBY mayası","Cam kavanoz"], adimlar: "Çayı şekerle demleyin, soğutun, SCOBY ekleyin, 7 gün kapalı bekletin." },
+  "şarap": { baslik: "Üzüm Şırası (Alkolsüz)", sure: "30 dk", malzeme: ["Taze üzüm 1kg","Su 500ml","Karanfil, tarçın"], adimlar: "Üzümü ezin, baharatlarla 25 dk kaynatın, süzün. Soğuk veya sıcak içilir." },
+  "konserve": { baslik: "Taze Konserve Domates", sure: "1 saat", malzeme: ["Taze domates 1kg","Tuz, sarımsak, fesleğen","Cam kavanoz"], adimlar: "Domatesi soyup doğrayın, baharatlarla 30 dk kaynatın, sıcakken kavanoza alın, kaynamış kapaklarla kapatın." },
+  "tuzlu": { baslik: "Az Tuzlu Lezzet Sosu", sure: "5 dk", malzeme: ["Limon suyu","Zeytinyağı","Taze otlar (kekik, fesleğen)","Sarımsak"], adimlar: "Malzemeleri karıştırın, salata, et veya sebzeye sürün. Tuz yerine lezzet katar." },
+  "kuru": { baslik: "Ev Kuru Meyve", sure: "8 saat", malzeme: ["Mevsim meyvesi","Limon suyu"], adimlar: "Meyveyi ince dilimleyin, limon suyu sürün, 60°C'de fırında 6-8 saat kurutun." },
+  "enerji": { baslik: "Ham Bal + Ceviz Enerji", sure: "2 dk", malzeme: ["Ham bal 1 yk","Ceviz 5-6 adet","Tarçın"], adimlar: "Cevizi balla karıştırın, tarçınla tatlandırın. 1 yk sabah aç karna enerji verir." },
+  "yapay tatlandırıcı": { baslik: "Stevia Limonata", sure: "5 dk", malzeme: ["Stevia yaprağı 5","Limon 2","Su 1 litre","Nane"], alıntı: "doğal", adimlar: "Stevia'yı suya katın, limon ekleyin, naneli buzlu servis edin." },
 
   // TEMİZLİK
   "klorin": { baslik: "Doğal Çok Amaçlı Temizleyici", sure: "2 dk", malzeme: ["Beyaz sirke 1 su bardağı","Su 1 su bardağı","Çay ağacı yağı 10 damla"], adimlar: "Malzemeleri sprey şişeye koyun. Yüzeylere püskürterek kullanın." },
@@ -4585,7 +4622,11 @@ function KameraOCR({ onMetin, onIptal }) {
  const blob = await new Promise(res => c.toBlob(res, "image/jpeg", 0.85));
  const fd = new FormData();
  fd.append("file", blob, "etiket.jpg");
+ // Türkçe + İngilizce çift dil (Türk ürün etiketlerinde her ikisi de geçer)
  fd.append("language", "tur");
+ fd.append("OCREngine", "2");
+ fd.append("detectOrientation", "true");
+ fd.append("scale", "true");
  fd.append("OCREngine", "2");
  fd.append("scale", "true");
  fd.append("isTable", "false");
@@ -4789,6 +4830,8 @@ export default function App() {
  const [aktifUye, setAktifUye] = useState(null);
  const [dogum, setDogum] = useState(() => { try { return localStorage.getItem("bd_dogum") || ""; } catch { return ""; } });
  const [cinsiyet, setCinsiyet] = useState(() => { try { return localStorage.getItem("bd_cinsiyet") || "Erkek"; } catch { return "Erkek"; } });
+ const [seslerAcik, setSeslerAcik] = useState(() => { try { return localStorage.getItem("bd_ses") !== "kapali"; } catch { return true; } });
+ const sesToggle = () => { const yeni = !seslerAcik; setSeslerAcik(yeni); try { localStorage.setItem("bd_ses", yeni ? "acik" : "kapali"); } catch {} if (!yeni && window.speechSynthesis) window.speechSynthesis.cancel(); };
  const [modal, setModal] = useState(null);
  const [raporAcik, setRaporAcik] = useState(false);
  const [marketAcik, setMarketAcik] = useState(false);
@@ -4808,6 +4851,7 @@ export default function App() {
  setAcik(null);
  setTaramaSayisi(taramaSayisi + 1);
  setEkran("sonuc");
+    if (!seslerAcik) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
       if (ac.state === "suspended") { ac.resume().catch(()=>{}); }
@@ -4989,6 +5033,13 @@ export default function App() {
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
  <button style={S.geriDaire} onClick={() => setEkran("ana")}>←</button>
  <span style={{ color: C.metin, fontWeight: 600, flex: 1 }}>{KATEGORILER[kategori].ad} Analiz Sonucu</span>
+ <button onClick={sesToggle} title={seslerAcik ? "Sesi kapat" : "Sesi aç"} aria-label="Ses aç/kapa" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${seslerAcik ? C.altin : C.s}`, background: seslerAcik ? C.altin + "15" : C.y2, color: seslerAcik ? C.altin : C.soluk, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, fontFamily: "Georgia,serif" }}>
+   {seslerAcik ? (
+     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+   ) : (
+     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+   )}
+ </button>
  {profil && <div style={{ border: `1px solid ${profil.renk}`, borderRadius: 20, padding: "4px 10px", fontSize: 11, color: profil.renk }}>{profil.burc}</div>}
  </div>
  <div style={{ background: `${C.altin}10`, borderBottom: `1px solid ${C.altin}20`, padding: "7px 16px", fontSize: 11, color: C.cok }}> EFSA · WHO · IARC arşivi. Tıbbi tavsiye değildir.</div>
@@ -5049,6 +5100,7 @@ export default function App() {
           }
         }}>Sonuçları Paylaş</button>
         <button style={{ ...S.anaBtn, background: "transparent", border: `1px solid ${C.s}`, color: C.soluk, marginTop: 8 }} onClick={() => {
+          if (!seslerAcik) { alert("Ses kapalı. Üstteki hoparlör ikonundan açabilirsin."); return; }
           if (!("speechSynthesis" in window)) { alert("Tarayıcınız sesli okumayı desteklemiyor."); return; }
           window.speechSynthesis.cancel();
           const kritikler = sonuclar.filter(r => r.risk === "kritik");
@@ -5477,6 +5529,47 @@ export default function App() {
  </div>
  )}
 
+ {/* MARKET (Yakında) */}
+ {sekme === "market" && (
+   <div>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>★ MARKET — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Doğal alternatif ürünleri tek tıkla sipariş edebileceğin Şifalı Market burada açılacak. Profilinin mizacına uygun ürünler, ev yapımı tarifler, sertifikalı organik markalar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}33` }}>
+         Aşağıda kategorilerin önizlemesi var. Yakında tıklanabilir olur.
+       </div>
+     </div>
+
+     <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 10 }}>KATEGORİLER</div>
+     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+       {[
+         ["İçecekler", "Şifalı su, ev yapımı limonata, bitki çayı"],
+         ["Gofretler", "Doğal kakao, ham bal, kuru meyve"],
+         ["Kekler", "Tam buğday, yulaf, hurma tatlandırıcı"],
+         ["Bisküviler", "Tahıl karışımı, şekersiz, sertifikalı"],
+         ["Sucuklar", "Geleneksel kuru, nitritsiz, baharatlı"],
+         ["Peynirler", "Çiğ süt, otlatılmış inek, koyun, keçi"],
+         ["Yoğurtlar", "Ev mayalı, tam yağlı, probiyotik"],
+         ["Süt Ürünleri", "Çiğ süt, kefir, ayran, kaymak"],
+         ["Yağlar", "Soğuk sıkım zeytinyağı, tereyağı"],
+         ["Baharatlar", "Organik, sertifikalı, GDO-suz"],
+         ["Tatlandırıcılar", "Bal, pekmez, hurma şurubu"],
+         ["Atıştırmalıklar", "Kuru meyve, çiğ kuruyemiş, çörek"],
+         ["Temizlik", "Karbonat, sirke, sabun, doğal deterjan"],
+         ["Kozmetik", "Organik krem, doğal sabun, bitkisel yağ"],
+       ].map(([ad, aciklama]) => (
+         <div key={ad} style={{ background: C.y, border: `1px dashed ${C.s}`, borderRadius: 12, padding: "12px 10px", position: "relative", opacity: 0.85 }}>
+           <div style={{ color: C.metin, fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{ad}</div>
+           <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.4 }}>{aciklama}</div>
+           <span style={{ position: "absolute", top: 6, right: 6, background: C.altin, color: "#1A1200", fontSize: 8, fontWeight: 700, padding: "1px 5px", borderRadius: 6 }}>YAKINDA</span>
+         </div>
+       ))}
+     </div>
+   </div>
+ )}
+
  {/* EŞREF */}
  {sekme === "esref" && (
  <div>
@@ -5544,11 +5637,12 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["esref", "", "Eşref"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label]) => (
- <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif" }}>
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
- <span style={{ fontSize: 13, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
+ <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
  {sekme === k && <div style={{ width: 20, height: 2, background: C.altin, borderRadius: 2 }} />}
+ {yakinda && <span style={{ position: "absolute", top: 2, right: 2, background: C.altin, color: "#1A1200", fontSize: 7, fontWeight: 700, padding: "1px 4px", borderRadius: 6, letterSpacing: 0.3 }}>YAKINDA</span>}
  </button>
  ))}
  </div>
