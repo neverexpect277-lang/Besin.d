@@ -5744,7 +5744,7 @@ export default function App() {
              <div key={key} style={{ marginBottom: 8, border:`1px solid ${C.s}`, borderRadius: 10, background: C.y, overflow:"hidden" }}>
                <button onClick={() => setMarketAcikBaslik(acik ? null : key)} style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", background:"transparent", border:"none", padding:"12px 14px", color: C.metin, fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"Georgia,serif" }}>
                  <span>{ad}</span>
-                 <span style={{ color: C.altin, fontSize:12 }}>{acik ? "▼" : "▶"}</span>
+                 <span style={{ color: C.altin, fontSize:16, fontWeight:700, lineHeight:1 }}>{acik ? "−" : "+"}</span>
                </button>
                {acik && (
                  <div style={{ padding: "0 10px 10px 10px", display:"grid", gap:6 }}>
