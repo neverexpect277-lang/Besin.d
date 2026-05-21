@@ -6008,6 +6008,7 @@ export default function App() {
        baslik: "TIBB-I NEBEVİ & GELENEKSEL",
        hizmetler: [
          { k: "makam", baslik: "Makam", sembol: "♪", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
+         { k: "asude", baslik: "Asude Frekans Modülü", sembol: "≈", ozet: "Osmanlı Darüşşifa protokolü: su sesi + makam ile akustik fıtrat uyumlaması." },
          { k: "esref", baslik: "Eşref Saatleri", sembol: "☉", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
          { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
          { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "🕌", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
@@ -6714,6 +6715,50 @@ export default function App() {
        </div>
        <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${C.altin}30` }}>
          Gelir paylaşımı modeliyle çalışan uzmanlar — kısa süreli, hızlı, kişisel danışmanlık.
+       </div>
+     </div>
+   </div>
+ )}
+
+ {sekme === "asude" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 8, letterSpacing: 0.5 }}>≈ ASUDE FREKANS MODÜLÜ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, fontStyle: "italic" }}>
+         Osmanlı Darüşşifa Protokolü: Su Sesi ve Frekans Uyumu
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KADİM GERÇEK</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Osmanlı tıbbında (özellikle <b>Edirne Sultan II. Bayezid Darüşşifası</b>'nda) ruhsal sıkıntılar, anksiyete ve zihinsel yorgunluklar asla kimyasalla uyuşturulmazdı. Hastanın şifası; merkeze yerleştirilen bir <b>şadırvanın su şırıltısı</b>, o kişinin mizacına uygun çalınan musiki makamları (<b>Nihavend, Rast</b> vb.) ve çiçek kokuları ile sağlanırdı. Mimari akustik, bu frekansların doğrudan beynin ilgili merkezine ulaşması için tasarlanmıştı.
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>İŞLEYİŞ MANTIĞI</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Su sesi, zihindeki "kaos" frekanslarını (<b>beta dalgalarını</b>) yavaşlatarak kişiyi fıtratındaki sakinlik seviyesine (<b>alfa/theta dalgalarına</b>) çeker. Bu, doğanın en saf akustik müdahalesidir.
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>UYGULAMADAKİ YERİ</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10 }}>
+         <b>Sistem Tepkisi:</b> Kullanıcının mizaç analizi (nabız/yüz okuma) sonucu <b>"Safra (Öfke/Aşırı Stres)"</b> veya <b>"Sevda (Melankoli)"</b> yüksek çıktığında, uygulama ekranda kırmızı uyarılar vermek yerine arka planda otomatik olarak Asude Frekans Modülü'nü devreye sokar.
+       </div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         <b>Fıtrat Uyarlaması:</b> Modern "meditasyon" uygulamalarının standart müzikleri yerine; doğrudan kullanıcının o anki mizacını dengeleyecek belirli bir frekanstaki <b>"Osmanlı Çeşmesi"</b> su sesi ve ona entegre edilmiş <b>mikro musiki makamları</b> çalar.
+       </div>
+     </div>
+
+     <div style={{ background: C.y2, border: `1px dashed ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>YASAL ZIRH</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Bu özelliğe asla "Psikolojik Tedavi" demiyoruz. Sistemdeki adı: <b>"Biyolojik Ritim Regülasyonu"</b> veya <b>"Akustik Fıtrat Uyumlaması"</b>dır. Hiçbir mahkeme "su sesi dinletmeyi" suç sayamaz.
        </div>
      </div>
    </div>
