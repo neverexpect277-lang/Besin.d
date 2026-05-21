@@ -6088,6 +6088,20 @@ export default function App() {
  </div>
  )}
 
+ {sekme === "uzman" && (
+   <div>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ GÖRÜNTÜLÜ UZMAN DANIŞMAN — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Analiz sonucunda kafan karıştıysa: bir <b>fitoterapi uzmanı</b> veya <b>diyetisyen</b> ile 10 dakikalık hızlı görüntülü görüşme. "Bu içerik benim için ne kadar riskli?" sorusunu doğrudan uzmana sor, kişiye özel yorum al.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${C.altin}30` }}>
+         Gelir paylaşımı modeliyle çalışan uzmanlar — kısa süreli, hızlı, kişisel danışmanlık.
+       </div>
+     </div>
+   </div>
+ )}
+
  {/* HAKKINDA */}
  {sekme === "hakkinda" && (
  <div>
@@ -6130,7 +6144,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["market", "", "Market", true], ["esref", "", "Eşref"], ["uzman", "", "Uzman", true], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
