@@ -4690,7 +4690,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
       const caps = track.getCapabilities ? track.getCapabilities() : {};
       if (caps.zoom) { setNativeZoom(true); setMaxZoom(Math.min(caps.zoom.max || 3, 5)); }
       if (videoRef.current) { videoRef.current.srcObject = s; videoRef.current.play(); }
-      tara();
+      kutuphaneleriYukle();
     } catch { setHata("Kamera açılamadı."); setDurum("hata"); }
   }
 
@@ -4768,40 +4768,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     await Promise.all(tasks);
   }
 
-  async function tara() {
-    await kutuphaneleriYukle();
-    if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
-      try {
-        const Z = window.ZXing;
-        const hints = new Map();
-        hints.set(Z.DecodeHintType.POSSIBLE_FORMATS, [
-          Z.BarcodeFormat.EAN_13, Z.BarcodeFormat.EAN_8,
-          Z.BarcodeFormat.UPC_A, Z.BarcodeFormat.UPC_E,
-          Z.BarcodeFormat.CODE_128, Z.BarcodeFormat.CODE_39,
-          Z.BarcodeFormat.QR_CODE, Z.BarcodeFormat.ITF,
-        ]);
-        const reader = new Z.BrowserMultiFormatReader(hints);
-        zxingRef.current = reader;
-        reader.decodeFromVideoElementContinuously(videoRef.current, (result) => {
-          if (result && result.getText) {
-            const text = result.getText();
-            try { reader.reset(); } catch {}
-            zxingRef.current = null;
-            kapat();
-            onSonuc(text);
-          }
-        });
-        return;
-      } catch {}
-    }
-    animRef.current = setInterval(async () => {
-      if (!videoRef.current || videoRef.current.readyState < 2) return;
-      const r = await detectGoruntu(videoRef.current);
-      if (r) { clearInterval(animRef.current); kapat(); onSonuc(r); }
-    }, 500);
-  }
-
-  function fotografCek() {
+  async function fotografCek() {
     if (!videoRef.current || !canvasRef.current) return;
     const v = videoRef.current, c = canvasRef.current;
     const vw = v.videoWidth, vh = v.videoHeight;
@@ -4811,12 +4778,15 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     c.width = vw; c.height = vh;
     c.getContext("2d").drawImage(v, cropX, cropY, cropW, cropH, 0, 0, vw, vh);
     const url = c.toDataURL("image/jpeg", 0.95);
-    setFotoUrl(url);
-    clearInterval(animRef.current);
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
     streamRef.current = null;
+    setFotoUrl(url);
     setKirp({ x: 25, y: 40, w: 50, h: 20 });
     setDurum("kirp");
+    // Önce tüm fotoyu otomatik dene — başarılı olursa kullanıcıyı kırpmaya hiç sokma
+    await kutuphaneleriYukle();
+    const r = await detectGoruntu(c);
+    if (r) onSonuc(r);
   }
 
   function konum(e) {
@@ -4922,7 +4892,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
         <span style={{ color:C.soluk, fontSize:13, minWidth:50 }}>Zoom {zoom.toFixed(1)}x</span>
         <input type="range" min="1" max={maxZoom} step="0.1" value={zoom} onChange={e => zoomUygula(parseFloat(e.target.value))} style={{ flex:1, accentColor:C.altin }} />
       </div>
-      <div style={{ textAlign:"center", marginTop:6, color:C.soluk, fontSize:12 }}>Kodu çerçeveye getir — otomatik okur veya foto çek</div>
+      <div style={{ textAlign:"center", marginTop:6, color:C.soluk, fontSize:12 }}>Kodu çerçeveye yakınlaştır, sonra Fotoğraf Çek'e bas</div>
       <div style={{ display:"flex", gap:8, marginTop:10 }}>
         <button onClick={() => { kapat(); onIptal(); }} style={{ flex:1, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:11, color:C.soluk, cursor:"pointer" }}>İptal</button>
         <button onClick={fotografCek} style={{ flex:2, background:C.altin, border:"none", borderRadius:10, padding:11, color:"#000", fontWeight:700, cursor:"pointer" }}>📷 Fotoğraf Çek</button>
