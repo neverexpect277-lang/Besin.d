@@ -6035,23 +6035,60 @@ export default function App() {
        ],
      },
    ];
+   const ORNEKLER = [
+     { k: "makam", baslik: "Makam", sembol: "◈" },
+     { k: "esref", baslik: "Eşref Saatleri", sembol: "◐" },
+     { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦" },
+     { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "⧾" },
+   ];
    return (
      <div>
-       <div style={S.kB}>HİZMETLER PANOSU</div>
-       <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
+       <div style={S.kB}>HİZMETLER — TASARIM ÖNİZLEMESİ</div>
+       <div style={S.ipucu}>3 farklı tasarım kalıbı, aynı 4 kartla gösterildi. Bana hangisini istediğini söyle; o kalır, diğerleri silinir ve tüm 23 modüle uygulanır.</div>
 
-       {HIZ_GRUPLAR.map(g => (
-         <div key={g.baslik} style={{ marginBottom: 18 }}>
-           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 10, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
-           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 8 }}>
-             {g.hizmetler.map(h => (
-               <button key={h.k} onClick={() => setSekme(h.k)} style={{ textAlign: "left", background: C.y, border: `1px solid ${C.s}`, borderTop: `3px solid ${C.altin}`, borderRadius: 10, padding: 12, cursor: "pointer", fontFamily: "Georgia,serif", position: "relative" }}>
-                 <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>{h.baslik}</div>
-               </button>
-             ))}
-           </div>
+       {/* VERSİYON 1 — iOS Ayarlar tarzı tek sütun liste */}
+       <div style={{ marginBottom: 28 }}>
+         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 1 — iOS AYARLAR TARZI</div>
+         <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, overflow: "hidden" }}>
+           {ORNEKLER.map((h, i) => (
+             <button key={h.k} onClick={() => setSekme(h.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", background: "none", border: "none", borderTop: i > 0 ? `1px solid ${C.s}` : "none", cursor: "pointer", fontFamily: "Georgia,serif", textAlign: "left" }}>
+               <span style={{ width: 30, height: 30, borderRadius: 8, background: C.altin + "22", color: C.altin, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{h.sembol}</span>
+               <span style={{ flex: 1, color: C.metin, fontSize: 15, fontWeight: 600 }}>{h.baslik}</span>
+               <span style={{ color: C.cok, fontSize: 18 }}>›</span>
+             </button>
+           ))}
          </div>
-       ))}
+       </div>
+
+       {/* VERSİYON 2 — App Store ikon grid (ortalanmış) */}
+       <div style={{ marginBottom: 28 }}>
+         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 2 — APP STORE TARZI</div>
+         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+           {ORNEKLER.map(h => (
+             <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 12px", cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+               <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
+               <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
+             </button>
+           ))}
+         </div>
+       </div>
+
+       {/* VERSİYON 3 — Stripe / Notion sol ikon 2 sütun */}
+       <div style={{ marginBottom: 28 }}>
+         <div style={{ background: C.altin, color: "#1A1200", fontSize: 11, fontWeight: 700, letterSpacing: 1, padding: "6px 10px", borderRadius: 6, display: "inline-block", marginBottom: 10 }}>VERSİYON 3 — STRIPE / NOTION TARZI</div>
+         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+           {ORNEKLER.map(h => (
+             <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", alignItems: "flex-start", gap: 10, textAlign: "left" }}>
+               <span style={{ width: 32, height: 32, borderRadius: 8, background: C.altin + "22", color: C.altin, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{h.sembol}</span>
+               <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, lineHeight: 1.3 }}>{h.baslik}</span>
+             </button>
+           ))}
+         </div>
+       </div>
+
+       <div style={{ marginTop: 20, padding: 14, background: C.y2, borderRadius: 10, color: C.soluk, fontSize: 12, fontStyle: "italic" }}>
+         Hangi versiyonu seçersen tüm 23 modüle uygulanacak. Bana "1", "2" veya "3" de.
+       </div>
      </div>
    );
  })()}
