@@ -4678,6 +4678,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
   const streamRef = React.useRef(null);
   const animRef = React.useRef(null);
   const trackRef = React.useRef(null);
+  const zxingRef = React.useRef(null);
 
   async function baslat() {
     try {
@@ -4700,22 +4701,26 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     }
   }
 
+  function kaynagiCanvasaCevir(source) {
+    if (source instanceof HTMLCanvasElement) return source;
+    const w = source.videoWidth || source.naturalWidth || source.width;
+    const h = source.videoHeight || source.naturalHeight || source.height;
+    if (!w || !h) return null;
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    c.getContext("2d").drawImage(source, 0, 0, w, h);
+    return c;
+  }
+
   async function detectGoruntu(source) {
-    // 1. ZXing — tüm tarayıcılar (iOS Safari dahil), EAN/UPC/Code128/Code39/QR
+    const canvas = kaynagiCanvasaCevir(source);
+    if (!canvas) return null;
+    // 1. ZXing — tüm tarayıcılar (iOS Safari dahil): EAN/UPC/Code128/Code39/QR
     if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
       try {
-        let canvas;
-        if (source instanceof HTMLCanvasElement) canvas = source;
-        else {
-          canvas = document.createElement("canvas");
-          const w = source.videoWidth || source.naturalWidth;
-          const h = source.videoHeight || source.naturalHeight;
-          if (!w || !h) return null;
-          canvas.width = w; canvas.height = h;
-          canvas.getContext("2d").drawImage(source, 0, 0, w, h);
-        }
         const reader = new window.ZXing.BrowserMultiFormatReader();
-        const result = await reader.decodeFromCanvas(canvas);
+        const url = canvas.toDataURL("image/png");
+        const result = await reader.decodeFromImageUrl(url);
         if (result && result.getText) return result.getText();
       } catch {}
     }
@@ -4723,20 +4728,13 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     if ("BarcodeDetector" in window) {
       try {
         const det = new window.BarcodeDetector({ formats: ["ean_13","ean_8","qr_code","code_128","code_39","upc_a","upc_e","itf"] });
-        const bc = await det.detect(source);
+        const bc = await det.detect(canvas);
         if (bc.length > 0) return bc[0].rawValue;
       } catch {}
     }
     // 3. jsQR — sadece QR fallback
     if (window.jsQR) {
-      const c = source instanceof HTMLCanvasElement ? source : document.createElement("canvas");
-      if (!(source instanceof HTMLCanvasElement)) {
-        const w = source.videoWidth || source.naturalWidth || source.width;
-        const h = source.videoHeight || source.naturalHeight || source.height;
-        c.width = w; c.height = h;
-        c.getContext("2d").drawImage(source, 0, 0, w, h);
-      }
-      const img = c.getContext("2d").getImageData(0, 0, c.width, c.height);
+      const img = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
       const code = window.jsQR(img.data, img.width, img.height);
       if (code) return code.data;
     }
@@ -4763,6 +4761,22 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   async function tara() {
     await kutuphaneleriYukle();
+    if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
+      try {
+        const reader = new window.ZXing.BrowserMultiFormatReader();
+        zxingRef.current = reader;
+        reader.decodeFromVideoElementContinuously(videoRef.current, (result) => {
+          if (result && result.getText) {
+            const text = result.getText();
+            try { reader.reset(); } catch {}
+            zxingRef.current = null;
+            kapat();
+            onSonuc(text);
+          }
+        });
+        return;
+      } catch {}
+    }
     animRef.current = setInterval(async () => {
       if (!videoRef.current || videoRef.current.readyState < 2) return;
       const r = await detectGoruntu(videoRef.current);
@@ -4845,7 +4859,11 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   function tekrarCek() { setFotoUrl(null); baslat(); }
 
-  function kapat() { clearInterval(animRef.current); if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop()); }
+  function kapat() {
+    clearInterval(animRef.current);
+    if (zxingRef.current) { try { zxingRef.current.reset(); } catch {} zxingRef.current = null; }
+    if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+  }
   React.useEffect(() => () => kapat(), []);
 
   if (durum === "hata") return <div style={{ textAlign:"center", padding:20 }}><div style={{ color:"#FF4444", marginBottom:12 }}>{hata}</div><button onClick={onIptal} style={{ background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 20px", color:C.soluk, cursor:"pointer" }}>Geri</button></div>;
