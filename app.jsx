@@ -6019,7 +6019,7 @@ export default function App() {
 
  {sekme === "goz" && (
    <div>
-     <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET</div>
+     <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı hekimleri "Göz ruhun aynasıdır" derdi. İridoloji ilminde iris vücudun haritasıdır; Kıyâfetnâme (İlm-i Sîmâ) geleneğinde yüz çizgileri organ durumunu yansıtır.</div>
 
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
