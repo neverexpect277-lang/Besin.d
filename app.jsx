@@ -4669,7 +4669,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
   const [maxZoom, setMaxZoom] = React.useState(3);
   const [nativeZoom, setNativeZoom] = React.useState(false);
   const [fotoUrl, setFotoUrl] = React.useState(null);
-  const [kirp, setKirp] = React.useState({ x: 5, y: 30, w: 90, h: 40 });
+  const [kirp, setKirp] = React.useState({ x: 25, y: 40, w: 50, h: 20 });
   const [sur, setSur] = React.useState(null);
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
@@ -4753,7 +4753,7 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
     clearInterval(animRef.current);
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
     streamRef.current = null;
-    setKirp({ x: 5, y: 30, w: 90, h: 40 });
+    setKirp({ x: 25, y: 40, w: 50, h: 20 });
     setDurum("kirp");
   }
 
@@ -4801,14 +4801,16 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   if (durum === "kirp") return (
     <div style={{ padding:4 }}>
-      <div ref={kirpRef} onMouseMove={hareket} onMouseUp={bitir} onMouseLeave={bitir} onTouchMove={hareket} onTouchEnd={bitir} style={{ position:"relative", width:"100%", borderRadius:12, overflow:"hidden", userSelect:"none", touchAction:"none" }}>
-        <img ref={fotoRef} src={fotoUrl} style={{ width:"100%", display:"block" }} alt="" />
+      <div style={{ display:"flex", justifyContent:"center", background:"#000", borderRadius:12, overflow:"hidden" }}>
+      <div ref={kirpRef} onMouseMove={hareket} onMouseUp={bitir} onMouseLeave={bitir} onTouchMove={hareket} onTouchEnd={bitir} style={{ position:"relative", display:"inline-block", userSelect:"none", touchAction:"none", lineHeight:0 }}>
+        <img ref={fotoRef} src={fotoUrl} style={{ display:"block", maxHeight:"45vh", maxWidth:"100%", height:"auto", width:"auto" }} alt="" />
         <div style={{ position:"absolute", inset:0, background:"#000000A0", clipPath:`polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${kirp.y}%, ${kirp.x}% ${kirp.y}%, ${kirp.x}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y}%, 0 ${kirp.y}%)` }} />
         <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`2px solid ${C.altin}`, borderRadius:6, cursor:"move", boxSizing:"border-box" }}>
           <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-10, top:"40%", width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ew-resize" }} />
           <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"40%", bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ns-resize" }} />
           <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-10, bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"nwse-resize" }} />
         </div>
+      </div>
       </div>
       {hata && <div style={{ color:"#FF8866", textAlign:"center", marginTop:8, fontSize:13 }}>{hata}</div>}
       <div style={{ textAlign:"center", marginTop:6, color:C.soluk, fontSize:12 }}>Çerçeveyi kod üzerine getir, köşelerden boyutlandır</div>
@@ -4822,9 +4824,9 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   if (durum === "aktif") return (
     <div style={{ position:"relative" }}>
-      <div style={{ position:"relative", borderRadius:12, overflow:"hidden", background:"#000" }}>
-        <video ref={videoRef} style={{ width:"100%", maxHeight:340, objectFit:"cover", display:"block", transform: nativeZoom ? "none" : `scale(${zoom})`, transformOrigin:"center" }} playsInline muted />
-        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:"75%", height:90, border:`2px solid ${C.altin}`, borderRadius:8, boxShadow:"0 0 0 9999px rgba(0,0,0,0.35)" }} /></div>
+      <div style={{ position:"relative", borderRadius:12, overflow:"hidden", background:"#000", height:"60vh", maxHeight:520 }}>
+        <video ref={videoRef} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", transform: nativeZoom ? "none" : `scale(${zoom})`, transformOrigin:"center" }} playsInline muted />
+        <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:"88%", height:160, border:`2px solid ${C.altin}`, borderRadius:8, boxShadow:"0 0 0 9999px rgba(0,0,0,0.45)" }} /></div>
       </div>
       <canvas ref={canvasRef} style={{ display:"none" }} />
       <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:10, padding:"0 4px" }}>
