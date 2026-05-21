@@ -6006,6 +6006,7 @@ export default function App() {
          { k: "tohum", baslik: "Milli Tohum", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
          { k: "uyku", baslik: "Uyku Kalkanı", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
          { k: "koku", baslik: "Dijital Attar", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
+         { k: "rota", baslik: "Evliya Çelebi Rotası", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
        ],
      },
      {
@@ -6019,6 +6020,7 @@ export default function App() {
          { k: "dopamin", baslik: "Dopamin Skoru", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
          { k: "zihin", baslik: "Zihni İnşa", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
          { k: "ses", baslik: "Ses Frekans Analizi", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
+         { k: "nabiz", baslik: "İlm-i Nabız", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
        ],
      },
      {
@@ -6053,6 +6055,64 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "rota" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>EVLİYA ÇELEBİ ROTASI — ŞİFA HARİTASI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Şifa haritası sadece dükkanlarla sınırlı kalmaz: konumuna göre çevredeki tarihi şifahaneler, doğal kaynak suları ve kadim aktarlar mistik bir rota olarak sunulur.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ KONUM BAZLI KADİM ROTA — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         GPS konumun + günlük mizaç durumun → çevredeki <b>tarihi darüşşifa, kaynak suyu, kadim aktar</b> önerileri.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "500 metre ötede tarihi bir darüşşifa var — mimarisindeki akustik, bugün ihtiyacın olan Saba makamını fısıldar."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Mistik + turistik + şifa odaklı bir derinlik: yerel mirası yeniden keşfedersin.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "nabiz" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>İLM-İ NABIZ — MİZAÇ TEŞHİSİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı hekimleri nabzı 10 farklı parametreye göre okurdu. Yapay zeka, telefonun sensörü ile nabzı analiz edip mizaç bozulmasını yorumlar.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: "#FF4444", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ SAFRAVİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Hızlı ve sert (Ateş elementi). AI tespit ettiğinde: <i>"Hararet artmış — tarattığın baharatlı gıda tansiyonunu tetikler."</i>
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: "#FFD700", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ DEMEVİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Dolu ve kuvvetli. AI tespit ettiğinde: <i>"Kan değerlerin yüksek olabilir — bugün ağır etli gıdalardan uzak dur, hacamat vaktin yaklaşmış olabilir."</i>
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: "#4488FF", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ BALGAMİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Yavaş ve derinde. AI tespit ettiğinde: <i>"Metabolizman yavaşlamış, uyuşukluk var — zencefil gibi ısıtıcı gıdalara yönel."</i>
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "koku" && (
    <div>
