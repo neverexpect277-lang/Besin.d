@@ -5623,6 +5623,26 @@ export default function App() {
 
  {mod === "kamera" ? (
  <KameraOCR onMetin={m => { setTxt(m); setMod("metin"); yapAnaliz(m); }} onIptal={() => setMod("metin")} />
+ ) : mod === "barkod" ? (
+ <BarkodOkuyu
+   onSonuc={async (barkod) => {
+     setMod("metin");
+     try {
+       const r = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barkod}.json`);
+       const d = await r.json();
+       if (d.status === 1 && d.product) {
+         const ad = d.product.product_name_tr || d.product.product_name || d.product.product_name_en || "";
+         const ic = d.product.ingredients_text_tr || d.product.ingredients_text || d.product.ingredients_text_en || "";
+         const tam = (ad ? ad + "\n" : "") + ic;
+         if (tam.trim()) { setTxt(tam); yapAnaliz(tam); return; }
+       }
+       setTxt(`Barkod: ${barkod}\n\nBu ürün OpenFoodFacts'te bulunamadı. Lütfen içindekiler listesini elle yapıştırın.`);
+     } catch {
+       setTxt(`Barkod: ${barkod}\n\nİnternete bağlanılamadı. İçindekileri elle yapıştırın.`);
+     }
+   }}
+   onIptal={() => setMod("metin")}
+ />
  ) : mod === "fotoisim" ? (
  <FotoIsim kategoriAd={KATEGORILER[kategori].ad} onAra={(isim) => { setTxt(isim); yapAnaliz(isim); }} onIptal={() => setMod("metin")} />
  ) : (
