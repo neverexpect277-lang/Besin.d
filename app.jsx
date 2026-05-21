@@ -3958,22 +3958,69 @@ const DOGAL_TARIF = {
 /* ══════════════════════════════════════════════
    3D ORGAN PUAN SİSTEMİ
    ══════════════════════════════════════════════ */
+// Her organ için anatomik konum, gerçek şekil ve renk (atlas tarzı)
+// shape: SVG path data, cx/cy: etkileşim merkezi, r: tıklama bölgesi yarıçapı
 const ORGAN_POZISYON = {
-  "Beyin":     { x: 50,   y: 16,   r: 6,   label: "Beyin" },
-  "Diş":       { x: 50,   y: 32,   r: 2.5, label: "Diş" },
-  "Tiroid":    { x: 50,   y: 41,   r: 2.5, label: "Tiroid" },
-  "Solunum":   { x: 50,   y: 50,   r: 3,   label: "Solunum" },
-  "Akciğer":   { x: 36,   y: 62,   r: 5,   label: "Akciğer" },
-  "Kalp":      { x: 56,   y: 64,   r: 5,   label: "Kalp" },
-  "Kan":       { x: 64,   y: 78,   r: 3.5, label: "Kan" },
-  "Mide":      { x: 42,   y: 90,   r: 4.5, label: "Mide" },
-  "Karaciğer": { x: 62,   y: 90,   r: 6,   label: "Karaciğer" },
-  "Pankreas":  { x: 50,   y: 100,  r: 3,   label: "Pankreas" },
-  "Böbrek":    { x: 34,   y: 104,  r: 4,   label: "Böbrek" },
-  "Hormon":    { x: 66,   y: 104,  r: 3,   label: "Hormon" },
-  "Bağırsak":  { x: 50,   y: 118,  r: 6.5, label: "Bağırsak" },
-  "Sinir":     { x: 19,   y: 70,   r: 3.5, label: "Sinir" },
-  "Cilt":      { x: 81,   y: 70,   r: 3.5, label: "Cilt" },
+  "Beyin": {
+    x: 50, y: 16, r: 7, label: "Beyin", fill: "#F2B8B8",
+    path: "M44 10 Q41 13 41 17 Q41 22 47 23 L47 21 Q44 20 44 17 Q44 14 46 12 Q48 11 50 11 Q52 11 54 12 Q56 14 56 17 Q56 20 53 21 L53 23 Q59 22 59 17 Q59 13 56 10 Q53 8 50 8 Q47 8 44 10 Z M46 14 Q48 16 50 14 Q52 16 54 14 M45 17 Q48 19 50 17 Q52 19 55 17"
+  },
+  "Diş": {
+    x: 50, y: 32, r: 3, label: "Diş", fill: "#FFFCF0",
+    path: "M45 30 L55 30 L55 33 L53 33 L53 32 L51 32 L51 33 L49 33 L49 32 L47 32 L47 33 L45 33 Z"
+  },
+  "Tiroid": {
+    x: 50, y: 41, r: 3, label: "Tiroid", fill: "#D86060",
+    path: "M46 40 Q44 42 46 43 Q48 44 50 43 Q52 44 54 43 Q56 42 54 40 Q52 39 50 40 Q48 39 46 40 Z"
+  },
+  "Solunum": {
+    x: 50, y: 50, r: 2.5, label: "Solunum", fill: "#E89890",
+    path: "M48 44 L48 56 Q50 57 52 56 L52 44 Q50 43 48 44 Z"
+  },
+  "Akciğer": {
+    x: 36, y: 60, r: 6, label: "Akciğer", fill: "#F8A8A0",
+    path: "M30 53 Q25 60 26 70 Q28 76 35 75 Q40 73 41 67 L41 56 Q39 52 35 52 Q32 52 30 53 Z M59 56 L59 67 Q60 73 65 75 Q72 76 74 70 Q75 60 70 53 Q68 52 65 52 Q61 52 59 56 Z"
+  },
+  "Kalp": {
+    x: 55, y: 63, r: 5, label: "Kalp", fill: "#D02838",
+    path: "M50 61 Q47 58 50 56 Q53 56 54 60 Q55 56 58 56 Q61 58 58 62 Q56 67 54 70 Q52 67 50 61 Z"
+  },
+  "Kan": {
+    x: 50, y: 73, r: 3, label: "Kan", fill: "#B01828",
+    path: "M48 70 L48 80 M52 70 L52 80 M50 70 L50 80"
+  },
+  "Karaciğer": {
+    x: 60, y: 88, r: 6, label: "Karaciğer", fill: "#8A2818",
+    path: "M48 83 Q47 87 49 91 L70 94 Q73 92 73 88 Q73 84 70 82 L52 81 Q49 81 48 83 Z"
+  },
+  "Mide": {
+    x: 40, y: 88, r: 5, label: "Mide", fill: "#E89080",
+    path: "M38 83 Q34 86 35 92 Q37 97 43 96 Q47 94 47 90 L47 85 Q45 82 42 82 Q40 82 38 83 Z"
+  },
+  "Pankreas": {
+    x: 50, y: 98, r: 3, label: "Pankreas", fill: "#E8B860",
+    path: "M40 97 Q44 95 50 97 Q56 95 60 98 Q56 100 50 99 Q44 100 40 97 Z"
+  },
+  "Böbrek": {
+    x: 33, y: 103, r: 4, label: "Böbrek", fill: "#7C1818",
+    path: "M30 99 Q26 102 28 108 Q31 111 34 110 Q36 108 36 105 L36 102 Q35 99 32 99 Q31 99 30 99 Z M64 102 L64 105 Q64 108 66 110 Q69 111 72 108 Q74 102 70 99 Q66 98 64 102 Z"
+  },
+  "Hormon": {
+    x: 67, y: 99, r: 2.5, label: "Hormon", fill: "#F0D050",
+    path: "M65 97 L69 97 L67 100 Z M33 97 L29 97 L31 100 Z"
+  },
+  "Bağırsak": {
+    x: 50, y: 118, r: 7, label: "Bağırsak", fill: "#E8A890",
+    path: "M37 108 Q34 112 36 116 Q40 118 44 116 L44 120 Q40 122 36 124 Q34 128 38 130 Q44 132 50 130 Q56 132 62 130 Q66 128 64 124 Q60 122 56 120 L56 116 Q60 118 64 116 Q66 112 63 108 Q58 106 50 108 Q42 106 37 108 Z"
+  },
+  "Sinir": {
+    x: 19, y: 70, r: 3.5, label: "Sinir", fill: "#A890C8",
+    path: "M19 60 L19 80 M16 64 L22 64 M15 70 L23 70 M16 76 L22 76"
+  },
+  "Cilt": {
+    x: 81, y: 70, r: 3.5, label: "Cilt", fill: "#F8D4B0",
+    path: "M78 66 Q76 70 78 74 Q82 76 84 74 Q86 70 84 66 Q82 64 81 64 Q79 64 78 66 Z"
+  },
 };
 
 // Cinsiyete göre anatomik vücut silüeti (viewBox 100x200)
@@ -4055,39 +4102,57 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
         <svg viewBox="0 0 100 200" style={{ width: "100%", maxHeight: 460, filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.4))" }}>
           <defs>
             <linearGradient id="vucutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#1c1c2e"/>
-              <stop offset="50%" stopColor="#14141f"/>
-              <stop offset="100%" stopColor="#0d0d18"/>
+              <stop offset="0%" stopColor="#F5DCC0"/>
+              <stop offset="50%" stopColor="#E8C4A0"/>
+              <stop offset="100%" stopColor="#C8A480"/>
             </linearGradient>
-            {Object.entries(ORGAN_POZISYON).map(([k]) => (
-              <radialGradient key={k} id={`g${k}`} cx="40%" cy="35%">
-                <stop offset="0%" stopColor={organRenk(k)} stopOpacity="0.95"/>
-                <stop offset="100%" stopColor={organRenk(k)} stopOpacity="0.35"/>
-              </radialGradient>
-            ))}
+            <linearGradient id="vucutGoglge" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0.15)"/>
+              <stop offset="100%" stopColor="rgba(0,0,0,0.25)"/>
+            </linearGradient>
           </defs>
 
           {/* Anatomik vücut silüeti (cinsiyete göre) */}
           <path d={vucutPath} fill="url(#vucutGrad)" stroke="#3a3a55" strokeWidth="0.6" strokeLinejoin="round"/>
 
-          {/* Organlar - gerçek anatomik konumlarda */}
+          {/* Anatomik organlar - gerçek şekil ve renklerle */}
           {Object.entries(ORGAN_POZISYON).map(([k, p]) => {
-            const renk = organRenk(k);
-            const puan = organPuan(k);
+            const riskRenk = organRenk(k);
+            const hasar = organHasar[k];
+            const hasRisk = hasar && (hasar.kritik > 0 || hasar.yuksek > 0);
+            const isKritik = hasar && hasar.kritik > 0;
             const aktif = secili === k;
             return (
               <g key={k} onClick={() => setSecili(aktif ? null : k)} style={{ cursor: "pointer" }}>
-                <circle cx={p.x} cy={p.y} r={p.r + 1.2} fill="none" stroke={renk} strokeWidth="0.3" strokeOpacity="0.35"/>
-                <circle cx={p.x} cy={p.y} r={p.r} fill={`url(#g${k})`} stroke={renk} strokeWidth={aktif ? 0.7 : 0.35}
-                  style={{ filter: `drop-shadow(0 0 ${puan < 60 ? 2.5 : 1}px ${renk})` }}/>
-                <circle cx={p.x - p.r*0.3} cy={p.y - p.r*0.3} r={p.r*0.25} fill="white" fillOpacity="0.35"/>
-                {organHasar[k]?.kritik > 0 && (
-                  <circle cx={p.x} cy={p.y} r={p.r + 1.5} fill="none" stroke={renk} strokeWidth="0.5">
-                    <animate attributeName="r" values={`${p.r};${p.r+3};${p.r}`} dur="1.5s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.7;0;0.7" dur="1.5s" repeatCount="indefinite"/>
+                {/* Anatomik organ şekli, kendi gerçek rengiyle */}
+                {p.path ? (
+                  <path d={p.path} fill={p.fill || "#888"} stroke="#2A1010" strokeWidth="0.3"
+                    fillOpacity={hasRisk ? 0.95 : 0.82}
+                    style={{ filter: isKritik ? `drop-shadow(0 0 2px ${riskRenk})` : `drop-shadow(0 0.5px 1px rgba(0,0,0,0.4))` }}/>
+                ) : (
+                  <circle cx={p.x} cy={p.y} r={p.r} fill={p.fill || "#888"} fillOpacity={hasRisk ? 0.95 : 0.82} stroke="#2A1010" strokeWidth="0.25"/>
+                )}
+                {/* Risk halkası - dış parlama */}
+                {hasRisk && (
+                  <circle cx={p.x} cy={p.y} r={p.r + 1.8} fill="none" stroke={riskRenk} strokeWidth="0.7" strokeOpacity="0.85">
+                    {isKritik && (
+                      <>
+                        <animate attributeName="r" values={`${p.r+1};${p.r+3.5};${p.r+1}`} dur="1.5s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.5s" repeatCount="indefinite"/>
+                      </>
+                    )}
                   </circle>
                 )}
-                <text x={p.x} y={p.y + p.r + 2.8} textAnchor="middle" fontSize="2.6" fill={aktif ? renk : "#d8d8e0"} fontWeight={aktif ? 700 : 500} fontFamily="Georgia,serif" stroke="#000" strokeWidth="0.15" paintOrder="stroke">{p.label}</text>
+                {/* Seçili vurgu */}
+                {aktif && (
+                  <circle cx={p.x} cy={p.y} r={p.r + 2.5} fill="none" stroke="#C9A84C" strokeWidth="0.45" strokeDasharray="1 0.8"/>
+                )}
+                {/* Tıklama alanı (geniş, görünmez) */}
+                <circle cx={p.x} cy={p.y} r={p.r + 2} fill="transparent"/>
+                {/* Etiket */}
+                <text x={p.x} y={p.y + p.r + 3.2} textAnchor="middle" fontSize="2.5"
+                  fill={aktif ? "#C9A84C" : "#e8e8f0"} fontWeight={aktif ? 700 : 500}
+                  fontFamily="Georgia,serif" stroke="#000" strokeWidth="0.25" paintOrder="stroke">{p.label}</text>
               </g>
             );
           })}
