@@ -6007,6 +6007,7 @@ export default function App() {
          { k: "uyku", baslik: "Uyku Kalkanı", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
          { k: "koku", baslik: "Dijital Attar", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
          { k: "rota", baslik: "Evliya Çelebi Rotası", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
+         { k: "yildiz", baslik: "Yıldız Saati", ozet: "Ay fazı ve gezegen saatlerine göre kan akışı, hacamat vakti." },
        ],
      },
      {
@@ -6023,6 +6024,7 @@ export default function App() {
          { k: "nabiz", baslik: "İlm-i Nabız", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
          { k: "hrv", baslik: "Duygusal Nabız (HRV)", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
          { k: "nefes", baslik: "Dijital Burun", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
+         { k: "sesrengi", baslik: "Sesin Rengi (Bio-Acoustic)", ozet: "Ses frekans/tını analizi ile çakra ve organ tıkanıklığı tespiti." },
        ],
      },
      {
@@ -6057,6 +6059,67 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "sesrengi" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>SESİN RENGİ — BIO-ACOUSTIC ANALİZ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>İnsan sesi ruhun röntgenidir. Frekans aralığı, tını ve gizli titremeler organ-çakra tıkanıklığını gösterir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ SESLE TEŞHİS — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         "Bugün nasılım?" diye soruşunda AI sesindeki frekans aralığını, tınısını ve gizli titremeleri analiz eder.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ SESLE TEDAVİ (REZONANS) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Tespit edilen tıkanıklığa karşı kişiselleştirilmiş <b>makam, zikir veya ilahi</b> rezonans reçetesi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sesindeki frekans düşük — tiroid (boğaz çakrası / gudde-i teyroid) bölgende enerji tıkanıklığı var. Rast Makamı'nda zikir/ilahi ile o bölgeyi rezonansa getir."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "yildiz" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>YILDIZ SAATİ & KAN AKIŞI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da ameliyatlar bile Ay'ın konumuna göre yapılırdı. Vücut sıvıları med-cezir etkisinde, kan akışı gezegen saatleriyle bağlantılı.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ AY FAZI & MED-CEZİR — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Damardaki kan akış hızı ve sıvı dengesi, o anki Ay fazıyla eşleştirilir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bugün Dolunay — vücudunda ödem artıyor, kanın daha akışkan. Hacamat için en yüksek şifa vakti."
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ GEZEGEN SAATLERİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Merkür, Venüs, Mars, Jüpiter... her gezegenin saatine göre sinir sistemi/iletim/iştah yönlendirmesi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Merkür retrosu — sinir sisteminin elektriksel iletimi yavaş. Ağır gıdalardan kaçın, zihni bulandırma."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "hrv" && (
    <div>
