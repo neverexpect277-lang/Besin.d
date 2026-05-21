@@ -4758,24 +4758,40 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
   }
 
   function konum(e) {
-    const t = e.touches ? e.touches[0] : e;
+    const t = e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e);
     const r = kirpRef.current.getBoundingClientRect();
     return { x: ((t.clientX - r.left) / r.width) * 100, y: ((t.clientY - r.top) / r.height) * 100 };
   }
-  function basla(tip) { return (e) => { e.preventDefault(); setSur({ tip, baslangic: konum(e), ilk: { ...kirp } }); }; }
-  function hareket(e) {
-    if (!sur) return;
-    e.preventDefault();
-    const p = konum(e);
-    const dx = p.x - sur.baslangic.x, dy = p.y - sur.baslangic.y;
-    const k = { ...sur.ilk };
-    if (sur.tip === "tasi") { k.x = Math.max(0, Math.min(100 - k.w, k.x + dx)); k.y = Math.max(0, Math.min(100 - k.h, k.y + dy)); }
-    else if (sur.tip === "sag") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); }
-    else if (sur.tip === "alt") { k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
-    else if (sur.tip === "saaalt") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
-    setKirp(k);
-  }
+  function basla(tip) { return (e) => { e.preventDefault(); e.stopPropagation(); setSur({ tip, baslangic: konum(e), ilk: { ...kirp } }); }; }
   function bitir() { setSur(null); }
+
+  React.useEffect(() => {
+    if (!sur) return;
+    const move = (e) => {
+      if (e.cancelable) e.preventDefault();
+      const p = konum(e);
+      const dx = p.x - sur.baslangic.x, dy = p.y - sur.baslangic.y;
+      const k = { ...sur.ilk };
+      if (sur.tip === "tasi") { k.x = Math.max(0, Math.min(100 - k.w, k.x + dx)); k.y = Math.max(0, Math.min(100 - k.h, k.y + dy)); }
+      else if (sur.tip === "sag") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); }
+      else if (sur.tip === "alt") { k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
+      else if (sur.tip === "saaalt") { k.w = Math.max(15, Math.min(100 - k.x, k.w + dx)); k.h = Math.max(15, Math.min(100 - k.y, k.h + dy)); }
+      setKirp(k);
+    };
+    const end = () => bitir();
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", end);
+    window.addEventListener("touchmove", move, { passive: false });
+    window.addEventListener("touchend", end);
+    window.addEventListener("touchcancel", end);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", end);
+      window.removeEventListener("touchmove", move);
+      window.removeEventListener("touchend", end);
+      window.removeEventListener("touchcancel", end);
+    };
+  }, [sur]);
 
   async function kirpVeTara() {
     if (!fotoRef.current) return;
@@ -4801,14 +4817,14 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
 
   if (durum === "kirp") return (
     <div style={{ padding:4 }}>
-      <div style={{ display:"flex", justifyContent:"center", background:"#000", borderRadius:12, overflow:"hidden" }}>
-      <div ref={kirpRef} onMouseMove={hareket} onMouseUp={bitir} onMouseLeave={bitir} onTouchMove={hareket} onTouchEnd={bitir} style={{ position:"relative", display:"inline-block", userSelect:"none", touchAction:"none", lineHeight:0 }}>
-        <img ref={fotoRef} src={fotoUrl} style={{ display:"block", maxHeight:"45vh", maxWidth:"100%", height:"auto", width:"auto" }} alt="" />
-        <div style={{ position:"absolute", inset:0, background:"#000000A0", clipPath:`polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${kirp.y}%, ${kirp.x}% ${kirp.y}%, ${kirp.x}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y}%, 0 ${kirp.y}%)` }} />
-        <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`2px solid ${C.altin}`, borderRadius:6, cursor:"move", boxSizing:"border-box" }}>
-          <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-10, top:"40%", width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ew-resize" }} />
-          <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"40%", bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"ns-resize" }} />
-          <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-10, bottom:-10, width:20, height:20, background:C.altin, borderRadius:"50%", cursor:"nwse-resize" }} />
+      <div style={{ textAlign:"center", background:"#000", borderRadius:12, overflow:"hidden" }}>
+      <div ref={kirpRef} style={{ position:"relative", display:"inline-block", width:"fit-content", verticalAlign:"top", userSelect:"none", touchAction:"none", lineHeight:0 }}>
+        <img ref={fotoRef} src={fotoUrl} style={{ display:"block", maxHeight:"45vh", maxWidth:"100%", height:"auto", width:"auto", pointerEvents:"none" }} alt="" draggable={false} />
+        <div style={{ position:"absolute", inset:0, background:"#000000A0", clipPath:`polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${kirp.y}%, ${kirp.x}% ${kirp.y}%, ${kirp.x}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y}%, 0 ${kirp.y}%)`, pointerEvents:"none" }} />
+        <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`2px solid ${C.altin}`, borderRadius:6, cursor:"move", boxSizing:"border-box", touchAction:"none" }}>
+          <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-14, top:"50%", marginTop:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"ew-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
+          <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"50%", bottom:-14, marginLeft:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"ns-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
+          <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-14, bottom:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"nwse-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
         </div>
       </div>
       </div>
