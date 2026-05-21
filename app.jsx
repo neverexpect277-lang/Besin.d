@@ -6003,6 +6003,8 @@ export default function App() {
          { k: "esref", baslik: "Eşref Saatleri", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
          { k: "burclar", baslik: "Burçlar & Mizaç", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
          { k: "rabita", baslik: "Râbıta-i Şifa", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
+         { k: "tohum", baslik: "Milli Tohum", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
+         { k: "uyku", baslik: "Uyku Kalkanı", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
        ],
      },
      {
@@ -6014,6 +6016,7 @@ export default function App() {
          { k: "bahce", baslik: "Akıllı Bahçe", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
          { k: "emf", baslik: "EMF Kalkanı", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
          { k: "dopamin", baslik: "Dopamin Skoru", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
+         { k: "zihin", baslik: "Zihni İnşa", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
        ],
      },
      {
@@ -6048,6 +6051,112 @@ export default function App() {
      </div>
    );
  })()}
+
+ {sekme === "tohum" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>MİLLİ TOHUM — GENETİK SADAKAT KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Hibrit ve GDO'lu tohumlar bedenin yabancı olarak algıladığı genetik yapı taşır. Atalık tohumlar (Karakılçık, Siyez vb) Anadolu'nun bin yıllık birikimidir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ GENETİK SADAKAT PUANI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Tarattığın ürünün tohum kökeni analiz edilir: <b>hibrit / GDO / atalık</b>. Hücrelerinin tanıdığı tohumdan mı geliyor?
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bu ekmek senin genetik kodunla savaş halinde — vücudun yabancı istilacı olarak algılayıp enflamasyon başlatıyor. Yerel üreticinin Karakılçık veya Siyez buğdayına dön."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yerel üretici ağı ile atalık tohumlu ürünleri sepete ekleme — tarım kartellerine karşı kalkan.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "zihin" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>ZİHNİ İNŞA & ODAKLANMA KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Dijital dünya çocukların ve yetişkinlerin dikkat süresini 8 saniyeye düşürdü. Odaklanamayan zihin, sorgulayamaz. Üç koldan kalkan: ekran, beslenme, öğrenme.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ DİJİTAL DOPAMİN & EKRAN ZEHRİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Ekran süresi ve içeriğin <b>kare hızı (frame rate)</b> ölçülür. Hızlı sahne geçişleri çocukta GABA dengesini bozar, hiperaktif (safravi) döngüye sokar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Ekran kapat, lavantalı göz yastığı + 15 dk Rast Makamı dinlet, zihni toprak fazına çek.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ BESLENME ↔ ZEKA (IQ/EQ) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kantin gofretleri ve katkı bombaları sinapslar arası iletimi yavaşlatır. Sınav başarısızlığının kökeni "tembellik" değil, kandaki alüminyum ve şeker yükü.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ ÖĞRENME MİZAÇLARI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Her çocuk farklı öğrenir: görerek (demevi), duyarak (safravi), dokunarak (balgami). Mizacına göre ortam ve yöntem öner.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sevdavi mizaç — baskı yerine sessiz, derinlikli ortam. Masaya florit taşı, odaya nane-limon uçucu yağı."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "uyku" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>UYKU KALKANI & REM RESTORASYONU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Yatak odası en savunmasız ama en şifalı alandır. Yaylı yatak (anten etkisi), sentetik tekstil (deri solunumu engeli), bozulmuş melatonin — uyku ihanetinin üç ayağı.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ YAYLI YATAK & ANTEN ETKİSİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Metal yaylar Wi-Fi ve baz istasyonu sinyallerini toplayıp vücuda iletir. Yatak yapısı + oda EMF yoğunluğu analiz edilir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yün/pamuk yatak katmanı, altına karbon-gümüş iplikli statik emici örtü.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ SENTETİK TEKSTİL & DERİ SOLUNUMU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Pijama ve nevresim kumaşı kameradan analiz edilir. %100 polyester gece toksin atılımını bloke eder; terlemenin sebebi sıcaklık değil, plastik dokudur.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Ham ipek veya keten uyku seti — ten doğal liflerle nefes alır.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ RÜYA FREKANSI & MİZAÇ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Gördüğün rüyaların havası (korku/uçma/su/ateş) girilir, mizaç dengesi okunur. Ateşli-kavgalı rüyalar safra (sıcak-kuru) yükselişi → karaciğer alarmı.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yastık altına ametist taşı, şakaklara melisa yağı — frekansı Sekîne moduna çek.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
 
  {sekme === "emf" && (
    <div>
