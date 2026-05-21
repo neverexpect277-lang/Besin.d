@@ -5265,6 +5265,7 @@ export default function App() {
  const [tarifModal, setTarifModal] = useState(null);
  const [acik, setAcik] = useState(null);
  const [kategori, setKategori] = useState("gida");
+ const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
  const [mod, setMod] = useState("metin");
  const [taramaSayisi, setTaramaSayisi] = useState(0);
  const es = esrefAktif();
@@ -6736,18 +6737,50 @@ export default function App() {
  <button key={k} onClick={() => setKategori(k)} style={{ padding: "8px 4px", borderRadius: 10, border: `1px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500 }}>{v.ad}</button>
  ))}
  </div>
- {Object.entries(KATEGORILER[kategori].db).map(([kod, v]) => (
- <div key={kod} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: `4px solid ${rR(v.risk)}`, cursor: "pointer" }} onClick={() => setModal({ kod, ...v })}>
- <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
- <div>
- <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0 }}>{kod} · {v.kat}</div>
- <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{v.ad}</div>
- </div>
- <div style={{ background: rR(v.risk), borderRadius: 6, padding: "3px 8px", color: "#fff", fontWeight: 700, fontSize: 10 }}>{rE(v.risk)}</div>
- </div>
- <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>{(v.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
- </div>
- ))}
+ {(() => {
+   const gruplar = {};
+   Object.entries(KATEGORILER[kategori].db).forEach(([kod, v]) => {
+     const k = v.kat || "Diğer";
+     if (!gruplar[k]) gruplar[k] = [];
+     gruplar[k].push([kod, v]);
+   });
+   const riskSira = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
+   const grupBaskinRisk = (maddeler) => {
+     return maddeler.reduce((en, [, v]) => (riskSira[v.risk] ?? 9) < (riskSira[en] ?? 9) ? v.risk : en, "dusuk");
+   };
+   return Object.entries(gruplar).sort((a, b) => (riskSira[grupBaskinRisk(a[1])] ?? 9) - (riskSira[grupBaskinRisk(b[1])] ?? 9)).map(([grupAd, maddeler]) => {
+     const acik = maddeGrupAcik === grupAd;
+     const baskin = grupBaskinRisk(maddeler);
+     return (
+       <div key={grupAd} style={{ marginBottom: 8 }}>
+         <div onClick={() => setMaddeGrupAcik(acik ? null : grupAd)} style={{ background: C.y, border: `1px solid ${acik ? rR(baskin) : C.s}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+           <div style={{ width: 8, height: 8, borderRadius: 4, background: rR(baskin), flexShrink: 0 }} />
+           <div style={{ flex: 1 }}>
+             <div style={{ color: acik ? rR(baskin) : C.metin, fontWeight: 700, fontSize: 14 }}>{grupAd}</div>
+             <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{maddeler.length} madde</div>
+           </div>
+           <span style={{ color: acik ? rR(baskin) : C.cok, fontSize: 14 }}>{acik ? "▲" : "▼"}</span>
+         </div>
+         {acik && (
+           <div style={{ paddingTop: 8 }}>
+             {maddeler.map(([kod, v]) => (
+               <div key={kod} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 6, borderLeft: `4px solid ${rR(v.risk)}`, cursor: "pointer" }} onClick={() => setModal({ kod, ...v })}>
+                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                   <div>
+                     <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0 }}>{kod} · {v.kat}</div>
+                     <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{v.ad}</div>
+                   </div>
+                   <div style={{ background: rR(v.risk), borderRadius: 6, padding: "3px 8px", color: "#fff", fontWeight: 700, fontSize: 10 }}>{rE(v.risk)}</div>
+                 </div>
+                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>{(v.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
+               </div>
+             ))}
+           </div>
+         )}
+       </div>
+     );
+   });
+ })()}
 
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginTop: 16 }}>
  <div style={{ color: C.altin, fontWeight: 700, marginBottom: 6 }}> İletişim</div>
