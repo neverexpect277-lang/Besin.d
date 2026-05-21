@@ -3821,6 +3821,13 @@ const HAKKINDA = {
  { t: "Chassaing 2015 — Nature", a: "Polisorbat 80 ve CMC'nin bağırsak florasını yıktığını gösteren çalışma.\n Nature 519:92–96" },
  { t: "Mozaffarian 2009 — NEJM", a: "Trans yağ ve kalp hastalığı. ABD yasağına zemin hazırladı.\n New England Journal of Medicine 2009" },
  { t: "Nobel Tıp 2017 — Sirkadiyen Ritim", a: "Eşref saatlerinin modern bilimsel dayanağı.\n Hall, Rosbash, Young · Karolinska Institutet" },
+ { t: "EMA — Avrupa İlaç Ajansı Herbal Monographs", a: "Enginar, deve dikeni, melisa, lavanta, alıç, sarımsak gibi bitkilerin etkinlik ve güvenlik değerlendirmeleri. 'Organ Dostu Destek' önerilerinin temel referansı.\n ema.europa.eu/medicines/herbal" },
+ { t: "ESCOP — European Scientific Cooperative on Phytotherapy", a: "Avrupa fitoterapi monografları. Silymarin (deve dikeni), Echinacea, Hypericum klinik veriler.\n escop.com" },
+ { t: "WHO Monographs on Selected Medicinal Plants", a: "DSÖ tıbbi bitki monografları (4 cilt). Hatmi kökü, zerdeçal, sarımsak, zencefil, çörek otu dahil.\n who.int/medicines/areas/traditional/monographs" },
+ { t: "Commission E (Almanya) Monographs", a: "Almanya Federal Sağlık Bakanlığı bitki monografları. Fitoterapinin altın standardı (Blumenthal 1998).\n American Botanical Council çevirisi" },
+ { t: "Cochrane Reviews — Fitoterapi", a: "Silymarin/karaciğer, melisa/anksiyete, sarımsak/kolesterol, alıç/kalp yetmezliği meta-analizleri.\n cochranelibrary.com" },
+ { t: "Türk Farmakopesi & Bitkisel İlaç Yönetmeliği", a: "T.C. Sağlık Bakanlığı TİTCK bitkisel ürün tebliği. Türkiye'de izinli bitkisel ürünler listesi.\n titck.gov.tr" },
+ { t: "İbn Bitar — el-Câmi' li-Müfredâti'l-Edviyye", a: "1400+ bitki ve gıdanın organ etkileri (1240). Modern fitoterapinin İslam medeniyeti kaynağı.\n Bulak 1874 · Paris 1877" },
  ],
  },
  frekans: {
@@ -5358,6 +5365,9 @@ export default function App() {
                      <div style={{ color: C.soluk, fontSize: 11, marginTop: 3, fontStyle: "italic" }}>{d.not}</div>
                    </div>
                  ))}
+                 <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #8A60C030", color: C.cok, fontSize: 10, lineHeight: 1.5, fontStyle: "italic" }}>
+                   ⚠ Tıbbi tavsiye değildir. Geleneksel fitoterapi ve İbn Sina geleneğine dayalı bilgi notudur. Mevcut bir hastalığınız, gebelik veya ilaç kullanımı varsa hekiminize/eczacınıza danışın. Kaynaklar Hakkında sekmesinde.
+                 </div>
                </div>
              );
            })()}
