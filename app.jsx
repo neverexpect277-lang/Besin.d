@@ -4820,11 +4820,14 @@ function BarkodOkuyu({ onSonuc, onIptal }) {
       <div style={{ textAlign:"center", background:"#000", borderRadius:12, overflow:"hidden" }}>
       <div ref={kirpRef} style={{ position:"relative", display:"inline-block", width:"fit-content", verticalAlign:"top", userSelect:"none", touchAction:"none", lineHeight:0 }}>
         <img ref={fotoRef} src={fotoUrl} style={{ display:"block", maxHeight:"45vh", maxWidth:"100%", height:"auto", width:"auto", pointerEvents:"none" }} alt="" draggable={false} />
-        <div style={{ position:"absolute", inset:0, background:"#000000A0", clipPath:`polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${kirp.y}%, ${kirp.x}% ${kirp.y}%, ${kirp.x}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y+kirp.h}%, ${kirp.x+kirp.w}% ${kirp.y}%, 0 ${kirp.y}%)`, pointerEvents:"none" }} />
-        <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`2px solid ${C.altin}`, borderRadius:6, cursor:"move", boxSizing:"border-box", touchAction:"none" }}>
-          <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-14, top:"50%", marginTop:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"ew-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
-          <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"50%", bottom:-14, marginLeft:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"ns-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
-          <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-14, bottom:-14, width:28, height:28, background:C.altin, borderRadius:"50%", cursor:"nwse-resize", touchAction:"none", boxShadow:"0 2px 6px rgba(0,0,0,0.4)" }} />
+        <div style={{ position:"absolute", left:0, top:0, right:0, height:`${kirp.y}%`, background:"rgba(0,0,0,0.65)", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", left:0, top:`${kirp.y+kirp.h}%`, right:0, bottom:0, background:"rgba(0,0,0,0.65)", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", left:0, top:`${kirp.y}%`, width:`${kirp.x}%`, height:`${kirp.h}%`, background:"rgba(0,0,0,0.65)", pointerEvents:"none" }} />
+        <div style={{ position:"absolute", left:`${kirp.x+kirp.w}%`, top:`${kirp.y}%`, right:0, height:`${kirp.h}%`, background:"rgba(0,0,0,0.65)", pointerEvents:"none" }} />
+        <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position:"absolute", left:`${kirp.x}%`, top:`${kirp.y}%`, width:`${kirp.w}%`, height:`${kirp.h}%`, border:`3px solid ${C.altin}`, outline:"2px solid rgba(255,255,255,0.85)", outlineOffset:-1, borderRadius:6, cursor:"move", boxSizing:"border-box", touchAction:"none" }}>
+          <div onMouseDown={basla("sag")} onTouchStart={basla("sag")} style={{ position:"absolute", right:-16, top:"50%", marginTop:-16, width:32, height:32, background:C.altin, border:"2px solid #fff", borderRadius:"50%", cursor:"ew-resize", touchAction:"none", boxShadow:"0 2px 8px rgba(0,0,0,0.5)" }} />
+          <div onMouseDown={basla("alt")} onTouchStart={basla("alt")} style={{ position:"absolute", left:"50%", bottom:-16, marginLeft:-16, width:32, height:32, background:C.altin, border:"2px solid #fff", borderRadius:"50%", cursor:"ns-resize", touchAction:"none", boxShadow:"0 2px 8px rgba(0,0,0,0.5)" }} />
+          <div onMouseDown={basla("saaalt")} onTouchStart={basla("saaalt")} style={{ position:"absolute", right:-16, bottom:-16, width:32, height:32, background:C.altin, border:"2px solid #fff", borderRadius:"50%", cursor:"nwse-resize", touchAction:"none", boxShadow:"0 2px 8px rgba(0,0,0,0.5)" }} />
         </div>
       </div>
       </div>
