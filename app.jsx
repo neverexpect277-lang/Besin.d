@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
  SABITLER
  ══════════════════════════════════════════════ */
 const C = {
- bg: "#F5F0E1", y: "#FAF7EC", y2: "#EAE3D0", s: "#D6CDB6",
+ bg: "#FFFFFF", y: "#FFFFFF", y2: "#FAFAFA", s: "#E5E5E7",
  altin: "#B8862F", altinA: "#C9A84C",
- metin: "#2D2418", soluk: "#6B5F4D", cok: "#B5A88A",
- kirmizi: "#C0392B", turuncu: "#E67E22", sari: "#C9A024", yesil: "#1E8449",
+ metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
+ kirmizi: "#FF3B30", turuncu: "#FF9500", sari: "#FFCC00", yesil: "#34C759",
 };
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
@@ -3958,7 +3958,7 @@ function ToplulugaKatki({ taramaSayisi }) {
  <>
  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
  {KATEGORI.map(k => (
- <button key={k.k} onClick={() => setSecilen(k.k)} style={{ background: secilen === k.k ? k.renk + "22" : C.y, border: `2px solid ${secilen === k.k ? k.renk : C.s}`, borderRadius: 12, padding: "12px 8px", cursor: "pointer", textAlign: "left", fontFamily: "Georgia,serif" }}>
+ <button key={k.k} onClick={() => setSecilen(k.k)} style={{ background: secilen === k.k ? k.renk + "22" : C.y, border: `2px solid ${secilen === k.k ? k.renk : C.s}`, borderRadius: 12, padding: "12px 8px", cursor: "pointer", textAlign: "left", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
  <div style={{ color: secilen === k.k ? k.renk : C.metin, fontWeight: 700, fontSize: 13 }}>{k.baslik}</div>
  <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>{k.aciklama}</div>
  </button>
@@ -3966,8 +3966,8 @@ function ToplulugaKatki({ taramaSayisi }) {
  </div>
  {secilen && (
  <>
- <textarea placeholder={`${KATEGORI.find(k => k.k === secilen)?.baslik} hakkında detay yaz...`} value={mesaj} onChange={e => setMesaj(e.target.value)} rows={3} style={{ width: "100%", background: C.y, border: `1px solid ${C.altin}50`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 13, fontFamily: "Georgia,serif", resize: "none", marginBottom: 8, outline: "none" }} />
- <button onClick={gonder} disabled={!mesaj.trim()} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", opacity: mesaj.trim() ? 1 : 0.4 }}>
+ <textarea placeholder={`${KATEGORI.find(k => k.k === secilen)?.baslik} hakkında detay yaz...`} value={mesaj} onChange={e => setMesaj(e.target.value)} rows={3} style={{ width: "100%", background: C.y, border: `1px solid ${C.altin}50`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 13, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", resize: "none", marginBottom: 8, outline: "none" }} />
+ <button onClick={gonder} disabled={!mesaj.trim()} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", opacity: mesaj.trim() ? 1 : 0.4 }}>
  Gönder →
  </button>
  </>
@@ -4629,7 +4629,7 @@ function MizacMarket({ profil, onKapat }) {
         {/* SEKME */}
         <div style={{ display:"flex", gap:8, marginBottom:16 }}>
           {[["al","Al"], ["kacin","Kaçın"]].map(([k,l]) => (
-            <button key={k} onClick={() => setSekme(k)} style={{ flex:1, padding:"10px 6px", borderRadius:12, border:`2px solid ${sekme===k ? profil.renk : C.s}`, background:sekme===k ? profil.renk+"18" : C.y, color:sekme===k ? profil.renk : C.soluk, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:sekme===k?700:400 }}>{l}</button>
+            <button key={k} onClick={() => setSekme(k)} style={{ flex:1, padding:"10px 6px", borderRadius:12, border:`2px solid ${sekme===k ? profil.renk : C.s}`, background:sekme===k ? profil.renk+"18" : C.y, color:sekme===k ? profil.renk : C.soluk, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:sekme===k?700:400 }}>{l}</button>
           ))}
         </div>
 
@@ -5080,8 +5080,8 @@ function KameraOCR({ onMetin, onIptal }) {
  <div style={{ fontSize: 36, marginBottom: 8 }}></div>
  <div style={{ color: "#FF2D55", fontWeight: 700, marginBottom: 6 }}>Kamera Erişimi Reddedildi</div>
  <div style={{ color: C.soluk, fontSize: 13, marginBottom: 14 }}>Tarayıcı ayarlarından kamera iznini ver.</div>
- <button onClick={() => setDurum("bekle")} style={{ background: C.altin, border: "none", borderRadius: 10, padding: "10px 20px", color: "#1A1200", fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif", marginRight: 8 }}>Tekrar Dene</button>
- <button onClick={onIptal} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 20px", color: C.soluk, cursor: "pointer", fontFamily: "Georgia,serif" }}>İptal</button>
+ <button onClick={() => setDurum("bekle")} style={{ background: C.altin, border: "none", borderRadius: 10, padding: "10px 20px", color: "#1A1200", fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginRight: 8 }}>Tekrar Dene</button>
+ <button onClick={onIptal} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 20px", color: C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>İptal</button>
  </div>
  );
 
@@ -5090,8 +5090,8 @@ function KameraOCR({ onMetin, onIptal }) {
  <div style={{ fontSize: 48, marginBottom: 12 }}></div>
  <div style={{ color: C.metin, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>Etiket Fotoğrafı Çek</div>
  <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>Ürünün "İçindekiler" bölümüne kamerayı tut.<br />Metin otomatik okunur ve analiz edilir.</div>
- <button onClick={kameraAc} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "13px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 8 }}> Kamerayı Aç</button>
- <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px", color: C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13 }}>← Metin Girişe Dön</button>
+ <button onClick={kameraAc} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "13px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 8 }}> Kamerayı Aç</button>
+ <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px", color: C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13 }}>← Metin Girişe Dön</button>
  </div>
  );
 
@@ -5124,8 +5124,8 @@ function KameraOCR({ onMetin, onIptal }) {
  </div>
  <canvas ref={canvasRef} style={{ display: "none" }} />
  <div style={{ display: "flex", gap: 8 }}>
- <button onClick={tekrarCek} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Georgia,serif" }}>Tekrar Çek</button>
- <button onClick={kirpVeAnaliz} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif" }}>Bu Alanı Oku & Analiz Et</button>
+ <button onClick={tekrarCek} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Tekrar Çek</button>
+ <button onClick={kirpVeAnaliz} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Bu Alanı Oku & Analiz Et</button>
  </div>
  </>
  )}
@@ -5138,15 +5138,15 @@ function KameraOCR({ onMetin, onIptal }) {
  </div>
  </div>
  <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.y, padding: "10px 14px", borderRadius: 12, marginBottom: 10 }}>
- <button onClick={() => setZoom(Math.max(1, zoom - 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif" }}>−</button>
+ <button onClick={() => setZoom(Math.max(1, zoom - 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>−</button>
  <input type="range" min="1" max="4" step="0.1" value={zoom} onChange={e => setZoom(parseFloat(e.target.value))} style={{ flex: 1, accentColor: C.altin }} />
- <button onClick={() => setZoom(Math.min(4, zoom + 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif" }}>+</button>
+ <button onClick={() => setZoom(Math.min(4, zoom + 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>+</button>
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, minWidth: 40, textAlign: "right" }}>{zoom.toFixed(1)}x</div>
  </div>
  <canvas ref={canvasRef} style={{ display: "none" }} />
  <div style={{ display: "flex", gap: 8 }}>
- <button onClick={kameraKapat} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Georgia,serif" }}>Kapat</button>
- <button onClick={fotografCek} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif" }}>Fotoğraf Çek</button>
+ <button onClick={kameraKapat} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Kapat</button>
+ <button onClick={fotografCek} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Fotoğraf Çek</button>
  </div>
  </>
  )}
@@ -5186,12 +5186,12 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
       {foto ? (
         <div style={{ position: "relative", marginBottom: 12 }}>
           <img src={foto} alt="" style={{ width: "100%", maxHeight: 240, objectFit: "contain", background: C.y2, borderRadius: 12, border: `1px solid ${C.s}` }} />
-          <button onClick={() => setFoto(null)} style={{ position: "absolute", top: 8, right: 8, background: "#000000A0", border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.metin, cursor: "pointer", fontSize: 14, fontFamily: "Georgia,serif" }}>✕</button>
+          <button onClick={() => setFoto(null)} style={{ position: "absolute", top: 8, right: 8, background: "#000000A0", border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.metin, cursor: "pointer", fontSize: 14, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>✕</button>
         </div>
       ) : (
         <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <button onClick={() => kamRef.current && kamRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Kamera ile Çek</button>
-          <button onClick={() => galRef.current && galRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Galeriden Seç</button>
+          <button onClick={() => kamRef.current && kamRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Kamera ile Çek</button>
+          <button onClick={() => galRef.current && galRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Galeriden Seç</button>
         </div>
       )}
 
@@ -5203,18 +5203,18 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
         value={isim}
         onChange={e => setIsim(e.target.value)}
         placeholder={`${kategoriAd} ismi (örn: çikolata, krem, ilaç)`}
-        style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "13px 14px", color: C.metin, fontSize: 14, marginBottom: 10, fontFamily: "Georgia,serif" }}
+        style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "13px 14px", color: C.metin, fontSize: 14, marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}
       />
 
       <button
         onClick={() => onAra(isim, foto)}
         disabled={!isim.trim()}
-        style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Georgia,serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
+        style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
       >
         Arşivde Ara
       </button>
 
-      <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid #22223A`, borderRadius: 12, padding: "11px", color: "#8A8499", fontSize: 13, cursor: "pointer", fontFamily: "Georgia,serif" }}>Vazgeç</button>
+      <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid #22223A`, borderRadius: 12, padding: "11px", color: "#8A8499", fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Vazgeç</button>
     </div>
   );
 }
@@ -5222,19 +5222,19 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,serif!important} body{background:${C.bg};color:${C.metin}} input,textarea,button,select{font-family:Georgia,serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
 
 const S = {
- anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Georgia,serif" },
- hayaletBtn: { width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 14, padding: "12px", color: C.soluk, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 10 },
+ anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ hayaletBtn: { width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 14, padding: "12px", color: C.soluk, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 10 },
  geriDaire: { width: 34, height: 34, borderRadius: "50%", background: C.y2, border: `1px solid ${C.s}`, color: C.metin, cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
- geriYazi: { color: C.soluk, cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Georgia,serif" },
+ geriYazi: { color: C.soluk, cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
  kB: { color: C.altin, fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
  mT: { color: C.soluk, fontSize: 13, lineHeight: 1.6 },
  ipucu: { color: C.soluk, fontSize: 13, lineHeight: 1.6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
- textarea: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, color: C.metin, fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Georgia,serif" },
- ornekBtn: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Georgia,serif" },
- dateInput: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px 16px", color: C.metin, fontSize: 15, marginBottom: 14, colorScheme: "light", fontFamily: "Georgia,serif" },
+ textarea: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, color: C.metin, fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ ornekBtn: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ dateInput: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px 16px", color: C.metin, fontSize: 15, marginBottom: 14, colorScheme: "light", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
  orgTag: { background: C.y, color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 6, padding: "3px 8px", fontSize: 11 },
  notUyari: { color: C.cok, fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
 };
@@ -5318,7 +5318,7 @@ export default function App() {
 
  /* ── YASAL ────────────────────────────────── */
  if (ekran === "yasal") return (
- <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Georgia,serif" }}>
+ <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 24, padding: 28, maxWidth: 460, width: "100%" }}>
  <div style={{ textAlign: "center", marginBottom: 24 }}>
  <div style={{ fontSize: 52, marginBottom: 8 }}></div>
@@ -5338,7 +5338,7 @@ export default function App() {
 
  /* ── GEÇMİŞ EKRANI ───────────────────────── */
  if (ekran === "gecmis") return (
-   <div style={{ minHeight: "100vh", background: C.bg, padding: 16, fontFamily: "Georgia,serif" }}>
+   <div style={{ minHeight: "100vh", background: C.bg, padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
      <div style={{ maxWidth: 480, margin: "0 auto" }}>
        <button style={S.geriYazi} onClick={() => setEkran("ana")}>← Geri</button>
        <div style={{ fontSize: 28, color: C.altin, textAlign: "center", marginBottom: 8 }}>📋</div>
@@ -5370,7 +5370,7 @@ export default function App() {
 
  /* ── PROFİL KURULUM ───────────────────────── */
  if (ekran === "profil_kur") return (
- <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Georgia,serif" }}>
+ <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 24, padding: 28, maxWidth: 460, width: "100%" }}>
  <button style={S.geriYazi} onClick={() => setEkran("ana")}>← Geri</button>
  <div style={{ fontSize: 36, color: C.altin, marginBottom: 12 }}></div>
@@ -5428,7 +5428,7 @@ export default function App() {
        <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 8 }}>Cinsiyet / Yaş Grubu</label>
        <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
          {["Erkek", "Kadın", "Çocuk"].map(c => (
-           <button key={c} onClick={() => setCinsiyet(c)} style={{ flex: 1, padding: "11px 8px", background: cinsiyet === c ? C.altin + "22" : C.y2, border: `1.5px solid ${cinsiyet === c ? C.altin : C.s}`, borderRadius: 10, color: cinsiyet === c ? C.altin : C.metin, fontSize: 13, fontWeight: cinsiyet === c ? 700 : 400, cursor: "pointer", fontFamily: "Georgia,serif" }}>{c}</button>
+           <button key={c} onClick={() => setCinsiyet(c)} style={{ flex: 1, padding: "11px 8px", background: cinsiyet === c ? C.altin + "22" : C.y2, border: `1.5px solid ${cinsiyet === c ? C.altin : C.s}`, borderRadius: 10, color: cinsiyet === c ? C.altin : C.metin, fontSize: 13, fontWeight: cinsiyet === c ? 700 : 400, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>{c}</button>
          ))}
        </div>
  {dogum && /^\d{4}-\d{2}-\d{2}$/.test(dogum) && (() => {
@@ -5456,11 +5456,11 @@ export default function App() {
 
  /* ── SONUÇ EKRANI ─────────────────────────── */
  if (ekran === "sonuc") return (
- <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "Georgia,serif", paddingBottom: 30 }}>
+ <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", paddingBottom: 30 }}>
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
  <button style={S.geriDaire} onClick={() => setEkran("ana")}>←</button>
  <span style={{ color: C.metin, fontWeight: 600, flex: 1 }}>{KATEGORILER[kategori].ad} Analiz Sonucu</span>
- <button onClick={sesToggle} title={seslerAcik ? "Sesi kapat" : "Sesi aç"} aria-label="Ses aç/kapa" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${seslerAcik ? C.altin : C.s}`, background: seslerAcik ? C.altin + "15" : C.y2, color: seslerAcik ? C.altin : C.soluk, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, fontFamily: "Georgia,serif" }}>
+ <button onClick={sesToggle} title={seslerAcik ? "Sesi kapat" : "Sesi aç"} aria-label="Ses aç/kapa" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${seslerAcik ? C.altin : C.s}`, background: seslerAcik ? C.altin + "15" : C.y2, color: seslerAcik ? C.altin : C.soluk, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
    {seslerAcik ? (
      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
    ) : (
@@ -5764,7 +5764,7 @@ export default function App() {
  ANA EKRAN
  ══════════════════════════════════════════════ */
  return (
- <div style={{ minHeight: "100vh", background: C.bg, maxWidth: 520, margin: "0 auto", fontFamily: "Georgia,serif", paddingBottom: 80 }}>
+ <div style={{ minHeight: "100vh", background: C.bg, maxWidth: 520, margin: "0 auto", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", paddingBottom: 80 }}>
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
  <span style={{ fontSize: 20 }}></span>
  <div style={{ flex: 1 }}>
@@ -5793,7 +5793,7 @@ export default function App() {
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
- <button key={k} onClick={() => setKategori(k)} style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500, lineHeight: 1.2 }}>{v.ad}</button>
+ <button key={k} onClick={() => setKategori(k)} style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500, lineHeight: 1.2 }}>{v.ad}</button>
  ))}
  </div>
  <div style={S.kB}>{KATEGORILER[kategori].ad.toUpperCase()} ETİKETİ ANALİZİ</div>
@@ -5801,7 +5801,7 @@ export default function App() {
  {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
  {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", true], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
- <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
+ <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
  {l}
  {yakinda && <span style={{ position: "absolute", top: -7, right: -4, background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 8, letterSpacing: 0.3 }}>YAKINDA</span>}
  </button>
@@ -5961,7 +5961,7 @@ export default function App() {
  {/* MAKAM */}
  {sekme === "makam" && (
  <div>
- <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+ <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
  <div style={S.kB}>OSMANLI TIBBI: MAKAM ARŞİVİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
  <div style={S.ipucu}>Osmanlı darüşşifalarında kullanılan ses terapisi arşivi. Tıbbi tedavi değildir.</div>
  <div style={S.notUyari}>* Bu bölüm; Osmanlı darüşşifa geleneği ve geleneksel müzik terapisi birikimine dayanır. Modern bilimsel kanıt sınırlıdır.</div>
@@ -6045,7 +6045,7 @@ export default function App() {
            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 12, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
              {g.hizmetler.map(h => (
-               <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Georgia,serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+               <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
                  <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
                  <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
                </button>
@@ -6059,7 +6059,7 @@ export default function App() {
 
  {sekme === "sesrengi" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>SESİN RENGİ — BIO-ACOUSTIC ANALİZ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>İnsan sesi ruhun röntgenidir. Frekans aralığı, tını ve gizli titremeler organ-çakra tıkanıklığını gösterir.</div>
 
@@ -6088,7 +6088,7 @@ export default function App() {
 
  {sekme === "yildiz" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>YILDIZ SAATİ & KAN AKIŞI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı'da ameliyatlar bile Ay'ın konumuna göre yapılırdı. Vücut sıvıları med-cezir etkisinde, kan akışı gezegen saatleriyle bağlantılı.</div>
 
@@ -6120,7 +6120,7 @@ export default function App() {
 
  {sekme === "hrv" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>DUYGUSAL NABIZ — HRV ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Nabız sadece fiziksel değil, ruhsal durumun haritasıdır. HRV (Kalp Atış Hızı Değişkenliği) milisaniye farklarını ölçer.</div>
 
@@ -6149,7 +6149,7 @@ export default function App() {
 
  {sekme === "nefes" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>DİJİTAL BURUN — OSMANLI BUHURDANLIĞI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Sadece gözle bakmayacak, sadece nabız dinlemeyeceğiz. Telefon elektronik burun gibi çalışacak; nefesindeki molekülleri Osmanlı'nın "Mizâc-ı Havâ" ilmiyle birleştirip okuyacak.</div>
 
@@ -6178,7 +6178,7 @@ export default function App() {
 
  {sekme === "rota" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>EVLİYA ÇELEBİ ROTASI — ŞİFA HARİTASI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Şifa haritası sadece dükkanlarla sınırlı kalmaz: konumuna göre çevredeki tarihi şifahaneler, doğal kaynak suları ve kadim aktarlar mistik bir rota olarak sunulur.</div>
 
@@ -6203,7 +6203,7 @@ export default function App() {
 
  {sekme === "nabiz" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>İLM-İ NABIZ — MİZAÇ TEŞHİSİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı hekimleri nabzı 10 farklı parametreye göre okurdu. Yapay zeka, telefonun sensörü ile nabzı analiz edip mizaç bozulmasını yorumlar.</div>
 
@@ -6236,7 +6236,7 @@ export default function App() {
 
  {sekme === "koku" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>DİJİTAL ATTAR — KOKU TAKVİMİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı'da şifa kulakla (makam), gözle (renk) ve burunla da gelirdi. Attarlık, kadim bir tıp ve psişe sanatıdır.</div>
 
@@ -6261,7 +6261,7 @@ export default function App() {
 
  {sekme === "ses" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>SES FREKANS ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Yapay zeka sadece metin değil sesi de analiz eder. Ses titreşimi, gizli yorgunluk ve mizaç bozulmasının en hassas göstergesidir.</div>
 
@@ -6283,7 +6283,7 @@ export default function App() {
 
  {sekme === "tohum" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>MİLLİ TOHUM — GENETİK SADAKAT KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Hibrit ve GDO'lu tohumlar bedenin yabancı olarak algıladığı genetik yapı taşır. Atalık tohumlar (Karakılçık, Siyez vb) Anadolu'nun bin yıllık birikimidir.</div>
 
@@ -6308,7 +6308,7 @@ export default function App() {
 
  {sekme === "zihin" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>ZİHNİ İNŞA & ODAKLANMA KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Dijital dünya çocukların ve yetişkinlerin dikkat süresini 8 saniyeye düşürdü. Odaklanamayan zihin, sorgulayamaz. Üç koldan kalkan: ekran, beslenme, öğrenme.</div>
 
@@ -6347,7 +6347,7 @@ export default function App() {
 
  {sekme === "uyku" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>UYKU KALKANI & REM RESTORASYONU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Yatak odası en savunmasız ama en şifalı alandır. Yaylı yatak (anten etkisi), sentetik tekstil (deri solunumu engeli), bozulmuş melatonin — uyku ihanetinin üç ayağı.</div>
 
@@ -6389,7 +6389,7 @@ export default function App() {
 
  {sekme === "emf" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>EMF KALKANI — ELEKTROMANYETİK KORUMA <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Wi-Fi, 5G ve elektrik hatları hücre frekansını etkileyen modern bir kirlilik kaynağı. Telefon sensörleriyle ölçülüp kişiselleştirilmiş kalkan önerileri sunulacak.</div>
 
@@ -6414,7 +6414,7 @@ export default function App() {
 
  {sekme === "dopamin" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>DOPAMİN SKORU — NÖRO-GIDA ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>MSG (E621), nişasta bazlı şeker ve yapay aromalar beynin ödül mekanizmasını manipüle eder. İnsan acıkmadığı halde yer.</div>
 
@@ -6439,7 +6439,7 @@ export default function App() {
 
  {sekme === "toprak" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>TOPRAK FREKANSI & KONUM ŞİFASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı'da şifahaneler ve camiler "Leyn Hatları" (enerji hatları) üzerine kurulurdu. İnsan sadece yediğinden değil, bastığı topraktan da hasta olur.</div>
 
@@ -6461,7 +6461,7 @@ export default function App() {
 
  {sekme === "rabita" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>RÂBITA-İ ŞİFA — KOLEKTİF ODAK <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Aynı anda aynı şeye odaklanan binlerce insanın o şeyin frekansını değiştirdiği üzerine çalışmalar var. Uygulamayı küresel bir dijital şifa cemaatine dönüştürüyoruz.</div>
 
@@ -6483,7 +6483,7 @@ export default function App() {
 
  {sekme === "bahce" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>AKILLI BAHÇE — MİZAÇ ODAKLI BOSTAN <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Uygulama göz taraması ve mizaç sonucuna göre sana hangi bitkiye ihtiyacın olduğunu söyler. Akıllı tohum kitleri ile evde de yetiştirebilirsin.</div>
 
@@ -6502,7 +6502,7 @@ export default function App() {
 
  {sekme === "biyofoton" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>BİYO-FOTON KAMERA — GIDA AURASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Kamerayı sadece barkod okumak için değil, canlı gıdanın yaşam enerjisini ölçmek için kullanacağız.</div>
 
@@ -6524,7 +6524,7 @@ export default function App() {
 
  {sekme === "goz" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı hekimleri "Göz ruhun aynasıdır" derdi. İridoloji ilminde iris vücudun haritasıdır; Kıyâfetnâme (İlm-i Sîmâ) geleneğinde yüz çizgileri organ durumunu yansıtır.</div>
 
@@ -6560,14 +6560,14 @@ export default function App() {
 
  {sekme === "market" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      {sonuclar.length > 0 && (
-       <button onClick={() => { setSekme("tarama"); setEkran("sonuc"); }} style={{ display:"flex", alignItems:"center", gap:6, background: C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color: C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>
+       <button onClick={() => { setSekme("tarama"); setEkran("sonuc"); }} style={{ display:"flex", alignItems:"center", gap:6, background: C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color: C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>
          ← Sonuçlara Dön
        </button>
      )}
      <div style={{ display:"flex", justifyContent:"flex-start", marginBottom: 14 }}>
-       <button onClick={() => setMarketKategoriPanel(true)} style={{ display:"flex", alignItems:"center", gap:8, background: C.altin, border:`1px solid ${C.altin}`, borderRadius:10, padding:"10px 16px", color:"#1A1200", cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, boxShadow:`0 2px 8px ${C.altin}44` }}>
+       <button onClick={() => setMarketKategoriPanel(true)} style={{ display:"flex", alignItems:"center", gap:8, background: C.altin, border:`1px solid ${C.altin}`, borderRadius:10, padding:"10px 16px", color:"#1A1200", cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, boxShadow:`0 2px 8px ${C.altin}44` }}>
          ≡ Kategoriler
        </button>
      </div>
@@ -6601,7 +6601,7 @@ export default function App() {
            const ad = KATEGORILER[key]?.ad || key;
            return (
              <div key={key} style={{ marginBottom: 8, border:`1px solid ${C.s}`, borderRadius: 10, background: C.y, overflow:"hidden" }}>
-               <button onClick={() => setMarketAcikBaslik(acik ? null : key)} style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", background:"transparent", border:"none", padding:"12px 14px", color: C.metin, fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"Georgia,serif" }}>
+               <button onClick={() => setMarketAcikBaslik(acik ? null : key)} style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", background:"transparent", border:"none", padding:"12px 14px", color: C.metin, fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
                  <span>{ad}</span>
                  <span style={{ color: C.altin, fontSize:16, fontWeight:700, lineHeight:1 }}>{acik ? "−" : "+"}</span>
                </button>
@@ -6632,7 +6632,7 @@ export default function App() {
  {/* EŞREF */}
  {sekme === "esref" && (
  <div>
- <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+ <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
  <div style={S.kB}>EŞREF SAATLERİ — ORGAN VAKTI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
  <div style={S.ipucu}>Kronobiyoloji ile desteklenen organ aktivite vakitleri. Nobel 2017 sirkadiyen ritim ödülü bilimsel dayanaktır.</div>
  <div style={S.notUyari}>* Bu bölüm; Çin tıbbı meridyen saati geleneğine dayanır. Sirkadiyen ritim bilimsel olarak kanıtlıdır; spesifik organ–saat eşleşmeleri için modern bilimsel kanıt sınırlıdır.</div>
@@ -6657,7 +6657,7 @@ export default function App() {
 
  {sekme === "burclar" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>BURÇ ve MİZAÇ TABLOSU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
      <div style={S.ipucu}>Osmanlı Tıbb-ı Nebevi ve İlm-i Nücum geleneğinde her burç belirli bir organ ve mizaç ile eşleşir. Sabuncuoğlu Şerefeddin gibi hekimbaşılar hastayı bu çerçevede değerlendirirdi: demevi (kan-ateş), safravi (öd-ateş), sevdevi (kara öd-toprak), balgami (balgam-su).</div>
 
@@ -6705,7 +6705,7 @@ export default function App() {
 
  {sekme === "uzman" && (
    <div>
-     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ GÖRÜNTÜLÜ UZMAN DANIŞMAN — YAKINDA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
@@ -6733,7 +6733,7 @@ export default function App() {
  <div style={S.kB}>MADDE ARŞİVİ</div>
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 12 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
- <button key={k} onClick={() => setKategori(k)} style={{ padding: "8px 4px", borderRadius: 10, border: `1px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500 }}>{v.ad}</button>
+ <button key={k} onClick={() => setKategori(k)} style={{ padding: "8px 4px", borderRadius: 10, border: `1px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500 }}>{v.ad}</button>
  ))}
  </div>
  {Object.entries(KATEGORILER[kategori].db).map(([kod, v]) => (
@@ -6761,7 +6761,7 @@ export default function App() {
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
  {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
- <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif", position: "relative" }}>
+ <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
  {sekme === k && <div style={{ width: 20, height: 2, background: C.altin, borderRadius: 2 }} />}
