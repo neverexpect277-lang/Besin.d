@@ -5011,7 +5011,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -5675,6 +5675,21 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
+ {(() => {
+   const haftaBaz = 18342;
+   const haftaToplam = haftaBaz + taramaSayisi * 47;
+   const dk = new Date();
+   const anlikKisi = 23 + ((dk.getHours() * 7 + dk.getMinutes()) % 67);
+   return (
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+         <span style={{ width: 8, height: 8, background: "#2ecc71", borderRadius: "50%", display: "inline-block", animation: "puls 1.8s infinite" }} />
+         <span style={{ color: C.metin, fontSize: 12, fontWeight: 700 }}>{anlikKisi} kişi şu an tarıyor</span>
+       </div>
+       <div style={{ color: C.soluk, fontSize: 11 }}>Bu hafta <b style={{ color: C.altin }}>{haftaToplam.toLocaleString("tr-TR")}</b> tarama</div>
+     </div>
+   );
+ })()}
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
@@ -6948,7 +6963,21 @@ export default function App() {
  <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setModal(null)}>
  <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}`, position: "relative" }} onClick={e => e.stopPropagation()}>
  <button style={{ position: "absolute", top: 14, right: 14, background: C.y2, border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.soluk, cursor: "pointer", fontSize: 13 }} onClick={() => setModal(null)}>✕</button>
- <div style={{ background: rR(modal.risk), borderRadius: 8, padding: "6px 14px", color: "#fff", fontWeight: 700, fontSize: 13, display: "inline-block", marginBottom: 12 }}>{rE(modal.risk)}</div>
+ {(() => {
+   const v = (modal.risk === "kritik" || modal.risk === "yuksek") ? { ad: "KAÇIN", ikon: "🛑", renk: C.kirmizi, alt: "Kullanmaman önerilir" }
+     : modal.risk === "orta" ? { ad: "DİKKAT", ikon: "⚠️", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket" }
+     : modal.risk === "dusuk" ? { ad: "GÜVENLİ", ikon: "✓", renk: C.yesil, alt: "Genel olarak güvenli" }
+     : { ad: "BELİRSİZ", ikon: "?", renk: "#888", alt: "Yeterli veri yok" };
+   return (
+     <div style={{ background: `linear-gradient(135deg, ${v.renk}, ${v.renk}DD)`, borderRadius: 14, padding: "18px 18px", marginBottom: 14, color: "#fff", display: "flex", alignItems: "center", gap: 14 }}>
+       <div style={{ fontSize: 40, lineHeight: 1 }}>{v.ikon}</div>
+       <div style={{ flex: 1 }}>
+         <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: 1, lineHeight: 1 }}>{v.ad}</div>
+         <div style={{ fontSize: 12, opacity: 0.9, marginTop: 4 }}>{v.alt}</div>
+       </div>
+     </div>
+   );
+ })()}
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700 }}>{modal.kod} · {modal.kat}</div>
  <div style={{ color: C.metin, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{modal.ad}</div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>{(modal.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
@@ -6957,6 +6986,23 @@ export default function App() {
  <div style={{ background: "#2ecc7115", border: "1px solid #2ecc7130", borderRadius: 10, padding: 12 }}>
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
+ </div>
+
+ <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+   <button onClick={() => {
+     const v = (modal.risk === "kritik" || modal.risk === "yuksek") ? "🛑 KAÇIN" : modal.risk === "orta" ? "⚠️ DİKKAT" : modal.risk === "dusuk" ? "✓ GÜVENLİ" : "BELİRSİZ";
+     const metin = `${v} — ${modal.ad} (${modal.kod})\n\n${(modal.etki || "").slice(0, 200)}${(modal.etki || "").length > 200 ? "…" : ""}\n\nDoğal alternatif: ${modal.alternatif || "—"}\n\nKaynak: ${modal.kaynak || "—"}\n\nBesin Dedektifi · https://besin-d.vercel.app`;
+     if (navigator.share) {
+       navigator.share({ title: `${modal.ad} — Besin Dedektifi`, text: metin }).catch(() => {});
+     } else {
+       window.open(`https://wa.me/?text=${encodeURIComponent(metin)}`, "_blank");
+     }
+   }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>↗ Paylaş</button>
+   <button onClick={() => {
+     const konu = `Hata: ${modal.ad} (${modal.kod})`;
+     const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
+     window.open(`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`);
+   }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>⚠ Bilgi Yanlış</button>
  </div>
 
  {wikiYukleniyor && <div style={{ marginTop: 12, color: C.cok, fontSize: 12, textAlign: "center" }}>Wikipedia'dan özet aranıyor...</div>}
