@@ -5157,12 +5157,12 @@ export default function App() {
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
-   { k: "diyabet", ad: "Diyabet", kw: /\bşeker\b|glikoz|fruktoz|maltodekstrin|sukroz|şurup|sirup|insülin|kan şekeri|glisemik|kan glukoz/i },
-   { k: "gebe", ad: "Gebelik", kw: /gebelik|gebe|fetus|fetüs|hamile|teratojen|doğum|anne karnı|plasenta|laktasyon/i },
-   { k: "hipertansiyon", ad: "Hipertansiyon", kw: /sodyum|MSG|monosodyum|tuz|hipertans|kan basın|tansiyon/i },
-   { k: "alerji", ad: "Alerji / Astım", kw: /alerj|ürtiker|astım|anafilaks|histamin|kaşıntı|intoleran|ekzema|deri reak|solunum|hassasiy/i },
-   { k: "sigara", ad: "Sigara Kullanıyorum", kw: /kanseroj|BHA|BHT|nitrit|nitrosamin|tütün|akciğer|solunum|oksidan|IARC Grup [12]/i },
-   { k: "cocuk", ad: "Çocuk / Bebek için", kw: /çocuk|bebek|hiperaktif|ADHD|gelişim|nörotoks|öğrenme|davranış|dikkat|Southampton/i },
+   { k: "diyabet", ad: "Diyabet", kw: /\bşeker\b|glikoz|fruktoz|maltodekstrin|sukroz|şurup|sirup|insülin|kan şekeri|glisemik|kan glukoz/i, bilgi: "Gizli şekerler (glikoz şurubu, maltodekstrin, fruktoz, sukroz) kan şekerini hızlı yükseltir; uzun vadede insülin direnci ve Tip 2 diyabet riskini artırır.", kaynak: "WHO 2015 Şeker Kılavuzu · ADA Standards of Care 2024 · The Lancet Diabetes Endocrinol 2014;2(8):634" },
+   { k: "gebe", ad: "Gebelik", kw: /gebelik|gebe|fetus|fetüs|hamile|teratojen|doğum|anne karnı|plasenta|laktasyon/i, bilgi: "Aspartam, BHA, yüksek doz kafein ve bazı sentetik renklendiriciler plasentadan geçer; fetus gelişimi ve düşük doğum ağırlığı ile ilişkilendirilmiştir.", kaynak: "EFSA 2013 Aspartam Yeniden Değerlendirme · ACOG Committee Opinion 462 · NIH Pregnancy Nutrition" },
+   { k: "hipertansiyon", ad: "Hipertansiyon", kw: /sodyum|MSG|monosodyum|tuz|hipertans|kan basın|tansiyon/i, bilgi: "Aşırı sodyum (>2g/gün) tansiyonu yükseltir, kalp-damar ve böbrek yükünü artırır. İşlenmiş gıdalarda gizli sodyum (E621 MSG, sodyum nitrit) yaygındır.", kaynak: "WHO 2023 Sodium Reduction · TEKHARF · ESC/ESH 2018 Hipertansiyon Kılavuzu" },
+   { k: "alerji", ad: "Alerji / Astım", kw: /alerj|ürtiker|astım|anafilaks|histamin|kaşıntı|intoleran|egzama|deri reak|solunum|hassasiy/i, bilgi: "Tartrazin (E102), benzoatlar (E210-219), sülfitler (E220-228) astım atağı, ürtiker ve psödoallerjik reaksiyon tetikleyebilir. Aspirin duyarlısı kişilerde risk daha yüksek.", kaynak: "Southampton McCann 2007 Lancet · FDA Food Allergen Labeling · EAACI 2014 Position Paper" },
+   { k: "sigara", ad: "Sigara Kullanıyorum", kw: /kanseroj|BHA|BHT|nitrit|nitrosamin|tütün|akciğer|solunum|oksidan|IARC Grup [12]/i, bilgi: "Sodyum nitrit (E250) + tütün dumanı nitrozaminleri sinerjik şekilde artırır. BHA/BHT oksidatif stres yükünü çoğaltır. Sigara içen bireylerde kanserojen yükü daha hızlı birikir.", kaynak: "IARC Vol 114 (2018) İşlenmiş Et · WHO Tobacco-Diet Synergy · NCI Smokers' Diet" },
+   { k: "cocuk", ad: "Çocuk / Bebek için", kw: /çocuk|bebek|hiperaktif|ADHD|gelişim|nörotoks|öğrenme|davranış|dikkat|Southampton/i, bilgi: "Sentetik renklendiriciler (E102, E110, E122, E124, E129) ve benzoat çocuklarda hiperaktivite + dikkat dağınıklığını artırır. AB tüm bu E-kodlu ürünlere zorunlu uyarı etiketi koyar.", kaynak: "McCann 2007 Lancet 370(9598):1560 · AB Reg 1333/2008 Ek V · CSPI 2016 Food Dyes Report" },
  ];
  const saglikUyarilari = (madde) => {
    if (!saglikDurumu.length) return [];
@@ -7177,10 +7177,16 @@ export default function App() {
             {SAGLIK_KOSULLARI.map(k => {
               const aktif = saglikDurumu.includes(k.k);
               return (
-                <button key={k.k} onClick={() => saglikToggle(k.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", marginBottom: 8, background: aktif ? "#E74C3C18" : C.y2, border: `1px solid ${aktif ? "#E74C3C" : C.s}`, borderRadius: 10, cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left" }}>
-                  <span style={{ flex: 1, color: aktif ? "#E74C3C" : C.metin, fontWeight: 700, fontSize: 14 }}>{k.ad}</span>
-                  <span style={{ width: 22, height: 22, borderRadius: "50%", border: `2px solid ${aktif ? "#E74C3C" : C.s}`, background: aktif ? "#E74C3C" : "transparent" }} />
-                </button>
+                <div key={k.k} style={{ marginBottom: 8, background: aktif ? "#E74C3C12" : C.y2, border: `1px solid ${aktif ? "#E74C3C" : C.s}`, borderRadius: 10, overflow: "hidden" }}>
+                  <button onClick={() => saglikToggle(k.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: "transparent", border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left" }}>
+                    <span style={{ flex: 1, color: aktif ? "#E74C3C" : C.metin, fontWeight: 700, fontSize: 14 }}>{k.ad}</span>
+                    <span style={{ width: 22, height: 22, borderRadius: "50%", border: `2px solid ${aktif ? "#E74C3C" : C.s}`, background: aktif ? "#E74C3C" : "transparent" }} />
+                  </button>
+                  <div style={{ padding: "0 14px 12px", color: C.soluk, fontSize: 11, lineHeight: 1.55 }}>
+                    <div style={{ color: C.metin, marginBottom: 4 }}>{k.bilgi}</div>
+                    <div style={{ color: C.cok, fontSize: 10, fontStyle: "italic" }}>Kaynak: {k.kaynak}</div>
+                  </div>
+                </div>
               );
             })}
             <button onClick={() => setSaglikModalAcik(false)} style={{ width: "100%", marginTop: 8, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>Kapat</button>
