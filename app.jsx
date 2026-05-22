@@ -5553,6 +5553,21 @@ export default function App() {
  {acikMi && (
  <div style={{ padding: "0 16px 16px" }}>
  <div style={{ height: 1, background: C.s, marginBottom: 14 }} />
+ {(() => {
+   const v = (r.risk === "kritik" || r.risk === "yuksek") ? { ad: "KAÇIN", ikon: "🛑", renk: C.kirmizi, alt: "Kullanmaman önerilir" }
+     : r.risk === "orta" ? { ad: "DİKKAT", ikon: "⚠️", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket" }
+     : r.risk === "dusuk" ? { ad: "GÜVENLİ", ikon: "✓", renk: C.yesil, alt: "Genel olarak güvenli" }
+     : { ad: "BELİRSİZ", ikon: "?", renk: "#888", alt: "Yeterli veri yok" };
+   return (
+     <div style={{ background: `linear-gradient(135deg, ${v.renk}, ${v.renk}DD)`, borderRadius: 12, padding: "14px 16px", marginBottom: 14, color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
+       <div style={{ fontSize: 32, lineHeight: 1 }}>{v.ikon}</div>
+       <div style={{ flex: 1 }}>
+         <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1, lineHeight: 1 }}>{v.ad}</div>
+         <div style={{ fontSize: 11, opacity: 0.9, marginTop: 3 }}>{v.alt}</div>
+       </div>
+     </div>
+   );
+ })()}
  <div style={S.kB}>ETKİ (ARŞİV VERİSİ)</div>
  <div style={S.mT}>{r.etki}</div>
  <div style={S.kB}> Kaynak</div>
@@ -5607,6 +5622,21 @@ export default function App() {
                </div>
              );
            })()}
+ <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+   <button onClick={(e) => {
+     e.stopPropagation();
+     const vLabel = (r.risk === "kritik" || r.risk === "yuksek") ? "🛑 KAÇIN" : r.risk === "orta" ? "⚠️ DİKKAT" : r.risk === "dusuk" ? "✓ GÜVENLİ" : "BELİRSİZ";
+     const metin = `${vLabel} — ${r.ad} (${r.kod})\n\n${(r.etki || "").slice(0, 200)}${(r.etki || "").length > 200 ? "…" : ""}\n\nKaynak: ${r.kaynak || "—"}\n\nBesin Dedektifi · https://besin-d.vercel.app`;
+     if (navigator.share) { navigator.share({ title: `${r.ad} — Besin Dedektifi`, text: metin }).catch(() => {}); }
+     else { window.open(`https://wa.me/?text=${encodeURIComponent(metin)}`, "_blank"); }
+   }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>↗ Paylaş</button>
+   <button onClick={(e) => {
+     e.stopPropagation();
+     const konu = `Hata: ${r.ad} (${r.kod})`;
+     const body = `Bu maddedeki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${r.ad}\nKod: ${r.kod}\nKategori: ${r.kat}\nMevcut etki metni: ${r.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
+     window.open(`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`);
+   }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>⚠ Bilgi Yanlış</button>
+ </div>
  </div>
  )}
  </div>
@@ -5675,21 +5705,12 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
- {(() => {
-   const haftaBaz = 18342;
-   const haftaToplam = haftaBaz + taramaSayisi * 47;
-   const dk = new Date();
-   const anlikKisi = 23 + ((dk.getHours() * 7 + dk.getMinutes()) % 67);
-   return (
-     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-         <span style={{ width: 8, height: 8, background: "#2ecc71", borderRadius: "50%", display: "inline-block", animation: "puls 1.8s infinite" }} />
-         <span style={{ color: C.metin, fontSize: 12, fontWeight: 700 }}>{anlikKisi} kişi şu an tarıyor</span>
-       </div>
-       <div style={{ color: C.soluk, fontSize: 11 }}>Bu hafta <b style={{ color: C.altin }}>{haftaToplam.toLocaleString("tr-TR")}</b> tarama</div>
-     </div>
-   );
- })()}
+ {taramaSayisi > 0 && (
+   <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+     <span style={{ color: C.soluk, fontSize: 12 }}>Senin toplam taraman</span>
+     <span style={{ color: C.altin, fontSize: 18, fontWeight: 800 }}>{taramaSayisi}</span>
+   </div>
+ )}
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
