@@ -5004,72 +5004,6 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 }
 
 /* ══════════════════════════════════════════════
- KARAGÖZ–HACİVAT SAHNELERİ (Pilot)
- ══════════════════════════════════════════════ */
-const KH_SAHNE = {
-  "E102": {
-    baslik: "Sarı Cipsin Esrarı",
-    replikler: [
-      { kim: "hacivat", s: "Hay hay Karagöz'üm hay! Geldim, geldim!" },
-      { kim: "karagoz", s: "Vay Hacivat'cığım, hoş geldin! Elinde o sarı sarı parlayan ne öyle?" },
-      { kim: "hacivat", s: "Karagöz'üm, bu zamane çocuklarının pek sevdiği, içine türlü kimyevi mevad katılmış bir nevi nişasta kıtırıdır. Halk arasında 'cips' denilir." },
-      { kim: "karagoz", s: "Yahu Hacivat, bu sarılık nasıl sarılık?! Bizim mahallenin limonu bunu görse utancından soluverir vallahi!" },
-      { kim: "hacivat", s: "Efendim, bu rengin müsebbibi tartrazin nâm bir azoboya türevidir. Frenkler 'E-102' diye anar." },
-      { kim: "karagoz", s: "E… ne dedin? Eyüp Yüz İki mi? Yeni bir cami mi açıldı Üsküdar'da?" },
-      { kim: "hacivat", s: "Hayır Karagöz'üm, hayır! E-102! Sentetik gıda renklendiricisi! Petrolden müştak bir maddedir!" },
-      { kim: "karagoz", s: "Petrol mü?! Yahu Hacivat, ben kahvaltıda Petrol Ofisi mi açayım?" },
-      { kim: "hacivat", s: "Bilimsel araştırmalar — bilhassa Southampton 2007 vukuatı — çocuklarda dikkat dağılması ve hiperaktiviteye sebep olduğunu kayda geçirmiştir!" },
-      { kim: "karagoz", s: "Anladım Hacivat anladım! Demek bizim Karagözcükler boş yere zıplamıyormuş! Sen şimdi şunu de: Bu cipsin sarısı bizim sakalı bile boyar!" },
-      { kim: "hacivat", s: "Karagöz'üm, sen yine kestirip attın be!" },
-      { kim: "karagoz", s: "Kestirmem mi ya? Ben Karagöz'üm! Sen ilminle kal, ben akıl-fikir, halka selâm söylerim! Hayrolaaa!" },
-    ]
-  },
-};
-
-function SahneOyna({ sahne, adim, setAdim, onKapat }) {
-  const son = sahne.replikler.length - 1;
-  const r = sahne.replikler[adim];
-  const hacivat = r.kim === "hacivat";
-  const KARAKTER = (kim) => (
-    <div style={{ width: 80, height: 110, background: "#6B2B0F18", border: "2px dashed #6B2B0F66", borderRadius: 8, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#6B2B0F", fontSize: 10, fontWeight: 700, textAlign: "center", overflow: "hidden" }}>
-      <img src={kim === "hacivat" ? "/hacivat.png" : "/karagoz.png"} alt={kim} onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-      <div style={{ display: "none", flexDirection: "column", alignItems: "center", gap: 4 }}>
-        <span style={{ fontSize: 32 }}>{kim === "hacivat" ? "👳🏽‍♂️" : "🧔🏽"}</span>
-        <span>{kim === "hacivat" ? "HACİVAT" : "KARAGÖZ"}</span>
-      </div>
-    </div>
-  );
-  return (
-    <div style={{ background: "linear-gradient(180deg, #FFF4DB, #FFE3B0)", border: "1px solid #C9952C", borderRadius: 14, padding: 14 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-        <span style={{ color: "#6B2B0F", fontWeight: 700, fontSize: 11, letterSpacing: 0.5 }}>🎭 GÖLGE OYUNU · {sahne.baslik.toUpperCase()}</span>
-        <span style={{ color: "#8B3F1A", fontSize: 11, fontWeight: 700 }}>{adim + 1} / {sahne.replikler.length}</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 8, justifyContent: hacivat ? "flex-start" : "flex-end", marginBottom: 12, minHeight: 120 }}>
-        {hacivat && KARAKTER("hacivat")}
-        <div style={{ flex: 1, maxWidth: "70%", background: hacivat ? "#FFFFFF" : "#6B2B0F", color: hacivat ? "#3A1A05" : "#FFE9B0", padding: "10px 14px", borderRadius: hacivat ? "14px 14px 14px 4px" : "14px 14px 4px 14px", border: `1px solid ${hacivat ? "#C9952C" : "#6B2B0F"}`, fontSize: 14, lineHeight: 1.55, fontFamily: "'Crimson Pro', Georgia, serif", fontStyle: "italic" }}>
-          {r.s}
-        </div>
-        {!hacivat && KARAKTER("karagoz")}
-      </div>
-      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-        <button onClick={() => setAdim(adim - 1)} disabled={adim === 0} style={{ background: "#FFFFFF", border: "1px solid #C9952C", borderRadius: 10, padding: "9px 12px", color: "#6B2B0F", fontWeight: 700, fontSize: 13, cursor: adim === 0 ? "not-allowed" : "pointer", opacity: adim === 0 ? 0.4 : 1, fontFamily: "Inter, sans-serif" }}>◀ Geri</button>
-        {adim < son ? (
-          <button onClick={() => setAdim(adim + 1)} style={{ flex: 1, background: "#6B2B0F", color: "#FFE9B0", border: "none", borderRadius: 10, padding: "9px 12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Devam ▶</button>
-        ) : (
-          <button onClick={onKapat} style={{ flex: 1, background: "#6B2B0F", color: "#FFE9B0", border: "none", borderRadius: 10, padding: "9px 12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Perde indi · Kapat</button>
-        )}
-        <button onClick={() => setAdim(0)} style={{ background: "#FFFFFF", border: "1px solid #C9952C", borderRadius: 10, padding: "9px 12px", color: "#6B2B0F", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>↻</button>
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
-        <button disabled style={{ flex: 1, background: "transparent", border: "1px dashed #6B2B0F66", borderRadius: 8, padding: "7px", color: "#6B2B0F99", fontSize: 11, fontWeight: 700, cursor: "not-allowed", fontFamily: "Inter, sans-serif" }}>🔊 Dinle · YAKINDA</button>
-        <button disabled style={{ flex: 1, background: "transparent", border: "1px dashed #6B2B0F66", borderRadius: 8, padding: "7px", color: "#6B2B0F99", fontSize: 11, fontWeight: 700, cursor: "not-allowed", fontFamily: "Inter, sans-serif" }}>↗ Paylaş · YAKINDA</button>
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
 const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
@@ -5124,12 +5058,8 @@ export default function App() {
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
  const [wikiYukleniyor, setWikiYukleniyor] = useState(false);
- const [khAdim, setKhAdim] = useState(-1);
- const [khAktifKod, setKhAktifKod] = useState(null);
- const [khSayfaAdim, setKhSayfaAdim] = useState(0);
  useEffect(() => {
-   if (!modal?.ad) { setWikiData(null); setKhAdim(-1); return; }
-   setKhAdim(-1);
+   if (!modal?.ad) { setWikiData(null); return; }
    setWikiData(null);
    setWikiYukleniyor(true);
    const baslik = modal.ad.split("(")[0].split(/[·\/]/)[0].trim();
@@ -6910,47 +6840,6 @@ export default function App() {
      </div>
    </div>
  )}
-
- {/* KARAGÖZ-HACİVAT GÖLGE OYUNU */}
- {sekme === "kh" && (
- <div>
-   <div style={S.kB}>🎭 GÖLGE OYUNU — KARAGÖZ & HACİVAT TARAMA</div>
-   <div style={S.ipucu}>Gıda katkı maddelerini Karagöz ile Hacivat'ın diliyle dinle. Bilim, halk dili ve mizah bir arada — hem öğretici hem perdelik.</div>
-
-   <div style={{ background: "linear-gradient(180deg, #FFF4DB, #FFE3B0)", border: "2px solid #C9952C", borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center", position: "relative" }}>
-     <img src="/karagoz-hacivat.png" alt="Karagöz ve Hacivat" onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} style={{ width: "100%", maxWidth: 280, height: "auto", display: "block", margin: "0 auto 8px" }} />
-     <div style={{ display: "none", justifyContent: "center", alignItems: "center", gap: 30, fontSize: 64, marginBottom: 6 }}>
-       <span>👳🏽‍♂️</span>
-       <span>🧔🏽</span>
-     </div>
-     <div style={{ color: "#6B2B0F", fontWeight: 700, fontSize: 15, letterSpacing: 0.3 }}>Hayalî'nin Perdesi</div>
-     <div style={{ color: "#8B3F1A", fontSize: 11, marginTop: 3, fontStyle: "italic" }}>"Hayrolaaa Karagöz'üm, hayrolaaa!"</div>
-   </div>
-
-   {khAktifKod && KH_SAHNE[khAktifKod] ? (
-     <SahneOyna sahne={KH_SAHNE[khAktifKod]} adim={khSayfaAdim} setAdim={setKhSayfaAdim} onKapat={() => { setKhAktifKod(null); setKhSayfaAdim(0); }} />
-   ) : (
-     <>
-       <div style={S.kB}>SAHNELER · {Object.keys(KH_SAHNE).length} ADET</div>
-       {Object.entries(KH_SAHNE).map(([kod, s]) => (
-         <button key={kod} onClick={() => { setKhAktifKod(kod); setKhSayfaAdim(0); }} style={{ width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "14px 16px", marginBottom: 8, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", textAlign: "left", display: "flex", alignItems: "center", gap: 12 }}>
-           <span style={{ fontSize: 28 }}>🎭</span>
-           <div style={{ flex: 1 }}>
-             <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.3 }}>{kod}</div>
-             <div style={{ color: C.metin, fontSize: 15, fontWeight: 700 }}>{s.baslik}</div>
-             <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{s.replikler.length} replik · perde açık</div>
-           </div>
-           <span style={{ color: C.cok, fontSize: 18 }}>▶</span>
-         </button>
-       ))}
-       <div style={{ marginTop: 12, padding: 14, background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, color: C.soluk, fontSize: 12, lineHeight: 1.6, fontStyle: "italic", textAlign: "center" }}>
-         Diğer maddeler için sahneler <b style={{ color: C.altin }}>yakında</b> eklenecek. Madde detay sayfasında 🎭 butonu görürsen, o maddenin sahnesi hazırdır.
-       </div>
-     </>
-   )}
- </div>
- )}
-
  {/* HAKKINDA */}
  {sekme === "hakkinda" && (
  <div>
@@ -7027,7 +6916,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["kh", "🎭", "Karagöz"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
@@ -7055,19 +6944,6 @@ export default function App() {
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
  </div>
-
- {KH_SAHNE[modal.kod] && (
-   khAdim < 0 ? (
-     <button onClick={() => setKhAdim(0)} style={{ width: "100%", marginTop: 12, background: `linear-gradient(135deg, #6B2B0F, #8B3F1A)`, color: "#FFE9B0", border: "1px solid #A04D1F", borderRadius: 12, padding: "13px 14px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-       <span style={{ fontSize: 18 }}>🎭</span>
-       <span>Karagöz & Hacivat'tan Dinle — "{KH_SAHNE[modal.kod].baslik}"</span>
-     </button>
-   ) : (
-     <div style={{ marginTop: 12 }}>
-       <SahneOyna sahne={KH_SAHNE[modal.kod]} adim={khAdim} setAdim={setKhAdim} onKapat={() => setKhAdim(-1)} />
-     </div>
-   )
- )}
 
  {wikiYukleniyor && <div style={{ marginTop: 12, color: C.cok, fontSize: 12, textAlign: "center" }}>Wikipedia'dan özet aranıyor...</div>}
  {wikiData && !wikiData.yok && wikiData.ozet && (
