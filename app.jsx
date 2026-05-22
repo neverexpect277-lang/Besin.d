@@ -5974,7 +5974,7 @@ export default function App() {
 
  {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
- {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", false], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
+ {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", true], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
  <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
  {l}
  {yakinda && <span style={{ position: "absolute", top: -7, right: -4, background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 8, letterSpacing: 0.3 }}>YAKINDA</span>}
@@ -5985,7 +5985,16 @@ export default function App() {
  {mod === "kamera" ? (
  <KameraOCR onMetin={m => { setTxt(m); setMod("metin"); yapAnaliz(m); }} onIptal={() => setMod("metin")} />
  ) : mod === "barkod" ? (
- <BarkodSorgu C={C} S={S} setTxt={setTxt} yapAnaliz={yapAnaliz} setMod={setMod} />
+ <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 12, padding: "14px 16px", marginBottom: 14 }}>
+   <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>★ YAKINDA — MOBİL UYGULAMADA</div>
+   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+     Mobil uygulama sürümünde <b>barkod ve QR taraması</b> aktif olacak. Ürünü okutunca adı ve içindekiler listesi otomatik gelecek.
+   </div>
+   <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+     <b style={{ color: C.metin }}>Şimdilik:</b> İçindekiler listesini "Metin Gir" sekmesine elle yapıştırabilir veya "Kamera ile Tara" ile etiket fotoğrafından okutabilirsin.
+   </div>
+   <button onClick={() => setMod("metin")} style={{ width:"100%", marginTop:12, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>Geri</button>
+ </div>
  ) : mod === "fotoisim" ? (
  <FotoIsim kategoriAd={KATEGORILER[kategori].ad} onAra={(isim) => { setTxt(isim); yapAnaliz(isim); }} onIptal={() => setMod("metin")} />
  ) : (
