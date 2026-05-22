@@ -6384,14 +6384,16 @@ export default function App() {
        </div>
      </div>
 
-     <div style={S.kB}>ŞİFA AYETLERİ — OKU, DİNLE</div>
+     <div style={S.kB}>ŞİFA AYETLERİ — OKU, DİNLE (6 AYET-İ ŞİFA)</div>
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
        {[
+         { ref: "9:14", ad: "Tevbe 14", konu: "Mü'minlerin sinelerine şifa" },
          { ref: "10:57", ad: "Yunus 57", konu: "Sinelerdeki şifa" },
+         { ref: "16:69", ad: "Nahl 69", konu: "Baldan insanlara şifa" },
          { ref: "17:82", ad: "İsrâ 82", konu: "Kur'an mü'minlere şifa" },
-         { ref: "26:80", ad: "Şuarâ 80", konu: "İbrahim a.s. duası" },
-         { ref: "2:186", ad: "Bakara 186", konu: "Allah duaya cevap verir" },
+         { ref: "26:80", ad: "Şuarâ 80", konu: "İbrahim a.s. şifa duası" },
          { ref: "41:44", ad: "Fussilet 44", konu: "Mü'minlere şifa ve hidayet" },
+         { ref: "2:186", ad: "Bakara 186", konu: "Allah duaya cevap verir" },
        ].map((a, i, arr) => {
          const veri = ayetData[a.ref];
          const acik = !!veri;
@@ -6419,6 +6421,58 @@ export default function App() {
            </div>
          );
        })}
+     </div>
+
+     <div style={S.kB}>ESMÂ-ÜL HÜSNÂ REÇETELERİ — DURUMA GÖRE</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { durum: "Kalp sıkıntısı / ruh daralması", esma: "Yâ Selâm", ebced: 131, aciklama: "Selâmet ve huzur veren. Ra'd 28: 'Kalpler ancak Allah'ı anmakla huzur bulur.'" },
+         { durum: "Üzüntü / yalnızlık hissi", esma: "Yâ Latîf", ebced: 129, aciklama: "İnceliğin sahibi, gizli yardım eden. Sıkıntıda tesellî verir." },
+         { durum: "Hastalık / fiziksel ağrı", esma: "Yâ Şâfî", ebced: 391, aciklama: "Şifa veren. Hadisten: 'Şifa veren ancak Sen'sin.'" },
+         { durum: "Korku / kaygı", esma: "Yâ Mü'min", ebced: 137, aciklama: "Güven veren. Endişe ve korkuyu sükûnete çevirir." },
+         { durum: "Rızk darlığı", esma: "Yâ Rezzâk", ebced: 308, aciklama: "Rızkı bol kılan. Bereketin kapısını açan isim." },
+         { durum: "Uykusuzluk / huzursuzluk", esma: "Yâ Hayyu Yâ Kayyûm", ebced: 218, aciklama: "Dâimâ diri ve kâim olan. Gece zikrinin esası." },
+         { durum: "Hidayet ihtiyacı", esma: "Yâ Hâdî", ebced: 20, aciklama: "Doğru yola ileten. Karar anlarında tekrar edilir." },
+       ].map((e, i, arr) => (
+         <div key={e.esma} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+           <div style={{ color: C.soluk, fontSize: 11, marginBottom: 4 }}>{e.durum}</div>
+           <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
+             <span style={{ color: C.altin, fontWeight: 700, fontSize: 16 }}>{e.esma}</span>
+             <span style={{ color: C.cok, fontSize: 11, fontFamily: "ui-monospace, monospace" }}>Ebced: {e.ebced}</span>
+           </div>
+           <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{e.aciklama}</div>
+         </div>
+       ))}
+       <div style={{ padding: "10px 14px", color: C.cok, fontSize: 10, fontStyle: "italic", textAlign: "center" }}>Ebced sayısı kadar zikir, geleneksel tasavvuf usulüdür.</div>
+     </div>
+
+     <div style={S.kB}>VAKTİN ZİKRİ — GÜNÜN VAKİTLERİNE GÖRE</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { vakit: "Fecr (Sabah) — Bereket dağılımı", zikir: "Sübhânallâhi ve bihamdihî (100 defa) · Vâkıa Sûresi" },
+         { vakit: "Duhâ (Kuşluk) — Rızk vakti", zikir: "Yâ Rezzâk · Duhâ Sûresi" },
+         { vakit: "Zuhr (Öğle) — Şükür ve istiğfar", zikir: "Estağfirullâh el-Azîm (70 defa) · Yâ Settâr" },
+         { vakit: "Asr (İkindi) — Ruhun daraldığı vakit", zikir: "Yâ Latîf (129 defa) · Asr Sûresi" },
+         { vakit: "Maghrib (Akşam) — Sükûnet zamanı", zikir: "Yâ Selâm (131 defa) · Mülk Sûresi" },
+         { vakit: "İsha (Yatsı) — Korunma ve tevekkül", zikir: "Âyetü'l-Kürsî · Felâk ve Nâs" },
+         { vakit: "Teheccüd (Gece) — Rahmânî rüyalar", zikir: "Yâ Hayyu Yâ Kayyûm · İsrâ Sûresi son ayetleri" },
+       ].map((v, i, arr) => (
+         <div key={v.vakit} style={{ padding: "10px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+           <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, marginBottom: 3 }}>{v.vakit}</div>
+           <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{v.zikir}</div>
+         </div>
+       ))}
+     </div>
+
+     <div style={S.kB}>DUA HALKASI — MANEVÎ SOSYAL AĞ</div>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>☾ YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 8 }}>
+         Bir kullanıcı <i>"bugün şifaya muhtacım, bir Fâtiha bekliyorum"</i> dediğinde sistemdeki diğer kullanıcılara anonim bildirim gidecek: <i>"Bir kardeşimize şifa ayeti okunması rica ediliyor, katılmak ister misin?"</i>
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Kolektif dua, ortak niyet ve eşzamanlı okuma; bireysel pratikten topluluk pratiğine geçişi sağlayacak.
+       </div>
      </div>
 
      <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
