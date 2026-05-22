@@ -4682,7 +4682,7 @@ function PaylasModal({ madde, onKapat }) {
     }
   };
   const C2 = { bg: "#F7F2E8", metin: "#1D1D1F", altin: "#C9952C", soluk: "#8A8499", s: "#E5DCC8" };
-  const sosyalLink = (kanal) => {
+  const linkKanali = (kanal) => {
     const t = encodeURIComponent(paylasMetni);
     const u = encodeURIComponent("https://besin-d.vercel.app");
     if (kanal === "whatsapp") return `https://wa.me/?text=${t}`;
@@ -4690,10 +4690,21 @@ function PaylasModal({ madde, onKapat }) {
     if (kanal === "twitter") return `https://twitter.com/intent/tweet?text=${t}`;
     return null;
   };
-  const KANALLAR = [
+  const indirVeUygulamaAc = async (appUrl, webUrl) => {
+    await indir();
+    setTimeout(() => {
+      const yeniSekme = window.open(appUrl, "_blank");
+      if (!yeniSekme || yeniSekme.closed) window.location.href = webUrl;
+    }, 600);
+  };
+  const KANALLAR_LINK = [
     { k: "whatsapp", ad: "WhatsApp", renk: "#25D366" },
     { k: "telegram", ad: "Telegram", renk: "#0088CC" },
     { k: "twitter", ad: "X", renk: "#000000" },
+  ];
+  const KANALLAR_UYGULAMA = [
+    { k: "instagram", ad: "Instagram", bg: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)", app: "instagram://camera", web: "https://www.instagram.com/" },
+    { k: "tiktok", ad: "TikTok", bg: "#000000", app: "snssdk1233://", web: "https://www.tiktok.com/upload" },
   ];
   return (
     <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1100, backdropFilter: "blur(4px)" }} onClick={onKapat}>
@@ -4725,9 +4736,15 @@ function PaylasModal({ madde, onKapat }) {
 
         <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: C2.metin, color: "#fff", border: "none", borderRadius: 12, padding: "14px", fontWeight: 700, fontSize: 14, cursor: yapiyor ? "wait" : "pointer", marginBottom: 8, fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Görsel + Yazıyı Paylaş"}</button>
 
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
+          {KANALLAR_UYGULAMA.map(k => (
+            <button key={k.k} onClick={() => indirVeUygulamaAc(k.app, k.web)} disabled={yapiyor} style={{ background: k.bg, color: "#fff", border: "none", borderRadius: 10, padding: "12px 8px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>{k.ad}</button>
+          ))}
+        </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 8 }}>
-          {KANALLAR.map(k => (
-            <a key={k.k} href={sosyalLink(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "11px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
+          {KANALLAR_LINK.map(k => (
+            <a key={k.k} href={linkKanali(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "11px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
           ))}
         </div>
 
@@ -4737,7 +4754,7 @@ function PaylasModal({ madde, onKapat }) {
         </div>
 
         <div style={{ color: C2.soluk, fontSize: 10, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
-          Instagram ve TikTok web üzerinden direkt paylaşımı desteklemez. "Görseli İndir" → uygulamada story/post olarak yükle.
+          Instagram / TikTok: görsel telefonuna iner, uygulama açılır — Hikaye / Post olarak elle yükle.
         </div>
       </div>
     </div>
@@ -5699,14 +5716,18 @@ export default function App() {
  <div style={{ padding: "0 16px 16px" }}>
  <div style={{ height: 1, background: C.s, marginBottom: 14 }} />
  {(() => {
-   const v = (r.risk === "kritik" || r.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir" }
-     : r.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket" }
-     : r.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli" }
-     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok" };
+   const v = (r.risk === "kritik" || r.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir", seviye: "YÜKSEK RİSK" }
+     : r.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket", seviye: "ORTA RİSK" }
+     : r.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
+     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
    return (
-     <div style={{ background: v.renk + "15", borderLeft: `3px solid ${v.renk}`, borderRadius: 8, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
-       <span style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.5 }}>{v.ad}</span>
-       <span style={{ color: C.soluk, fontSize: 11, marginLeft: "auto" }}>{v.alt}</span>
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, position: "relative", overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}>
+       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: v.renk }} />
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 26, fontWeight: 900, letterSpacing: 2, lineHeight: 1 }}>{v.ad}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, letterSpacing: 0.2, lineHeight: 1.3 }}>{v.alt}</div>
+       </div>
+       <div style={{ fontSize: 9, fontWeight: 700, color: v.renk, background: v.renk + "15", padding: "5px 9px", borderRadius: 4, letterSpacing: 0.6, whiteSpace: "nowrap" }}>{v.seviye}</div>
      </div>
    );
  })()}
@@ -7235,14 +7256,18 @@ export default function App() {
  <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}`, position: "relative" }} onClick={e => e.stopPropagation()}>
  <button style={{ position: "absolute", top: 14, right: 14, background: C.y2, border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.soluk, cursor: "pointer", fontSize: 13 }} onClick={() => setModal(null)}>✕</button>
  {(() => {
-   const v = (modal.risk === "kritik" || modal.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir" }
-     : modal.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket" }
-     : modal.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli" }
-     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok" };
+   const v = (modal.risk === "kritik" || modal.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir", seviye: "YÜKSEK RİSK" }
+     : modal.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket", seviye: "ORTA RİSK" }
+     : modal.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
+     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
    return (
-     <div style={{ background: v.renk + "15", borderLeft: `3px solid ${v.renk}`, borderRadius: 8, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
-       <span style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.5 }}>{v.ad}</span>
-       <span style={{ color: C.soluk, fontSize: 11, marginLeft: "auto" }}>{v.alt}</span>
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, position: "relative", overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}>
+       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: v.renk }} />
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 26, fontWeight: 900, letterSpacing: 2, lineHeight: 1 }}>{v.ad}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, letterSpacing: 0.2, lineHeight: 1.3 }}>{v.alt}</div>
+       </div>
+       <div style={{ fontSize: 9, fontWeight: 700, color: v.renk, background: v.renk + "15", padding: "5px 9px", borderRadius: 4, letterSpacing: 0.6, whiteSpace: "nowrap" }}>{v.seviye}</div>
      </div>
    );
  })()}
