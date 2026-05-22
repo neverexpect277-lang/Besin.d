@@ -6890,7 +6890,10 @@ export default function App() {
    return (
  <div>
  <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
- <div style={S.kB}>EŞREF SAATLERİ — ANLIK VAKTİ VE GÖK</div>
+ <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+   <div style={S.kB}>EŞREF SAATLERİ — ANLIK VAKTİ VE GÖK</div>
+   <button onClick={konumIste} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "6px 11px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", whiteSpace: "nowrap" }}>📍 Konumumu Kullan</button>
+ </div>
 
  {/* CANLI API KARTI */}
  {!esrefData && !esrefHata && (
@@ -6916,9 +6919,8 @@ export default function App() {
            </div>
          )}
        </div>
-       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-         <span style={{ color: C.soluk, fontSize: 11 }}>Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet</span>
-         <button onClick={konumIste} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>📍 Konumumu Kullan</button>
+       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, color: C.soluk, fontSize: 11 }}>
+         Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet
        </div>
      </div>
 
