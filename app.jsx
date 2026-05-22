@@ -4694,6 +4694,66 @@ function MizacMarket({ profil, onKapat }) {
   );
 }
 
+function BarkodSorgu({ C, S, setTxt, yapAnaliz, setMod }) {
+  const [kameraAcik, setKameraAcik] = React.useState(false);
+  const [barkod, setBarkod] = React.useState("");
+  const [urun, setUrun] = React.useState(null);
+  const [hata, setHata] = React.useState("");
+  const [yukleniyor, setYukleniyor] = React.useState(false);
+  const sorgula = (kod) => {
+    if (!kod) return;
+    setBarkod(kod);
+    setUrun(null);
+    setHata("");
+    setYukleniyor(true);
+    fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(kod)}.json?fields=product_name,product_name_tr,brands,ingredients_text,ingredients_text_tr,nutriscore_grade,nova_group,additives_tags,image_front_small_url`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.status !== 1) { setHata("Bu barkod Open Food Facts veritabanında bulunamadı."); return; }
+        setUrun(d.product);
+      })
+      .catch(() => setHata("Veri çekilemedi, internet bağlantını kontrol et."))
+      .finally(() => setYukleniyor(false));
+  };
+  const icindekiler = urun && (urun.ingredients_text_tr || urun.ingredients_text || "");
+  const aktar = () => { if (icindekiler) { setTxt(icindekiler); setMod("metin"); yapAnaliz(icindekiler); } };
+  return (
+    <div>
+      {kameraAcik ? (
+        <BarkodOkuyu onSonuc={kod => { setKameraAcik(false); sorgula(kod); }} onIptal={() => setKameraAcik(false)} />
+      ) : (
+        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 12 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+            <input type="text" inputMode="numeric" value={barkod} onChange={e => setBarkod(e.target.value.replace(/\D/g, ""))} placeholder="Barkod (EAN/UPC) girin..." style={{ flex: 1, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 14, fontFamily: "ui-monospace, monospace", outline: "none" }} />
+            <button onClick={() => sorgula(barkod)} disabled={!barkod || yukleniyor} style={{ background: C.altin, color: "#1A1200", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, cursor: barkod && !yukleniyor ? "pointer" : "not-allowed", opacity: barkod && !yukleniyor ? 1 : 0.4 }}>Ara</button>
+          </div>
+          <button onClick={() => setKameraAcik(true)} style={{ width: "100%", background: "none", border: `1px solid ${C.altin}`, borderRadius: 10, padding: "10px", color: C.altin, fontWeight: 700, cursor: "pointer", fontSize: 13 }}>📷 Kamerayla Tara</button>
+          <div style={{ color: C.soluk, fontSize: 11, marginTop: 8, textAlign: "center" }}>Open Food Facts veritabanı · 3+ milyon ürün</div>
+        </div>
+      )}
+      {yukleniyor && <div style={{ textAlign: "center", color: C.soluk, padding: 12 }}>Sorgulanıyor...</div>}
+      {hata && <div style={{ background: "#FEE2E2", color: C.kirmizi, padding: 12, borderRadius: 10, fontSize: 13, marginBottom: 10 }}>{hata}</div>}
+      {urun && (
+        <div style={{ background: C.y, border: `1px solid ${C.altin}55`, borderRadius: 14, padding: 14, marginBottom: 12 }}>
+          <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
+            {urun.image_front_small_url && <img src={urun.image_front_small_url} alt="" style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8, border: `1px solid ${C.s}` }} />}
+            <div style={{ flex: 1 }}>
+              <div style={{ color: C.altin, fontSize: 10, fontWeight: 700 }}>{urun.brands || "—"}</div>
+              <div style={{ color: C.metin, fontSize: 15, fontWeight: 700 }}>{urun.product_name_tr || urun.product_name || "İsimsiz"}</div>
+              <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
+                {urun.nutriscore_grade && <span style={{ background: C.altin + "22", color: C.altin, fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 4 }}>Nutri: {urun.nutriscore_grade.toUpperCase()}</span>}
+                {urun.nova_group && <span style={{ background: C.altin + "22", color: C.altin, fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 4 }}>NOVA: {urun.nova_group}</span>}
+              </div>
+            </div>
+          </div>
+          {icindekiler && <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 10, padding: 10, background: C.y2, borderRadius: 8, maxHeight: 120, overflowY: "auto" }}>{icindekiler}</div>}
+          {icindekiler && <button onClick={aktar} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, cursor: "pointer", fontSize: 14 }}>Analiz Et</button>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BarkodOkuyu({ onSonuc, onIptal }) {
   const [durum, setDurum] = React.useState("bekle"); // bekle | aktif | kirp | hata
   const [hata, setHata] = React.useState("");
@@ -5870,7 +5930,7 @@ export default function App() {
 
  {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
- {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", true], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
+ {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", false], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
  <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
  {l}
  {yakinda && <span style={{ position: "absolute", top: -7, right: -4, background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 8, letterSpacing: 0.3 }}>YAKINDA</span>}
@@ -5881,16 +5941,7 @@ export default function App() {
  {mod === "kamera" ? (
  <KameraOCR onMetin={m => { setTxt(m); setMod("metin"); yapAnaliz(m); }} onIptal={() => setMod("metin")} />
  ) : mod === "barkod" ? (
- <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 12, padding: "14px 16px", marginBottom: 14 }}>
-   <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>★ YAKINDA — MOBİL UYGULAMADA</div>
-   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
-     Mobil uygulama sürümünde <b>barkod ve QR taraması</b> aktif olacak. Ürünü okutunca adı ve içindekiler listesi otomatik gelecek.
-   </div>
-   <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
-     <b style={{ color: C.metin }}>Şimdilik:</b> İçindekiler listesini "Metin Gir" sekmesine elle yapıştırabilir veya "Kamera ile Tara" ile etiket fotoğrafından okutabilirsin.
-   </div>
-   <button onClick={() => setMod("metin")} style={{ width:"100%", marginTop:12, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>Geri</button>
- </div>
+ <BarkodSorgu C={C} S={S} setTxt={setTxt} yapAnaliz={yapAnaliz} setMod={setMod} />
  ) : mod === "fotoisim" ? (
  <FotoIsim kategoriAd={KATEGORILER[kategori].ad} onAra={(isim) => { setTxt(isim); yapAnaliz(isim); }} onIptal={() => setMod("metin")} />
  ) : (
