@@ -4690,21 +4690,10 @@ function PaylasModal({ madde, onKapat }) {
     if (kanal === "twitter") return `https://twitter.com/intent/tweet?text=${t}`;
     return null;
   };
-  const indirVeUygulamaAc = async (appUrl, webUrl) => {
-    await indir();
-    setTimeout(() => {
-      const yeniSekme = window.open(appUrl, "_blank");
-      if (!yeniSekme || yeniSekme.closed) window.location.href = webUrl;
-    }, 600);
-  };
   const KANALLAR_LINK = [
     { k: "whatsapp", ad: "WhatsApp", renk: "#25D366" },
     { k: "telegram", ad: "Telegram", renk: "#0088CC" },
     { k: "twitter", ad: "X", renk: "#000000" },
-  ];
-  const KANALLAR_UYGULAMA = [
-    { k: "instagram", ad: "Instagram", bg: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)", app: "instagram://camera", web: "https://www.instagram.com/" },
-    { k: "tiktok", ad: "TikTok", bg: "#000000", app: "snssdk1233://", web: "https://www.tiktok.com/upload" },
   ];
   return (
     <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1100, backdropFilter: "blur(4px)" }} onClick={onKapat}>
@@ -4734,15 +4723,11 @@ function PaylasModal({ madde, onKapat }) {
           </div>
         </div>
 
-        <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: C2.metin, color: "#fff", border: "none", borderRadius: 12, padding: "14px", fontWeight: 700, fontSize: 14, cursor: yapiyor ? "wait" : "pointer", marginBottom: 8, fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Görsel + Yazıyı Paylaş"}</button>
+        <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)", color: "#fff", border: "none", borderRadius: 12, padding: "16px", fontWeight: 700, fontSize: 15, cursor: yapiyor ? "wait" : "pointer", marginBottom: 6, fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Instagram · TikTok · Mesajlar · Diğer"}</button>
+        <div style={{ color: C2.soluk, fontSize: 10, textAlign: "center", marginBottom: 12, lineHeight: 1.4 }}>Telefonunda yüklü tüm uygulamalar açılır — görseli direkt Hikaye / Post / Mesaj olarak paylaş.</div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
-          {KANALLAR_UYGULAMA.map(k => (
-            <button key={k.k} onClick={() => indirVeUygulamaAc(k.app, k.web)} disabled={yapiyor} style={{ background: k.bg, color: "#fff", border: "none", borderRadius: 10, padding: "12px 8px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>{k.ad}</button>
-          ))}
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 8 }}>
+        <div style={{ color: C2.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>VEYA DİREKT KANALLAR</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
           {KANALLAR_LINK.map(k => (
             <a key={k.k} href={linkKanali(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "11px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
           ))}
@@ -4751,10 +4736,6 @@ function PaylasModal({ madde, onKapat }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
           <button onClick={indir} disabled={yapiyor} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Görseli İndir</button>
           <button onClick={() => { navigator.clipboard?.writeText(paylasMetni); }} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Yazıyı Kopyala</button>
-        </div>
-
-        <div style={{ color: C2.soluk, fontSize: 10, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
-          Instagram / TikTok: görsel telefonuna iner, uygulama açılır — Hikaye / Post olarak elle yükle.
         </div>
       </div>
     </div>
@@ -5176,12 +5157,12 @@ export default function App() {
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
-   { k: "diyabet", ad: "Diyabet", kw: /şeker|glikoz|fruktoz|maltodekstrin|sukroz|sirup|şuruP|ADI|insülin|kan şekeri/i },
-   { k: "gebe", ad: "Gebelik", kw: /gebelik|gebe|fetus|hamile|teratojen|doğum/i },
-   { k: "hipertansiyon", ad: "Hipertansiyon", kw: /sodyum|MSG|monosodyum|tuz|hipertans|kan basın/i },
-   { k: "alerji", ad: "Alerji / Astım", kw: /alerji|ürtiker|astım|anafilaks|histamin|kaşıntı/i },
-   { k: "sigara", ad: "Sigara Kullanıyorum", kw: /kanserojen|BHA|BHT|nitrit|nitrosamin|tütün|akciğer/i },
-   { k: "cocuk", ad: "Çocuk / Bebek için", kw: /çocuk|bebek|hiperaktif|ADHD|gelişim|nörotoks/i },
+   { k: "diyabet", ad: "Diyabet", kw: /\bşeker\b|glikoz|fruktoz|maltodekstrin|sukroz|şurup|sirup|insülin|kan şekeri|glisemik|kan glukoz/i },
+   { k: "gebe", ad: "Gebelik", kw: /gebelik|gebe|fetus|fetüs|hamile|teratojen|doğum|anne karnı|plasenta|laktasyon/i },
+   { k: "hipertansiyon", ad: "Hipertansiyon", kw: /sodyum|MSG|monosodyum|tuz|hipertans|kan basın|tansiyon/i },
+   { k: "alerji", ad: "Alerji / Astım", kw: /alerj|ürtiker|astım|anafilaks|histamin|kaşıntı|intoleran|ekzema|deri reak|solunum|hassasiy/i },
+   { k: "sigara", ad: "Sigara Kullanıyorum", kw: /kanseroj|BHA|BHT|nitrit|nitrosamin|tütün|akciğer|solunum|oksidan|IARC Grup [12]/i },
+   { k: "cocuk", ad: "Çocuk / Bebek için", kw: /çocuk|bebek|hiperaktif|ADHD|gelişim|nörotoks|öğrenme|davranış|dikkat|Southampton/i },
  ];
  const saglikUyarilari = (madde) => {
    if (!saglikDurumu.length) return [];
