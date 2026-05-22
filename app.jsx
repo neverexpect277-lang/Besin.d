@@ -5362,6 +5362,27 @@ export default function App() {
  const [esrefHata, setEsrefHata] = useState("");
  const [ayetData, setAyetData] = useState({});
  const [ayetYukleniyor, setAyetYukleniyor] = useState("");
+ const [havaData, setHavaData] = useState(null);
+ const [havaHata, setHavaHata] = useState("");
+ useEffect(() => {
+   if (sekme !== "toprak") return;
+   if (havaData) return;
+   const fetchHava = (lat, lon) => {
+     fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone,european_aqi,uv_index&timezone=auto`)
+       .then(r => r.json())
+       .then(d => setHavaData({ ...d.current, ...d.current_units, lat, lon }))
+       .catch(() => setHavaHata("Veri çekilemedi"));
+   };
+   if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(
+       pos => fetchHava(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+       () => fetchHava(41.0082, 28.9784),
+       { timeout: 5000 }
+     );
+   } else {
+     fetchHava(41.0082, 28.9784);
+   }
+ }, [sekme, havaData]);
  const ayetGetir = (ref) => {
    if (ayetData[ref]) return;
    setAyetYukleniyor(ref);
@@ -6574,6 +6595,48 @@ export default function App() {
          <b style={{ color: C.metin }}>Örnek:</b> "Şu an bulunduğun bölgenin manyetik alanı senin sevdevi mizacını ağırlaştırıyor. Çıplak ayak toprağa basman veya pozitif iyon yayan doğal taşlar kullanman önerilir."
        </div>
      </div>
+
+     <div style={S.kB}>ANLIK HAVA KALİTESİ & UV (CANLI)</div>
+     {!havaData && !havaHata && <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 12, color: C.soluk, fontSize: 13, textAlign: "center" }}>Konum & hava verisi yükleniyor...</div>}
+     {havaHata && <div style={{ background: "#FEE2E2", color: C.kirmizi, padding: 12, borderRadius: 10, fontSize: 13, marginBottom: 12 }}>{havaHata}</div>}
+     {havaData && (() => {
+       const aqi = havaData.european_aqi;
+       const aqiRenk = aqi == null ? C.cok : aqi <= 40 ? C.yesil : aqi <= 60 ? C.sari : aqi <= 80 ? C.turuncu : C.kirmizi;
+       const aqiAd = aqi == null ? "—" : aqi <= 20 ? "Çok İyi" : aqi <= 40 ? "İyi" : aqi <= 60 ? "Orta" : aqi <= 80 ? "Kötü" : "Çok Kötü";
+       return (
+         <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${C.s}` }}>
+             <div>
+               <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>AVRUPA HAVA KALİTE İNDEKSİ</div>
+               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 4 }}>
+                 <span style={{ color: aqiRenk, fontSize: 32, fontWeight: 800 }}>{aqi ?? "—"}</span>
+                 <span style={{ color: aqiRenk, fontSize: 14, fontWeight: 700 }}>{aqiAd}</span>
+               </div>
+             </div>
+             {havaData.uv_index != null && (
+               <div style={{ textAlign: "right" }}>
+                 <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>UV İNDEKS</div>
+                 <div style={{ color: C.altin, fontSize: 28, fontWeight: 800 }}>{Number(havaData.uv_index).toFixed(1)}</div>
+               </div>
+             )}
+           </div>
+           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+             {[
+               ["PM2.5", havaData.pm2_5, "μg/m³"],
+               ["PM10", havaData.pm10, "μg/m³"],
+               ["NO₂", havaData.nitrogen_dioxide, "μg/m³"],
+               ["O₃", havaData.ozone, "μg/m³"],
+             ].map(([ad, deger, birim]) => (
+               <div key={ad} style={{ background: C.y2, borderRadius: 8, padding: "8px 10px" }}>
+                 <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700 }}>{ad}</div>
+                 <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{deger != null ? Number(deger).toFixed(1) : "—"} <span style={{ color: C.cok, fontSize: 10, fontWeight: 400 }}>{birim}</span></div>
+               </div>
+             ))}
+           </div>
+           <div style={{ color: C.cok, fontSize: 10, marginTop: 10, textAlign: "center" }}>Open-Meteo · Konum: {havaData.lat}, {havaData.lon}</div>
+         </div>
+       );
+     })()}
 
      <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
        Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
