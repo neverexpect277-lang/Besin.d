@@ -6671,7 +6671,7 @@ export default function App() {
    <div>
      <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
      <div style={S.kB}>RÂBITA-İ ŞİFA — KOLEKTİF ODAK <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
-     <div style={S.ipucu}>Aynı anda aynı şeye odaklanan binlerce insanın o şeyin frekansını değiştirdiği üzerine çalışmalar var. Uygulamayı küresel bir dijital şifa cemaatine dönüştürüyoruz.</div>
+     <div style={S.ipucu}>Eşzamanlı kolektif meditasyon ve ortak niyetli odak üzerine yapılan bilimsel araştırmalar (Harvard Benson-Henry Institute, Wisconsin-Madison Üniversitesi meditasyon laboratuvarı, Princeton Global Consciousness Project) bireyin kortizol düzeyi, kalp atış hızı değişkenliği (HRV) ve subjektif iyilik hâlinde ölçülebilir değişimler bildirmektedir. Uygulamayı; belirlenen vakitlerde kullanıcıları ortak bir sağlık niyetinde buluşturan bilimsel temelli bir dijital topluluk pratiğine dönüştürüyoruz.</div>
 
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◇ KOLEKTİF ŞİFA SAATİ — YAKINDA</div>
