@@ -5151,7 +5151,7 @@ export default function App() {
    fetchEsrefTimings(41.0082, 28.9784);
  }, [sekme, esrefData]);
  const [mod, setMod] = useState("metin");
- const [taramaSayisi, setTaramaSayisi] = useState(0);
+ const [taramaSayisi, setTaramaSayisi] = useState(() => { try { return parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") || 0; } catch { return 0; } });
  const es = esrefAktif();
 
  function yapAnaliz(metinOverride) {
@@ -5161,7 +5161,7 @@ export default function App() {
  setBelirsizler(belirsizBul(metin));
  setIlkSira(ilkSiraTespit(metin));
  setAcik(null);
- setTaramaSayisi(taramaSayisi + 1);
+ { const yeni = taramaSayisi + 1; setTaramaSayisi(yeni); try { localStorage.setItem("bd_tarama_sayisi", String(yeni)); } catch {} }
  setEkran("sonuc");
     if (!seslerAcik) return;
     try {
@@ -5708,12 +5708,10 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
- {taramaSayisi > 0 && (
-   <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-     <span style={{ color: C.soluk, fontSize: 12 }}>Senin toplam taraman</span>
-     <span style={{ color: C.altin, fontSize: 18, fontWeight: 800 }}>{taramaSayisi}</span>
-   </div>
- )}
+ <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+   <span style={{ color: C.soluk, fontSize: 12 }}>Senin toplam taraman</span>
+   <span style={{ color: C.altin, fontSize: 18, fontWeight: 800 }}>{taramaSayisi}</span>
+ </div>
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
