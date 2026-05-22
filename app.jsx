@@ -3996,6 +3996,11 @@ function ToplulugaKatki({ taramaSayisi }) {
  </button>
  ))}
  </div>
+ <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", marginBottom: 10 }}>
+   <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, marginBottom: 2 }}>✉ İletişim</div>
+   <a href="mailto:besindedektifii@gmail.com" style={{ color: C.metin, fontSize: 13, textDecoration: "none" }}>besindedektifii@gmail.com</a>
+   <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>48 saat içinde yanıtlanır.</div>
+ </div>
  {secilen && (
  <>
  <textarea placeholder={`${KATEGORI.find(k => k.k === secilen)?.baslik} hakkında detay yaz...`} value={mesaj} onChange={e => setMesaj(e.target.value)} rows={3} style={{ width: "100%", background: C.y, border: `1px solid ${C.altin}50`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 13, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", resize: "none", marginBottom: 8, outline: "none" }} />
@@ -5054,6 +5059,20 @@ export default function App() {
  const [esrefHata, setEsrefHata] = useState("");
  const [ayetData, setAyetData] = useState({});
  const [ayetYukleniyor, setAyetYukleniyor] = useState("");
+ const [acikAyet, setAcikAyet] = useState(null);
+ const hizmetlerScrollRef = useRef(0);
+ useEffect(() => {
+   if (sekme === "hizmetler" && hizmetlerScrollRef.current > 0) {
+     requestAnimationFrame(() => window.scrollTo(0, hizmetlerScrollRef.current));
+   } else if (sekme !== "hizmetler") {
+     // hizmetler dışına çıkarken mevcut scroll'u kaydet (hizmet kartı tıklaması da burayı tetikler önce)
+   }
+ }, [sekme]);
+ const ayetToggle = (ref) => {
+   if (acikAyet === ref) { setAcikAyet(null); return; }
+   setAcikAyet(ref);
+   ayetGetir(ref);
+ };
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
@@ -5912,7 +5931,7 @@ export default function App() {
            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 12, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
              {g.hizmetler.map(h => (
-               <button key={h.k} onClick={() => setSekme(h.k)} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+               <button key={h.k} onClick={() => { hizmetlerScrollRef.current = window.scrollY; setSekme(h.k); }} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
                  <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
                  <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
                </button>
@@ -6396,10 +6415,10 @@ export default function App() {
          { ref: "2:186", ad: "Bakara 186", konu: "Allah duaya cevap verir" },
        ].map((a, i, arr) => {
          const veri = ayetData[a.ref];
-         const acik = !!veri;
+         const acik = acikAyet === a.ref;
          return (
            <div key={a.ref} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
-             <button onClick={() => ayetGetir(a.ref)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", textAlign: "left" }}>
+             <button onClick={() => ayetToggle(a.ref)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", textAlign: "left" }}>
                <span style={{ flex: 1 }}>
                  <span style={{ color: C.altin, fontWeight: 700, fontSize: 13 }}>{a.ad}</span>
                  <span style={{ color: C.soluk, fontSize: 12, marginLeft: 8 }}>· {a.konu}</span>
@@ -6408,8 +6427,9 @@ export default function App() {
              </button>
              {acik && (
                <div style={{ padding: "0 14px 14px" }}>
-                 {veri.hata && <div style={{ color: C.kirmizi, fontSize: 12 }}>{veri.hata}</div>}
-                 {veri.arap && (
+                 {!veri && <div style={{ color: C.cok, fontSize: 12, textAlign: "center", padding: 8 }}>Yükleniyor...</div>}
+                 {veri?.hata && <div style={{ color: C.kirmizi, fontSize: 12 }}>{veri.hata}</div>}
+                 {veri?.arap && (
                    <>
                      <div style={{ color: C.metin, fontSize: 22, lineHeight: 2, textAlign: "right", direction: "rtl", fontFamily: "'Amiri', 'Scheherazade New', serif", marginBottom: 12, padding: "10px 12px", background: C.y2, borderRadius: 10 }}>{veri.arap}</div>
                      <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10, fontStyle: "italic" }}>{veri.tr}</div>
@@ -6844,12 +6864,6 @@ export default function App() {
  {sekme === "hakkinda" && (
  <div>
  <ToplulugaKatki taramaSayisi={taramaSayisi} />
-
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
-   <div style={{ color: C.altin, fontWeight: 700, marginBottom: 6 }}> İletişim</div>
-   <div style={{ color: C.metin, fontSize: 13 }}>besindedektifii@gmail.com</div>
-   <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}>48 saat içinde yanıtlanır.</div>
- </div>
 
  <div style={S.kB}>HAKKINDA & BİLİMSEL DAYANAK</div>
  <BolumKart ikon={HAKKINDA.hukuki.ikon} renk={HAKKINDA.hukuki.renk} baslik={HAKKINDA.hukuki.baslik} ozet={HAKKINDA.hukuki.ozet} items={HAKKINDA.hukuki.items} />
