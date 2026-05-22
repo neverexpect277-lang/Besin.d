@@ -6915,8 +6915,9 @@ export default function App() {
            </div>
          )}
        </div>
-       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, color: C.soluk, fontSize: 11 }}>
-         Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet
+       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+         <span style={{ color: C.soluk, fontSize: 11 }}>Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet</span>
+         <button onClick={() => setEsrefData(null)} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>📍 Konumumu Kullan</button>
        </div>
      </div>
 
