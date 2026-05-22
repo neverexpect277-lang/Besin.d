@@ -5419,10 +5419,19 @@ export default function App() {
  };
  const konumIste = () => {
    if (!navigator.geolocation) { fetchEsrefTimings(41.0082, 28.9784); return; }
+   setEsrefHata("");
    navigator.geolocation.getCurrentPosition(
      pos => fetchEsrefTimings(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
-     err => setEsrefHata(err.code === 1 ? "Konum izni reddedildi" : "Konum alınamadı"),
-     { timeout: 10000, enableHighAccuracy: true }
+     err => {
+       if (err.code === 1) {
+         setEsrefHata("Konum izni reddedildi. iPhone'da: Ayarlar → Safari → Konum → 'Sor' veya 'İzin Ver' seçin, sonra sayfayı yenileyin. Android Chrome'da: adres çubuğundaki kilit simgesinden konum iznini etkinleştirin.");
+       } else if (err.code === 3) {
+         setEsrefHata("Konum alımı zaman aşımına uğradı, tekrar deneyin.");
+       } else {
+         setEsrefHata("Konum alınamadı.");
+       }
+     },
+     { timeout: 10000, enableHighAccuracy: false, maximumAge: 60000 }
    );
  };
  useEffect(() => {
@@ -6879,6 +6888,10 @@ export default function App() {
      return { ad: "Küçülen Hilâl", ikon: "🌘", oran: 25 };
    };
    const faz = esrefData?.date?.hijri?.day ? ayFazi(esrefData.date.hijri.day) : null;
+   const HICRI_AY_TR = { 1: "Muharrem", 2: "Safer", 3: "Rebiülevvel", 4: "Rebiülahir", 5: "Cemâziyelevvel", 6: "Cemâziyelahir", 7: "Receb", 8: "Şaban", 9: "Ramazan", 10: "Şevval", 11: "Zilkâde", 12: "Zilhicce" };
+   const MILADI_AY_TR = { 1: "Ocak", 2: "Şubat", 3: "Mart", 4: "Nisan", 5: "Mayıs", 6: "Haziran", 7: "Temmuz", 8: "Ağustos", 9: "Eylül", 10: "Ekim", 11: "Kasım", 12: "Aralık" };
+   const hicriAyTr = esrefData?.date?.hijri?.month?.number ? HICRI_AY_TR[parseInt(esrefData.date.hijri.month.number)] : esrefData?.date?.hijri?.month?.en;
+   const miladiAyTr = esrefData?.date?.gregorian?.month?.number ? MILADI_AY_TR[parseInt(esrefData.date.gregorian.month.number)] : esrefData?.date?.gregorian?.month?.en;
    const NAMAZLAR = [
      ["Fajr", "İmsak / Fecr"], ["Sunrise", "Güneş"], ["Dhuhr", "Öğle"],
      ["Asr", "İkindi"], ["Maghrib", "Akşam"], ["Isha", "Yatsı"]
@@ -6908,8 +6921,8 @@ export default function App() {
        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
          <div>
            <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>HİCRİ TARİH</div>
-           <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginTop: 2 }}>{esrefData.date.hijri.day} {esrefData.date.hijri.month.en} {esrefData.date.hijri.year}</div>
-           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{esrefData.date.gregorian.day} {esrefData.date.gregorian.month.en} {esrefData.date.gregorian.year}</div>
+           <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginTop: 2 }}>{esrefData.date.hijri.day} {hicriAyTr} {esrefData.date.hijri.year}</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{esrefData.date.gregorian.day} {miladiAyTr} {esrefData.date.gregorian.year}</div>
          </div>
          {faz && (
            <div style={{ textAlign: "center" }}>
