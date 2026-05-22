@@ -5298,6 +5298,27 @@ export default function App() {
  const [acik, setAcik] = useState(null);
  const [kategori, setKategori] = useState("gida");
  const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
+ const [esrefData, setEsrefData] = useState(null);
+ const [esrefHata, setEsrefHata] = useState("");
+ useEffect(() => {
+   if (sekme !== "esref") return;
+   if (esrefData) return;
+   const fetchTimings = (lat, lon) => {
+     fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
+       .then(r => r.json())
+       .then(d => setEsrefData({ ...d.data, lat, lon }))
+       .catch(() => setEsrefHata("Veri çekilemedi"));
+   };
+   if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(
+       pos => fetchTimings(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+       () => fetchTimings(41.0082, 28.9784),
+       { timeout: 5000 }
+     );
+   } else {
+     fetchTimings(41.0082, 28.9784);
+   }
+ }, [sekme, esrefData]);
  const [mod, setMod] = useState("metin");
  const [taramaSayisi, setTaramaSayisi] = useState(0);
  const es = esrefAktif();
@@ -6664,10 +6685,81 @@ export default function App() {
  )}
 
  {/* EŞREF */}
- {sekme === "esref" && (
+ {sekme === "esref" && (() => {
+   const ayFazi = (hicriGun) => {
+     const g = parseInt(hicriGun);
+     if (g <= 2 || g >= 28) return { ad: "Yeni Ay (Hilâl)", ikon: "🌑", oran: 0 };
+     if (g <= 6) return { ad: "Büyüyen Hilâl", ikon: "🌒", oran: 25 };
+     if (g <= 9) return { ad: "İlk Dördün", ikon: "🌓", oran: 50 };
+     if (g <= 13) return { ad: "Büyüyen Bedir", ikon: "🌔", oran: 75 };
+     if (g <= 16) return { ad: "Dolunay (Bedr)", ikon: "🌕", oran: 100 };
+     if (g <= 20) return { ad: "Küçülen Bedir", ikon: "🌖", oran: 75 };
+     if (g <= 23) return { ad: "Son Dördün", ikon: "🌗", oran: 50 };
+     return { ad: "Küçülen Hilâl", ikon: "🌘", oran: 25 };
+   };
+   const faz = esrefData?.date?.hijri?.day ? ayFazi(esrefData.date.hijri.day) : null;
+   const NAMAZLAR = [
+     ["Fajr", "İmsak / Fecr"], ["Sunrise", "Güneş"], ["Dhuhr", "Öğle"],
+     ["Asr", "İkindi"], ["Maghrib", "Akşam"], ["Isha", "Yatsı"]
+   ];
+   const simdi = new Date();
+   const dakika = simdi.getHours() * 60 + simdi.getMinutes();
+   const ts2dk = (s) => { const [h, m] = s.split(":"); return parseInt(h) * 60 + parseInt(m); };
+   const sirakiNamaz = esrefData?.timings ? NAMAZLAR.find(([k]) => ts2dk(esrefData.timings[k]) > dakika) : null;
+   return (
  <div>
  <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
- <div style={S.kB}>EŞREF SAATLERİ — ORGAN VAKTI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+ <div style={S.kB}>EŞREF SAATLERİ — ANLIK VAKTİ VE GÖK</div>
+
+ {/* CANLI API KARTI */}
+ {!esrefData && !esrefHata && (
+   <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 20, marginBottom: 14, textAlign: "center", color: C.soluk, fontSize: 13 }}>Konum ve namaz vakitleri yükleniyor...</div>
+ )}
+ {esrefHata && (
+   <div style={{ background: "#FEE2E2", border: `1px solid ${C.kirmizi}`, borderRadius: 14, padding: 14, marginBottom: 14, color: C.kirmizi, fontSize: 13 }}>{esrefHata}</div>
+ )}
+ {esrefData && (
+   <>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+         <div>
+           <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>HİCRİ TARİH</div>
+           <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginTop: 2 }}>{esrefData.date.hijri.day} {esrefData.date.hijri.month.en} {esrefData.date.hijri.year}</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{esrefData.date.gregorian.day} {esrefData.date.gregorian.month.en} {esrefData.date.gregorian.year}</div>
+         </div>
+         {faz && (
+           <div style={{ textAlign: "center" }}>
+             <div style={{ fontSize: 36, lineHeight: 1 }}>{faz.ikon}</div>
+             <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, marginTop: 4 }}>{faz.ad}</div>
+             <div style={{ color: C.soluk, fontSize: 10 }}>~%{faz.oran} dolu</div>
+           </div>
+         )}
+       </div>
+       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, color: C.soluk, fontSize: 11 }}>
+         Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet
+       </div>
+     </div>
+
+     <div style={S.kB}>NAMAZ VAKİTLERİ (BUGÜN)</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {NAMAZLAR.map(([k, ad], i) => {
+         const vakit = esrefData.timings[k]?.substring(0, 5);
+         const aktif = sirakiNamaz && sirakiNamaz[0] === k;
+         return (
+           <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderBottom: i < NAMAZLAR.length - 1 ? `1px solid ${C.s}` : "none", background: aktif ? C.altin + "12" : "transparent", borderRadius: aktif ? 10 : 0 }}>
+             <span style={{ color: aktif ? C.altin : C.metin, fontWeight: aktif ? 700 : 500, fontSize: 14 }}>{ad}</span>
+             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+               {aktif && <span style={{ background: C.altin, color: "#1A1200", borderRadius: 6, padding: "2px 8px", fontSize: 9, fontWeight: 700, letterSpacing: 0.3 }}>SIRADAKİ</span>}
+               <span style={{ color: aktif ? C.altin : C.metin, fontFamily: "ui-monospace, monospace", fontSize: 16, fontWeight: 700 }}>{vakit}</span>
+             </div>
+           </div>
+         );
+       })}
+     </div>
+   </>
+ )}
+
+ <div style={S.kB}>ORGAN VAKTİ (KRONOBİYOLOJİ)</div>
  <div style={S.ipucu}>Kronobiyoloji ile desteklenen organ aktivite vakitleri. Nobel 2017 sirkadiyen ritim ödülü bilimsel dayanaktır.</div>
  <div style={S.notUyari}>* Bu bölüm; Çin tıbbı meridyen saati geleneğine dayanır. Sirkadiyen ritim bilimsel olarak kanıtlıdır; spesifik organ–saat eşleşmeleri için modern bilimsel kanıt sınırlıdır.</div>
  {ESREF.map((e, i) => {
@@ -6687,7 +6779,8 @@ export default function App() {
  );
  })}
  </div>
- )}
+   );
+ })()}
 
  {sekme === "burclar" && (
    <div>
