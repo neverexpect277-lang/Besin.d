@@ -5410,24 +5410,25 @@ export default function App() {
      .catch(() => setAyetData(prev => ({ ...prev, [ref]: { hata: "Yüklenemedi" } })))
      .finally(() => setAyetYukleniyor(""));
  };
+ const fetchEsrefTimings = (lat, lon) => {
+   setEsrefHata("");
+   fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
+     .then(r => r.json())
+     .then(d => setEsrefData({ ...d.data, lat, lon }))
+     .catch(() => setEsrefHata("Veri çekilemedi"));
+ };
+ const konumIste = () => {
+   if (!navigator.geolocation) { fetchEsrefTimings(41.0082, 28.9784); return; }
+   navigator.geolocation.getCurrentPosition(
+     pos => fetchEsrefTimings(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+     err => setEsrefHata(err.code === 1 ? "Konum izni reddedildi" : "Konum alınamadı"),
+     { timeout: 10000, enableHighAccuracy: true }
+   );
+ };
  useEffect(() => {
    if (sekme !== "esref") return;
    if (esrefData) return;
-   const fetchTimings = (lat, lon) => {
-     fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
-       .then(r => r.json())
-       .then(d => setEsrefData({ ...d.data, lat, lon }))
-       .catch(() => setEsrefHata("Veri çekilemedi"));
-   };
-   if (navigator.geolocation) {
-     navigator.geolocation.getCurrentPosition(
-       pos => fetchTimings(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
-       () => fetchTimings(41.0082, 28.9784),
-       { timeout: 5000 }
-     );
-   } else {
-     fetchTimings(41.0082, 28.9784);
-   }
+   fetchEsrefTimings(41.0082, 28.9784);
  }, [sekme, esrefData]);
  const [mod, setMod] = useState("metin");
  const [taramaSayisi, setTaramaSayisi] = useState(0);
@@ -6917,7 +6918,7 @@ export default function App() {
        </div>
        <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
          <span style={{ color: C.soluk, fontSize: 11 }}>Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet</span>
-         <button onClick={() => setEsrefData(null)} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>📍 Konumumu Kullan</button>
+         <button onClick={konumIste} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "5px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>📍 Konumumu Kullan</button>
        </div>
      </div>
 
