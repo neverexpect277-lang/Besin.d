@@ -5004,6 +5004,29 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 }
 
 /* ══════════════════════════════════════════════
+ KARAGÖZ–HACİVAT SAHNELERİ (Pilot)
+ ══════════════════════════════════════════════ */
+const KH_SAHNE = {
+  "E102": {
+    baslik: "Sarı Cipsin Esrarı",
+    replikler: [
+      { kim: "hacivat", s: "Hay hay Karagöz'üm hay! Geldim, geldim!" },
+      { kim: "karagoz", s: "Vay Hacivat'cığım, hoş geldin! Elinde o sarı sarı parlayan ne öyle?" },
+      { kim: "hacivat", s: "Karagöz'üm, bu zamane çocuklarının pek sevdiği, içine türlü kimyevi mevad katılmış bir nevi nişasta kıtırıdır. Halk arasında 'cips' denilir." },
+      { kim: "karagoz", s: "Yahu Hacivat, bu sarılık nasıl sarılık?! Bizim mahallenin limonu bunu görse utancından soluverir vallahi!" },
+      { kim: "hacivat", s: "Efendim, bu rengin müsebbibi tartrazin nâm bir azoboya türevidir. Frenkler 'E-102' diye anar." },
+      { kim: "karagoz", s: "E… ne dedin? Eyüp Yüz İki mi? Yeni bir cami mi açıldı Üsküdar'da?" },
+      { kim: "hacivat", s: "Hayır Karagöz'üm, hayır! E-102! Sentetik gıda renklendiricisi! Petrolden müştak bir maddedir!" },
+      { kim: "karagoz", s: "Petrol mü?! Yahu Hacivat, ben kahvaltıda Petrol Ofisi mi açayım?" },
+      { kim: "hacivat", s: "Bilimsel araştırmalar — bilhassa Southampton 2007 vukuatı — çocuklarda dikkat dağılması ve hiperaktiviteye sebep olduğunu kayda geçirmiştir!" },
+      { kim: "karagoz", s: "Anladım Hacivat anladım! Demek bizim Karagözcükler boş yere zıplamıyormuş! Sen şimdi şunu de: Bu cipsin sarısı bizim sakalı bile boyar!" },
+      { kim: "hacivat", s: "Karagöz'üm, sen yine kestirip attın be!" },
+      { kim: "karagoz", s: "Kestirmem mi ya? Ben Karagöz'üm! Sen ilminle kal, ben akıl-fikir, halka selâm söylerim! Hayrolaaa!" },
+    ]
+  },
+};
+
+/* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
 const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px}`;
@@ -5058,8 +5081,10 @@ export default function App() {
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
  const [wikiYukleniyor, setWikiYukleniyor] = useState(false);
+ const [khAdim, setKhAdim] = useState(-1);
  useEffect(() => {
-   if (!modal?.ad) { setWikiData(null); return; }
+   if (!modal?.ad) { setWikiData(null); setKhAdim(-1); return; }
+   setKhAdim(-1);
    setWikiData(null);
    setWikiYukleniyor(true);
    const baslik = modal.ad.split("(")[0].split(/[·\/]/)[0].trim();
@@ -6945,6 +6970,59 @@ export default function App() {
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
  </div>
+
+ {KH_SAHNE[modal.kod] && (() => {
+   const sahne = KH_SAHNE[modal.kod];
+   const son = sahne.replikler.length - 1;
+   if (khAdim < 0) {
+     return (
+       <button onClick={() => setKhAdim(0)} style={{ width: "100%", marginTop: 12, background: `linear-gradient(135deg, #6B2B0F, #8B3F1A)`, color: "#FFE9B0", border: "1px solid #A04D1F", borderRadius: 12, padding: "13px 14px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+         <span style={{ fontSize: 18 }}>🎭</span>
+         <span>Karagöz & Hacivat'tan Dinle — "{sahne.baslik}"</span>
+       </button>
+     );
+   }
+   const r = sahne.replikler[khAdim];
+   const hacivat = r.kim === "hacivat";
+   return (
+     <div style={{ marginTop: 12, background: "linear-gradient(180deg, #FFF4DB, #FFE3B0)", border: "1px solid #C9952C", borderRadius: 14, padding: 14, position: "relative", overflow: "hidden" }}>
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+         <span style={{ color: "#6B2B0F", fontWeight: 700, fontSize: 11, letterSpacing: 0.5 }}>🎭 GÖLGE OYUNU · {sahne.baslik.toUpperCase()}</span>
+         <span style={{ color: "#8B3F1A", fontSize: 11, fontWeight: 700 }}>{khAdim + 1} / {sahne.replikler.length}</span>
+       </div>
+       <div style={{ display: "flex", alignItems: "flex-end", gap: 8, justifyContent: hacivat ? "flex-start" : "flex-end", marginBottom: 12, minHeight: 110 }}>
+         {hacivat && (
+           <div style={{ width: 72, height: 96, background: "#6B2B0F22", border: "2px dashed #6B2B0F66", borderRadius: 8, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#6B2B0F", fontSize: 10, fontWeight: 700, textAlign: "center" }}>
+             <span style={{ fontSize: 28 }}>👳🏽‍♂️</span>
+             <span>HACİVAT</span>
+           </div>
+         )}
+         <div style={{ flex: 1, maxWidth: "75%", background: hacivat ? "#FFFFFF" : "#6B2B0F", color: hacivat ? "#3A1A05" : "#FFE9B0", padding: "10px 14px", borderRadius: hacivat ? "14px 14px 14px 4px" : "14px 14px 4px 14px", border: `1px solid ${hacivat ? "#C9952C" : "#6B2B0F"}`, fontSize: 14, lineHeight: 1.55, fontFamily: "'Crimson Pro', Georgia, serif", fontStyle: "italic" }}>
+           {r.s}
+         </div>
+         {!hacivat && (
+           <div style={{ width: 72, height: 96, background: "#6B2B0F22", border: "2px dashed #6B2B0F66", borderRadius: 8, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#6B2B0F", fontSize: 10, fontWeight: 700, textAlign: "center" }}>
+             <span style={{ fontSize: 28 }}>🧔🏽</span>
+             <span>KARAGÖZ</span>
+           </div>
+         )}
+       </div>
+       <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+         <button onClick={() => setKhAdim(khAdim - 1)} disabled={khAdim === 0} style={{ background: "#FFFFFF", border: "1px solid #C9952C", borderRadius: 10, padding: "9px 12px", color: "#6B2B0F", fontWeight: 700, fontSize: 13, cursor: khAdim === 0 ? "not-allowed" : "pointer", opacity: khAdim === 0 ? 0.4 : 1, fontFamily: "inherit" }}>◀ Geri</button>
+         {khAdim < son ? (
+           <button onClick={() => setKhAdim(khAdim + 1)} style={{ flex: 1, background: "#6B2B0F", color: "#FFE9B0", border: "none", borderRadius: 10, padding: "9px 12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Devam ▶</button>
+         ) : (
+           <button onClick={() => setKhAdim(-1)} style={{ flex: 1, background: "#6B2B0F", color: "#FFE9B0", border: "none", borderRadius: 10, padding: "9px 12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Perde indi · Kapat</button>
+         )}
+         <button onClick={() => setKhAdim(0)} style={{ background: "#FFFFFF", border: "1px solid #C9952C", borderRadius: 10, padding: "9px 12px", color: "#6B2B0F", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>↻</button>
+       </div>
+       <div style={{ display: "flex", gap: 6 }}>
+         <button disabled style={{ flex: 1, background: "transparent", border: "1px dashed #6B2B0F66", borderRadius: 8, padding: "7px", color: "#6B2B0F99", fontSize: 11, fontWeight: 700, cursor: "not-allowed", fontFamily: "inherit" }}>🔊 Dinle · YAKINDA</button>
+         <button disabled style={{ flex: 1, background: "transparent", border: "1px dashed #6B2B0F66", borderRadius: 8, padding: "7px", color: "#6B2B0F99", fontSize: 11, fontWeight: 700, cursor: "not-allowed", fontFamily: "inherit" }}>↗ Paylaş · YAKINDA</button>
+       </div>
+     </div>
+   );
+ })()}
 
  {wikiYukleniyor && <div style={{ marginTop: 12, color: C.cok, fontSize: 12, textAlign: "center" }}>Wikipedia'dan özet aranıyor...</div>}
  {wikiData && !wikiData.yok && wikiData.ozet && (
