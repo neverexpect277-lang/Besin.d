@@ -5364,6 +5364,19 @@ export default function App() {
  const [ayetYukleniyor, setAyetYukleniyor] = useState("");
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
+ const [wikiData, setWikiData] = useState(null);
+ const [wikiYukleniyor, setWikiYukleniyor] = useState(false);
+ useEffect(() => {
+   if (!modal?.ad) { setWikiData(null); return; }
+   setWikiData(null);
+   setWikiYukleniyor(true);
+   const baslik = modal.ad.split("(")[0].split(/[·\/]/)[0].trim();
+   fetch(`https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(baslik)}`)
+     .then(r => r.ok ? r.json() : Promise.reject())
+     .then(d => setWikiData({ ozet: d.extract, link: d.content_urls?.desktop?.page, resim: d.thumbnail?.source }))
+     .catch(() => setWikiData({ yok: true }))
+     .finally(() => setWikiYukleniyor(false));
+ }, [modal?.ad]);
  useEffect(() => {
    if (sekme !== "toprak") return;
    if (havaData) return;
@@ -7160,6 +7173,20 @@ export default function App() {
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
  </div>
+
+ {wikiYukleniyor && <div style={{ marginTop: 12, color: C.cok, fontSize: 12, textAlign: "center" }}>Wikipedia'dan özet aranıyor...</div>}
+ {wikiData && !wikiData.yok && wikiData.ozet && (
+   <div style={{ marginTop: 12, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12 }}>
+     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+       <span style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.3 }}>WIKIPEDIA · TR</span>
+     </div>
+     <div style={{ display: "flex", gap: 10 }}>
+       {wikiData.resim && <img src={wikiData.resim} alt="" style={{ width: 56, height: 56, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />}
+       <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{wikiData.ozet}</div>
+     </div>
+     {wikiData.link && <a href={wikiData.link} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 8, color: C.altin, fontSize: 12, fontWeight: 700, textDecoration: "none" }}>Tam makaleyi oku →</a>}
+   </div>
+ )}
  </div>
  </div>
  )}
