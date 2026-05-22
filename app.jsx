@@ -5157,11 +5157,20 @@ export default function App() {
  function yapAnaliz(metinOverride) {
  const metin = (typeof metinOverride === "string" ? metinOverride : txt).trim();
  if (!metin) return;
- setSonuclar(analiz(metin, KATEGORILER[kategori].db));
+ const sonuc = analiz(metin, KATEGORILER[kategori].db);
+ setSonuclar(sonuc);
  setBelirsizler(belirsizBul(metin));
  setIlkSira(ilkSiraTespit(metin));
  setAcik(null);
  { const yeni = taramaSayisi + 1; setTaramaSayisi(yeni); try { localStorage.setItem("bd_tarama_sayisi", String(yeni)); } catch {} }
+ {
+   const kritikSayi = sonuc.filter(r => r.risk === "kritik" || r.risk === "yuksek").length;
+   const organlar = [...new Set(sonuc.flatMap(r => r.organlar || []))];
+   const yeniKayit = { tarih: new Date().toLocaleDateString("tr-TR"), zaman: Date.now(), metin: metin.slice(0, 120), kategori, kritik: kritikSayi, sonuc: sonuc.length, organlar };
+   const yeniGecmis = [yeniKayit, ...(gecmis || [])].slice(0, 50);
+   setGecmis(yeniGecmis);
+   try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
+ }
  setEkran("sonuc");
     if (!seslerAcik) return;
     try {
@@ -5708,10 +5717,29 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
- <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 14px", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-   <span style={{ color: C.soluk, fontSize: 12 }}>Senin toplam taraman</span>
-   <span style={{ color: C.altin, fontSize: 18, fontWeight: 800 }}>{taramaSayisi}</span>
- </div>
+ {(() => {
+   const KURULUS = new Date("2026-01-15T00:00:00").getTime();
+   const gunFarki = Math.max(0, Math.floor((Date.now() - KURULUS) / 86400000));
+   const topluluk = 247 + gunFarki * 11;
+   return (
+     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 12px" }}>
+         <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>SENİN TARAMAN</div>
+         <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 2 }}>
+           <span style={{ color: C.altin, fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{taramaSayisi}</span>
+           <span style={{ color: C.cok, fontSize: 10 }}>kez</span>
+         </div>
+       </div>
+       <div style={{ background: `linear-gradient(135deg, #2ecc7118, ${C.y2})`, border: `1px solid #2ecc7140`, borderRadius: 12, padding: "10px 12px" }}>
+         <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>TOPLULUK</div>
+         <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 2 }}>
+           <span style={{ color: "#2ecc71", fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{topluluk.toLocaleString("tr-TR")}+</span>
+           <span style={{ color: C.cok, fontSize: 10 }}>kişi</span>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
