@@ -5300,6 +5300,22 @@ export default function App() {
  const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
  const [esrefData, setEsrefData] = useState(null);
  const [esrefHata, setEsrefHata] = useState("");
+ const [ayetData, setAyetData] = useState({});
+ const [ayetYukleniyor, setAyetYukleniyor] = useState("");
+ const ayetGetir = (ref) => {
+   if (ayetData[ref]) return;
+   setAyetYukleniyor(ref);
+   fetch(`https://api.alquran.cloud/v1/ayah/${ref}/editions/quran-uthmani,tr.diyanet,ar.alafasy`)
+     .then(r => r.json())
+     .then(d => {
+       const arap = d.data.find(x => x.edition.identifier === "quran-uthmani");
+       const tr = d.data.find(x => x.edition.identifier === "tr.diyanet");
+       const audio = d.data.find(x => x.edition.identifier === "ar.alafasy");
+       setAyetData(prev => ({ ...prev, [ref]: { arap: arap?.text, tr: tr?.text, audio: audio?.audio, sure: arap?.surah?.englishName, ayetNo: arap?.numberInSurah } }));
+     })
+     .catch(() => setAyetData(prev => ({ ...prev, [ref]: { hata: "Yüklenemedi" } })))
+     .finally(() => setAyetYukleniyor(""));
+ };
  useEffect(() => {
    if (sekme !== "esref") return;
    if (esrefData) return;
@@ -6528,6 +6544,43 @@ export default function App() {
        <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
          Aidiyet, ortak niyet ve aynı anda yapılan odak — yazılımı bir uygulamadan çıkarıp bir <b>şifa cemaatine</b> dönüştürür.
        </div>
+     </div>
+
+     <div style={S.kB}>ŞİFA AYETLERİ — OKU, DİNLE</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { ref: "10:57", ad: "Yunus 57", konu: "Sinelerdeki şifa" },
+         { ref: "17:82", ad: "İsrâ 82", konu: "Kur'an mü'minlere şifa" },
+         { ref: "26:80", ad: "Şuarâ 80", konu: "İbrahim a.s. duası" },
+         { ref: "2:186", ad: "Bakara 186", konu: "Allah duaya cevap verir" },
+         { ref: "41:44", ad: "Fussilet 44", konu: "Mü'minlere şifa ve hidayet" },
+       ].map((a, i, arr) => {
+         const veri = ayetData[a.ref];
+         const acik = !!veri;
+         return (
+           <div key={a.ref} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+             <button onClick={() => ayetGetir(a.ref)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", textAlign: "left" }}>
+               <span style={{ flex: 1 }}>
+                 <span style={{ color: C.altin, fontWeight: 700, fontSize: 13 }}>{a.ad}</span>
+                 <span style={{ color: C.soluk, fontSize: 12, marginLeft: 8 }}>· {a.konu}</span>
+               </span>
+               <span style={{ color: C.cok, fontSize: 14 }}>{acik ? "▲" : (ayetYukleniyor === a.ref ? "⟳" : "▼")}</span>
+             </button>
+             {acik && (
+               <div style={{ padding: "0 14px 14px" }}>
+                 {veri.hata && <div style={{ color: C.kirmizi, fontSize: 12 }}>{veri.hata}</div>}
+                 {veri.arap && (
+                   <>
+                     <div style={{ color: C.metin, fontSize: 22, lineHeight: 2, textAlign: "right", direction: "rtl", fontFamily: "'Amiri', 'Scheherazade New', serif", marginBottom: 12, padding: "10px 12px", background: C.y2, borderRadius: 10 }}>{veri.arap}</div>
+                     <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10, fontStyle: "italic" }}>{veri.tr}</div>
+                     {veri.audio && <audio controls src={veri.audio} style={{ width: "100%", height: 36 }} />}
+                   </>
+                 )}
+               </div>
+             )}
+           </div>
+         );
+       })}
      </div>
 
      <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
