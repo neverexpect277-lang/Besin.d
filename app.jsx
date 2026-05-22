@@ -5559,12 +5559,10 @@ export default function App() {
      : r.risk === "dusuk" ? { ad: "GÜVENLİ", ikon: "✓", renk: C.yesil, alt: "Genel olarak güvenli" }
      : { ad: "BELİRSİZ", ikon: "?", renk: "#888", alt: "Yeterli veri yok" };
    return (
-     <div style={{ background: `linear-gradient(135deg, ${v.renk}, ${v.renk}DD)`, borderRadius: 12, padding: "14px 16px", marginBottom: 14, color: "#fff", display: "flex", alignItems: "center", gap: 12 }}>
-       <div style={{ fontSize: 32, lineHeight: 1 }}>{v.ikon}</div>
-       <div style={{ flex: 1 }}>
-         <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1, lineHeight: 1 }}>{v.ad}</div>
-         <div style={{ fontSize: 11, opacity: 0.9, marginTop: 3 }}>{v.alt}</div>
-       </div>
+     <div style={{ background: v.renk + "15", borderLeft: `3px solid ${v.renk}`, borderRadius: 8, padding: "8px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+       <span style={{ fontSize: 18, lineHeight: 1 }}>{v.ikon}</span>
+       <span style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.5 }}>{v.ad}</span>
+       <span style={{ color: C.soluk, fontSize: 11, marginLeft: "auto" }}>{v.alt}</span>
      </div>
    );
  })()}
@@ -5634,7 +5632,12 @@ export default function App() {
      e.stopPropagation();
      const konu = `Hata: ${r.ad} (${r.kod})`;
      const body = `Bu maddedeki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${r.ad}\nKod: ${r.kod}\nKategori: ${r.kat}\nMevcut etki metni: ${r.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
-     window.open(`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`);
+     const a = document.createElement("a");
+     a.href = `mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`;
+     a.style.display = "none";
+     document.body.appendChild(a);
+     a.click();
+     setTimeout(() => { try { document.body.removeChild(a); } catch {} }, 100);
    }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>⚠ Bilgi Yanlış</button>
  </div>
  </div>
@@ -6990,12 +6993,10 @@ export default function App() {
      : modal.risk === "dusuk" ? { ad: "GÜVENLİ", ikon: "✓", renk: C.yesil, alt: "Genel olarak güvenli" }
      : { ad: "BELİRSİZ", ikon: "?", renk: "#888", alt: "Yeterli veri yok" };
    return (
-     <div style={{ background: `linear-gradient(135deg, ${v.renk}, ${v.renk}DD)`, borderRadius: 14, padding: "18px 18px", marginBottom: 14, color: "#fff", display: "flex", alignItems: "center", gap: 14 }}>
-       <div style={{ fontSize: 40, lineHeight: 1 }}>{v.ikon}</div>
-       <div style={{ flex: 1 }}>
-         <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: 1, lineHeight: 1 }}>{v.ad}</div>
-         <div style={{ fontSize: 12, opacity: 0.9, marginTop: 4 }}>{v.alt}</div>
-       </div>
+     <div style={{ background: v.renk + "15", borderLeft: `3px solid ${v.renk}`, borderRadius: 8, padding: "8px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+       <span style={{ fontSize: 18, lineHeight: 1 }}>{v.ikon}</span>
+       <span style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.5 }}>{v.ad}</span>
+       <span style={{ color: C.soluk, fontSize: 11, marginLeft: "auto" }}>{v.alt}</span>
      </div>
    );
  })()}
@@ -7022,7 +7023,12 @@ export default function App() {
    <button onClick={() => {
      const konu = `Hata: ${modal.ad} (${modal.kod})`;
      const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
-     window.open(`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`);
+     const a = document.createElement("a");
+     a.href = `mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`;
+     a.style.display = "none";
+     document.body.appendChild(a);
+     a.click();
+     setTimeout(() => { try { document.body.removeChild(a); } catch {} }, 100);
    }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>⚠ Bilgi Yanlış</button>
  </div>
 
