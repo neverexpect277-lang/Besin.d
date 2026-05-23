@@ -5191,7 +5191,7 @@ export default function App() {
      const l = localStorage.getItem("bd_liyakat");
      if (l) return JSON.parse(l);
    } catch {}
-   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {} };
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), siraNo: 1247 + Math.floor(Math.random()*180), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0 };
  });
  const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
  useEffect(() => {
@@ -5204,11 +5204,101 @@ export default function App() {
    try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
  }, []);
  const MERTEBELER = [
-   { k: "sagirt", ad: "Çırak", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
-   { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", aciklama: "Osmanlı esnaf teşkilatında ustanın yanında yıllarca çırak olarak çalışmış, üretim sırrını öğrenmiş ehil kişi. Mizaç dengesini kurmaya başlayan." },
-   { k: "kethuda", ad: "Kethüda", anlam: "Bölge Sorumlusu", esik: 200, renk: "#8E8E93", aciklama: "Osmanlı'da loncanın veya semtin idari sorumlusu. Mahallesindeki düzenden mesul. Lobi ürünlerini tespit edip işaretleyen usta." },
-   { k: "hekimbasi", ad: "Hekimbaşı", anlam: "Saray Başhekimi", esik: 800, renk: "#C9952C", aciklama: "Osmanlı'da hekimlerin başı, sultanın özel tabibi. Fıtrat atlasını yalamış yutmuş elit. Diğer kullanıcılara rehberlik eden." },
+   { k: "sagirt", ad: "Çırak", anlam: "Sâlik · Tâlib", esik: 0, renk: "#9B7B4F", hikmet: "Görmek", sart: { gun: 0, urun: 1, hatm: 0, sefaat: 0 }, aciklama: "Fıtrat bilgisinin kapısında duran. Etiketi okumayı, gizli düşmanı görmeyi öğrenir. Hikmeti: Görmek." },
+   { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", hikmet: "Ayırt Etmek", sart: { gun: 30, urun: 30, hatm: 7, sefaat: 3 }, aciklama: "Ahilik geleneğinde ustanın yanında üretim sırrını öğrenen ehil kimse. Aldatıcı pazarlamayı ayırt eder, helal ve sahte helali tefrik eder. Hikmeti: Ayırt Etmek." },
+   { k: "kethuda", ad: "Kethüda", anlam: "Bölge Sorumlusu", esik: 200, renk: "#8E8E93", hikmet: "Korumak", sart: { gun: 60, urun: 100, hatm: 21, sefaat: 7 }, aciklama: "Esnaf âsitânesinin veya semtin idari sorumlusu. Yedi yârenini gözeten, hastalık-gıda zincirini bilen koruyucu. Hikmeti: Korumak." },
+   { k: "hekimbasi", ad: "Hekimbaşı", anlam: "Saray Başhekimi", esik: 800, renk: "#C9952C", hikmet: "Şifa Vermek", sart: { gun: 120, urun: 250, hatm: 60, sefaat: 7 }, aciklama: "Hekimlerin başı, sultanın özel tabibi. Yetiştirdiği kalfalarla şifa zincirini ören üstâd. Hikmeti: Şifa Vermek." },
  ];
+ const PIRLER = [
+   { k: "aktar", ad: "Pîr-i Aktâr", uslup: "titiz", hitap: "muhibbim", uzmanlik: "katkı maddeleri ve etiket sırrı" },
+   { k: "lokman", ad: "Pîr-i Lokmân", uslup: "müşfik", hitap: "azîzim", uzmanlik: "şifalı otlar ve nebevi tıb" },
+   { k: "edviye", ad: "Pîr-i Edviye", uslup: "öğretici", hitap: "sâlikim", uzmanlik: "beslenme ve mizaç dengesi" },
+   { k: "mizan", ad: "Pîr-i Mîzân", uslup: "temkinli", hitap: "yârenim", uzmanlik: "ölçü, denge ve hikmet" },
+ ];
+ const pirAta = (lakap) => {
+   const isim = (lakap || "tâlib").toLowerCase();
+   let h = 0; for (let i = 0; i < isim.length; i++) h = (h * 31 + isim.charCodeAt(i)) | 0;
+   return PIRLER[Math.abs(h) % PIRLER.length];
+ };
+ const SUALLER = {
+   sagirt: [
+     { s: "Etiketteki E471 nedir?", sik: ["Doğal vitamin", "Mono-digliserit (emülgatör)", "Tatlandırıcı"], d: 1, ders: "E471: mono- ve digliseritler. Sığır, domuz veya bitkiden gelebilir; etikette kaynağı belirtilmesi zorunlu değildir. Helal hassasiyeti olan ihtiyatla yaklaşmalı." },
+     { s: "'Helal' mührü her zaman güvenilir mi?", sik: ["Daima güvenilir", "Sertifika kuruluşuna göre değişir", "Tamamen sahtedir"], d: 1, ders: "Helal sertifikalarının denetim seviyesi kuruluşa göre değişir. Mühür içeriği okumayı bırakmanın bahanesi olmamalı; her zaman etiket okunmalı." },
+     { s: "Glikoz şurubu hangi kaynaktan gelir?", sik: ["Bal", "GDO'lu mısır nişastası", "Şeker pancarı"], d: 1, ders: "Yüksek fruktozlu mısır şurubu (HFCS) GDO'lu mısır nişastasından üretilir. Karaciğer yağlanması ve insülin direnci ile ilişkilendirilmiştir (Lancet, 2010)." },
+   ],
+   kalfa: [
+     { s: "Hangi yağ trans yağ oluşumuna en yatkın?", sik: ["Soğuk sıkım zeytinyağı", "Hidrojene bitkisel yağ", "Tereyağı"], d: 1, ders: "Hidrojenizasyon: sıvı yağa basınç altında hidrojen eklenmesi. Trans yağ oluşur; WHO'ya göre kalp-damar hastalıklarının önde gelen sebebidir." },
+     { s: "Aspartam (E951) en çok hangi organa yüktür?", sik: ["Cilt", "Beyin ve sinir sistemi", "Kemik"], d: 1, ders: "Aspartam fenilalanin, aspartik asit ve metanole parçalanır. PKU hastalarına yasaktır; IARC 2023'te Grup 2B 'muhtemel kanserojen' olarak sınıflandırdı." },
+     { s: "Sodyum nitrit (E250) hangi riski büyütür?", sik: ["Egzama", "Mide ve kolon kanseri", "Astım"], d: 1, ders: "Sodyum nitrit pişirme ve sindirim sırasında nitrozaminlere dönüşür. IARC Grup 1 kanserojendir; özellikle işlenmiş et tüketenlerde mide-kolon kanseri riski yükselir." },
+   ],
+   kethuda: [
+     { s: "BHA (E320) + BHT (E321) birlikte alındığında?", sik: ["Etkileri azalır", "Sinerji yapar, karaciğerde birikir", "Birbirini iptal eder"], d: 1, ders: "BHA-BHT birlikte sinerjik antioksidan; ancak yağ dokusunda birikir, endokrin sistemi etkiler. IARC Grup 2B." },
+     { s: "Karragenan (E407) hangi rahatsızlığı tetikleyebilir?", sik: ["Bağırsak iltihabı", "Migren", "Saç dökülmesi"], d: 0, ders: "Karragenan deney hayvanlarında ülseratif kolit oluşturur; insanda da bağırsak iltihabını (IBD) artırma şüphesi vardır." },
+     { s: "Palm yağının en büyük zararı nedir?", sik: ["Tat kötüdür", "Doymuş yağ yükü ve damar tıkanması", "Sindirimi zordur"], d: 1, ders: "Palm yağı %50 doymuş yağ içerir; LDL kolesterolü yükseltir, damar duvarına çöker, kalp-damar hastalığı riskini artırır." },
+   ],
+   hekimbasi: [
+     { s: "Endokrin bozucu (ksenoöstrojen) en yüksek hangisinde?", sik: ["BPA (plastik, konserve)", "Sofra tuzu", "Limon"], d: 0, ders: "Bisfenol-A östrojen taklidi yapar; konserve iç astarı ve plastik şişeden geçer. Üreme sağlığı bozuklukları, obezite ve meme kanseri ile ilişkili." },
+     { s: "Glifosat (Roundup) hangi üründe en yoğun?", sik: ["Organik yumurta", "GDO'lu soya/mısır", "Bal"], d: 1, ders: "Glifosat GDO mahsullerinde yoğun. IARC 2A 'muhtemel kanserojen' (2015). Bağırsak florasını imha eder, çölyak benzeri tablo açabilir." },
+     { s: "Aspartam Ramazzini meta-analizinde hangi hastalıkla en güçlü bağ kurdu?", sik: ["Saç dökülmesi", "Non-Hodgkin lenfoma ve lösemi", "Şeker hastalığı"], d: 1, ders: "Ramazzini Enstitüsü uzun süreli kemirgen çalışmaları aspartamın lenfoma ve lösemi insidansını artırdığını gösterdi. IARC 2023'te 2B sınıfına aldı." },
+   ],
+ };
+ const AHD_METINLER = {
+   kalfa: [
+     "Bu ahd ile şahit tutuyorum: Soframa gizli şekerleri (glikoz şurubu, maltodekstrin, fruktoz) almayacağım. Etiket okumadan ürün almayacağım. Bu sözden dönersem mührüm soluk kalsın.",
+     "Kalfa mertebesine girer iken ahd ederim: Sentetik renklendirici (E102, E110, E122) içeren hiçbir ürünü çocuğumun, ehlimin sofrasına getirmeyeceğim. Bilmeden aldığım yanlışı bir gün içinde düzelteceğim.",
+     "Hakk'ın huzurunda ahd ederim: Helal mührüne körü körüne güvenmeyeceğim. Her ürünün içeriğini gözümle göreceğim, anlamadığım katkıyı araştıracağım. Bu yoldan dönmem.",
+   ],
+   kethuda: [
+     "Kethüdâlık makamına girer iken ahd ederim: Yalnız kendi soframa değil, yedi yârenimin sofrasına da nezaret edeceğim. Hidrojene yağ, palm yağı ve trans yağı sofralarımıza koymayacağım.",
+     "Bu ahd ile söz veriyorum: Sodyum nitrit, BHA ve BHT içeren işlenmiş et ürünlerini ne kendi soframa ne yedi yârenimin soframa getirmeyeceğim. Bilenin sükûtu vebaldir, ben sükût etmeyeceğim.",
+     "Beldemin emaneti sırtımdadır: Aldatıcı 'doğal' etiketine kanmayacağım, kandırılan her yâreni uyaracağım. Bu sözden dönersem asâm kırılsın.",
+   ],
+   hekimbasi: [
+     "Hekimbaşılık makamına geçer iken ahd ederim: Hâcim ettiğim bilgiyi mahrem tutmayacağım, hak edene aktaracağım. Şifa bilgisi parayla satılmaz, ihtiyacı olana ulaştırılır.",
+     "Bu ahd-i âlî ile şahit tutarım: Endokrin bozucu (BPA, ftalatlar), GDO ürünleri ve glifosat — bunların ne ailemde ne yetiştirdiklerimde olmasına izin vermeyeceğim. Bilenin sorumluluğu büyüktür.",
+     "Hekimbaşılık şerefine ahd ederim: Bildiğimi gizlemeyeceğim, bilmediğimi öğreneceğim, öğrendiğimi aktaracağım. Şifa zinciri kopmayacak. Bu ahdden dönersem hil'atim yıpransın.",
+   ],
+ };
+ const HEDIYELER = [
+   { t: "ayet", k: "Şuarâ Sûresi 80", m: "Hastalandığım zaman bana O şifa verir." },
+   { t: "hadis", k: "Buhârî, Tıb 1", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
+   { t: "hikmet", k: "Lokmân Hekîm", m: "Mide eğer dolarsa, hikmet pınarı kurur." },
+   { t: "hikmet", k: "İbn-i Sînâ", m: "Hekim üç şeyle tedavi eder: söz, ot, neşter. En tesirlisi sözdür." },
+   { t: "ayet", k: "A'râf Sûresi 31", m: "Yiyiniz, içiniz, israf etmeyiniz; Allah israf edenleri sevmez." },
+   { t: "hadis", k: "Tirmizî, Tıb", m: "Mide hastalıkların yuvası, perhiz ise her şifanın başıdır." },
+   { t: "hikmet", k: "Akşemseddîn", m: "Her hastalığın bir tohumu vardır; o görünmez bir mikrobtur." },
+   { t: "hikmet", k: "Sabuncuoğlu Şerefeddîn", m: "Mevsim hangi ise, gıda da o mevsimden olmalıdır." },
+ ];
+ const YAD_METINLER = [
+   (pir, gun) => `${pir.ad} bugün seni andı, ${pir.hitap}.`,
+   (pir, gun) => `Bu yola gireli ${gun} gün oldu, ${pir.hitap}. Mührün hâlâ tâze.`,
+   (pir, gun) => `Geçen aydaki bir kararın, bugün üç yâreni de uyandırdı.`,
+   (pir, gun) => `${pir.ad} der ki: 'En zor mücadele, kendi nefsi ile olandır.'`,
+   (pir, gun) => `${pir.hitap}, sofranın bereketi senin uyanıklığındandır.`,
+ ];
+ const hicriCevir = (d) => {
+   const aylar = ["Muharrem","Safer","Rebîülevvel","Rebîülâhir","Cemâziyelevvel","Cemâziyelâhir","Receb","Şâban","Ramazân","Şevvâl","Zilkâde","Zilhicce"];
+   const jd = Math.floor((d.getTime() / 86400000) + 2440587.5);
+   const l = jd - 1948440 + 10632;
+   const n = Math.floor((l - 1) / 10631);
+   const l2 = l - 10631 * n + 354;
+   const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+   const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+   const ay = Math.floor((24 * l3) / 709);
+   const gun = l3 - Math.floor((709 * ay) / 24);
+   const yil = 30 * n + j - 30;
+   return { gun, ay: aylar[ay - 1] || "Muharrem", yil };
+ };
+ const vakitBul = () => {
+   const s = new Date().getHours();
+   if (s < 6) return "gece"; if (s < 11) return "sabah"; if (s < 16) return "ogle"; if (s < 20) return "aksam"; return "gece";
+ };
+ const selamHazirla = (lakap, pir) => {
+   const v = vakitBul();
+   const hayirli = { sabah: "hayırlı sabahlar", ogle: "hayırlı vakitler", aksam: "hayırlı akşamlar", gece: "geceniz hayır olsun" }[v];
+   const hit = lakap ? lakap : pir.hitap;
+   return `Selâmün aleyküm ${hit}, ${hayirli}.`;
+ };
  const mertebeBul = (puan) => {
    let son = MERTEBELER[0];
    for (const m of MERTEBELER) if (puan >= m.esik) son = m;
@@ -5221,16 +5311,8 @@ export default function App() {
  const puanEkle = (miktar, sebep) => {
    setLiyakat(onceki => {
      const yeniPuan = (onceki.puan || 0) + miktar;
-     const yeniMertebe = mertebeBul(yeniPuan).k;
-     const yukseldi = yeniMertebe !== onceki.mertebe;
-     const yeni = {
-       ...onceki,
-       puan: yeniPuan,
-       mertebe: yeniMertebe,
-       yukseldigiTarihler: yukseldi ? { ...(onceki.yukseldigiTarihler || {}), [yeniMertebe]: Date.now() } : onceki.yukseldigiTarihler,
-     };
+     const yeni = { ...onceki, puan: yeniPuan };
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
-     if (yukseldi) setYeniMertebeBildirim(yeniMertebe);
      return yeni;
    });
  };
@@ -5246,6 +5328,115 @@ export default function App() {
    if (k === "kalfa") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke={r} strokeWidth="2"/><circle cx="20" cy="20" r="11" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
    if (k === "kethuda") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><polygon points="20,4 35,12 35,28 20,36 5,28 5,12" fill="none" stroke={r} strokeWidth="2"/><polygon points="20,10 30,15 30,25 20,30 10,25 10,15" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
    return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill={r + "15"} stroke={r} strokeWidth="2"/><path d="M20 6 L23 14 L31 14 L25 19 L28 27 L20 22 L12 27 L15 19 L9 14 L17 14 Z" fill={r}/></svg>);
+ };
+ const [pir, setPir] = useState(() => pirAta(""));
+ useEffect(() => { setPir(pirAta(liyakat.lakap || "")); }, [liyakat.lakap]);
+ const [selamModal, setSelamModal] = useState(null);
+ const [ahdModal, setAhdModal] = useState(null);
+ const [sualModal, setSualModal] = useState(null);
+ const [hediyeModal, setHediyeModal] = useState(null);
+ const [mahcubiyetModal, setMahcubiyetModal] = useState(null);
+ const [terfiKontrolAcik, setTerfiKontrolAcik] = useState(false);
+ useEffect(() => {
+   const son = sessionStorage.getItem("bd_selam_gosterildi");
+   if (son) return;
+   setTimeout(() => {
+     setSelamModal({ metin: selamHazirla(liyakat.lakap, pir), pir });
+     sessionStorage.setItem("bd_selam_gosterildi", "1");
+   }, 1200);
+ }, []);
+ useEffect(() => {
+   const t = setTimeout(() => {
+     const bugun = new Date().toDateString();
+     if (liyakat.yadGosterimleri && liyakat.yadGosterimleri[bugun]) return;
+     if (Math.random() > 0.35) return;
+     const gun = Math.max(1, Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000));
+     const metin = YAD_METINLER[Math.floor(Math.random() * YAD_METINLER.length)](pir, gun);
+     setSelamModal(prev => prev || { metin, pir, yad: true });
+     setLiyakat(o => { const yeni = { ...o, yadGosterimleri: { ...(o.yadGosterimleri || {}), [bugun]: 1 } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }, 25000);
+   return () => clearTimeout(t);
+ }, []);
+ const gercekMertebe = () => {
+   const gunSayisi = Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000);
+   const taramaS = (typeof window !== "undefined" ? parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") : 0) || 0;
+   const sefaatS = (liyakat.sefaatler || []).length;
+   const hatm = liyakat.gunlukSeri || 0;
+   let son = MERTEBELER[0];
+   for (const m of MERTEBELER) {
+     if (m.k === "sagirt") { son = m; continue; }
+     const s = m.sart;
+     if (liyakat.puan >= m.esik && gunSayisi >= s.gun && taramaS >= s.urun && hatm >= s.hatm && sefaatS >= s.sefaat) son = m;
+     else break;
+   }
+   return son;
+ };
+ const mevcutMertebe = () => MERTEBELER.find(m => m.k === (liyakat.mertebe || "sagirt")) || MERTEBELER[0];
+ const terfiHakki = () => {
+   const g = gercekMertebe();
+   const m = mevcutMertebe();
+   const gIdx = MERTEBELER.findIndex(x => x.k === g.k);
+   const mIdx = MERTEBELER.findIndex(x => x.k === m.k);
+   return gIdx > mIdx ? MERTEBELER[mIdx + 1] : null;
+ };
+ const sefaatEkle = (kanal) => {
+   setLiyakat(o => {
+     const sf = [...(o.sefaatler || []), { t: Date.now(), kanal }];
+     const yeni = { ...o, sefaatler: sf };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const ahdImzala = (mertebeK, metin) => {
+   setLiyakat(o => {
+     const yeni = { ...o, ahdler: { ...(o.ahdler || {}), [mertebeK]: { metin, tarih: Date.now(), catlak: 0 } }, mertebe: mertebeK, yukseldigiTarihler: { ...(o.yukseldigiTarihler || {}), [mertebeK]: Date.now() } };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   setAhdModal(null);
+   setYeniMertebeBildirim(mertebeK);
+ };
+ const sualCozuldu = (mertebeK, sualNo) => {
+   setLiyakat(o => {
+     const cs = { ...(o.cozulenSualler || {}) };
+     cs[mertebeK] = [...new Set([...(cs[mertebeK] || []), sualNo])];
+     const yeni = { ...o, cozulenSualler: cs, puan: (o.puan || 0) + 7 };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const sualTetikle = () => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonSualTarih === bugun) return;
+   if (Math.random() > 0.25) return;
+   const mk = (liyakat.mertebe || "sagirt");
+   const havuz = SUALLER[mk] || [];
+   const cozulen = (liyakat.cozulenSualler || {})[mk] || [];
+   const kalan = havuz.map((s, i) => ({ s, i })).filter(x => !cozulen.includes(x.i));
+   if (!kalan.length) return;
+   const sec = kalan[Math.floor(Math.random() * kalan.length)];
+   setSualModal({ mertebeK: mk, no: sec.i, sual: sec.s });
+   setLiyakat(o => { const yeni = { ...o, sonSualTarih: bugun }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ };
+ const mahcubiyetKontrol = (sonuc) => {
+   const mk = liyakat.mertebe || "sagirt";
+   if (mk === "sagirt" || mk === "kalfa") return;
+   const haftaBas = Math.floor(Date.now() / (7 * 86400000));
+   const onceki = liyakat.kacinHaftalik || { hafta: 0, sayim: 0 };
+   const yeniSayim = onceki.hafta === haftaBas ? onceki.sayim + 1 : 1;
+   setLiyakat(o => { const yeni = { ...o, kacinHaftalik: { hafta: haftaBas, sayim: yeniSayim } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (yeniSayim === 10 || yeniSayim === 20) {
+     setMahcubiyetModal({ sayim: yeniSayim, pir });
+   }
+ };
+ const hediyeAl = () => {
+   const son = liyakat.hediyeler && liyakat.hediyeler.length ? liyakat.hediyeler[liyakat.hediyeler.length - 1].t : 0;
+   if (Date.now() - son < 3 * 86400000) return;
+   if (Math.random() > 0.2) return;
+   const h = HEDIYELER[Math.floor(Math.random() * HEDIYELER.length)];
+   const ust = (liyakat.mertebe === "sagirt" || liyakat.mertebe === "kalfa") ? PIRLER[Math.floor(Math.random() * 4)] : null;
+   setHediyeModal({ h, gonderen: ust });
+   setLiyakat(o => { const yeni = { ...o, hediyeler: [...(o.hediyeler || []), { t: Date.now(), k: h.k }] }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
  };
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
@@ -5277,6 +5468,11 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (selamModal) { setSelamModal(null); return true; }
+   if (ahdModal) { setAhdModal(null); return true; }
+   if (sualModal) { setSualModal(null); return true; }
+   if (hediyeModal) { setHediyeModal(null); return true; }
+   if (mahcubiyetModal) { setMahcubiyetModal(null); return true; }
    if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return true; }
    if (paylasMaddesi) { setPaylasMaddesi(null); return true; }
    if (saglikModalAcik) { setSaglikModalAcik(false); return true; }
@@ -5289,7 +5485,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"].includes(sekme));
+ const geriGerekli = !!(selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -5445,6 +5641,8 @@ export default function App() {
    setGecmis(yeniGecmis);
    try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
    puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
+   if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
+   setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
  setEkran("sonuc");
     if (!seslerAcik) return;
@@ -5953,7 +6151,7 @@ export default function App() {
    );
  })()}
  <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={(e) => {
      e.stopPropagation();
      const konu = `Hata: ${r.ad} (${r.kod})`;
@@ -6000,7 +6198,7 @@ export default function App() {
  </>
  )}
  </div>
- {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mertebeBul(liyakat.puan).ad} rutbeRenk={mertebeBul(liyakat.puan).renk} lakap={liyakat.lakap} />}
+ {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mevcutMertebe().ad} rutbeRenk={mevcutMertebe().renk} lakap={liyakat.lakap} />}
  {yeniMertebeBildirim && (() => {
    const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
    if (!m) return null;
@@ -6041,9 +6239,9 @@ export default function App() {
  {profil ? (liyakat.lakap || profil.burc) : "Profil"}
  </span>
  </div>
- <div onClick={() => setSekme("mertebe")} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mertebeBul(liyakat.puan).renk + "20", border: `1px solid ${mertebeBul(liyakat.puan).renk}50` }}>
-   <Muhur k={mertebeBul(liyakat.puan).k} boyut={16} />
-   <span style={{ color: mertebeBul(liyakat.puan).renk, fontSize: 11, fontWeight: 700 }}>{mertebeBul(liyakat.puan).ad}</span>
+ <div onClick={() => setSekme("mertebe")} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mevcutMertebe().renk + "20", border: `1px solid ${mevcutMertebe().renk}50` }}>
+   <Muhur k={mevcutMertebe().k} boyut={16} />
+   <span style={{ color: mevcutMertebe().renk, fontSize: 11, fontWeight: 700 }}>{mevcutMertebe().ad}</span>
  </div>
  </div>
 
@@ -7290,91 +7488,151 @@ export default function App() {
  )}
  {/* MERTEBE */}
  {sekme === "mertebe" && (() => {
-   const mevcut = mertebeBul(liyakat.puan);
-   const sonraki = sonrakiMertebe(liyakat.puan);
-   const ilerleme = sonraki ? ((liyakat.puan - mevcut.esik) / (sonraki.esik - mevcut.esik)) * 100 : 100;
-   const kalan = sonraki ? sonraki.esik - liyakat.puan : 0;
-   const rozetVar = (r) => (liyakat.kazanilanRozetler || []).includes(r);
-   const taramaSayisiOlc = taramaSayisi;
-   const GOREVLER = mevcut.k === "sagirt" ? [
-     { k: "ilk_tarama", ad: "İlk taramanı yap", tamam: taramaSayisiOlc >= 1, puan: 1 },
-     { k: "profil_tamam", ad: "Profilini doldur (burç + doğum)", tamam: rozetVar("profil_tamam"), puan: 15 },
-     { k: "saglik_doldu", ad: "Sağlık durumunu işaretle", tamam: rozetVar("saglik_doldu"), puan: 20 },
-     { k: "10_tarama", ad: `10 tarama tamamla (${Math.min(taramaSayisiOlc, 10)}/10)`, tamam: taramaSayisiOlc >= 10, puan: 10 },
-     { k: "paylas", ad: "Bir maddenin sonucunu paylaş", tamam: rozetVar("paylas") || liyakat.puan >= 5, puan: 5 },
-   ] : mevcut.k === "kalfa" ? [
-     { k: "50_tarama", ad: `50 tarama tamamla (${Math.min(taramaSayisiOlc, 50)}/50)`, tamam: taramaSayisiOlc >= 50 },
-     { k: "ayet_dinle", ad: "Bir şifa ayetini dinle", tamam: rozetVar("ayet_dinle") || liyakat.puan >= 60 },
-     { k: "5_kategori", ad: "5 farklı kategoride tarama yap", tamam: (gecmis || []).reduce((s, g) => s.add(g.kategori), new Set()).size >= 5 },
-     { k: "kritik_tespit", ad: "10 kritik madde tespit et", tamam: (gecmis || []).reduce((a, g) => a + (g.kritik || 0), 0) >= 10 },
-   ] : mevcut.k === "kethuda" ? [
-     { k: "200_tarama", ad: `200 tarama tamamla (${Math.min(taramaSayisiOlc, 200)}/200)`, tamam: taramaSayisiOlc >= 200 },
-     { k: "lobi", ad: "Semtindeki lobi haritası — YAKINDA", tamam: false, yakinda: true },
-   ] : [
-     { k: "hekimbasi_yorum", ad: "Madde modal'ında 'Hekimbaşı yorumu' yaz — YAKINDA", tamam: false, yakinda: true },
-     { k: "mentor", ad: "Çıraklara rehberlik et — YAKINDA", tamam: false, yakinda: true },
-   ];
+   const mevcut = mevcutMertebe();
+   const sonrakiIdx = MERTEBELER.findIndex(x => x.k === mevcut.k) + 1;
+   const sonraki = MERTEBELER[sonrakiIdx] || null;
+   const gunSayisi = Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000);
+   const sefaatS = (liyakat.sefaatler || []).length;
+   const hatm = liyakat.gunlukSeri || 0;
+   const terfi = terfiHakki();
+   const hicri = hicriCevir(new Date(liyakat.baslangic || Date.now()));
+   const vakar = mevcut.k === "hekimbasi" ? 1 : mevcut.k === "kethuda" ? 0.85 : mevcut.k === "kalfa" ? 0.7 : 0.55;
+   const arkaplan = mevcut.k === "hekimbasi" ? `linear-gradient(135deg, ${mevcut.renk}30, #FFF8E1, ${mevcut.renk}18)` : mevcut.k === "kethuda" ? `linear-gradient(135deg, ${mevcut.renk}22, ${C.y2})` : mevcut.k === "kalfa" ? `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})` : `linear-gradient(135deg, ${mevcut.renk}10, ${C.y2})`;
+   const cozulenSualS = ((liyakat.cozulenSualler || {})[mevcut.k] || []).length;
+   const toplamSualS = (SUALLER[mevcut.k] || []).length;
    return (
      <div>
-       <div style={S.kB}>MERTEBE — LİYAKAT YOLU</div>
+       <div style={S.kB}>MERTEBE — AHİLİK YOLU</div>
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 12 }}>
          <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
          <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
-         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Profil chip'inde ve paylaşımlarında görünür.</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr seni bu isimle anar. Profil ve paylaşımlarda görünür.</div>
        </div>
 
-       <div style={{ background: `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})`, border: `1px solid ${mevcut.renk}50`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
-         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64} /></div>
-         <div style={{ color: mevcut.renk, fontSize: 32, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{mevcut.ad}</div>
+       <div style={{ background: arkaplan, border: `1.5px solid ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30` : "none", transition: "all .6s" }}>
+         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
+         <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{mevcut.ad}</div>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{mevcut.anlam}</div>
-         <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, marginTop: 10 }}>{liyakat.puan} liyakat puanı</div>
-         {sonraki && (
-           <>
-             <div style={{ background: C.s, borderRadius: 6, height: 8, marginTop: 14, overflow: "hidden" }}>
-               <div style={{ width: `${Math.min(ilerleme, 100)}%`, height: "100%", background: `linear-gradient(90deg, ${mevcut.renk}, ${sonraki.renk})`, transition: "width .4s" }} />
-             </div>
-             <div style={{ color: C.soluk, fontSize: 11, marginTop: 6 }}>{sonraki.ad} mertebesine <b style={{ color: C.metin }}>{kalan}</b> puan kaldı</div>
-           </>
-         )}
+         <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
+         <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginTop: 10 }}>{liyakat.puan} liyakat puanı</div>
+       </div>
+
+       <div style={{ background: `linear-gradient(135deg, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 12 }}>
+         <div style={{ width: 48, height: 48, borderRadius: "50%", background: `radial-gradient(circle, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}, ${C.y2})`, border: `1.5px solid ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{pir.ad.charAt(4)}</div>
+         <div style={{ flex: 1 }}>
+           <div style={{ color: C.cok, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>PÎRİN</div>
+           <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{pir.ad}</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{pir.uzmanlik}</div>
+         </div>
+       </div>
+
+       <div style={{ background: C.y2, border: `1px dashed ${C.altin}50`, borderRadius: 10, padding: 12, marginBottom: 14, textAlign: "center" }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>MENSUBİYET TESCİLİ</div>
+         <div style={{ color: C.metin, fontSize: 12, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>{hicri.gun} {hicri.ay} {hicri.yil}'de âsitânemize katıldın.</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#{liyakat.siraNo || 1247}</b></div>
        </div>
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
-         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>{mevcut.aciklama}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>{mevcut.aciklama}</div>
        </div>
 
-       <div style={{ background: `linear-gradient(135deg, #C9952C20, ${C.y2})`, border: `1px solid ${C.altin}50`, borderRadius: 12, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 14 }}>
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}20, ${C.y2})`, border: `1px solid ${C.altin}50`, borderRadius: 12, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 14 }}>
          <div style={{ width: 50, height: 50, borderRadius: "50%", background: C.altin + "20", border: `1.5px solid ${C.altin}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{liyakat.gunlukSeri || 0}</span>
+           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{hatm}</span>
          </div>
          <div style={{ flex: 1 }}>
-           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SOFRA NÖBETİ</div>
-           <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{liyakat.gunlukSeri || 0} gün üst üste</div>
-           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>Her gün bilinçli sofra — emaneti koru</div>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SOFRA NÖBETİ · HATM</div>
+           <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{hatm} gün üst üste</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>Her gün bir adım — emaneti koru</div>
          </div>
        </div>
 
-       <div style={S.kB}>BU MERTEBE İÇİN GÖREVLER</div>
-       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 8, marginBottom: 14 }}>
-         {GOREVLER.map(g => (
-           <div key={g.k} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderBottom: `1px solid ${C.s}`, opacity: g.yakinda ? 0.6 : 1 }}>
-             <span style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${g.tamam ? "#2ecc71" : C.s}`, background: g.tamam ? "#2ecc71" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700 }}>{g.tamam ? "✓" : ""}</span>
-             <span style={{ flex: 1, color: g.tamam ? C.soluk : C.metin, fontSize: 13, textDecoration: g.tamam ? "line-through" : "none" }}>{g.ad}</span>
-             {g.puan && !g.tamam && <span style={{ color: C.altin, fontSize: 11, fontWeight: 700 }}>+{g.puan}</span>}
+       {sonraki && (
+         <>
+           <div style={S.kB}>TERFİ ŞARTLARI · {sonraki.ad.toUpperCase()}</div>
+           <div style={{ background: C.y, border: `1.5px solid ${sonraki.renk}40`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+             {[
+               { ad: "Yola gireli geçen gün", deger: gunSayisi, hedef: sonraki.sart.gun, birim: "gün" },
+               { ad: "Tarama sayısı", deger: parseInt(localStorage.getItem("bd_tarama_sayisi") || "0"), hedef: sonraki.sart.urun, birim: "ürün" },
+               { ad: "Hatm-i nöbet (üst üste)", deger: hatm, hedef: sonraki.sart.hatm, birim: "gün" },
+               { ad: "Şefaat — kurtarılan can", deger: sefaatS, hedef: sonraki.sart.sefaat, birim: "can" },
+               { ad: "Liyakat puanı", deger: liyakat.puan, hedef: sonraki.esik, birim: "puan" },
+             ].map(x => {
+               const tamam = x.deger >= x.hedef;
+               const oran = Math.min(100, (x.deger / Math.max(x.hedef, 1)) * 100);
+               return (
+                 <div key={x.ad} style={{ marginBottom: 12 }}>
+                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                     <span style={{ color: tamam ? sonraki.renk : C.metin, fontSize: 12, fontWeight: tamam ? 700 : 500 }}>{tamam ? "✓ " : ""}{x.ad}</span>
+                     <span style={{ color: tamam ? sonraki.renk : C.soluk, fontSize: 11, fontWeight: 700 }}>{x.deger} / {x.hedef} {x.birim}</span>
+                   </div>
+                   <div style={{ background: C.s, borderRadius: 4, height: 5, overflow: "hidden" }}>
+                     <div style={{ width: `${oran}%`, height: "100%", background: tamam ? sonraki.renk : C.altin, transition: "width .4s" }} />
+                   </div>
+                 </div>
+               );
+             })}
+             {terfi && (
+               <button onClick={() => setAhdModal({ mertebeK: terfi.k })} style={{ width: "100%", marginTop: 10, background: `linear-gradient(135deg, ${terfi.renk}, ${terfi.renk}CC)`, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>AHDİNİ VER · {terfi.ad.toUpperCase()} OL</button>
+             )}
            </div>
-         ))}
+         </>
+       )}
+
+       {(liyakat.ahdler && Object.keys(liyakat.ahdler).length > 0) && (
+         <>
+           <div style={S.kB}>AHD-İ MÎSÂK · VERDİĞİN SÖZLER</div>
+           {Object.entries(liyakat.ahdler).map(([mk, ahd]) => {
+             const m = MERTEBELER.find(x => x.k === mk);
+             if (!m) return null;
+             return (
+               <div key={mk} style={{ background: C.y, border: `1px solid ${m.renk}50`, borderRadius: 12, padding: 14, marginBottom: 8, position: "relative" }}>
+                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                   <Muhur k={mk} boyut={22} />
+                   <span style={{ color: m.renk, fontSize: 12, fontWeight: 700, letterSpacing: 0.5 }}>{m.ad.toUpperCase()} AHDİ</span>
+                   <span style={{ color: C.cok, fontSize: 10, marginLeft: "auto" }}>{new Date(ahd.tarih).toLocaleDateString("tr-TR")}</span>
+                 </div>
+                 <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>"{ahd.metin}"</div>
+                 {ahd.catlak > 0 && <div style={{ color: C.kirmizi, fontSize: 10, marginTop: 6 }}>Bu ahdde {ahd.catlak} çatlak görüldü.</div>}
+               </div>
+             );
+           })}
+         </>
+       )}
+
+       <div style={S.kB}>SIRLI SUÂLLER · {cozulenSualS}/{toplamSualS} ÇÖZÜLDÜ</div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 14 }}>
+         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>Pîr-i {pir.ad.split("-")[1]} sana ait olan {toplamSualS} sırlı suâli zaman zaman taramanın içinde sorar. Çözdüklerin rumuz olarak mührünün yanında durur.</div>
+         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+           {(SUALLER[mevcut.k] || []).map((_, i) => {
+             const cozulen = ((liyakat.cozulenSualler || {})[mevcut.k] || []).includes(i);
+             return <div key={i} style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px solid ${cozulen ? mevcut.renk : C.s}`, background: cozulen ? mevcut.renk + "20" : C.y2, display: "flex", alignItems: "center", justifyContent: "center", color: cozulen ? mevcut.renk : C.cok, fontSize: 11, fontWeight: 700 }}>{cozulen ? "✓" : "?"}</div>;
+           })}
+         </div>
        </div>
+
+       {liyakat.hediyeler && liyakat.hediyeler.length > 0 && (
+         <>
+           <div style={S.kB}>HEDİYELERİN · {liyakat.hediyeler.length}</div>
+           <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 10, marginBottom: 14, color: C.soluk, fontSize: 12, lineHeight: 1.5 }}>
+             Pîrlerden ve üst mertebedeki yârenlerden gelen hikmet ve dualar. Saklarsın, gerektiğinde okursun.
+           </div>
+         </>
+       )}
 
        <div style={S.kB}>TÜM MERTEBELER</div>
        {MERTEBELER.map(m => {
          const aktif = m.k === mevcut.k;
-         const gecildi = liyakat.puan >= m.esik;
+         const idx = MERTEBELER.findIndex(x => x.k === m.k);
+         const aktifIdx = MERTEBELER.findIndex(x => x.k === mevcut.k);
+         const gecildi = idx <= aktifIdx;
          return (
-           <div key={m.k} style={{ display: "flex", alignItems: "center", gap: 12, background: aktif ? m.renk + "15" : C.y, border: `1px solid ${aktif ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 6, opacity: gecildi ? 1 : 0.55 }}>
+           <div key={m.k} style={{ display: "flex", alignItems: "center", gap: 12, background: aktif ? m.renk + "18" : C.y, border: `1px solid ${aktif ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 6, opacity: gecildi ? 1 : 0.5 }}>
              <Muhur k={m.k} boyut={36} />
              <div style={{ flex: 1 }}>
                <div style={{ color: aktif ? m.renk : C.metin, fontWeight: 700, fontSize: 14 }}>{m.ad} <span style={{ color: C.cok, fontSize: 11, fontWeight: 400 }}>· {m.anlam}</span></div>
-               <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{m.esik}+ puan</div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>Hikmet: {m.hikmet} · {m.sart.gun}g · {m.sart.urun}ü · {m.sart.sefaat}ş</div>
              </div>
              {aktif && <span style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>ŞU AN</span>}
            </div>
@@ -7384,11 +7642,11 @@ export default function App() {
        <div style={S.kB}>YAKINDA — TOPLULUK ÖZELLİKLERİ</div>
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 6, marginTop: 4 }}>
          {[
-           { ad: "Liyakat Sıralaması", aciklama: "En çok puan toplayan kullanıcılar — aylık şeref defteri" },
-           { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki kullanıcılar madde detayında yorum yazar, herkes okur" },
-           { ad: "Mahalle Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
-           { ad: "Şifa Akçesi & Şifalı Market", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile Şifalı Market'ndan temiz aktar, yerli üretici ürünleri ve fıtrat-uyumlu tekstil alınır. Kapalı devre sadakat puanı — TL'ye çevrilmez." },
-           { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Ahilik liyakat ilkesi" },
+           { ad: "Liyakat Sıralaması", aciklama: "En çok şefaat eden ve hatm tutan yârenler — aylık şeref defteri" },
+           { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki yârenler madde detayında yorum yazar, herkes okur" },
+           { ad: "Mahalle Haritası", aciklama: "Kethüdâlar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
+           { ad: "Şifa Akçesi & Şifalı Market", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile temiz aktar, yerli üretici ürünleri alınır." },
+           { ad: "Şahit Zinciri", aciklama: "Kimi yetiştirdiğin, kimin seni yetiştirdiği — soy ağacı şeklinde âsitânemizin hâfızası" },
          ].map((y, i, arr) => (
            <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
@@ -7401,7 +7659,7 @@ export default function App() {
        </div>
 
        <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14, color: C.soluk, fontSize: 10, lineHeight: 1.6, fontStyle: "italic" }}>
-         Mertebe sistemi bir oyunlaştırma katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, lakap, görevler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar ve yasal statü için <b>Hakkında → Mertebe Sistemi</b> bölümüne bakabilirsin.
+         Mertebe sistemi bir oyunlaştırma katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, ahdler, hediyeler, sefaatler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar için <b>Hakkında → Mertebe Sistemi</b>.
        </div>
      </div>
    );
@@ -7496,7 +7754,7 @@ export default function App() {
  {raporAcik && <HaftalikRapor gecmis={gecmis} onKapat={() => setRaporAcik(false)} />}
       {marketAcik && profil && <MizacMarket profil={profil} onKapat={() => setMarketAcik(false)} />}
       {tarifModal && <TarifModal tarif={tarifModal} onKapat={() => setTarifModal(null)} />}
-      {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mertebeBul(liyakat.puan).ad} rutbeRenk={mertebeBul(liyakat.puan).renk} lakap={liyakat.lakap} />}
+      {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mevcutMertebe().ad} rutbeRenk={mevcutMertebe().renk} lakap={liyakat.lakap} />}
  {yeniMertebeBildirim && (() => {
    const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
    if (!m) return null;
@@ -7507,12 +7765,101 @@ export default function App() {
          <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
          <div style={{ color: m.renk, fontSize: 36, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{m.ad}</div>
          <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
+         <div style={{ color: m.renk, fontSize: 11, marginTop: 8, fontWeight: 700, letterSpacing: 1 }}>HİKMET · {m.hikmet.toUpperCase()}</div>
          <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
          <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
        </div>
      </div>
    );
  })()}
+ {selamModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSelamModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}18, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 360, width: "100%", border: `1.5px solid ${C.altin}50`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>{selamModal.yad ? "YÂD" : "SELÂM"}</div>
+       <div style={{ fontSize: 36, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>﷽</div>
+       <div style={{ color: C.metin, fontSize: 17, lineHeight: 1.6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 8 }}>{selamModal.metin}</div>
+       {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 18, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
+       <button onClick={() => setSelamModal(null)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>ve aleyküm selâm</button>
+     </div>
+   </div>
+ )}
+ {ahdModal && (() => {
+   const tm = MERTEBELER.find(x => x.k === ahdModal.mertebeK);
+   if (!tm) return null;
+   const metinler = AHD_METINLER[ahdModal.mertebeK] || [];
+   const seciliM = ahdModal.secili != null ? ahdModal.secili : 0;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000D0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1400, backdropFilter: "blur(10px)", padding: 16, overflowY: "auto" }}>
+       <div style={{ background: `linear-gradient(180deg, ${tm.renk}28, ${C.y})`, borderRadius: 20, padding: 26, maxWidth: 440, width: "100%", border: `2px solid ${tm.renk}`, margin: "20px 0" }}>
+         <div style={{ textAlign: "center", marginBottom: 14 }}>
+           <div style={{ color: tm.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>AHD-İ MÎSÂK</div>
+           <div style={{ color: tm.renk, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{tm.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic" }}>Bu mertebeye girer iken şahid tut, ahdini yaz.</div>
+         </div>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8 }}>HAZIR METİN SEÇ</div>
+         {metinler.map((m, i) => (
+           <div key={i} onClick={() => setAhdModal({ ...ahdModal, secili: i, ozelMetin: "" })} style={{ background: seciliM === i ? tm.renk + "20" : C.y2, border: `1.5px solid ${seciliM === i ? tm.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, cursor: "pointer" }}>
+             <div style={{ color: seciliM === i ? tm.renk : C.metin, fontSize: 12, lineHeight: 1.6, fontStyle: "italic" }}>{m}</div>
+           </div>
+         ))}
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginTop: 12, marginBottom: 6 }}>VEYA KENDİ AHDİNİ YAZ</div>
+         <textarea value={ahdModal.ozelMetin || ""} onChange={e => setAhdModal({ ...ahdModal, ozelMetin: e.target.value, secili: -1 })} placeholder="Ahdimi şu kelimelerle veririm..." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12, color: C.metin, fontSize: 12, lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 14 }} />
+         <div style={{ display: "flex", gap: 8 }}>
+           <button onClick={() => setAhdModal(null)} style={{ flex: 1, background: "none", border: `1px solid ${C.s}`, color: C.soluk, borderRadius: 12, padding: "12px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Vazgeç</button>
+           <button onClick={() => { const m = (ahdModal.ozelMetin && ahdModal.ozelMetin.length > 20) ? ahdModal.ozelMetin : metinler[seciliM]; if (!m) return; ahdImzala(ahdModal.mertebeK, m); }} style={{ flex: 2, background: tm.renk, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>MÜHRÜMÜ VURDUM</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
+ {sualModal && (() => {
+   const s = sualModal.sual;
+   const cevaplandi = sualModal.cevap != null;
+   const dogru = cevaplandi && sualModal.cevap === s.d;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(6px)", padding: 16 }}>
+       <div style={{ background: `linear-gradient(180deg, ${C.altin}20, ${C.y})`, borderRadius: 18, padding: 24, maxWidth: 420, width: "100%", border: `1.5px solid ${C.altin}` }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8, textAlign: "center" }}>SIRLI SUÂL · PÎRİN SORUSU</div>
+         <div style={{ color: C.cok, fontSize: 11, marginBottom: 12, textAlign: "center", fontStyle: "italic" }}>{pir.ad}</div>
+         <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.6, marginBottom: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, textAlign: "center" }}>{s.s}</div>
+         {!cevaplandi && s.sik.map((sec, i) => (
+           <button key={i} onClick={() => setSualModal({ ...sualModal, cevap: i })} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "12px", marginBottom: 6, color: C.metin, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>{sec}</button>
+         ))}
+         {cevaplandi && (
+           <>
+             <div style={{ background: dogru ? "#16A34A20" : C.kirmizi + "15", border: `1px solid ${dogru ? "#16A34A" : C.kirmizi}40`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
+               <div style={{ color: dogru ? "#16A34A" : C.kirmizi, fontSize: 12, fontWeight: 700, marginBottom: 6 }}>{dogru ? "✓ İSABET" : "Cevap: " + s.sik[s.d]}</div>
+               <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.65 }}>{s.ders}</div>
+             </div>
+             <button onClick={() => { if (dogru) sualCozuldu(sualModal.mertebeK, sualModal.no); setSualModal(null); }} style={{ width: "100%", background: dogru ? C.altin : C.soluk, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>{dogru ? "Rumuzu Al · +7 Liyakat" : "Anlaşıldı"}</button>
+           </>
+         )}
+       </div>
+     </div>
+   );
+ })()}
+ {hediyeModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setHediyeModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}25, ${C.y})`, borderRadius: 20, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}80`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>HEDİYE GELDİ</div>
+       {hediyeModal.gonderen && <div style={{ color: C.cok, fontSize: 11, fontStyle: "italic", marginBottom: 8 }}>{hediyeModal.gonderen.ad}'dan ulaştı, içinde bir hikmet var.</div>}
+       <div style={{ fontSize: 28, color: C.altin, marginBottom: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{hediyeModal.h.t === "ayet" ? "ﷲ" : hediyeModal.h.t === "hadis" ? "ﷺ" : "ʘ"}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 10 }}>"{hediyeModal.h.m}"</div>
+       <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 18 }}>— {hediyeModal.h.k}</div>
+       <button onClick={() => setHediyeModal(null)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Hediyene şükür et</button>
+     </div>
+   </div>
+ )}
+ {mahcubiyetModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setMahcubiyetModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>MAHCUBİYET LENSİ</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 12 }}>{mahcubiyetModal.pir.ad} bir an yüzünü çevirdi.</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 18 }}>Bu hafta <b style={{ color: C.kirmizi }}>{mahcubiyetModal.sayim}</b> kez "kaçın" işareti olan ürün taradın. Mertebene yakışan tutum bu değil, {mahcubiyetModal.pir.hitap}. Bilgi vardı, irade lazım.</div>
+       <button onClick={() => setMahcubiyetModal(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Anlaşıldı, kendimi toparlayacağım</button>
+     </div>
+   </div>
+ )}
       {saglikModalAcik && (
         <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setSaglikModalAcik(false)}>
           <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}` }} onClick={e => e.stopPropagation()}>
@@ -7634,7 +7981,7 @@ export default function App() {
  })()}
 
  <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={() => {
      const konu = `Hata: ${modal.ad} (${modal.kod})`;
      const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
