@@ -5141,7 +5141,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased} input,textarea,button,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif!important} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -5806,13 +5806,15 @@ export default function App() {
      : r.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
      : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
    return (
-     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, position: "relative", overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}>
-       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: v.renk }} />
-       <div style={{ flex: 1, minWidth: 0 }}>
-         <div style={{ color: v.renk, fontSize: 26, fontWeight: 900, letterSpacing: 2, lineHeight: 1 }}>{v.ad}</div>
-         <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, letterSpacing: 0.2, lineHeight: 1.3 }}>{v.alt}</div>
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
+       <div style={{ width: 68, height: 68, borderRadius: "50%", border: `2.5px solid ${v.renk}`, background: v.renk + "10", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", animation: "muhurGel .5s ease-out" }}>
+         <div style={{ position: "absolute", inset: 5, borderRadius: "50%", border: `1px solid ${v.renk}55` }} />
+         <span style={{ color: v.renk, fontSize: 13, fontWeight: 900, letterSpacing: 1.2, lineHeight: 1, fontFamily: "'Cormorant Garamond', Georgia, serif", zIndex: 1 }}>{v.ad}</span>
        </div>
-       <div style={{ fontSize: 9, fontWeight: 700, color: v.renk, background: v.renk + "15", padding: "5px 9px", borderRadius: 4, letterSpacing: 0.6, whiteSpace: "nowrap" }}>{v.seviye}</div>
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.8, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{v.seviye}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 4, lineHeight: 1.4, fontStyle: "italic" }}>{v.alt}</div>
+       </div>
      </div>
    );
  })()}
@@ -5941,7 +5943,7 @@ export default function App() {
        <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
          <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
          <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
-         <div style={{ color: m.renk, fontSize: 28, fontWeight: 900, letterSpacing: 1.5 }}>{m.ad}</div>
+         <div style={{ color: m.renk, fontSize: 36, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{m.ad}</div>
          <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
          <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
          <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
@@ -5987,6 +5989,12 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
+ <div style={{ textAlign: "center", padding: "8px 16px 16px", animation: "nefes 5s ease-in-out infinite" }}>
+   <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, color: C.altin, fontStyle: "italic", letterSpacing: 0.3, lineHeight: 1.25, fontWeight: 600 }}>
+     "Sofranı tanı, neslini koru"
+   </div>
+   <div style={{ color: C.cok, fontSize: 9, marginTop: 6, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Besin Dedektifi ·</div>
+ </div>
  {(() => {
    const haftaBas = Date.now() - 7 * 86400000;
    const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
@@ -7246,7 +7254,7 @@ export default function App() {
 
        <div style={{ background: `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})`, border: `1px solid ${mevcut.renk}50`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64} /></div>
-         <div style={{ color: mevcut.renk, fontSize: 24, fontWeight: 800, letterSpacing: 1.5 }}>{mevcut.ad}</div>
+         <div style={{ color: mevcut.renk, fontSize: 32, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{mevcut.ad}</div>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{mevcut.anlam}</div>
          <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, marginTop: 10 }}>{liyakat.puan} liyakat puanı</div>
          {sonraki && (
@@ -7410,7 +7418,7 @@ export default function App() {
        <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
          <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
          <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
-         <div style={{ color: m.renk, fontSize: 28, fontWeight: 900, letterSpacing: 1.5 }}>{m.ad}</div>
+         <div style={{ color: m.renk, fontSize: 36, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{m.ad}</div>
          <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
          <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
          <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
@@ -7501,13 +7509,15 @@ export default function App() {
      : modal.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
      : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
    return (
-     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 12, padding: "16px 18px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, position: "relative", overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}>
-       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 5, background: v.renk }} />
-       <div style={{ flex: 1, minWidth: 0 }}>
-         <div style={{ color: v.renk, fontSize: 26, fontWeight: 900, letterSpacing: 2, lineHeight: 1 }}>{v.ad}</div>
-         <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, letterSpacing: 0.2, lineHeight: 1.3 }}>{v.alt}</div>
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
+       <div style={{ width: 68, height: 68, borderRadius: "50%", border: `2.5px solid ${v.renk}`, background: v.renk + "10", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", animation: "muhurGel .5s ease-out" }}>
+         <div style={{ position: "absolute", inset: 5, borderRadius: "50%", border: `1px solid ${v.renk}55` }} />
+         <span style={{ color: v.renk, fontSize: 13, fontWeight: 900, letterSpacing: 1.2, lineHeight: 1, fontFamily: "'Cormorant Garamond', Georgia, serif", zIndex: 1 }}>{v.ad}</span>
        </div>
-       <div style={{ fontSize: 9, fontWeight: 700, color: v.renk, background: v.renk + "15", padding: "5px 9px", borderRadius: 4, letterSpacing: 0.6, whiteSpace: "nowrap" }}>{v.seviye}</div>
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.8, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{v.seviye}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 4, lineHeight: 1.4, fontStyle: "italic" }}>{v.alt}</div>
+       </div>
      </div>
    );
  })()}
