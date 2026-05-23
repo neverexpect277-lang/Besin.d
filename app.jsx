@@ -5154,7 +5154,7 @@ export default function App() {
  const [ilkSira, setIlkSira] = useState([]);
  const [profil, setProfil] = useState(() => { try { const p = localStorage.getItem("bd_profil"); return p ? JSON.parse(p) : null; } catch { return null; } });
  const [aileProfiller, setAileProfiller] = useState(() => { try { const a = localStorage.getItem("bd_aile"); return a ? JSON.parse(a) : []; } catch { return []; } });
- const [aktifUye, setAktifUye] = useState(null);
+ const [aktifUye, setAktifUye] = useState(() => { try { const p = localStorage.getItem("bd_profil"); return p ? (JSON.parse(p).ad || null) : null; } catch { return null; } });
  const [dogum, setDogum] = useState(() => { try { return localStorage.getItem("bd_dogum") || ""; } catch { return ""; } });
  const [cinsiyet, setCinsiyet] = useState(() => { try { return localStorage.getItem("bd_cinsiyet") || "Erkek"; } catch { return "Erkek"; } });
  const [marketKategoriPanel, setMarketKategoriPanel] = useState(false);
@@ -5413,7 +5413,9 @@ export default function App() {
  function kaydEt() {
  if (!dogum) return;
  const b = burcHesapla(dogum);
- setProfil({ burc: b, dogum, cinsiyet, ...BURCLAR[b] });
+ const yeniProfil = { ad: aktifUye || "", burc: b, dogum, cinsiyet, ...BURCLAR[b] };
+ setProfil(yeniProfil);
+ try { localStorage.setItem("bd_profil", JSON.stringify(yeniProfil)); } catch {}
  liyakatRozetVer("profil_tamam", 15);
  try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
@@ -5496,7 +5498,14 @@ export default function App() {
          </div>
        )}
        <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 6 }}>İsim (Anne, Baba, Çocuk...)</label>
-       <input value={aktifUye || ""} onChange={e => setAktifUye(e.target.value)} placeholder="Örn: Anne, Baba, Ahmet..." style={{ width: "100%", padding: "10px 12px", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, color: C.metin, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", marginBottom: 16 }} />
+       <input value={aktifUye || ""} onChange={e => {
+         const v = e.target.value;
+         setAktifUye(v);
+         try {
+           const mevcut = JSON.parse(localStorage.getItem("bd_profil") || "{}");
+           localStorage.setItem("bd_profil", JSON.stringify({ ...mevcut, ad: v }));
+         } catch {}
+       }} placeholder="Örn: Anne, Baba, Ahmet..." style={{ width: "100%", padding: "10px 12px", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, color: C.metin, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", marginBottom: 16 }} />
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}><label style={{ color: C.metin, fontSize: 13 }}>Doğum Tarihin</label>{dogum && dogum.length === 10 && !dogum.includes("_") && <button onClick={() => { setDogum(""); try { localStorage.removeItem("bd_dogum"); } catch {} }} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 8, padding: "3px 10px", color: C.soluk, fontSize: 12, cursor: "pointer" }}>Değiştir</button>}</div>
  {(() => {
  const AYLAR_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
