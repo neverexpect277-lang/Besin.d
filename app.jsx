@@ -5203,11 +5203,25 @@ export default function App() {
    setLiyakat(yeni);
    try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
  }, []);
+ const geriYap = () => {
+   if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return true; }
+   if (paylasMaddesi) { setPaylasMaddesi(null); return true; }
+   if (saglikModalAcik) { setSaglikModalAcik(false); return true; }
+   if (aylikRaporAcik) { setAylikRaporAcik(false); return true; }
+   if (modal) { setModal(null); return true; }
+   if (tarifModal) { setTarifModal(null); return true; }
+   if (marketAcik) { setMarketAcik(false); return true; }
+   if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
+   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"];
+   if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
+   return false;
+ };
+ const geriGerekli = !!(yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
      const t = e.touches[0];
-     if (t.clientX > 30) { sx = null; return; }
+     if (t.clientX > 50) { sx = null; return; }
      sx = t.clientX; sy = t.clientY; st = Date.now();
    };
    const onEnd = (e) => {
@@ -5217,18 +5231,8 @@ export default function App() {
      const dy = Math.abs(t.clientY - sy);
      const dt = Date.now() - st;
      sx = null;
-     if (dx < 80 || dy > 70 || dt > 700) return;
-     // Geri tetikle — modal öncelikli
-     if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return; }
-     if (paylasMaddesi) { setPaylasMaddesi(null); return; }
-     if (saglikModalAcik) { setSaglikModalAcik(false); return; }
-     if (aylikRaporAcik) { setAylikRaporAcik(false); return; }
-     if (modal) { setModal(null); return; }
-     if (tarifModal) { setTarifModal(null); return; }
-     if (marketAcik) { setMarketAcik(false); return; }
-     if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return; }
-     const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"];
-     if (altSayfalar.includes(sekme)) setSekme("hizmetler");
+     if (dx < 60 || dy > 80 || dt > 1000) return;
+     geriYap();
    };
    document.addEventListener("touchstart", onStart, { passive: true });
    document.addEventListener("touchend", onEnd, { passive: true });
@@ -7471,6 +7475,10 @@ export default function App() {
  </div>
  )}
  </div>
+
+ {geriGerekli && (
+   <button onClick={geriYap} aria-label="Geri" style={{ position: "fixed", left: 14, bottom: "calc(70px + env(safe-area-inset-bottom))", zIndex: 50, width: 48, height: 48, borderRadius: "50%", background: C.altin, color: "#1A1200", border: "none", boxShadow: "0 4px 14px rgba(0,0,0,0.18)", cursor: "pointer", fontSize: 22, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>←</button>
+ )}
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
