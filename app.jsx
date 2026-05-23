@@ -7221,6 +7221,12 @@ export default function App() {
      <div>
        <div style={S.kB}>MERTEBE — LİYAKAT YOLU</div>
 
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 12 }}>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
+         <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Profil chip'inde ve paylaşımlarında görünür.</div>
+       </div>
+
        <div style={{ background: `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})`, border: `1px solid ${mevcut.renk}50`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64} /></div>
          <div style={{ color: mevcut.renk, fontSize: 24, fontWeight: 800, letterSpacing: 1.5 }}>{mevcut.ad}</div>
@@ -7267,10 +7273,22 @@ export default function App() {
          );
        })}
 
-       <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14 }}>
-         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
-         <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Lakap profilinde ve paylaşımlarında görünür. Boş bırakırsan sadece mertebe gözükür.</div>
+       <div style={S.kB}>YAKINDA — TOPLULUK ÖZELLİKLERİ</div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 6, marginTop: 4 }}>
+         {[
+           { ad: "Lider Tablosu", aciklama: "En çok puan toplayan kullanıcılar — aylık sıralama" },
+           { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki kullanıcılar madde detayında yorum yazar, herkes okur" },
+           { ad: "Lobi Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri/markaları harita üzerinde işaretler" },
+           { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Osmanlı liyakat ilkesi" },
+         ].map((y, i, arr) => (
+           <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+               <span style={{ color: C.metin, fontWeight: 700, fontSize: 13 }}>{y.ad}</span>
+               <span style={{ background: C.altin + "22", color: C.altin, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.5 }}>YAKINDA</span>
+             </div>
+             <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.5 }}>{y.aciklama}</div>
+           </div>
+         ))}
        </div>
      </div>
    );
