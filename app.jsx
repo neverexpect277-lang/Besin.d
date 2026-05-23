@@ -5179,7 +5179,14 @@ export default function App() {
  const saglikUyarilari = (madde) => {
    if (!saglikDurumu.length) return [];
    const metin = `${madde.ad || ""} ${madde.etki || ""} ${madde.kat || ""}`;
-   return SAGLIK_KOSULLARI.filter(k => saglikDurumu.includes(k.k) && k.kw.test(metin));
+   const yuksekRisk = madde.risk === "kritik" || madde.risk === "yuksek";
+   return SAGLIK_KOSULLARI.filter(k => {
+     if (!saglikDurumu.includes(k.k)) return false;
+     if (k.kw.test(metin)) return true;
+     // Sigara + Çocuk: yüksek/kritik risk maddeleri her zaman ekstra riskli
+     if ((k.k === "sigara" || k.k === "cocuk") && yuksekRisk) return true;
+     return false;
+   });
  };
  const saglikToggle = (k) => {
    const yeni = saglikDurumu.includes(k) ? saglikDurumu.filter(x => x !== k) : [...saglikDurumu, k];
@@ -5876,24 +5883,25 @@ export default function App() {
  {sekme === "tarama" && (
  <div>
  {(() => {
-   const KURULUS = new Date("2026-01-15T00:00:00").getTime();
-   const gunFarki = Math.max(0, Math.floor((Date.now() - KURULUS) / 86400000));
-   const topluluk = 247 + gunFarki * 11;
+   const haftaBas = Date.now() - 7 * 86400000;
+   const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
+   const buHaftaKritik = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).reduce((a, g) => a + (g.kritik || 0), 0);
    return (
-     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
-       <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 12px" }}>
-         <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>SENİN TARAMAN</div>
-         <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 2 }}>
-           <span style={{ color: C.altin, fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{taramaSayisi}</span>
-           <span style={{ color: C.cok, fontSize: 10 }}>kez</span>
-         </div>
+     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>TOPLAM</div>
+         <div style={{ color: C.altin, fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{taramaSayisi}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
        </div>
-       <div style={{ background: `linear-gradient(135deg, #2ecc7118, ${C.y2})`, border: `1px solid #2ecc7140`, borderRadius: 12, padding: "10px 12px" }}>
-         <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>TOPLULUK</div>
-         <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 2 }}>
-           <span style={{ color: "#2ecc71", fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{topluluk.toLocaleString("tr-TR")}+</span>
-           <span style={{ color: C.cok, fontSize: 10 }}>kişi</span>
-         </div>
+       <div style={{ background: `linear-gradient(135deg, #2ecc7118, ${C.y2})`, border: `1px solid #2ecc7140`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>BU HAFTA</div>
+         <div style={{ color: "#2ecc71", fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHafta}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
+       </div>
+       <div style={{ background: `linear-gradient(135deg, #E74C3C18, ${C.y2})`, border: `1px solid #E74C3C40`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>KRİTİK</div>
+         <div style={{ color: "#E74C3C", fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHaftaKritik}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>bulgu</div>
        </div>
      </div>
    );
