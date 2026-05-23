@@ -5203,44 +5203,6 @@ export default function App() {
    setLiyakat(yeni);
    try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
  }, []);
- const geriYap = () => {
-   if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return true; }
-   if (paylasMaddesi) { setPaylasMaddesi(null); return true; }
-   if (saglikModalAcik) { setSaglikModalAcik(false); return true; }
-   if (aylikRaporAcik) { setAylikRaporAcik(false); return true; }
-   if (modal) { setModal(null); return true; }
-   if (tarifModal) { setTarifModal(null); return true; }
-   if (marketAcik) { setMarketAcik(false); return true; }
-   if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
-   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"];
-   if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
-   return false;
- };
- const geriGerekli = !!(yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"].includes(sekme));
- useEffect(() => {
-   let sx = null, sy = null, st = 0;
-   const onStart = (e) => {
-     const t = e.touches[0];
-     if (t.clientX > 50) { sx = null; return; }
-     sx = t.clientX; sy = t.clientY; st = Date.now();
-   };
-   const onEnd = (e) => {
-     if (sx === null) return;
-     const t = e.changedTouches[0];
-     const dx = t.clientX - sx;
-     const dy = Math.abs(t.clientY - sy);
-     const dt = Date.now() - st;
-     sx = null;
-     if (dx < 60 || dy > 80 || dt > 1000) return;
-     geriYap();
-   };
-   document.addEventListener("touchstart", onStart, { passive: true });
-   document.addEventListener("touchend", onEnd, { passive: true });
-   return () => {
-     document.removeEventListener("touchstart", onStart);
-     document.removeEventListener("touchend", onEnd);
-   };
- }, [sekme, ekran, modal, paylasMaddesi, saglikModalAcik, aylikRaporAcik, yeniMertebeBildirim, tarifModal, marketAcik]);
  const MERTEBELER = [
    { k: "sagirt", ad: "Çırak", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
    { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", aciklama: "Osmanlı esnaf teşkilatında ustanın yanında yıllarca çırak olarak çalışmış, üretim sırrını öğrenmiş ehil kişi. Mizaç dengesini kurmaya başlayan." },
@@ -5314,6 +5276,44 @@ export default function App() {
    if (yeni.length > 0) liyakatRozetVer("saglik_doldu", 20);
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
+ const geriYap = () => {
+   if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return true; }
+   if (paylasMaddesi) { setPaylasMaddesi(null); return true; }
+   if (saglikModalAcik) { setSaglikModalAcik(false); return true; }
+   if (aylikRaporAcik) { setAylikRaporAcik(false); return true; }
+   if (modal) { setModal(null); return true; }
+   if (tarifModal) { setTarifModal(null); return true; }
+   if (marketAcik) { setMarketAcik(false); return true; }
+   if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
+   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"];
+   if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
+   return false;
+ };
+ const geriGerekli = !!(yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman"].includes(sekme));
+ useEffect(() => {
+   let sx = null, sy = null, st = 0;
+   const onStart = (e) => {
+     const t = e.touches[0];
+     if (t.clientX > 50) { sx = null; return; }
+     sx = t.clientX; sy = t.clientY; st = Date.now();
+   };
+   const onEnd = (e) => {
+     if (sx === null) return;
+     const t = e.changedTouches[0];
+     const dx = t.clientX - sx;
+     const dy = Math.abs(t.clientY - sy);
+     const dt = Date.now() - st;
+     sx = null;
+     if (dx < 60 || dy > 80 || dt > 1000) return;
+     geriYap();
+   };
+   document.addEventListener("touchstart", onStart, { passive: true });
+   document.addEventListener("touchend", onEnd, { passive: true });
+   return () => {
+     document.removeEventListener("touchstart", onStart);
+     document.removeEventListener("touchend", onEnd);
+   };
+ }, [sekme, ekran, modal, paylasMaddesi, saglikModalAcik, aylikRaporAcik, yeniMertebeBildirim, tarifModal, marketAcik]);
  const aylikIstatistik = () => {
    const simdi = new Date();
    const ayBas = new Date(simdi.getFullYear(), simdi.getMonth(), 1).getTime();
