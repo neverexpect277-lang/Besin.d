@@ -3928,6 +3928,7 @@ const HAKKINDA = {
    { t: "Anayasa 26-28 · AİHS Madde 10", a: "Bilgilendirme, eğitim ve kültürel pratik aktarımı düşünce-ifade özgürlüğü kapsamında anayasal ve AİHM içtihadıyla güvence altındadır." },
    { t: "6502 Sayılı Tüketici Kanunu Madde 63 · TKHK", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
    { t: "Tüketici Gözlem Paylaşma Hakkı (Mahalle Haritası)", a: "Çarşıda/pazarda gözlenen raf yerleşimi, reklam yoğunluğu ve manipülasyon paylaşımı; 6502 Sayılı Kanun (bilinçli tüketim), Anayasa 26 (düşünce özgürlüğü), AİHS 10 (ifade), Türk Borçlar Kanunu 49 (haksız fiil dışı — gerçek gözlemin paylaşımı), AB Tüketici Hakları Direktifi 2011/83 ve OECD Tüketici Politikası Kılavuzu kapsamında korunmaktadır. Marka adı zikretmek değil, satış noktasındaki gerçek gözlemi paylaşmak yasal hakkımızdır." },
+   { t: "Şifa Akçesi — Kapalı Devre Sadakat Puanı", a: "Şifa Akçesi yalnızca Besin Dedektifi ve Beka Mağazası ekosisteminde geçerlidir; TL'ye, başka bir para birimine veya kripto varlığa çevrilmez. 6493 Sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri Kanunu Madde 12 kapsamında 'kapalı devre sadakat puanı / hediye kartı' niteliğindedir — BDDK düzenlemelerine ve elektronik para hükümlerine tabi değildir. Vergisel sorumluluk Beka Mağazası tarafındaki ticari faturalama üzerinden işler. Akçe sistemi aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
    { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
  ],
  },
@@ -7295,6 +7296,7 @@ export default function App() {
            { ad: "Liyakat Sıralaması", aciklama: "En çok puan toplayan kullanıcılar — aylık şeref defteri" },
            { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki kullanıcılar madde detayında yorum yazar, herkes okur" },
            { ad: "Mahalle Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
+           { ad: "Şifa Akçesi & Beka Mağazası", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile Beka Mağazası'ndan temiz aktar, yerli üretici ürünleri ve fıtrat-uyumlu tekstil alınır. Kapalı devre sadakat puanı — TL'ye çevrilmez." },
            { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Ahilik liyakat ilkesi" },
          ].map((y, i, arr) => (
            <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
