@@ -4688,8 +4688,16 @@ function PaylasModal({ madde, onKapat }) {
     if (kanal === "whatsapp") return `https://wa.me/?text=${t}`;
     if (kanal === "telegram") return `https://t.me/share/url?url=${u}&text=${t}`;
     if (kanal === "twitter") return `https://twitter.com/intent/tweet?text=${t}`;
+    if (kanal === "instagram") return "https://www.instagram.com/";
+    if (kanal === "tiktok") return "https://www.tiktok.com/";
+    if (kanal === "sms") return `sms:?body=${t}`;
     return null;
   };
+  const KANALLAR_UST = [
+    { k: "instagram", ad: "Instagram", renk: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)" },
+    { k: "tiktok", ad: "TikTok", renk: "#000000" },
+    { k: "sms", ad: "Mesajlar", renk: "#34C759" },
+  ];
   const KANALLAR_LINK = [
     { k: "whatsapp", ad: "WhatsApp", renk: "#25D366" },
     { k: "telegram", ad: "Telegram", renk: "#0088CC" },
@@ -4723,20 +4731,24 @@ function PaylasModal({ madde, onKapat }) {
           </div>
         </div>
 
-        <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)", color: "#fff", border: "none", borderRadius: 12, padding: "16px", fontWeight: 700, fontSize: 15, cursor: yapiyor ? "wait" : "pointer", marginBottom: 6, fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Instagram · TikTok · Mesajlar · Diğer"}</button>
-        <div style={{ color: C2.soluk, fontSize: 10, textAlign: "center", marginBottom: 12, lineHeight: 1.4 }}>Telefonunda yüklü tüm uygulamalar açılır — görseli direkt Hikaye / Post / Mesaj olarak paylaş.</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+          {KANALLAR_UST.map(k => (
+            <a key={k.k} href={linkKanali(k.k)} target={k.k === "sms" ? "_self" : "_blank"} rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 12, padding: "14px 8px", fontWeight: 700, fontSize: 14, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
+          ))}
+        </div>
 
-        <div style={{ color: C2.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>VEYA DİREKT KANALLAR</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
           {KANALLAR_LINK.map(k => (
-            <a key={k.k} href={linkKanali(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "11px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
+            <a key={k.k} href={linkKanali(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "12px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
           ))}
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
-          <button onClick={indir} disabled={yapiyor} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Görseli İndir</button>
+          <button onClick={indir} disabled={yapiyor} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: yapiyor ? "wait" : "pointer", fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Görseli İndir"}</button>
           <button onClick={() => { navigator.clipboard?.writeText(paylasMetni); }} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Yazıyı Kopyala</button>
         </div>
+
+        <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: "transparent", color: C2.soluk, border: "none", padding: "8px", fontWeight: 600, fontSize: 11, cursor: yapiyor ? "wait" : "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Diğer uygulamalar (görsel + yazı)</button>
       </div>
     </div>
   );
@@ -7172,7 +7184,10 @@ export default function App() {
         <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setSaglikModalAcik(false)}>
           <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}` }} onClick={e => e.stopPropagation()}>
             <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SAĞLIK DURUMUM</div>
-            <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Sana özel uyarılar</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+              <div style={{ color: C.metin, fontSize: 18, fontWeight: 700 }}>Sana özel uyarılar</div>
+              <div style={{ color: saglikDurumu.length ? "#E74C3C" : C.cok, fontSize: 12, fontWeight: 700 }}>{saglikDurumu.length} aktif</div>
+            </div>
             <div style={{ color: C.soluk, fontSize: 12, marginBottom: 14, lineHeight: 1.5 }}>İşaretlediğin durumlara göre tarama sonucunda ekstra uyarılar göreceksin. Veriler sadece bu cihazda kalır, hiçbir yere gönderilmez.</div>
             {SAGLIK_KOSULLARI.map(k => {
               const aktif = saglikDurumu.includes(k.k);
