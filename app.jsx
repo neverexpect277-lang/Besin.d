@@ -7775,7 +7775,7 @@ export default function App() {
  {selamModal && (
    <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSelamModal(null)}>
      <div style={{ background: `linear-gradient(180deg, ${C.altin}18, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 360, width: "100%", border: `1.5px solid ${C.altin}50`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
-       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>{selamModal.yad ? "YÂD" : "SELÂM"}</div>
+       {selamModal.yad && <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>YÂD</div>}
        <div style={{ fontSize: 36, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>﷽</div>
        <div style={{ color: C.metin, fontSize: 17, lineHeight: 1.6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 8 }}>{selamModal.metin}</div>
        {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 18, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
