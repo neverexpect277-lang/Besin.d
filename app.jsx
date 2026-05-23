@@ -3928,7 +3928,7 @@ const HAKKINDA = {
    { t: "Anayasa 26-28 · AİHS Madde 10", a: "Bilgilendirme, eğitim ve kültürel pratik aktarımı düşünce-ifade özgürlüğü kapsamında anayasal ve AİHM içtihadıyla güvence altındadır." },
    { t: "6502 Sayılı Tüketici Kanunu Madde 63 · TKHK", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
    { t: "Tüketici Gözlem Paylaşma Hakkı (Mahalle Haritası)", a: "Çarşıda/pazarda gözlenen raf yerleşimi, reklam yoğunluğu ve manipülasyon paylaşımı; 6502 Sayılı Kanun (bilinçli tüketim), Anayasa 26 (düşünce özgürlüğü), AİHS 10 (ifade), Türk Borçlar Kanunu 49 (haksız fiil dışı — gerçek gözlemin paylaşımı), AB Tüketici Hakları Direktifi 2011/83 ve OECD Tüketici Politikası Kılavuzu kapsamında korunmaktadır. Marka adı zikretmek değil, satış noktasındaki gerçek gözlemi paylaşmak yasal hakkımızdır." },
-   { t: "Şifa Akçesi — Kapalı Devre Sadakat Puanı", a: "Şifa Akçesi yalnızca Besin Dedektifi ve Şifa Mağazası ekosisteminde geçerlidir; TL'ye, başka bir para birimine veya kripto varlığa çevrilmez. 6493 Sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri Kanunu Madde 12 kapsamında 'kapalı devre sadakat puanı / hediye kartı' niteliğindedir — BDDK düzenlemelerine ve elektronik para hükümlerine tabi değildir. Vergisel sorumluluk Şifa Mağazası tarafındaki ticari faturalama üzerinden işler. Akçe sistemi aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+   { t: "Şifa Akçesi — Kapalı Devre Sadakat Puanı", a: "Şifa Akçesi yalnızca Besin Dedektifi ve Şifalı Market ekosisteminde geçerlidir; TL'ye, başka bir para birimine veya kripto varlığa çevrilmez. 6493 Sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri Kanunu Madde 12 kapsamında 'kapalı devre sadakat puanı / hediye kartı' niteliğindedir — BDDK düzenlemelerine ve elektronik para hükümlerine tabi değildir. Vergisel sorumluluk Şifalı Market tarafındaki ticari faturalama üzerinden işler. Akçe sistemi aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
    { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
  ],
  },
@@ -6232,7 +6232,7 @@ export default function App() {
      {
        baslik: "DESTEK & HİZMET",
        hizmetler: [
-         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler ve yerel üretici ağı." },
+         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler, yerel üretici ağı. Mertebene göre Şifa Akçesi indirimi (Kalfa %5 · Kethüda %10 · Hekimbaşı %15)." },
          { k: "uzman", baslik: "Görüntülü Uzman", sembol: "◐", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
        ],
      },
@@ -7296,7 +7296,7 @@ export default function App() {
            { ad: "Liyakat Sıralaması", aciklama: "En çok puan toplayan kullanıcılar — aylık şeref defteri" },
            { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki kullanıcılar madde detayında yorum yazar, herkes okur" },
            { ad: "Mahalle Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
-           { ad: "Şifa Akçesi & Şifa Mağazası", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile Şifa Mağazası'ndan temiz aktar, yerli üretici ürünleri ve fıtrat-uyumlu tekstil alınır. Kapalı devre sadakat puanı — TL'ye çevrilmez." },
+           { ad: "Şifa Akçesi & Şifalı Market", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile Şifalı Market'ndan temiz aktar, yerli üretici ürünleri ve fıtrat-uyumlu tekstil alınır. Kapalı devre sadakat puanı — TL'ye çevrilmez." },
            { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Ahilik liyakat ilkesi" },
          ].map((y, i, arr) => (
            <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
