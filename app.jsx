@@ -5178,7 +5178,7 @@ export default function App() {
  });
  const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
  const MERTEBELER = [
-   { k: "sagirt", ad: "Şagirt", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
+   { k: "sagirt", ad: "Çırak", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
    { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", aciklama: "Osmanlı esnaf teşkilatında ustanın yanında yıllarca çırak olarak çalışmış, üretim sırrını öğrenmiş ehil kişi. Mizaç dengesini kurmaya başlayan." },
    { k: "kethuda", ad: "Kethüda", anlam: "Bölge Sorumlusu", esik: 200, renk: "#8E8E93", aciklama: "Osmanlı'da loncanın veya semtin idari sorumlusu. Mahallesindeki düzenden mesul. Lobi ürünlerini tespit edip işaretleyen usta." },
    { k: "hekimbasi", ad: "Hekimbaşı", anlam: "Saray Başhekimi", esik: 800, renk: "#C9952C", aciklama: "Osmanlı'da hekimlerin başı, sultanın özel tabibi. Fıtrat atlasını yalamış yutmuş elit. Diğer kullanıcılara rehberlik eden." },
@@ -7206,7 +7206,7 @@ export default function App() {
      { k: "lobi", ad: "Semtindeki lobi haritası — YAKINDA", tamam: false, yakinda: true },
    ] : [
      { k: "hekimbasi_yorum", ad: "Madde modal'ında 'Hekimbaşı yorumu' yaz — YAKINDA", tamam: false, yakinda: true },
-     { k: "mentor", ad: "Şagirtlere rehberlik et — YAKINDA", tamam: false, yakinda: true },
+     { k: "mentor", ad: "Çıraklara rehberlik et — YAKINDA", tamam: false, yakinda: true },
    ];
    return (
      <div>
