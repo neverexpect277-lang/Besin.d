@@ -3915,6 +3915,21 @@ const HAKKINDA = {
  { t: "Önemli Not", a: "Spesifik makam-organ eşleşmeleri (Rast → beyin, Hicaz → böbrek vb.) Osmanlı darüşşifa geleneğinden gelir ve modern RCT'lerle henüz tek tek doğrulanmamıştır. Genel müzik terapisinin etkinliği ise yüzlerce bilimsel çalışmayla desteklenmiştir." },
  ],
  },
+ mertebe: {
+ ikon: "", renk: "#9B7B4F",
+ baslik: "Mertebe Sistemi · Yasal Statü & Bilimsel Kaynaklar",
+ ozet: "Gamification · Anonim · KVKK · Ahilik Geleneği",
+ items: [
+   { t: "Temel Statü", a: "Mertebe sistemi bir gamification (oyunlaştırma) katmanıdır. Tıbbi tavsiye, teşhis, tedavi veya reçete niteliği taşımaz. Kullanıcının uygulamayla etkileşimini görselleştiren bir liyakat göstergesidir." },
+   { t: "Anonim Katılım & Yerel Veri", a: "Mertebe puanları, isim/lakap ve görev kayıtları yalnızca kullanıcının cihazında (localStorage) tutulur. Sunucuya, üçüncü tarafa veya geliştiriciye aktarılmaz. İsim girmek isteğe bağlıdır." },
+   { t: "KVKK 6698 Sayılı Kanun", a: "Kişisel verilerin korunması mevzuatına tam uyum. Cihaz dışına veri çıkışı yoktur — bu nedenle veri sorumlusu / işleyen / aktarım hükümleri uygulanmaz." },
+   { t: "Ahilik Geleneği (tarihsel kaynak)", a: "Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Osmanlı esnaf teşkilatı (Ahilik) ve saray idari yapısına dayanır. Türkiye'nin UNESCO Somut Olmayan Kültürel Miras listesinde 2020'de tescilli." },
+   { t: "Manevi & Kültürel Boyut", a: "Şifa ayetleri, Esmâ-ül Hüsnâ reçeteleri, zikir ve Eşref Saati pratikleri kültürel-manevi bilgi notlarıdır; hiçbiri tıbbi tedavi yerine geçmez. Bu pratiklerin etkisi inanç ve manevi pratik bağlamındadır." },
+   { t: "Anayasa 26-28 · AİHS Madde 10", a: "Bilgilendirme, eğitim ve kültürel pratik aktarımı düşünce-ifade özgürlüğü kapsamında anayasal ve AİHM içtihadıyla güvence altındadır." },
+   { t: "6502 Sayılı Tüketici Kanunu Madde 63", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
+   { t: "Lider Tablosu / Hekimbaşı Yorumları / Lobi Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun moderasyondan geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+ ],
+ },
  hizmetler: {
  ikon: "", renk: "#2563EB",
  baslik: "Hizmetlerin Bilimsel Dayanağı",
@@ -7290,6 +7305,10 @@ export default function App() {
            </div>
          ))}
        </div>
+
+       <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14, color: C.soluk, fontSize: 10, lineHeight: 1.6, fontStyle: "italic" }}>
+         Mertebe sistemi bir gamification (oyunlaştırma) katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, lakap, görevler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar ve yasal statü için <b>Hakkında → Mertebe Sistemi</b> bölümüne bakabilirsin.
+       </div>
      </div>
    );
  })()}
@@ -7304,6 +7323,7 @@ export default function App() {
  <BolumKart ikon={HAKKINDA.islam.ikon} renk={HAKKINDA.islam.renk} baslik={HAKKINDA.islam.baslik} ozet={HAKKINDA.islam.ozet} items={HAKKINDA.islam.items} />
  <BolumKart ikon={HAKKINDA.bilim.ikon} renk={HAKKINDA.bilim.renk} baslik={HAKKINDA.bilim.baslik} ozet={HAKKINDA.bilim.ozet} items={HAKKINDA.bilim.items} />
  <BolumKart ikon={HAKKINDA.frekans.ikon} renk={HAKKINDA.frekans.renk} baslik={HAKKINDA.frekans.baslik} ozet={HAKKINDA.frekans.ozet} items={HAKKINDA.frekans.items} />
+ <BolumKart ikon={HAKKINDA.mertebe.ikon} renk={HAKKINDA.mertebe.renk} baslik={HAKKINDA.mertebe.baslik} ozet={HAKKINDA.mertebe.ozet} items={HAKKINDA.mertebe.items} />
  <BolumKart ikon={HAKKINDA.hizmetler.ikon} renk={HAKKINDA.hizmetler.renk} baslik={HAKKINDA.hizmetler.baslik} ozet={HAKKINDA.hizmetler.ozet} items={HAKKINDA.hizmetler.items} />
 
  <div style={{ height: 1, background: C.s, margin: "20px 0" }} />
