@@ -5194,6 +5194,15 @@ export default function App() {
    return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {} };
  });
  const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
+ useEffect(() => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonGiris === bugun) return;
+   const dun = new Date(Date.now() - 86400000).toDateString();
+   const yeniSeri = liyakat.sonGiris === dun ? (liyakat.gunlukSeri || 0) + 1 : 1;
+   const yeni = { ...liyakat, sonGiris: bugun, gunlukSeri: yeniSeri };
+   setLiyakat(yeni);
+   try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+ }, []);
  const MERTEBELER = [
    { k: "sagirt", ad: "Çırak", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
    { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", aciklama: "Osmanlı esnaf teşkilatında ustanın yanında yıllarca çırak olarak çalışmış, üretim sırrını öğrenmiş ehil kişi. Mizaç dengesini kurmaya başlayan." },
@@ -5404,8 +5413,27 @@ export default function App() {
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
       if (ac.state === "suspended") { ac.resume().catch(()=>{}); }
+      // Mühür damga sesi — kısa "tok" + low rumble
+      {
+        const t0 = ac.currentTime;
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(160, t0);
+        o.frequency.exponentialRampToValueAtTime(55, t0 + 0.18);
+        g.gain.setValueAtTime(0.5, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+        o.connect(g).connect(ac.destination);
+        o.start(t0); o.stop(t0 + 0.22);
+        const buf = ac.createBuffer(1, 4410, 44100);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < 4410; i++) data[i] = (Math.random() - 0.5) * (1 - i / 4410) * 0.4;
+        const src = ac.createBufferSource(); const ng = ac.createGain();
+        src.buffer = buf; ng.gain.value = 0.3;
+        src.connect(ng).connect(ac.destination);
+        src.start(t0);
+      }
       const tmpS = analiz(metin, KATEGORILER[kategori].db);
-      const t = ac.currentTime;
+      const t = ac.currentTime + 0.35;
       if (tmpS.some(r => r.risk === "kritik")) {
         // 3 bip kritik uyarı
         [0, 0.18, 0.36].forEach(offset => {
@@ -5779,7 +5807,7 @@ export default function App() {
  const kisisel = profil && r.burclar?.includes(profil.burc);
  const acikMi = acik.has(i);
  return (
- <div key={i} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, marginBottom: 10, borderLeft: `4px solid ${rR(r.risk)}`, overflow: "hidden" }}>
+ <div key={i} style={{ background: C.y, backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 0.58 0 0 0 0 0.17 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E\")", border: `1px solid ${C.s}`, borderRadius: 14, marginBottom: 10, borderLeft: `4px solid ${rR(r.risk)}`, overflow: "hidden" }}>
  <div style={{ padding: "14px 16px", cursor: "pointer" }} onClick={() => setAcik(prev => { const y = new Set(prev); if (y.has(i)) y.delete(i); else y.add(i); return y; })}>
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
  <div style={{ flex: 1 }}>
@@ -5989,12 +6017,18 @@ export default function App() {
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
+ {(() => {
+   const MANIFESTOLAR = ["Sofranı tanı, neslini koru", "Evine gireni bil", "Her lokma emanettir"];
+   const manifesto = MANIFESTOLAR[Math.floor((Date.now() / 86400000) % MANIFESTOLAR.length)];
+   return (
  <div style={{ textAlign: "center", padding: "8px 16px 16px", animation: "nefes 5s ease-in-out infinite" }}>
    <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, color: C.altin, fontStyle: "italic", letterSpacing: 0.3, lineHeight: 1.25, fontWeight: 600 }}>
-     "Sofranı tanı, neslini koru"
+     "{manifesto}"
    </div>
    <div style={{ color: C.cok, fontSize: 9, marginTop: 6, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Besin Dedektifi ·</div>
  </div>
+   );
+ })()}
  {(() => {
    const haftaBas = Date.now() - 7 * 86400000;
    const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
@@ -7269,6 +7303,17 @@ export default function App() {
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
          <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>{mevcut.aciklama}</div>
+       </div>
+
+       <div style={{ background: `linear-gradient(135deg, #C9952C20, ${C.y2})`, border: `1px solid ${C.altin}50`, borderRadius: 12, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 14 }}>
+         <div style={{ width: 50, height: 50, borderRadius: "50%", background: C.altin + "20", border: `1.5px solid ${C.altin}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{liyakat.gunlukSeri || 0}</span>
+         </div>
+         <div style={{ flex: 1 }}>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SOFRA NÖBETİ</div>
+           <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{liyakat.gunlukSeri || 0} gün üst üste</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>Her gün bilinçli sofra — emaneti koru</div>
+         </div>
        </div>
 
        <div style={S.kB}>BU MERTEBE İÇİN GÖREVLER</div>
