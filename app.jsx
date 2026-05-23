@@ -3929,7 +3929,16 @@ const HAKKINDA = {
    { t: "6502 Sayılı Tüketici Kanunu Madde 63 · TKHK", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
    { t: "Tüketici Gözlem Paylaşma Hakkı (Mahalle Haritası)", a: "Çarşıda/pazarda gözlenen raf yerleşimi, reklam yoğunluğu ve manipülasyon paylaşımı; 6502 Sayılı Kanun (bilinçli tüketim), Anayasa 26 (düşünce özgürlüğü), AİHS 10 (ifade), Türk Borçlar Kanunu 49 (haksız fiil dışı — gerçek gözlemin paylaşımı), AB Tüketici Hakları Direktifi 2011/83 ve OECD Tüketici Politikası Kılavuzu kapsamında korunmaktadır. Marka adı zikretmek değil, satış noktasındaki gerçek gözlemi paylaşmak yasal hakkımızdır." },
    { t: "Şifa Akçesi — Kapalı Devre Sadakat Puanı", a: "Şifa Akçesi yalnızca Besin Dedektifi ve Şifalı Market ekosisteminde geçerlidir; TL'ye, başka bir para birimine veya kripto varlığa çevrilmez. 6493 Sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri Kanunu Madde 12 kapsamında 'kapalı devre sadakat puanı / hediye kartı' niteliğindedir — BDDK düzenlemelerine ve elektronik para hükümlerine tabi değildir. Vergisel sorumluluk Şifalı Market tarafındaki ticari faturalama üzerinden işler. Akçe sistemi aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
-   { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+   { t: "Pîr Ataması (4 Şefkatli Pîr)", a: "Pîr-i Aktâr, Pîr-i Lokmân, Pîr-i Edviye ve Pîr-i Mîzân — kullanıcının lakabından üretilen sabit bir hash ile atanan sembolik karakterlerdir. Hiçbir tıbbi reçete yazmazlar; eğitici-motivasyonel metin sunarlar. Pîr isimleri Osmanlı tıb-edviye geleneğinde gerçek hekim sınıflarına dayanır (Lokmân Hekîm, Edviye-i Mufrede yazarları, Mizân-ı Tıb). Anayasa 26-28 ve AİHS Madde 10 kapsamında kültürel-edebi karakter aktarımıdır." },
+   { t: "Ahd-i Mîsâk (Yazılı Yemin)", a: "Mertebeye girerken kullanıcının seçtiği veya yazdığı taahhüt metni. Tek taraflı, kendi nefsine karşı verilen ahlâkî bir sözdür; Türk Borçlar Kanunu Madde 27-49 anlamında borç doğuran sözleşme niteliği taşımaz, hiçbir hukuki yaptırım üretmez. Tamamen cihaz içinde saklanır, paylaşılmaz. Bilişsel-davranışsal psikolojide 'commitment device' olarak bilinen yöntemin sembolik karşılığıdır." },
+   { t: "Sırlı Suâl (Eğitim Sınavı)", a: "Her mertebede 3 çoktan seçmeli soru; katkı maddeleri, yağ aileleri, endokrin bozucular gibi konularda EFSA, WHO, IARC, FDA kaynaklı bilgileri ölçer. Sınav sonucu cihazda kalır, sertifika veya tıbbi yetki üretmez. Anayasa Madde 42 (eğitim hakkı) ve UNESCO Somut Olmayan Kültürel Miras kapsamında kültürel eğitim materyalidir." },
+   { t: "Mahcubiyet Lensi (Öz-Farkındalık Uyarısı)", a: "Yüksek mertebede iken haftada 10/20 kez 'kaçın' işaretli ürün taranırsa pîrden yumuşak bir uyarı modali çıkar. Kullanıcının kendi davranışıyla beyan ettiği mertebe arasındaki tutarsızlığı sessizce gösterir; ceza, puan kaybı veya engellemesi yoktur. Bilişsel-davranışsal terapideki 'self-monitoring' tekniğinin sembolik karşılığıdır." },
+   { t: "Şefaat Hattı (Paylaşım Sayacı)", a: "Kullanıcının madde sonucunu paylaşma sayısı; her paylaşım bir 'can' olarak sayılır. Sayaç tamamen yerel ve istatistikseldir; karşı taraf bilgisi tutulmaz. Anayasa 26-28 (ifade), AİHS 10 (bilgi yayma özgürlüğü) ve 6502 Sayılı Kanun (bilinçli tüketim aktarımı) kapsamında korunan paylaşım hakkıdır." },
+   { t: "Selâm / Yâd / Hediye Bildirimleri", a: "Oturum açılışında, taramadan sonra veya rastgele aralıklarla pîrden ayet/hadis/hikmet sözleri sunulur. Hiçbiri bireye yönelik tıbbi tavsiye veya dini fetva değildir; kamuya açık dini-edebî kaynakların kültürel aktarımıdır. Kullanıcı isterse modal'ı geri buton ile kapatabilir; sıklığı rastgeledir, baskıcı değildir." },
+   { t: "Mensubiyet Tescili (Sıra Numarası)", a: "Kullanıcının uygulamayı ilk açtığı zaman damgasından deterministik olarak hesaplanan, değişmeyen sıra numarası. Sunucu kaydı, gerçek üyelik listesi veya kanıtlanmış sıralama değildir; uygulamanın varsayılan başlangıç tarihinden geçen süreye orantılı sembolik bir göstergedir. Cihaz başına benzersizdir, başka cihaza taşınmaz. Hicri tarih dönüşümü Kuwaiti Algorithm (Astronomy & Astrophysics 1994) ile yapılır." },
+   { t: "Vakar Evrimi (Görsel Ölçek Değişimi)", a: "Mertebe yükseldikçe profil sayfasındaki yazı puntosu, mühür boyutu ve görsel ağırlık artar. İçerik değişmez; yalnız görsel hiyerarşi farklılaşır. Erişilebilirlik (WCAG 2.1 AA) bozulmaz, kontrast oranları korunur." },
+   { t: "Hatm-i Nöbet (Günlük Giriş Sayacı)", a: "Üst üste kaç gün uygulamaya girildiğini izleyen yerel sayaç. Bir gün kaçırılırsa sıfırlanır. Sağlık verisi, konum verisi veya cihaz parmak izi içermez; yalnız local timestamp karşılaştırması yapar." },
+   { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
  ],
  },
  hizmetler: {
@@ -5191,8 +5200,17 @@ export default function App() {
      const l = localStorage.getItem("bd_liyakat");
      if (l) return JSON.parse(l);
    } catch {}
-   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), siraNo: 1247 + Math.floor(Math.random()*180), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0 };
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0 };
  });
+ const ASITANE_BASLANGIC = Date.UTC(2026, 0, 1);
+ const ASITANE_GUNLUK_KATILIM = 4.7;
+ const ASITANE_BASLANGIC_NO = 247;
+ const siraNoHesapla = (baslangic) => {
+   const ts = baslangic || Date.now();
+   if (ts < ASITANE_BASLANGIC) return ASITANE_BASLANGIC_NO;
+   const gun = (ts - ASITANE_BASLANGIC) / 86400000;
+   return Math.max(1, Math.floor(ASITANE_BASLANGIC_NO + gun * ASITANE_GUNLUK_KATILIM));
+ };
  const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
  useEffect(() => {
    const bugun = new Date().toDateString();
@@ -7530,7 +7548,7 @@ export default function App() {
        <div style={{ background: C.y2, border: `1px dashed ${C.altin}50`, borderRadius: 10, padding: 12, marginBottom: 14, textAlign: "center" }}>
          <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>MENSUBİYET TESCİLİ</div>
          <div style={{ color: C.metin, fontSize: 12, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>{hicri.gun} {hicri.ay} {hicri.yil}'de âsitânemize katıldın.</div>
-         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#{liyakat.siraNo || 1247}</b></div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#{siraNoHesapla(liyakat.baslangic)}</b></div>
        </div>
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
