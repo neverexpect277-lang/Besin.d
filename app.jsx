@@ -4645,7 +4645,7 @@ function HaftalikRapor({ gecmis, onKapat }) {
 /* ══════════════════════════════════════════════
    MİZAÇ MARKET LİSTESİ BİLEŞENİ
    ══════════════════════════════════════════════ */
-function PaylasModal({ madde, onKapat }) {
+function PaylasModal({ madde, onKapat, rutbeAd, rutbeRenk, lakap }) {
   const kartRef = useRef(null);
   const [yapiyor, setYapiyor] = useState(false);
   const v = (madde.risk === "kritik" || madde.risk === "yuksek") ? { ad: "KAÇIN", renk: "#E74C3C", altR: "#C0392B" }
@@ -4724,7 +4724,10 @@ function PaylasModal({ madde, onKapat }) {
                 <div style={{ fontSize: 13, opacity: 0.92, lineHeight: 1.5, fontWeight: 400 }}>{etkiKisa}</div>
               </div>
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.25)", paddingTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 12, opacity: 0.9, fontWeight: 600 }}>besin-d.vercel.app</span>
+                <div>
+                  <div style={{ fontSize: 12, opacity: 0.9, fontWeight: 700 }}>besin-d.vercel.app</div>
+                  {(rutbeAd || lakap) && <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>{lakap ? `${lakap} · ` : ""}{rutbeAd}</div>}
+                </div>
                 <span style={{ fontSize: 10, opacity: 0.75 }}>{madde.kaynak ? madde.kaynak.split("·")[0].trim() : ""}</span>
               </div>
             </div>
@@ -5166,6 +5169,58 @@ export default function App() {
  const [kategori, setKategori] = useState("gida");
  const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
  const [saglikDurumu, setSaglikDurumu] = useState(() => { try { const s = localStorage.getItem("bd_saglik"); return s ? JSON.parse(s) : []; } catch { return []; } });
+ const [liyakat, setLiyakat] = useState(() => {
+   try {
+     const l = localStorage.getItem("bd_liyakat");
+     if (l) return JSON.parse(l);
+   } catch {}
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {} };
+ });
+ const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
+ const MERTEBELER = [
+   { k: "sagirt", ad: "Şagirt", anlam: "Öğrenci", esik: 0, renk: "#9B7B4F", aciklama: "Sistemi yeni tanıyan. İlk adımları atan, fıtrat bilgisinin kapısında duran." },
+   { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", aciklama: "Osmanlı esnaf teşkilatında ustanın yanında yıllarca çırak olarak çalışmış, üretim sırrını öğrenmiş ehil kişi. Mizaç dengesini kurmaya başlayan." },
+   { k: "kethuda", ad: "Kethüda", anlam: "Bölge Sorumlusu", esik: 200, renk: "#8E8E93", aciklama: "Osmanlı'da loncanın veya semtin idari sorumlusu. Mahallesindeki düzenden mesul. Lobi ürünlerini tespit edip işaretleyen usta." },
+   { k: "hekimbasi", ad: "Hekimbaşı", anlam: "Saray Başhekimi", esik: 800, renk: "#C9952C", aciklama: "Osmanlı'da hekimlerin başı, sultanın özel tabibi. Fıtrat atlasını yalamış yutmuş elit. Diğer kullanıcılara rehberlik eden." },
+ ];
+ const mertebeBul = (puan) => {
+   let son = MERTEBELER[0];
+   for (const m of MERTEBELER) if (puan >= m.esik) son = m;
+   return son;
+ };
+ const sonrakiMertebe = (puan) => {
+   for (const m of MERTEBELER) if (puan < m.esik) return m;
+   return null;
+ };
+ const puanEkle = (miktar, sebep) => {
+   setLiyakat(onceki => {
+     const yeniPuan = (onceki.puan || 0) + miktar;
+     const yeniMertebe = mertebeBul(yeniPuan).k;
+     const yukseldi = yeniMertebe !== onceki.mertebe;
+     const yeni = {
+       ...onceki,
+       puan: yeniPuan,
+       mertebe: yeniMertebe,
+       yukseldigiTarihler: yukseldi ? { ...(onceki.yukseldigiTarihler || {}), [yeniMertebe]: Date.now() } : onceki.yukseldigiTarihler,
+     };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     if (yukseldi) setYeniMertebeBildirim(yeniMertebe);
+     return yeni;
+   });
+ };
+ const liyakatRozetVer = (rozet, puan) => {
+   if ((liyakat.kazanilanRozetler || []).includes(rozet)) return;
+   setLiyakat(o => { const yeni = { ...o, kazanilanRozetler: [...(o.kazanilanRozetler || []), rozet] }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   puanEkle(puan, rozet);
+ };
+ const Muhur = ({ k, boyut = 28 }) => {
+   const m = MERTEBELER.find(x => x.k === k) || MERTEBELER[0];
+   const r = m.renk;
+   if (k === "sagirt") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke={r} strokeWidth="2"/><circle cx="20" cy="20" r="2" fill={r}/></svg>);
+   if (k === "kalfa") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke={r} strokeWidth="2"/><circle cx="20" cy="20" r="11" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
+   if (k === "kethuda") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><polygon points="20,4 35,12 35,28 20,36 5,28 5,12" fill="none" stroke={r} strokeWidth="2"/><polygon points="20,10 30,15 30,25 20,30 10,25 10,15" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
+   return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill={r + "15"} stroke={r} strokeWidth="2"/><path d="M20 6 L23 14 L31 14 L25 19 L28 27 L20 22 L12 27 L15 19 L9 14 L17 14 Z" fill={r}/></svg>);
+ };
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
@@ -5192,6 +5247,7 @@ export default function App() {
    const yeni = saglikDurumu.includes(k) ? saglikDurumu.filter(x => x !== k) : [...saglikDurumu, k];
    setSaglikDurumu(yeni);
    try { localStorage.setItem("bd_saglik", JSON.stringify(yeni)); } catch {}
+   if (yeni.length > 0) liyakatRozetVer("saglik_doldu", 20);
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const aylikIstatistik = () => {
@@ -5225,6 +5281,7 @@ export default function App() {
    if (acikAyet === ref) { setAcikAyet(null); return; }
    setAcikAyet(ref);
    ayetGetir(ref);
+   puanEkle(2, "ayet_dinle");
  };
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
@@ -5323,6 +5380,7 @@ export default function App() {
    const yeniGecmis = [yeniKayit, ...(gecmis || [])].slice(0, 50);
    setGecmis(yeniGecmis);
    try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
+   puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
  }
  setEkran("sonuc");
     if (!seslerAcik) return;
@@ -5356,6 +5414,7 @@ export default function App() {
  if (!dogum) return;
  const b = burcHesapla(dogum);
  setProfil({ burc: b, dogum, cinsiyet, ...BURCLAR[b] });
+ liyakatRozetVer("profil_tamam", 15);
  try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
  }
@@ -5800,7 +5859,7 @@ export default function App() {
    );
  })()}
  <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={(e) => {
      e.stopPropagation();
      const konu = `Hata: ${r.ad} (${r.kod})`;
@@ -5847,7 +5906,23 @@ export default function App() {
  </>
  )}
  </div>
- {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} />}
+ {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mertebeBul(liyakat.puan).ad} rutbeRenk={mertebeBul(liyakat.puan).renk} lakap={liyakat.lakap} />}
+ {yeniMertebeBildirim && (() => {
+   const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
+   if (!m) return null;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setYeniMertebeBildirim(null)}>
+       <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+         <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
+         <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
+         <div style={{ color: m.renk, fontSize: 28, fontWeight: 900, letterSpacing: 1.5 }}>{m.ad}</div>
+         <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
+         <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
+       </div>
+     </div>
+   );
+ })()}
  <style>{css}</style>
  </div>
  );
@@ -5869,8 +5944,12 @@ export default function App() {
  <path d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke={profil ? profil.renk : C.altin} strokeWidth="1.5" strokeLinecap="round" fill="none" />
  </svg>
  <span style={{ color: profil ? profil.renk : C.altin, fontSize: 12, fontWeight: 600 }}>
- {profil ? profil.burc : "Profil"}
+ {profil ? (liyakat.lakap || profil.burc) : "Profil"}
  </span>
+ </div>
+ <div onClick={() => setSekme("mertebe")} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mertebeBul(liyakat.puan).renk + "20", border: `1px solid ${mertebeBul(liyakat.puan).renk}50` }}>
+   <Muhur k={mertebeBul(liyakat.puan).k} boyut={16} />
+   <span style={{ color: mertebeBul(liyakat.puan).renk, fontSize: 11, fontWeight: 700 }}>{mertebeBul(liyakat.puan).ad}</span>
  </div>
  </div>
 
@@ -7103,6 +7182,91 @@ export default function App() {
      </div>
    </div>
  )}
+ {/* MERTEBE */}
+ {sekme === "mertebe" && (() => {
+   const mevcut = mertebeBul(liyakat.puan);
+   const sonraki = sonrakiMertebe(liyakat.puan);
+   const ilerleme = sonraki ? ((liyakat.puan - mevcut.esik) / (sonraki.esik - mevcut.esik)) * 100 : 100;
+   const kalan = sonraki ? sonraki.esik - liyakat.puan : 0;
+   const rozetVar = (r) => (liyakat.kazanilanRozetler || []).includes(r);
+   const taramaSayisiOlc = taramaSayisi;
+   const GOREVLER = mevcut.k === "sagirt" ? [
+     { k: "ilk_tarama", ad: "İlk taramanı yap", tamam: taramaSayisiOlc >= 1, puan: 1 },
+     { k: "profil_tamam", ad: "Profilini doldur (burç + doğum)", tamam: rozetVar("profil_tamam"), puan: 15 },
+     { k: "saglik_doldu", ad: "Sağlık durumunu işaretle", tamam: rozetVar("saglik_doldu"), puan: 20 },
+     { k: "10_tarama", ad: `10 tarama tamamla (${Math.min(taramaSayisiOlc, 10)}/10)`, tamam: taramaSayisiOlc >= 10, puan: 10 },
+     { k: "paylas", ad: "Bir maddenin sonucunu paylaş", tamam: rozetVar("paylas") || liyakat.puan >= 5, puan: 5 },
+   ] : mevcut.k === "kalfa" ? [
+     { k: "50_tarama", ad: `50 tarama tamamla (${Math.min(taramaSayisiOlc, 50)}/50)`, tamam: taramaSayisiOlc >= 50 },
+     { k: "ayet_dinle", ad: "Bir şifa ayetini dinle", tamam: rozetVar("ayet_dinle") || liyakat.puan >= 60 },
+     { k: "5_kategori", ad: "5 farklı kategoride tarama yap", tamam: (gecmis || []).reduce((s, g) => s.add(g.kategori), new Set()).size >= 5 },
+     { k: "kritik_tespit", ad: "10 kritik madde tespit et", tamam: (gecmis || []).reduce((a, g) => a + (g.kritik || 0), 0) >= 10 },
+   ] : mevcut.k === "kethuda" ? [
+     { k: "200_tarama", ad: `200 tarama tamamla (${Math.min(taramaSayisiOlc, 200)}/200)`, tamam: taramaSayisiOlc >= 200 },
+     { k: "lobi", ad: "Semtindeki lobi haritası — YAKINDA", tamam: false, yakinda: true },
+   ] : [
+     { k: "hekimbasi_yorum", ad: "Madde modal'ında 'Hekimbaşı yorumu' yaz — YAKINDA", tamam: false, yakinda: true },
+     { k: "mentor", ad: "Şagirtlere rehberlik et — YAKINDA", tamam: false, yakinda: true },
+   ];
+   return (
+     <div>
+       <div style={S.kB}>MERTEBE — LİYAKAT YOLU</div>
+
+       <div style={{ background: `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})`, border: `1px solid ${mevcut.renk}50`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
+         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64} /></div>
+         <div style={{ color: mevcut.renk, fontSize: 24, fontWeight: 800, letterSpacing: 1.5 }}>{mevcut.ad}</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{mevcut.anlam}</div>
+         <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, marginTop: 10 }}>{liyakat.puan} liyakat puanı</div>
+         {sonraki && (
+           <>
+             <div style={{ background: C.s, borderRadius: 6, height: 8, marginTop: 14, overflow: "hidden" }}>
+               <div style={{ width: `${Math.min(ilerleme, 100)}%`, height: "100%", background: `linear-gradient(90deg, ${mevcut.renk}, ${sonraki.renk})`, transition: "width .4s" }} />
+             </div>
+             <div style={{ color: C.soluk, fontSize: 11, marginTop: 6 }}>{sonraki.ad} mertebesine <b style={{ color: C.metin }}>{kalan}</b> puan kaldı</div>
+           </>
+         )}
+       </div>
+
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>{mevcut.aciklama}</div>
+       </div>
+
+       <div style={S.kB}>BU MERTEBE İÇİN GÖREVLER</div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 8, marginBottom: 14 }}>
+         {GOREVLER.map(g => (
+           <div key={g.k} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderBottom: `1px solid ${C.s}`, opacity: g.yakinda ? 0.6 : 1 }}>
+             <span style={{ width: 18, height: 18, borderRadius: "50%", border: `2px solid ${g.tamam ? "#2ecc71" : C.s}`, background: g.tamam ? "#2ecc71" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700 }}>{g.tamam ? "✓" : ""}</span>
+             <span style={{ flex: 1, color: g.tamam ? C.soluk : C.metin, fontSize: 13, textDecoration: g.tamam ? "line-through" : "none" }}>{g.ad}</span>
+             {g.puan && !g.tamam && <span style={{ color: C.altin, fontSize: 11, fontWeight: 700 }}>+{g.puan}</span>}
+           </div>
+         ))}
+       </div>
+
+       <div style={S.kB}>TÜM MERTEBELER</div>
+       {MERTEBELER.map(m => {
+         const aktif = m.k === mevcut.k;
+         const gecildi = liyakat.puan >= m.esik;
+         return (
+           <div key={m.k} style={{ display: "flex", alignItems: "center", gap: 12, background: aktif ? m.renk + "15" : C.y, border: `1px solid ${aktif ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 6, opacity: gecildi ? 1 : 0.55 }}>
+             <Muhur k={m.k} boyut={36} />
+             <div style={{ flex: 1 }}>
+               <div style={{ color: aktif ? m.renk : C.metin, fontWeight: 700, fontSize: 14 }}>{m.ad} <span style={{ color: C.cok, fontSize: 11, fontWeight: 400 }}>· {m.anlam}</span></div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{m.esik}+ puan</div>
+             </div>
+             {aktif && <span style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>ŞU AN</span>}
+           </div>
+         );
+       })}
+
+       <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14 }}>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
+         <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Lakap profilinde ve paylaşımlarında görünür. Boş bırakırsan sadece mertebe gözükür.</div>
+       </div>
+     </div>
+   );
+ })()}
+
  {/* HAKKINDA */}
  {sekme === "hakkinda" && (
  <div>
@@ -7173,7 +7337,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["mertebe", "", "Mertebe"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
@@ -7187,7 +7351,23 @@ export default function App() {
  {raporAcik && <HaftalikRapor gecmis={gecmis} onKapat={() => setRaporAcik(false)} />}
       {marketAcik && profil && <MizacMarket profil={profil} onKapat={() => setMarketAcik(false)} />}
       {tarifModal && <TarifModal tarif={tarifModal} onKapat={() => setTarifModal(null)} />}
-      {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} />}
+      {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mertebeBul(liyakat.puan).ad} rutbeRenk={mertebeBul(liyakat.puan).renk} lakap={liyakat.lakap} />}
+ {yeniMertebeBildirim && (() => {
+   const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
+   if (!m) return null;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setYeniMertebeBildirim(null)}>
+       <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+         <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
+         <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
+         <div style={{ color: m.renk, fontSize: 28, fontWeight: 900, letterSpacing: 1.5 }}>{m.ad}</div>
+         <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
+         <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
+       </div>
+     </div>
+   );
+ })()}
       {saglikModalAcik && (
         <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setSaglikModalAcik(false)}>
           <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}` }} onClick={e => e.stopPropagation()}>
@@ -7307,7 +7487,7 @@ export default function App() {
  })()}
 
  <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-   <button onClick={() => setPaylasMaddesi(modal)} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={() => {
      const konu = `Hata: ${modal.ad} (${modal.kod})`;
      const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
