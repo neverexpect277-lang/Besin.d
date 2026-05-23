@@ -5182,7 +5182,7 @@ export default function App() {
  const [raporAcik, setRaporAcik] = useState(false);
  const [marketAcik, setMarketAcik] = useState(false);
  const [tarifModal, setTarifModal] = useState(null);
- const [acik, setAcik] = useState(null);
+ const [acik, setAcik] = useState(() => new Set());
  const [kategori, setKategori] = useState("gida");
  const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
  const [saglikDurumu, setSaglikDurumu] = useState(() => { try { const s = localStorage.getItem("bd_saglik"); return s ? JSON.parse(s) : []; } catch { return []; } });
@@ -5388,7 +5388,7 @@ export default function App() {
  setSonuclar(sonuc);
  setBelirsizler(belirsizBul(metin));
  setIlkSira(ilkSiraTespit(metin));
- setAcik(null);
+ setAcik(new Set());
  { const yeni = taramaSayisi + 1; setTaramaSayisi(yeni); try { localStorage.setItem("bd_tarama_sayisi", String(yeni)); } catch {} }
  {
    const kritikSayi = sonuc.filter(r => r.risk === "kritik" || r.risk === "yuksek").length;
@@ -5777,10 +5777,10 @@ export default function App() {
  const ayet = ayetSec(r.organlar);
  const makamBilgi = MAKAMLAR[r.makam] || {};
  const kisisel = profil && r.burclar?.includes(profil.burc);
- const acikMi = acik === i;
+ const acikMi = acik.has(i);
  return (
  <div key={i} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, marginBottom: 10, borderLeft: `4px solid ${rR(r.risk)}`, overflow: "hidden" }}>
- <div style={{ padding: "14px 16px", cursor: "pointer" }} onClick={() => setAcik(acikMi ? null : i)}>
+ <div style={{ padding: "14px 16px", cursor: "pointer" }} onClick={() => setAcik(prev => { const y = new Set(prev); if (y.has(i)) y.delete(i); else y.add(i); return y; })}>
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
  <div style={{ flex: 1 }}>
  <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0, marginBottom: 2 }}>{r.kod} · {r.kat}</div>
