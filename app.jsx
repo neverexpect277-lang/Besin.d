@@ -3918,16 +3918,17 @@ const HAKKINDA = {
  mertebe: {
  ikon: "", renk: "#9B7B4F",
  baslik: "Mertebe Sistemi · Yasal Statü & Bilimsel Kaynaklar",
- ozet: "Gamification · Anonim · KVKK · Ahilik Geleneği",
+ ozet: "Oyunlaştırma · Anonim · KVKK · Ahilik Geleneği",
  items: [
-   { t: "Temel Statü", a: "Mertebe sistemi bir gamification (oyunlaştırma) katmanıdır. Tıbbi tavsiye, teşhis, tedavi veya reçete niteliği taşımaz. Kullanıcının uygulamayla etkileşimini görselleştiren bir liyakat göstergesidir." },
+   { t: "Temel Statü", a: "Mertebe sistemi bir oyunlaştırma katmanıdır. Tıbbi tavsiye, teşhis, tedavi veya reçete niteliği taşımaz. Kullanıcının uygulamayla etkileşimini görselleştiren bir liyakat göstergesidir." },
    { t: "Anonim Katılım & Yerel Veri", a: "Mertebe puanları, isim/lakap ve görev kayıtları yalnızca kullanıcının cihazında (localStorage) tutulur. Sunucuya, üçüncü tarafa veya geliştiriciye aktarılmaz. İsim girmek isteğe bağlıdır." },
    { t: "KVKK 6698 Sayılı Kanun", a: "Kişisel verilerin korunması mevzuatına tam uyum. Cihaz dışına veri çıkışı yoktur — bu nedenle veri sorumlusu / işleyen / aktarım hükümleri uygulanmaz." },
    { t: "Ahilik Geleneği (tarihsel kaynak)", a: "Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Osmanlı esnaf teşkilatı (Ahilik) ve saray idari yapısına dayanır. Türkiye'nin UNESCO Somut Olmayan Kültürel Miras listesinde 2020'de tescilli." },
    { t: "Manevi & Kültürel Boyut", a: "Şifa ayetleri, Esmâ-ül Hüsnâ reçeteleri, zikir ve Eşref Saati pratikleri kültürel-manevi bilgi notlarıdır; hiçbiri tıbbi tedavi yerine geçmez. Bu pratiklerin etkisi inanç ve manevi pratik bağlamındadır." },
    { t: "Anayasa 26-28 · AİHS Madde 10", a: "Bilgilendirme, eğitim ve kültürel pratik aktarımı düşünce-ifade özgürlüğü kapsamında anayasal ve AİHM içtihadıyla güvence altındadır." },
-   { t: "6502 Sayılı Tüketici Kanunu Madde 63", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
-   { t: "Lider Tablosu / Hekimbaşı Yorumları / Lobi Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun moderasyondan geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+   { t: "6502 Sayılı Tüketici Kanunu Madde 63 · TKHK", a: "Tüketicinin bilinçli karar verme hakkı; mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
+   { t: "Tüketici Gözlem Paylaşma Hakkı (Mahalle Haritası)", a: "Çarşıda/pazarda gözlenen raf yerleşimi, reklam yoğunluğu ve manipülasyon paylaşımı; 6502 Sayılı Kanun (bilinçli tüketim), Anayasa 26 (düşünce özgürlüğü), AİHS 10 (ifade), Türk Borçlar Kanunu 49 (haksız fiil dışı — gerçek gözlemin paylaşımı), AB Tüketici Hakları Direktifi 2011/83 ve OECD Tüketici Politikası Kılavuzu kapsamında korunmaktadır. Marka adı zikretmek değil, satış noktasındaki gerçek gözlemi paylaşmak yasal hakkımızdır." },
+   { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası / Geri Düşme — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
  ],
  },
  hizmetler: {
@@ -7291,10 +7292,10 @@ export default function App() {
        <div style={S.kB}>YAKINDA — TOPLULUK ÖZELLİKLERİ</div>
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 6, marginTop: 4 }}>
          {[
-           { ad: "Lider Tablosu", aciklama: "En çok puan toplayan kullanıcılar — aylık sıralama" },
+           { ad: "Liyakat Sıralaması", aciklama: "En çok puan toplayan kullanıcılar — aylık şeref defteri" },
            { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki kullanıcılar madde detayında yorum yazar, herkes okur" },
-           { ad: "Lobi Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri/markaları harita üzerinde işaretler" },
-           { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Osmanlı liyakat ilkesi" },
+           { ad: "Mahalle Haritası", aciklama: "Kethüda'lar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
+           { ad: "Liyakat Korumalı Geri Düşme", aciklama: "Uzun süre hareketsizlik veya reddedilen katkıda mertebe geriler — Ahilik liyakat ilkesi" },
          ].map((y, i, arr) => (
            <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
@@ -7307,7 +7308,7 @@ export default function App() {
        </div>
 
        <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14, color: C.soluk, fontSize: 10, lineHeight: 1.6, fontStyle: "italic" }}>
-         Mertebe sistemi bir gamification (oyunlaştırma) katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, lakap, görevler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar ve yasal statü için <b>Hakkında → Mertebe Sistemi</b> bölümüne bakabilirsin.
+         Mertebe sistemi bir oyunlaştırma katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, lakap, görevler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar ve yasal statü için <b>Hakkında → Mertebe Sistemi</b> bölümüne bakabilirsin.
        </div>
      </div>
    );
