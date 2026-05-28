@@ -63,3 +63,40 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+---
+
+## ÇALIŞMA KURALLARI
+
+### VARSAYIM YASAĞI
+- Belirsiz her şeyi ÖNCE sor, sonra yaz
+- Dosya yolu, versiyon, kütüphane net değilse → DUR, SOR
+- "Muhtemelen şunu istiyorsunuzdur" → YASAK
+
+### KOD YAZMADAN ÖNCE ONAY AL
+1. Ne yapacağını 3-5 madde listele
+2. Hangi dosyaları değiştireceğini söyle
+3. "Onaylıyor musunuz?" diye sor
+4. Onay gelmeden tek satır kod yazma
+
+### KÜÇÜK ADIMLAR
+- Tek seferde 1 iş yap
+- Her adımdan sonra dur, geri bildirim bekle
+- "Şimdi X'i de yapayım mı?" diye sor, yapma
+
+### MEVCUT KODU KORU
+- Görmediğin kodu silme veya değiştirme
+- Refactor talep edilmemişse yapma
+- Sadece istenen değişikliği yap
+
+### HATA YÖNETİMİ
+- Aynı hatayı 2 kez deneme
+- 2. denemede dur: "Bu çalışmıyor çünkü X. Alternatif: Y veya Z. Hangisini deneyelim?" de
+- Varsayım yapma — varsayım yasak
+
+### TOKEN TASARRUFU
+- "Tabii ki!", "Harika!", "Anladım, şimdi..." gibi dolgu cümleler yasak
+- Giriş cümlesi yazma, direkt kodu ver
+- Yorum satırı sadece karmaşık mantıkta yaz
+- Zaten var olan kodu tekrar gösterme, sadece değişen kısmı göster
+
