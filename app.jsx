@@ -6414,12 +6414,12 @@ export default function App() {
    );
  })()}
  {korkunUyari && (
-   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
-     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
-       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>PÎRİN SESİ</div>
-       <div style={{ color: C.cok, fontSize: 11, marginBottom: 12, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
-       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 18 }}>"{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 700 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla."</div>
-       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Hatırladım, kaçınacağım</button>
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
+       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
      </div>
    </div>
  )}
@@ -8158,12 +8158,12 @@ export default function App() {
    </div>
  )}
  {korkunUyari && (
-   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
-     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
-       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>PÎRİN SESİ</div>
-       <div style={{ color: C.cok, fontSize: 11, marginBottom: 12, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
-       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 18 }}>"{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 700 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla."</div>
-       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Hatırladım, kaçınacağım</button>
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
+       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
      </div>
    </div>
  )}
