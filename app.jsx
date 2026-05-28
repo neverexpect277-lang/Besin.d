@@ -6413,6 +6413,31 @@ export default function App() {
      </div>
    );
  })()}
+ {korkunUyari && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>PÎRİN SESİ</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 12, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 18 }}>"{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 700 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla."</div>
+       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Hatırladım, kaçınacağım</button>
+     </div>
+   </div>
+ )}
+ {mahcubiyetModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setMahcubiyetModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>MAHCUBİYET LENSİ</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 12 }}>{mahcubiyetModal.pir.ad} bir an yüzünü çevirdi.</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 18 }}>Bu hafta <b style={{ color: C.kirmizi }}>{mahcubiyetModal.sayim}</b> kez "kaçın" işareti olan ürün taradın. Mertebene yakışan tutum bu değil, {mahcubiyetModal.pir.hitap}.</div>
+       <button onClick={() => setMahcubiyetModal(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Anlaşıldı, kendimi toparlayacağım</button>
+     </div>
+   </div>
+ )}
+ {tekKelime && (
+   <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1380, pointerEvents: "none", background: "#00000020", backdropFilter: "blur(2px)", animation: "tekKelimeGel 0.4s ease-out" }}>
+     <div style={{ color: C.altin, fontSize: 42, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, letterSpacing: 2, textShadow: `0 0 20px ${C.altin}80` }}>{tekKelime}</div>
+   </div>
+ )}
  <style>{css}</style>
  </div>
  );
