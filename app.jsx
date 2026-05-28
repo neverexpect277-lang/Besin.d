@@ -5206,7 +5206,7 @@ export default function App() {
      const l = localStorage.getItem("bd_liyakat");
      if (l) return JSON.parse(l);
    } catch {}
-   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null };
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null };
  });
  const ASITANE_BASLANGIC = Date.UTC(2026, 0, 1);
  const ASITANE_GUNLUK_KATILIM = 4.7;
@@ -5427,6 +5427,47 @@ export default function App() {
    14: (pir, hit, gun) => `${pir.ad}: "${gun} gündür yokluğun var ${hit}. Yüzüm grileşti, mührüm tozlandı. Geri dön — kavuşalım."`,
    30: (pir, hit, gun) => `${pir.ad}: "${gun} gün... Belki de geri dönmeyeceksin sandım. Geldin — şükür. Yeniden başlayalım, ${hit}."`,
  };
+ const PIR_SIRLARI = {
+   aktar: [
+     { baslik: "BHA'nın İki Yüzü", metin: "BHA (E320), IARC tarafından Grup 2B 'muhtemel kanserojen' sınıfındadır. EFSA 2011 yeniden değerlendirmesi günlük alımı 0.5 mg/kg ile sınırladı.", kaynak: "EFSA Journal 2011;9(10):2392" },
+     { baslik: "BHT'nin Yumuşak Yasak'ı", metin: "BHT (E321) IARC Grup 3'te ('sınıflandırılamaz') ama EFSA 2012'de ADI'yı 0.25 mg/kg/gün'e indirdi — dolaylı sınırlama.", kaynak: "EFSA Journal 2012;10(3):2588" },
+     { baslik: "E471'in Saklı Kaynağı", metin: "E471, EFSA 2017'de güvenli bulundu; ancak kaynağı (hayvansal/bitkisel) etikette belirtilmek zorunda değildir — helal-vegan hassasiyeti için sır.", kaynak: "EFSA Journal 2017;15(11)" },
+     { baslik: "'Doğal' Kelimesinin Sınırı", metin: "6502 Sayılı Kanun · Reklam Kurulu, 'doğal' iddiasını sınırlar ama içeriği doğrudan denetlemez. Etiketin kelimesine değil, içeriğine bak.", kaynak: "6502 Md. 63 · Reklam Kurulu Yönetmeliği" },
+   ],
+   lokman: [
+     { baslik: "Marifetname'nin Sırrı", metin: "'Tokluk hastalık, açlık ise devânın başıdır.' — Erzurumlu İbrahim Hakkı'nın 1756'da yazdığı Marifetname'den.", kaynak: "Marifetname (1756)" },
+     { baslik: "İbn-i Sînâ'nın Reçetesi", metin: "'Yediğin vakit az ye; yedikten sonra dört-beş saat ara ver. Şifâ hazımdadır.' — El-Kanun fi't-Tıb.", kaynak: "İbn-i Sînâ, El-Kanun fi't-Tıb" },
+     { baslik: "Hâris bin Kelede'nin Sözü", metin: "'Mide hastalıkların yuvası, perhiz ise devânın başıdır.' Bu söz nebevi hadis değil; Sahavi'ye göre Arap hekîmi Hâris bin Kelede'ye aittir.", kaynak: "Sahavi'nin tahriç incelemesi" },
+     { baslik: "Dört Unsur, Dört Hılt", metin: "İnsan vücudu dört unsurdan (ateş, hava, su, toprak) ve dört hılttan (dem, balgam, safra, sevda) oluşur — Marifetname özetler.", kaynak: "Marifetname · Hıltlar Teorisi" },
+   ],
+   edviye: [
+     { baslik: "Aç Mikropların Sırrı", metin: "Günde 15g altında lif tüketen birey, bağırsaktaki yararlı bakterileri aç bırakır — mikrobiyom çeşitliliği dramatik azalır.", kaynak: "Mikrobiyota beslenme araştırmaları" },
+     { baslik: "Glisemik Yük > İndeks", metin: "Yalnız glisemik indeks değil, miktar (yük) önemlidir. Yüksek GL Tip 2 diyabet ve kalp hastalığı riskini birlikte artırır.", kaynak: "Beslenme bilimi standartları" },
+     { baslik: "SCFA Mucizesi", metin: "Bağırsak mikropları lifi metabolize edince Kısa Zincirli Yağ Asitleri (SCFA) oluşur — bağışıklık, metabolizma ve beyin için kritik.", kaynak: "Gut microbiome literature" },
+     { baslik: "Gut-Brain Hattı", metin: "Kronik stres kortizolü yükseltir, bağırsak geçirgenliğini artırır, mikrobiyomu bozar. Beyin ile bağırsak çift yönlü konuşur.", kaynak: "Gut-Brain Axis araştırmaları" },
+   ],
+   mizan: [
+     { baslik: "Hıltlar Teorisi'nin Aslı", metin: "Hipokrat ve Galen: dem (kan), balgam, safra, sevda — dört hılt. Dengesizlik hastalık, denge sağlık.", kaynak: "Hippokrates · Galen, De Temperamentis" },
+     { baslik: "İbn-i Sînâ'nın Genişletmesi", metin: "Mizaç sadece fizyolojik değil, psikolojik bir denge sistemidir. (Sosyal Araştırmalar Dergisi tahlili)", kaynak: "Sosyal Araştırmalar Dergisi makalesi" },
+     { baslik: "Zıtla Dengeleme", metin: "Hıltın özelliğine zıt gıda ile denge: dem (sıcak-nemli) için ekşi/soğuk; sevda (kuru-soğuk) için tatlı/sıcak.", kaynak: "Hıltlar Teorisi · İbn-i Sînâ" },
+     { baslik: "Dört Element, Dört Mizaç", metin: "Demevi (Hava), Balgami (Su), Safravi (Ateş), Sevdavi (Toprak) — dört element, dört mizaç. Galen sistematize etti.", kaynak: "Galen, De Temperamentis" },
+   ],
+ };
+ const GUNCEL_KALIPLARI = [
+   (pir, hit, d) => `${hit}, dün ${d.taramaSayisi} ürün taradın — ${d.kritik} tanesinde kritik bulgu vardı. Bugün de uyanık ol.`,
+   (pir, hit, d) => `${pir.ad}'in sözü: "Yola gireli ${d.muridYasi} gün oldu. Sebatın güzel, ${hit}."`,
+   (pir, hit, d) => `${hit}, sofra nöbetin ${d.hatm} gündür. ${d.hatm < 7 ? "Yedi günü gör, bir kandil yansın" : "Mührün canlı"}.`,
+   (pir, hit, d) => d.korkun ? `${pir.ad} hatırlatır: "Sen ${d.korkun}'tan korkuyordun. Dün ${d.taramaSayisi} ürüne göz attın — bu uyanıklık şifadır."` : `${pir.ad}'in günü: "Bugün niyetini sade tut, ${hit}."`,
+   (pir, hit, d) => `Bugün ${d.hicriAy} ayındayız. ${hit}, mevsim gıdası fıtrat gıdasıdır.`,
+   (pir, hit, d) => d.sefaat > 0 ? `${hit}, ${d.sefaat} canı uyarmışsın. Şifa zinciri sende büyür.` : `${hit}, henüz kimseyi uyarmadın. Yedi cana ulaşmak şefaattir.`,
+   (pir, hit, d) => `${pir.ad}: "Dünün geçti, bugünün yeni bir mühürdür. Bugünkü ilk lokmana dikkat et, ${hit}."`,
+   (pir, hit, d) => `${hit}, mertebene ${d.kalan > 0 ? `${d.kalan} adım kaldı` : "yetiştin — sebat hil'attir"}.`,
+   (pir, hit, d) => `${pir.ad}'in hikmeti: "Az yiyen az hastalanır. Bugünkü sofranı yarıya indirmeye çalış, ${hit}."`,
+   (pir, hit, d) => `${hit}, dün ${d.kritik > 0 ? `${d.kritik} kritik tespit ettin — bu farkındalık` : "kritik tespit yoktu — temiz bir gündü"}. Bugün de gözün açık olsun.`,
+   (pir, hit, d) => `${pir.ad}: "Etiketi okumayan, kendi bedenini okumayandır. ${hit}, gözlerin uyanık."`,
+   (pir, hit, d) => `${hit}, ${d.muridYasi} gündür müridimsin. Bir sözünü vereceksen, sofrana ver.`,
+   (pir, hit, d) => `${pir.ad}'in selâmı: "${d.hatm > 14 ? "Sebat-ı kerim sahibisin" : "Sebat, mührün gücüdür"}, ${hit}."`,
+ ];
  const mertebeBul = (puan) => {
    let son = MERTEBELER[0];
    for (const m of MERTEBELER) if (puan >= m.esik) son = m;
@@ -5463,6 +5504,58 @@ export default function App() {
  const [korkunModal, setKorkunModal] = useState(false);
  const [korkunUyari, setKorkunUyari] = useState(null);
  const [tekKelime, setTekKelime] = useState(null);
+ const [sirModal, setSirModal] = useState(null);
+ const [guncelModal, setGuncelModal] = useState(null);
+ const acilanSirIndex = () => {
+   const m = liyakat.mertebe || "sagirt";
+   const cozulenSayisi = ((liyakat.cozulenSualler || {})[m] || []).length;
+   if (m === "kalfa") return 1;
+   if (m === "kethuda") return 2;
+   if (m === "hekimbasi") return cozulenSayisi >= 3 ? 4 : 3;
+   return 0;
+ };
+ const sirAc = () => {
+   const hedef = acilanSirIndex();
+   const mevcut = (liyakat.acilanSirlar || {})[pir.k] || [];
+   if (mevcut.length >= hedef) return;
+   const yeniIdx = mevcut.length;
+   const sir = (PIR_SIRLARI[pir.k] || [])[yeniIdx];
+   if (!sir) return;
+   setLiyakat(o => {
+     const acilanSirlar = { ...(o.acilanSirlar || {}) };
+     acilanSirlar[pir.k] = [...mevcut, yeniIdx];
+     const yeni = { ...o, acilanSirlar };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "sir", metin: `${pir.ad} bir sır açtı: "${sir.baslik}"`, pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   setTimeout(() => setSirModal({ sir, sayi: yeniIdx + 1 }), 600);
+ };
+ useEffect(() => { sirAc(); }, [liyakat.mertebe, ((liyakat.cozulenSualler || {}).hekimbasi || []).length]);
+ useEffect(() => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonGuncel === bugun) return;
+   if (!liyakat.lakap) return;
+   const dunKayit = (gecmis || []).filter(g => g.zaman && (Date.now() - g.zaman) < 86400000 * 2 && (Date.now() - g.zaman) > 0);
+   const sonraki = sonrakiMertebe ? sonrakiMertebe(liyakat.puan) : null;
+   const veri = {
+     taramaSayisi: dunKayit.length,
+     kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
+     muridYasi: muridYasi(),
+     hatm: liyakat.gunlukSeri || 0,
+     korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+     hicriAy: hicriCevir(new Date()).ay,
+     sefaat: (liyakat.sefaatler || []).length,
+     kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
+   };
+   const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
+   const metin = sablon(pir, liyakat.lakap, veri);
+   const t = setTimeout(() => {
+     setGuncelModal({ metin });
+     setLiyakat(o => { const yeni = { ...o, sonGuncel: bugun, hatiralar: [...(o.hatiralar || []), { t: Date.now(), tip: "guncel", metin: `Pîr'in günceli: "${metin}"`, pir: pir.k }].slice(-100) }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }, 3500);
+   return () => clearTimeout(t);
+ }, [liyakat.lakap]);
  const [manifestoIdx, setManifestoIdx] = useState(() => Math.floor(Math.random() * MANIFESTOLAR.length));
  useEffect(() => {
    const it = setInterval(() => setManifestoIdx(i => (i + 1) % MANIFESTOLAR.length), 35000);
@@ -5711,6 +5804,8 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (sirModal) { setSirModal(null); return true; }
+   if (guncelModal) { setGuncelModal(null); return true; }
    if (yoklukModal) { setYoklukModal(null); return true; }
    if (korkunUyari) { setKorkunUyari(null); return true; }
    if (korkunModal) { setKorkunModal(false); return true; }
@@ -5731,7 +5826,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6493,6 +6588,29 @@ export default function App() {
  {tekKelime && (
    <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1380, pointerEvents: "none", background: "#00000020", backdropFilter: "blur(2px)", animation: "tekKelimeGel 0.4s ease-out" }}>
      <div style={{ color: C.altin, fontSize: 42, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, letterSpacing: 2, textShadow: `0 0 20px ${C.altin}80` }}>{tekKelime}</div>
+   </div>
+ )}
+ {guncelModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1310, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setGuncelModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 360, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GÜNCELİ</div>
+       <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
+       <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {sirModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}15, ${C.y})`, borderRadius: 18, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}30` }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
+       <div style={{ fontSize: 24, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>✦</div>
+       <div style={{ color: C.altin, fontSize: 16, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 20, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: C.altin, color: "#fff", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Sırrı Aldım</button>
+     </div>
    </div>
  )}
  <style>{css}</style>
@@ -7919,6 +8037,36 @@ export default function App() {
          </>
        )}
 
+       {(() => {
+         const acilan = (liyakat.acilanSirlar || {})[pir.k] || [];
+         const tum = PIR_SIRLARI[pir.k] || [];
+         if (acilan.length === 0) return null;
+         return (
+           <>
+             <div style={S.kB}>PÎR'İN SIRLARI · {acilan.length}/{tum.length} AÇILDI</div>
+             <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 10, marginBottom: 14 }}>
+               {acilan.map(idx => {
+                 const sir = tum[idx];
+                 if (!sir) return null;
+                 return (
+                   <div key={idx} style={{ background: `linear-gradient(135deg, ${C.altin}10, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 10, padding: 12, marginBottom: 6 }}>
+                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                       <span style={{ color: C.altin, fontSize: 14 }}>✦</span>
+                       <span style={{ color: C.altin, fontSize: 13, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{sir.baslik}</span>
+                     </div>
+                     <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6, marginBottom: 6 }}>{sir.metin}</div>
+                     <div style={{ color: C.cok, fontSize: 10, fontStyle: "italic" }}>— {sir.kaynak}</div>
+                   </div>
+                 );
+               })}
+               {acilan.length < tum.length && (
+                 <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 10, color: C.cok, fontSize: 11, textAlign: "center", fontStyle: "italic" }}>{tum.length - acilan.length} sır daha bekler — mertebeni yükselt</div>
+               )}
+             </div>
+           </>
+         );
+       })()}
+
        {(liyakat.hatiralar && liyakat.hatiralar.length > 0) && (
          <>
            <div style={S.kB}>PÎR'İN DEFTERİ · {liyakat.hatiralar.length} HATIRA</div>
@@ -8206,6 +8354,29 @@ export default function App() {
  {tekKelime && (
    <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1380, pointerEvents: "none", background: "#00000020", backdropFilter: "blur(2px)", animation: "tekKelimeGel 0.4s ease-out" }}>
      <div style={{ color: C.altin, fontSize: 42, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, letterSpacing: 2, textShadow: `0 0 20px ${C.altin}80` }}>{tekKelime}</div>
+   </div>
+ )}
+ {guncelModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1310, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setGuncelModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 360, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GÜNCELİ</div>
+       <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
+       <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {sirModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}15, ${C.y})`, borderRadius: 18, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}30` }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
+       <div style={{ fontSize: 24, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>✦</div>
+       <div style={{ color: C.altin, fontSize: 16, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 20, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: C.altin, color: "#fff", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Sırrı Aldım</button>
+     </div>
    </div>
  )}
  {korkunUyari && (
