@@ -67,12 +67,12 @@ const ayetSec = org => {
 /* ── MAKAMLAR ───────────────────────────────── */
 const MAKAMLAR = {
  "Rast": { organ: "Beyin · Kemik · Genel", etki: "Neşe, zihin açıklığı, akıl sağlığı düzenleyici, ruh dengesi", vakit: "Sabah namazı sonrası", aletler: "Ney, Ud", renk: "#FFD700" },
- "Irak": { organ: "Beyin · Boğaz · Tiroid", etki: "Sakinleştirici, beyin hastalıkları, menenjit, nevrotik durumlar; boğaz ve tiroid sağlığı", vakit: "Kuşluk–İkindi", aletler: "Ney, Tanbur", renk: "#8B1538" },
- "İsfahan": { organ: "Sinir · Omuz · Boyun", etki: "Ateşli hastalıklara karşı koruma, hareket, güven, zihin açıklığı, uyum", vakit: "İkindi–Yatsı arası", aletler: "Ud, Kanun", renk: "#38BDF8" },
- "Zirefkend": { organ: "Sırt · Bel · İç Organlar", etki: "Kalp, akciğer, pankreas, böbrek ve dalak için iyileştirici; sırt, bel, boyun ağrılarına; uyku düzenleyici", vakit: "Uyku vakti", aletler: "Ney", renk: "#0EA5E9" },
- "Büzürk": { organ: "Kalp · Sırt · Omurga", etki: "Kalp gücü, omurga sağlığı, gücü yenileyici, vakar verici", vakit: "Akşam geç vakit", aletler: "Ud, Kanun", renk: "#B8860B" },
- "Zengule": { organ: "Bağırsak · Dalak · Sindirim", etki: "Sindirim sistemi düzenleyici, bağırsak florası, dalak", vakit: "Gün batımı sonrası", aletler: "Tanbur, Ney", renk: "#65A30D" },
- "Rehavi": { organ: "Baş · Burun · Mide", etki: "Baş ağrısı, burun kanaması, mide rahatsızlığı giderici", vakit: "Şafak ve İkindi", aletler: "Ney, Ud", renk: "#F472B6" },
+ "Irak": { organ: "Beyin · Sinir · Zihin", etki: "Konsantrasyon, sükûnet, korkuyu defetme; menenjit ve zihin/sinir hastalıkları için", vakit: "Sabah ve Öğleden sonra", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#8B1538" },
+ "İsfahan": { organ: "Sinir · Zihin · Üreme (Kadın)", etki: "Güven, hareket, uyum, zihin açıklığı; ateşli hastalıklar ve kadın hastalıkları için", vakit: "İkindi–Akşam", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#38BDF8" },
+ "Zirefkend": { organ: "Sırt · Bel · Eklem · Yüz", etki: "Neşe verici; sırt, kas ve eklem ağrılarına, yüz felcine iyi gelir", vakit: "Gece yarısından sonra", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#0EA5E9" },
+ "Büzürk": { organ: "Kalp · Ciğer · Zihin", etki: "Vesvese ve korkuyu def eder, zihni temizler; ateşli hastalıklar, ciğer ve kalp için", vakit: "Akşam geç vakit", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#B8860B" },
+ "Zengule": { organ: "Kalp", etki: "Kalp hastalıklarının devası", vakit: "Gün batımı sonrası", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#65A30D" },
+ "Rehavi": { organ: "Baş · Burun · Ağız", etki: "Baş ağrısı, burun kanaması, ağız çarpıklığı ve balgamdan gelen hastalıklar için", vakit: "Şafak ve İkindi", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#F472B6" },
  "Hüseyni": { organ: "İç Organlar · Bağırsak", etki: "Rahatlık, sükûnet, iç huzur; iç organları (özellikle bağırsak) düzenleyici", vakit: "Sabah erken", aletler: "Ney, Tanbur", renk: "#FF6B6B" },
  "Hicaz": { organ: "Ürogenital · Kemik · Göğüs", etki: "Çocuk hastalıkları, kemik sağlığı, böbrek, göğüs; alçakgönüllülük ve dua hissi", vakit: "Akşam", aletler: "Ud, Keman", renk: "#3B82F6" },
  "Nihavend": { organ: "Ruh · Sinir · Lenf", etki: "Genel sükûnet, melankoli giderici, sinir dengesi, kemik", vakit: "Gece — yatsı sonrası", aletler: "Ney, Tanbur", renk: "#6366F1" },
