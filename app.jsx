@@ -5578,11 +5578,11 @@ export default function App() {
    if (tarifModal) { setTarifModal(null); return true; }
    if (marketAcik) { setMarketAcik(false); return true; }
    if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
-   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"];
+   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"];
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","makam","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6568,40 +6568,6 @@ export default function App() {
  )}
 
  {/* MAKAM */}
- {sekme === "makam" && (
- <div>
- <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
- <div style={S.kB}>OSMANLI TIBBI: MAKAM ARŞİVİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
- <div style={S.ipucu}>Osmanlı darüşşifalarında kullanılan ses terapisi arşivi. Tıbbi tedavi değildir.</div>
- <div style={S.notUyari}>* Bu bölüm; Osmanlı darüşşifa geleneği ve geleneksel müzik terapisi birikimine dayanır. Modern bilimsel kanıt sınırlıdır.</div>
- {Object.entries(MAKAMLAR).map(([isim, m]) => (
- <div key={isim} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 13, padding: 16, marginBottom: 10, borderLeft: `4px solid ${m.renk}` }}>
- <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
- <div style={{ width: 38, height: 38, borderRadius: "50%", background: m.renk + "33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}></div>
- <div>
- <div style={{ color: C.metin, fontWeight: 700 }}>{isim} Makamı</div>
- <div style={{ color: m.renk, fontSize: 12 }}>{m.organ}</div>
- </div>
- <div style={{ marginLeft: "auto", color: m.renk, fontSize: 12, fontWeight: 700 }}>{m.frekans}</div>
- </div>
- <div style={{ color: C.soluk, fontSize: 13, marginBottom: 6 }}>{m.etki}</div>
- <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
- <span style={{ color: C.cok, fontSize: 11 }}> {m.vakit}</span>
- <span style={{ color: C.cok, fontSize: 11 }}> {m.aletler}</span>
- </div>
- </div>
- ))}
- {profil && MAKAMLAR[profil.makam] && (
- <div style={{ background: `linear-gradient(135deg,${MAKAMLAR[profil.makam].renk}20,${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 14, padding: 20, textAlign: "center", marginTop: 8 }}>
- <div style={S.kB}> SENİN ŞİFA MAKAMIN</div>
- <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 22, fontWeight: 700 }}>{profil.makam}</div>
- <div style={{ color: C.soluk, fontSize: 13, marginTop: 4 }}>{MAKAMLAR[profil.makam].etki}</div>
- <div style={{ color: C.cok, fontSize: 12, marginTop: 4 }}>{MAKAMLAR[profil.makam].frekans} · {MAKAMLAR[profil.makam].vakit}</div>
- </div>
- )}
- </div>
- )}
-
  {/* MARKET (Yakında) */}
  {sekme === "hizmetler" && (() => {
    const HIZ_GRUPLAR = [
@@ -6615,8 +6581,7 @@ export default function App() {
      {
        baslik: "TIBB-I NEBEVİ & GELENEKSEL",
        hizmetler: [
-         { k: "makam", baslik: "Makam", sembol: "♪", ozet: "Burcuna uygun şifa makamları, zikir-müzik reçetesi." },
-         { k: "asude", baslik: "Asude Frekans Modülü", sembol: "≈", ozet: "Osmanlı Darüşşifa protokolü: su sesi + makam ile akustik fıtrat uyumlaması." },
+         { k: "asude", baslik: "Asude Frekans Modülü", sembol: "≈", ozet: "Osmanlı Darüşşifa protokolü: su sesi + makam arşivi + akustik fıtrat uyumlaması." },
          { k: "esref", baslik: "Eşref Saatleri", sembol: "☉", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
          { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
          { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "🕌", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
@@ -7576,10 +7541,35 @@ export default function App() {
        </div>
      </div>
 
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 12, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 12, fontStyle: "italic" }}>Osmanlı darüşşifalarında her makam belirli bir organ ve mizaca eşlenirdi. Aşağıdaki arşiv tarihsel kaynaklara dayanır; modern bilimsel kanıt sınırlıdır.</div>
+       {Object.entries(MAKAMLAR).map(([isim, m]) => (
+         <div key={isim} style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${m.renk}` }}>
+           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+             <div style={{ flex: 1 }}>
+               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı</div>
+               <div style={{ color: m.renk, fontSize: 11 }}>{m.organ}</div>
+             </div>
+             <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.frekans}</div>
+           </div>
+           <div style={{ color: C.soluk, fontSize: 12, marginBottom: 4 }}>{m.etki}</div>
+           <div style={{ color: C.cok, fontSize: 10 }}>{m.vakit} · {m.aletler}</div>
+         </div>
+       ))}
+       {profil && MAKAMLAR[profil.makam] && (
+         <div style={{ background: `linear-gradient(135deg, ${MAKAMLAR[profil.makam].renk}20, ${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 10, padding: 14, marginTop: 8, textAlign: "center" }}>
+           <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN ŞİFA MAKAMIN</div>
+           <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 18, fontWeight: 700 }}>{profil.makam}</div>
+           <div style={{ color: C.soluk, fontSize: 12, marginTop: 2 }}>{MAKAMLAR[profil.makam].etki}</div>
+         </div>
+       )}
+     </div>
+
      <div style={{ background: C.y2, border: `1px dashed ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
-       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>YASAL ZIRH</div>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>HUKUKİ ÇERÇEVE & TIBBİ STATÜ</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
-         Bu özelliğe asla "Psikolojik Tedavi" demiyoruz. Sistemdeki adı: <b>"Biyolojik Ritim Regülasyonu"</b> veya <b>"Akustik Fıtrat Uyumlaması"</b>dır. Hiçbir mahkeme "su sesi dinletmeyi" suç sayamaz.
+         Bu modül; Anayasa 26-28 ifade özgürlüğü ve UNESCO Somut Olmayan Kültürel Miras (Osmanlı darüşşifa geleneği) kapsamında <b>"Akustik Fıtrat Uyumlaması"</b> ve <b>"Biyolojik Ritim Regülasyonu"</b> olarak tanımlanmıştır. Psikoterapi, teşhis, tedavi veya ilaç ikamesi değildir; kullanıcının kendi sükûnetine ulaşması için kültürel-akustik bir aktarımdır.
        </div>
      </div>
    </div>
