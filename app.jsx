@@ -5150,7 +5150,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -5233,10 +5233,21 @@ export default function App() {
    { k: "edviye", ad: "Pîr-i Edviye", uslup: "öğretici", hitap: "sâlikim", uzmanlik: "beslenme ve mizaç dengesi" },
    { k: "mizan", ad: "Pîr-i Mîzân", uslup: "temkinli", hitap: "yârenim", uzmanlik: "ölçü, denge ve hikmet" },
  ];
- const pirAta = (lakap) => {
-   const isim = (lakap || "tâlib").toLowerCase();
-   let h = 0; for (let i = 0; i < isim.length; i++) h = (h * 31 + isim.charCodeAt(i)) | 0;
+ const pirAta = (lakap, dogum) => {
+   const s = ((lakap || "tâlib") + "|" + (dogum || "")).toLowerCase();
+   let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
    return PIRLER[Math.abs(h) % PIRLER.length];
+ };
+ const AHD_ANAHTARLAR = {
+   "şeker": /şeker|glikoz|fruktoz|sukroz|maltodekstrin|şurup/i,
+   "renklendirici": /e10[0-9]|e11[0-9]|e12[0-9]|tartrazin|renklendirici/i,
+   "trans yağ": /hidrojene|trans yağ|margarin/i,
+   "palm yağı": /palm yağı|palmiye yağ/i,
+   "sodyum nitrit": /e250|nitrit|nitrat/i,
+   "katkı": /katkı|emülgatör|stabilizatör/i,
+   "BHA": /BHA|BHT|e320|e321/i,
+   "GDO": /GDO|glifosat|monsanto/i,
+   "BPA": /BPA|bisfenol|ftalat/i,
  };
  const SUALLER = {
    sagirt: [
@@ -5347,8 +5358,8 @@ export default function App() {
    if (k === "kethuda") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><polygon points="20,4 35,12 35,28 20,36 5,28 5,12" fill="none" stroke={r} strokeWidth="2"/><polygon points="20,10 30,15 30,25 20,30 10,25 10,15" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
    return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill={r + "15"} stroke={r} strokeWidth="2"/><path d="M20 6 L23 14 L31 14 L25 19 L28 27 L20 22 L12 27 L15 19 L9 14 L17 14 Z" fill={r}/></svg>);
  };
- const [pir, setPir] = useState(() => pirAta(""));
- useEffect(() => { setPir(pirAta(liyakat.lakap || "")); }, [liyakat.lakap]);
+ const [pir, setPir] = useState(() => pirAta("", ""));
+ useEffect(() => { setPir(pirAta(liyakat.lakap || "", profil?.dogum || "")); }, [liyakat.lakap, profil?.dogum]);
  const [selamModal, setSelamModal] = useState(null);
  const [ahdModal, setAhdModal] = useState(null);
  const [sualModal, setSualModal] = useState(null);
@@ -5423,10 +5434,11 @@ export default function App() {
      return yeni;
    });
  };
+ const haftaNo = (ts) => Math.floor((ts || Date.now()) / (7 * 86400000));
  const sualTetikle = () => {
-   const bugun = new Date().toDateString();
-   if (liyakat.sonSualTarih === bugun) return;
-   if (Math.random() > 0.25) return;
+   const buHafta = haftaNo();
+   if ((liyakat.sonSualHafta || 0) === buHafta) return;
+   if (Math.random() > 0.30) return;
    const mk = (liyakat.mertebe || "sagirt");
    const havuz = SUALLER[mk] || [];
    const cozulen = (liyakat.cozulenSualler || {})[mk] || [];
@@ -5434,17 +5446,57 @@ export default function App() {
    if (!kalan.length) return;
    const sec = kalan[Math.floor(Math.random() * kalan.length)];
    setSualModal({ mertebeK: mk, no: sec.i, sual: sec.s });
-   setLiyakat(o => { const yeni = { ...o, sonSualTarih: bugun }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   setLiyakat(o => { const yeni = { ...o, sonSualHafta: buHafta }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ };
+ const ahdCatlatKontrol = (sonuc, metinAna) => {
+   const ahdler = liyakat.ahdler || {};
+   if (!Object.keys(ahdler).length) return;
+   const taranan = (metinAna + " " + sonuc.map(r => (r.ad || "") + " " + (r.etki || "")).join(" ")).toLowerCase();
+   const yeniAhdler = { ...ahdler };
+   let degisti = false;
+   for (const [mk, ahd] of Object.entries(ahdler)) {
+     const ahdLow = (ahd.metin || "").toLowerCase();
+     for (const [k, regex] of Object.entries(AHD_ANAHTARLAR)) {
+       if (ahdLow.includes(k.toLowerCase()) && regex.test(taranan)) {
+         const sonCatlak = ahd.sonCatlakTarih || 0;
+         if (Date.now() - sonCatlak > 6 * 3600000) {
+           yeniAhdler[mk] = { ...ahd, catlak: (ahd.catlak || 0) + 1, sonCatlakTarih: Date.now() };
+           degisti = true;
+           break;
+         }
+       }
+     }
+   }
+   if (degisti) setLiyakat(o => { const yeni = { ...o, ahdler: yeniAhdler }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ };
+ const mertebeDusur = (mevcutK) => {
+   const idx = MERTEBELER.findIndex(m => m.k === mevcutK);
+   if (idx <= 0) return null;
+   const alt = MERTEBELER[idx - 1];
+   setLiyakat(o => { const yeni = { ...o, mertebe: alt.k, mahcubiyetHaftalari: [], dustuMertebe: { tarih: Date.now(), eski: mevcutK } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   return alt;
  };
  const mahcubiyetKontrol = (sonuc) => {
    const mk = liyakat.mertebe || "sagirt";
    if (mk === "sagirt" || mk === "kalfa") return;
-   const haftaBas = Math.floor(Date.now() / (7 * 86400000));
+   const buHafta = haftaNo();
    const onceki = liyakat.kacinHaftalik || { hafta: 0, sayim: 0 };
-   const yeniSayim = onceki.hafta === haftaBas ? onceki.sayim + 1 : 1;
-   setLiyakat(o => { const yeni = { ...o, kacinHaftalik: { hafta: haftaBas, sayim: yeniSayim } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
-   if (yeniSayim === 10 || yeniSayim === 20) {
-     setMahcubiyetModal({ sayim: yeniSayim, pir });
+   const yeniSayim = onceki.hafta === buHafta ? onceki.sayim + 1 : 1;
+   let mahHaftalar = liyakat.mahcubiyetHaftalari || [];
+   if (yeniSayim === 10) {
+     if (!mahHaftalar.includes(buHafta)) mahHaftalar = [...mahHaftalar, buHafta].slice(-6);
+     setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk });
+   } else if (yeniSayim === 20) {
+     setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk });
+   }
+   const sonUcHafta = [buHafta, buHafta - 1, buHafta - 2];
+   const ucArtArda = sonUcHafta.every(h => mahHaftalar.includes(h));
+   const sonBesHafta = [buHafta, buHafta - 1, buHafta - 2, buHafta - 3, buHafta - 4];
+   const besArtArda = sonBesHafta.every(h => mahHaftalar.includes(h));
+   setLiyakat(o => { const yeni = { ...o, kacinHaftalik: { hafta: buHafta, sayim: yeniSayim }, mahcubiyetHaftalari: mahHaftalar }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (besArtArda) {
+     const alt = mertebeDusur(mk);
+     if (alt) setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk, dustu: alt });
    }
  };
  const hediyeAl = () => {
@@ -5660,6 +5712,7 @@ export default function App() {
    try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
    puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
    if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
+   ahdCatlatKontrol(sonuc, metin);
    setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
  setEkran("sonuc");
@@ -7528,12 +7581,16 @@ export default function App() {
          <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr seni bu isimle anar. Profil ve paylaşımlarda görünür.</div>
        </div>
 
-       <div style={{ background: arkaplan, border: `1.5px solid ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30` : "none", transition: "all .6s" }}>
-         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
-         <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{mevcut.ad}</div>
-         <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{mevcut.anlam}</div>
-         <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
-         <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginTop: 10 }}>{liyakat.puan} liyakat puanı</div>
+       <div style={{ background: arkaplan, border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none" }}>
+         {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
+         {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
+         {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
+         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: mevcut.k === "hekimbasi" ? "muhurNefes 4.5s ease-in-out infinite" : "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
+         <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative", zIndex: 1, textShadow: mevcut.k === "hekimbasi" ? `0 0 18px ${mevcut.renk}40` : "none" }}>{mevcut.ad}</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic", position: "relative", zIndex: 1 }}>{mevcut.anlam}</div>
+         <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1, position: "relative", zIndex: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
+         {cozulenSualS === toplamSualS && toplamSualS > 0 && mevcut.k === "hekimbasi" && <div style={{ color: mevcut.renk, fontSize: 11, fontWeight: 700, marginTop: 6, letterSpacing: 1.5, position: "relative", zIndex: 1 }}>HÂCİM · ÜÇ SIRRI ÇÖZEN</div>}
+         <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginTop: 10, position: "relative", zIndex: 1 }}>{liyakat.puan} liyakat puanı</div>
        </div>
 
        <div style={{ background: `linear-gradient(135deg, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 12 }}>
