@@ -100,3 +100,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Yorum satırı sadece karmaşık mantıkta yaz
 - Zaten var olan kodu tekrar gösterme, sadece değişen kısmı göster
 
+### CLAUDE CODE KOMUTLARI (Yasin Arsal reels)
+
+- **ULTRATHINK**: Prompt sonuna eklenince derin düşünme moduna geçer
+- **/compact**: Uzun sohbeti sıkıştırır, token tasarrufu
+- **/model opusplan**: Plan modunda Opus 4.6, normal işte Sonnet 4.6
+
