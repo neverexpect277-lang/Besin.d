@@ -66,18 +66,18 @@ const ayetSec = org => {
 
 /* ── MAKAMLAR ───────────────────────────────── */
 const MAKAMLAR = {
- "Rast": { organ: "Beyin · Kemik · Genel", etki: "Neşe, zihin açıklığı, akıl sağlığı düzenleyici, ruh dengesi", vakit: "Sabah namazı sonrası", frekans: "432 Hz", aletler: "Ney, Ud", renk: "#FFD700" },
- "Irak": { organ: "Beyin · Boğaz · Tiroid", etki: "Sakinleştirici, beyin hastalıkları, menenjit, nevrotik durumlar; boğaz ve tiroid sağlığı", vakit: "Kuşluk–İkindi", frekans: "285 Hz", aletler: "Ney, Tanbur", renk: "#8B1538" },
- "İsfahan": { organ: "Sinir · Omuz · Boyun", etki: "Ateşli hastalıklara karşı koruma, hareket, güven, zihin açıklığı, uyum", vakit: "İkindi–Yatsı arası", frekans: "396 Hz", aletler: "Ud, Kanun", renk: "#38BDF8" },
- "Zirefkend": { organ: "Sırt · Bel · İç Organlar", etki: "Kalp, akciğer, pankreas, böbrek ve dalak için iyileştirici; sırt, bel, boyun ağrılarına; uyku düzenleyici", vakit: "Uyku vakti", frekans: "174 Hz", aletler: "Ney", renk: "#0EA5E9" },
- "Büzürk": { organ: "Kalp · Sırt · Omurga", etki: "Kalp gücü, omurga sağlığı, gücü yenileyici, vakar verici", vakit: "Gündüz", frekans: "528 Hz", aletler: "Ud, Kanun", renk: "#B8860B" },
- "Zengule": { organ: "Bağırsak · Dalak · Sindirim", etki: "Sindirim sistemi düzenleyici, bağırsak florası, dalak", vakit: "İkindi", frekans: "417 Hz", aletler: "Tanbur, Ney", renk: "#65A30D" },
- "Rehavi": { organ: "Baş · Burun · Mide", etki: "Baş ağrısı, burun kanaması, mide rahatsızlığı giderici", vakit: "Şafak ve İkindi", frekans: "639 Hz", aletler: "Ney, Ud", renk: "#F472B6" },
- "Hüseyni": { organ: "İç Organlar · Bağırsak", etki: "Rahatlık, sükûnet, iç huzur; iç organları (özellikle bağırsak) düzenleyici", vakit: "Sabah erken", frekans: "396 Hz", aletler: "Ney, Tanbur", renk: "#FF6B6B" },
- "Hicaz": { organ: "Ürogenital · Kemik · Göğüs", etki: "Çocuk hastalıkları, kemik sağlığı, böbrek, göğüs; alçakgönüllülük ve dua hissi", vakit: "Akşam", frekans: "639 Hz", aletler: "Ud, Keman", renk: "#3B82F6" },
- "Nihavend": { organ: "Ruh · Sinir · Lenf", etki: "Genel sükûnet, melankoli giderici, sinir dengesi, kemik", vakit: "Gece — yatsı sonrası", frekans: "174 Hz", aletler: "Ney, Tanbur", renk: "#6366F1" },
- "Neva": { organ: "Bağırsak · Dolaşım · Bacak", etki: "Sindirim, dolaşım, hava-su dengesi, bacak", vakit: "Öğle vakti", frekans: "417 Hz", aletler: "Ney, Keman", renk: "#84CC16" },
- "Uşşak": { organ: "Lenf · Ayak · Bağışıklık", etki: "Bağışıklık, lenf düzeni, ayak sağlığı, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", frekans: "528 Hz", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
+ "Rast": { organ: "Beyin · Kemik · Genel", etki: "Neşe, zihin açıklığı, akıl sağlığı düzenleyici, ruh dengesi", vakit: "Sabah namazı sonrası", aletler: "Ney, Ud", renk: "#FFD700" },
+ "Irak": { organ: "Beyin · Boğaz · Tiroid", etki: "Sakinleştirici, beyin hastalıkları, menenjit, nevrotik durumlar; boğaz ve tiroid sağlığı", vakit: "Kuşluk–İkindi", aletler: "Ney, Tanbur", renk: "#8B1538" },
+ "İsfahan": { organ: "Sinir · Omuz · Boyun", etki: "Ateşli hastalıklara karşı koruma, hareket, güven, zihin açıklığı, uyum", vakit: "İkindi–Yatsı arası", aletler: "Ud, Kanun", renk: "#38BDF8" },
+ "Zirefkend": { organ: "Sırt · Bel · İç Organlar", etki: "Kalp, akciğer, pankreas, böbrek ve dalak için iyileştirici; sırt, bel, boyun ağrılarına; uyku düzenleyici", vakit: "Uyku vakti", aletler: "Ney", renk: "#0EA5E9" },
+ "Büzürk": { organ: "Kalp · Sırt · Omurga", etki: "Kalp gücü, omurga sağlığı, gücü yenileyici, vakar verici", vakit: "Akşam geç vakit", aletler: "Ud, Kanun", renk: "#B8860B" },
+ "Zengule": { organ: "Bağırsak · Dalak · Sindirim", etki: "Sindirim sistemi düzenleyici, bağırsak florası, dalak", vakit: "Gün batımı sonrası", aletler: "Tanbur, Ney", renk: "#65A30D" },
+ "Rehavi": { organ: "Baş · Burun · Mide", etki: "Baş ağrısı, burun kanaması, mide rahatsızlığı giderici", vakit: "Şafak ve İkindi", aletler: "Ney, Ud", renk: "#F472B6" },
+ "Hüseyni": { organ: "İç Organlar · Bağırsak", etki: "Rahatlık, sükûnet, iç huzur; iç organları (özellikle bağırsak) düzenleyici", vakit: "Sabah erken", aletler: "Ney, Tanbur", renk: "#FF6B6B" },
+ "Hicaz": { organ: "Ürogenital · Kemik · Göğüs", etki: "Çocuk hastalıkları, kemik sağlığı, böbrek, göğüs; alçakgönüllülük ve dua hissi", vakit: "Akşam", aletler: "Ud, Keman", renk: "#3B82F6" },
+ "Nihavend": { organ: "Ruh · Sinir · Lenf", etki: "Genel sükûnet, melankoli giderici, sinir dengesi, kemik", vakit: "Gece — yatsı sonrası", aletler: "Ney, Tanbur", renk: "#6366F1" },
+ "Neva": { organ: "Bağırsak · Dolaşım · Bacak", etki: "Sindirim, dolaşım, hava-su dengesi, bacak", vakit: "Öğle vakti", aletler: "Ney, Keman", renk: "#84CC16" },
+ "Uşşak": { organ: "Lenf · Ayak · Bağışıklık", etki: "Bağışıklık, lenf düzeni, ayak sağlığı, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
 };
 
 /* ── EŞREF SAATLERİ ─────────────────────────── */
@@ -3941,7 +3941,7 @@ const HAKKINDA = {
    { t: "Mahcubiyet Lensi (Öz-Farkındalık Uyarısı)", a: "Yüksek mertebede iken haftada 10/20 kez 'kaçın' işaretli ürün taranırsa pîrden yumuşak bir uyarı modali çıkar. Kullanıcının kendi davranışıyla beyan ettiği mertebe arasındaki tutarsızlığı sessizce gösterir; ceza, puan kaybı veya engellemesi yoktur. Bilişsel-davranışsal terapideki 'self-monitoring' tekniğinin sembolik karşılığıdır." },
    { t: "Şefaat Hattı (Paylaşım Sayacı)", a: "Kullanıcının madde sonucunu paylaşma sayısı; her paylaşım bir 'can' olarak sayılır. Sayaç tamamen yerel ve istatistikseldir; karşı taraf bilgisi tutulmaz. Anayasa 26-28 (ifade), AİHS 10 (bilgi yayma özgürlüğü) ve 6502 Sayılı Kanun (bilinçli tüketim aktarımı) kapsamında korunan paylaşım hakkıdır." },
    { t: "Selâm / Yâd / Hediye Bildirimleri", a: "Oturum açılışında, taramadan sonra veya rastgele aralıklarla pîrden ayet/hadis/hikmet sözleri sunulur. Hiçbiri bireye yönelik tıbbi tavsiye veya dini fetva değildir; kamuya açık dini-edebî kaynakların kültürel aktarımıdır. Kullanıcı isterse modal'ı geri buton ile kapatabilir; sıklığı rastgeledir, baskıcı değildir." },
-   { t: "Mensubiyet Tescili (Sıra Numarası)", a: "Kullanıcının uygulamayı ilk açtığı zaman damgasından deterministik olarak hesaplanan, değişmeyen sıra numarası. Sunucu kaydı, gerçek üyelik listesi veya kanıtlanmış sıralama değildir; uygulamanın varsayılan başlangıç tarihinden geçen süreye orantılı sembolik bir göstergedir. Cihaz başına benzersizdir, başka cihaza taşınmaz. Hicri tarih dönüşümü Kuwaiti Algorithm (Astronomy & Astrophysics 1994) ile yapılır." },
+   { t: "Mensubiyet Tescili (Sıra Numarası)", a: "Kullanıcının uygulamayı ilk açtığı zaman damgasından deterministik olarak hesaplanan, değişmeyen sıra numarası. Sunucu kaydı, gerçek üyelik listesi veya kanıtlanmış sıralama değildir; uygulamanın varsayılan başlangıç tarihinden geçen süreye orantılı sembolik bir göstergedir. Cihaz başına benzersizdir, başka cihaza taşınmaz. Hicri tarih dönüşümü Tabular Islamic Calendar (Microsoft MEPD 'Kuwaiti Algorithm' uygulaması — akademik kaynak: Rob van Gent, Utrecht University) ile yapılır." },
    { t: "Vakar Evrimi (Görsel Ölçek Değişimi)", a: "Mertebe yükseldikçe profil sayfasındaki yazı puntosu, mühür boyutu ve görsel ağırlık artar. İçerik değişmez; yalnız görsel hiyerarşi farklılaşır. Erişilebilirlik (WCAG 2.1 AA) bozulmaz, kontrast oranları korunur." },
    { t: "Hatm-i Nöbet (Günlük Giriş Sayacı)", a: "Üst üste kaç gün uygulamaya girildiğini izleyen yerel sayaç. Bir gün kaçırılırsa sıfırlanır. Sağlık verisi, konum verisi veya cihaz parmak izi içermez; yalnız local timestamp karşılaştırması yapar." },
    { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
@@ -5257,7 +5257,7 @@ export default function App() {
  };
  const SUALLER = {
    sagirt: [
-     { s: "Etiketteki E471 nedir?", sik: ["Doğal vitamin", "Mono-digliserit (emülgatör)", "Tatlandırıcı"], d: 1, ders: "E471: mono- ve digliseritler. Sığır, domuz veya bitkiden gelebilir; etikette kaynağı belirtilmesi zorunlu değildir. Helal hassasiyeti olan ihtiyatla yaklaşmalı." },
+     { s: "Etiketteki E471 nedir?", sik: ["Doğal vitamin", "Mono-digliserit (emülgatör)", "Tatlandırıcı"], d: 1, ders: "E471: mono- ve digliseritler — yağ asitlerinden üretilen emülgatör. EFSA 2017 yeniden değerlendirmesinde güvenlik kaygısı bulunmadı. Ancak kaynağı (hayvansal/bitkisel) etikette belirtilmek zorunda değil — helal hassasiyeti olanlar için bu nokta önemli." },
      { s: "'Helal' mührü her zaman güvenilir mi?", sik: ["Daima güvenilir", "Sertifika kuruluşuna göre değişir", "Tamamen sahtedir"], d: 1, ders: "Helal sertifikalarının denetim seviyesi kuruluşa göre değişir. Mühür içeriği okumayı bırakmanın bahanesi olmamalı; her zaman etiket okunmalı." },
      { s: "Glikoz şurubu hangi kaynaktan gelir?", sik: ["Bal", "GDO'lu mısır nişastası", "Şeker pancarı"], d: 1, ders: "Yüksek fruktozlu mısır şurubu (HFCS) GDO'lu mısır nişastasından üretilir. Karaciğer yağlanması ve insülin direnci ile ilişkilendirilmiştir (Lancet, 2010)." },
    ],
@@ -5296,13 +5296,11 @@ export default function App() {
  };
  const HEDIYELER = [
    { t: "ayet", k: "Şuarâ Sûresi 80", m: "Hastalandığım zaman bana O şifa verir." },
-   { t: "hadis", k: "Buhârî, Tıb 1", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
-   { t: "hikmet", k: "Lokmân Hekîm", m: "Mide eğer dolarsa, hikmet pınarı kurur." },
-   { t: "hikmet", k: "İbn-i Sînâ", m: "Hekim üç şeyle tedavi eder: söz, ot, neşter. En tesirlisi sözdür." },
+   { t: "hadis", k: "Buhârî, Tıb", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
+   { t: "hikmet", k: "İbn-i Sînâ", m: "Yediğin vakit az ye. Yedikten sonra dört-beş saat daha yeme. Şifâ hazımdadır." },
    { t: "ayet", k: "A'râf Sûresi 31", m: "Yiyiniz, içiniz, israf etmeyiniz; Allah israf edenleri sevmez." },
-   { t: "hadis", k: "Tirmizî, Tıb", m: "Mide hastalıkların yuvası, perhiz ise her şifanın başıdır." },
-   { t: "hikmet", k: "Akşemseddîn", m: "Her hastalığın bir tohumu vardır; o görünmez bir mikrobtur." },
-   { t: "hikmet", k: "Sabuncuoğlu Şerefeddîn", m: "Mevsim hangi ise, gıda da o mevsimden olmalıdır." },
+   { t: "hadis", k: "İbn Mâce, Tıb · 'el-mi'detü beytü'd-dâ'", m: "Mide hastalıkların yuvası, perhiz ise her şifanın başıdır." },
+   { t: "hikmet", k: "Akşemseddîn'e atfedilir", m: "Her hastalığın bir tohumu vardır; o görünmez bir mikrobtur." },
  ];
  const YAD_METINLER = [
    (pir, gun) => `${pir.ad} bugün seni andı, ${pir.hitap}.`,
@@ -6204,7 +6202,7 @@ export default function App() {
  )}
  {makamBilgi.etki && KATEGORILER[kategori].mizacGoster && (
  <div style={{ background: "#ffffff08", border: `1px solid ${makamBilgi.renk || C.s}40`, borderRadius: 10, padding: 12, marginTop: 10 }}>
- <div style={{ color: makamBilgi.renk || C.altin, fontSize: 11, fontWeight: 700, marginBottom: 4 }}> {r.makam} Makamı · {makamBilgi.frekans}</div>
+ <div style={{ color: makamBilgi.renk || C.altin, fontSize: 11, fontWeight: 700, marginBottom: 4 }}> {r.makam} Makamı</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{makamBilgi.etki}</div>
  <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}> {makamBilgi.vakit} · {makamBilgi.aletler}</div>
  </div>
@@ -6549,7 +6547,7 @@ export default function App() {
  <div style={{ background: C.y, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
  <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 12, fontWeight: 700, marginBottom: 6 }}> Şifa Makamın: {profil.makam}</div>
  <div style={{ color: C.soluk, fontSize: 13 }}>{MAKAMLAR[profil.makam].etki}</div>
- <div style={{ color: C.cok, fontSize: 11, marginTop: 6 }}>{MAKAMLAR[profil.makam].vakit} · {MAKAMLAR[profil.makam].frekans} · {MAKAMLAR[profil.makam].aletler}</div>
+ <div style={{ color: C.cok, fontSize: 11, marginTop: 6 }}>{MAKAMLAR[profil.makam].vakit} · {MAKAMLAR[profil.makam].aletler}</div>
  </div>
  )}
  <button style={S.hayaletBtn} onClick={() => setEkran("profil_kur")}> Profili Değiştir</button>
@@ -7557,7 +7555,7 @@ export default function App() {
                <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı</div>
                <div style={{ color: m.renk, fontSize: 11 }}>{m.organ}</div>
              </div>
-             <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.frekans}</div>
+             <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.vakit}</div>
            </div>
            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 4 }}>{m.etki}</div>
            <div style={{ color: C.cok, fontSize: 10 }}>{m.vakit} · {m.aletler}</div>
