@@ -5602,11 +5602,6 @@ export default function App() {
      return yeni;
    });
  };
- useEffect(() => { if (selamModal && liyakat.pirSesi) pirOku(selamModal.metin); }, [selamModal]);
- useEffect(() => { if (sirModal && liyakat.pirSesi) pirOku(`${sirModal.sir.baslik}. ${sirModal.sir.metin}`); }, [sirModal]);
- useEffect(() => { if (guncelModal && liyakat.pirSesi) pirOku(guncelModal.metin); }, [guncelModal]);
- useEffect(() => { if (korkunUyari && liyakat.pirSesi) pirOku(`${liyakat.lakap || korkunUyari.pir.hitap}, sen ${korkunUyari.korkun.ad} tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla.`); }, [korkunUyari]);
- useEffect(() => { if (yoklukModal && liyakat.pirSesi) pirOku(yoklukModal.metin); }, [yoklukModal]);
  const acilanSirIndex = () => {
    const m = liyakat.mertebe || "sagirt";
    const cozulenSayisi = ((liyakat.cozulenSualler || {})[m] || []).length;
@@ -5875,6 +5870,11 @@ export default function App() {
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni;
    });
  };
+ useEffect(() => { if (selamModal && liyakat.pirSesi) pirOku(selamModal.metin); }, [selamModal]);
+ useEffect(() => { if (sirModal && liyakat.pirSesi) pirOku(`${sirModal.sir.baslik}. ${sirModal.sir.metin}`); }, [sirModal]);
+ useEffect(() => { if (guncelModal && liyakat.pirSesi) pirOku(guncelModal.metin); }, [guncelModal]);
+ useEffect(() => { if (korkunUyari && liyakat.pirSesi) pirOku(`${liyakat.lakap || korkunUyari.pir.hitap}, sen ${korkunUyari.korkun.ad} tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla.`); }, [korkunUyari]);
+ useEffect(() => { if (yoklukModal && liyakat.pirSesi) pirOku(yoklukModal.metin); }, [yoklukModal]);
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
