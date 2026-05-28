@@ -5322,11 +5322,38 @@ export default function App() {
    const s = new Date().getHours();
    if (s < 6) return "gece"; if (s < 11) return "sabah"; if (s < 16) return "ogle"; if (s < 20) return "aksam"; return "gece";
  };
+ const SELAM_KALIPLAR = {
+   sabah: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı sabahlar.`,
+     (h) => `Sabahın hayır olsun ${h}, bereket soframıza yâr olsun.`,
+     (h) => `Selâm sana ${h}, gün aydınlık başlasın.`,
+     (h) => `Hayırlı sabahlar ${h}, bu gün de fıtrat üzere geçsin.`,
+     (h) => `Selâmün aleyküm ${h}, seherin nuru üzerinde olsun.`,
+   ],
+   ogle: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı vakitler.`,
+     (h) => `Selâm sana ${h}, sofranın bereketi daim olsun.`,
+     (h) => `Hayırlı vakitler ${h}, niyetin sahih olsun.`,
+     (h) => `Selâmün aleyküm ${h}, vaktin hayırla geçsin.`,
+   ],
+   aksam: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı akşamlar.`,
+     (h) => `Akşamın hayır olsun ${h}, sofranın helâl olsun.`,
+     (h) => `Selâm sana ${h}, gün batarken huzur seninle olsun.`,
+     (h) => `Hayırlı akşamlar ${h}, yorgunluğun şifaya dönsün.`,
+   ],
+   gece: [
+     (h) => `Selâmün aleyküm ${h}, geceniz hayır olsun.`,
+     (h) => `Selâm sana ${h}, uykun bereketli olsun.`,
+     (h) => `Hayırlı geceler ${h}, rüyalarına nur yağsın.`,
+     (h) => `Selâmün aleyküm ${h}, gece kalbine sükûn versin.`,
+   ],
+ };
  const selamHazirla = (lakap, pir) => {
    const v = vakitBul();
-   const hayirli = { sabah: "hayırlı sabahlar", ogle: "hayırlı vakitler", aksam: "hayırlı akşamlar", gece: "geceniz hayır olsun" }[v];
    const hit = lakap ? lakap : pir.hitap;
-   return `Selâmün aleyküm ${hit}, ${hayirli}.`;
+   const havuz = SELAM_KALIPLAR[v] || SELAM_KALIPLAR.ogle;
+   return havuz[Math.floor(Math.random() * havuz.length)](hit);
  };
  const mertebeBul = (puan) => {
    let son = MERTEBELER[0];
@@ -7848,13 +7875,13 @@ export default function App() {
    );
  })()}
  {selamModal && (
-   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSelamModal(null)}>
-     <div style={{ background: `linear-gradient(180deg, ${C.altin}18, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 360, width: "100%", border: `1.5px solid ${C.altin}50`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
-       {selamModal.yad && <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>YÂD</div>}
-       <div style={{ fontSize: 36, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>﷽</div>
-       <div style={{ color: C.metin, fontSize: 17, lineHeight: 1.6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 8 }}>{selamModal.metin}</div>
-       {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 18, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
-       <button onClick={() => setSelamModal(null)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>ve aleyküm selâm</button>
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSelamModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       {selamModal.yad && <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>YÂD</div>}
+       <div style={{ fontSize: 26, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.85 }}>﷽</div>
+       <div style={{ color: C.metin, fontSize: 16, lineHeight: 1.55, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 10 }}>{selamModal.metin}</div>
+       {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 20, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
+       <button onClick={() => setSelamModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Ve Aleyküm Selâm</button>
      </div>
    </div>
  )}
