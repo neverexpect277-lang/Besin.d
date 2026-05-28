@@ -5296,11 +5296,14 @@ export default function App() {
  };
  const HEDIYELER = [
    { t: "ayet", k: "Şuarâ Sûresi 80", m: "Hastalandığım zaman bana O şifa verir." },
-   { t: "hadis", k: "Buhârî, Tıb", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
-   { t: "hikmet", k: "İbn-i Sînâ", m: "Yediğin vakit az ye. Yedikten sonra dört-beş saat daha yeme. Şifâ hazımdadır." },
    { t: "ayet", k: "A'râf Sûresi 31", m: "Yiyiniz, içiniz, israf etmeyiniz; Allah israf edenleri sevmez." },
-   { t: "hadis", k: "İbn Mâce, Tıb · 'el-mi'detü beytü'd-dâ'", m: "Mide hastalıkların yuvası, perhiz ise her şifanın başıdır." },
-   { t: "hikmet", k: "Akşemseddîn'e atfedilir", m: "Her hastalığın bir tohumu vardır; o görünmez bir mikrobtur." },
+   { t: "ayet", k: "İsrâ Sûresi 82", m: "Biz Kur'an'dan mü'minler için şifa ve rahmet olan şeyler indiriyoruz." },
+   { t: "ayet", k: "Nahl Sûresi 69", m: "Onun karınlarından türlü renklerde şerbet çıkar; onda insanlar için şifa vardır." },
+   { t: "hadis", k: "Buhârî, Tıb 1 · Tirmizî, Tıb 2039 · İbn Mâce, Tıb 3436", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
+   { t: "hikmet", k: "Hâris bin Kelede (Arap hekîmi) · el-Muhâvere fi't-Tıb", m: "Mide hastalıkların yuvası, az yemek ise devânın başıdır." },
+   { t: "hikmet", k: "İbn-i Sînâ · El-Kanun fi't-Tıb", m: "Yediğin vakit az ye; yedikten sonra dört-beş saat ara ver. Şifâ hazımdadır." },
+   { t: "hikmet", k: "Akşemseddîn · Maddetü'l-Hayat (Süleymaniye Ktp., Ayasofya nr. 3574)", m: "Hastalıklar insandan insana, gözle görülmeyecek kadar küçük tohumlar vasıtasıyla geçer." },
+   { t: "hikmet", k: "Erzurumlu İbrahim Hakkı · Marifetname (1756)", m: "Tokluk hastalık, açlık ise devânın başıdır." },
  ];
  const YAD_METINLER = [
    (pir, gun) => `${pir.ad} bugün seni andı, ${pir.hitap}.`,
