@@ -5988,7 +5988,6 @@ export default function App() {
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni;
    });
  };
- useEffect(() => { if (selamModal && liyakat.pirSesi) pirOku(selamModal.metin); }, [selamModal]);
  useEffect(() => { if (sirModal && liyakat.pirSesi) pirOku(`${sirModal.sir.baslik}. ${sirModal.sir.metin}`); }, [sirModal]);
  useEffect(() => { if (guncelModal && liyakat.pirSesi) pirOku(guncelModal.metin); }, [guncelModal]);
  useEffect(() => { if (korkunUyari && liyakat.pirSesi) pirOku(`${liyakat.lakap || korkunUyari.pir.hitap}, sen ${korkunUyari.korkun.ad} tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla.`); }, [korkunUyari]);
@@ -8594,7 +8593,6 @@ export default function App() {
        <div style={{ color: C.metin, fontSize: 16, lineHeight: 1.55, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 10 }}>{selamModal.metin}</div>
        {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 20, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
        <button onClick={() => {
-         if (liyakat.pirSesi && selamModal && selamModal.metin) pirOku(selamModal.metin);
          setSelamModal(null);
          const bugun = new Date().toDateString();
          if (liyakat.sonGuncel !== bugun && liyakat.lakap && !selamModal.yad) {
