@@ -5156,7 +5156,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -5364,6 +5364,41 @@ export default function App() {
    "Kadim hekim, kadim sofradan doğar",
    "Sofranı koruyan, soyunu korur",
  ];
+ const zamanOgutSec = (pir, hit) => {
+   const s = new Date().getHours();
+   let havuz;
+   if (s >= 3 && s < 6) havuz = [
+     `Seherin sırrı kalbinin uyanıklığındadır, ${hit}.`,
+     `${pir.ad}: "Seher vakti dua perdesi incelir, kapı açıktır."`,
+     `${hit}, gece tükenmeden bir niyet kur — gün onunla başlasın.`,
+   ];
+   else if (s < 11) havuz = [
+     `Sabahın bereketi niyetin temizliğindedir, ${hit}.`,
+     `${pir.ad}: "Bugünkü ilk lokmana dikkat et — günün ona göre kurulur."`,
+     `${hit}, sabah uyanırken bir sofra duâsı et — bütün gün hayır olsun.`,
+   ];
+   else if (s < 16) havuz = [
+     `Yarım kalan mücadele tamamlanmamış sayılır, ${hit}. Sebat et.`,
+     `${pir.ad}: "Vakti israf et­meyen ömrü israf etmez."`,
+     `${hit}, öğle vakti küçük bir sus — sofranı düşün.`,
+   ];
+   else if (s < 19) havuz = [
+     `Akşam yaklaşıyor. Gözden geçir gününü ${hit} — hangi lokmaya şükür demedin?`,
+     `${pir.ad}: "İkindi vakti yaprak gibi dökülür hatalar, bir niyetle topla."`,
+     `${hit}, gün batmadan bir doğruyu yazıver.`,
+   ];
+   else if (s < 22) havuz = [
+     `Akşamın huzuru gündüzün niyetindedir, ${hit}. Vakar üzere yat.`,
+     `${pir.ad}: "Akşam sofrası bereket sofrasıdır; aceleyle dolma."`,
+     `${hit}, yatağa girerken bir tövbe et — gece arınır.`,
+   ];
+   else havuz = [
+     `Gecenin sırrı dilin susuşundadır, ${hit}. Dinle.`,
+     `${pir.ad}: "Gece yarısı her sözden değerlidir — sus, tefekkür et."`,
+     `${hit}, gecenin sessizliği şifadır. Pîrlerin sözünü hatırla.`,
+   ];
+   return havuz[Math.floor(Math.random() * havuz.length)];
+ };
  const hicriCevir = (d) => {
    const aylar = ["Muharrem","Safer","Rebîülevvel","Rebîülâhir","Cemâziyelevvel","Cemâziyelâhir","Receb","Şâban","Ramazân","Şevvâl","Zilkâde","Zilhicce"];
    const jd = Math.floor((d.getTime() / 86400000) + 2440587.5);
@@ -5629,6 +5664,45 @@ export default function App() {
      return yeni;
    });
  };
+ const [longPressOgut, setLongPressOgut] = useState(null);
+ const [paritiAcik, setParitiAcik] = useState(false);
+ const damgaSesi = () => {
+   if (!seslerAcik) return;
+   try {
+     const ac = new (window.AudioContext || window.webkitAudioContext)();
+     if (ac.state === "suspended") ac.resume().catch(()=>{});
+     const t0 = ac.currentTime;
+     const o = ac.createOscillator(); const g = ac.createGain();
+     o.type = "sine"; o.frequency.setValueAtTime(160, t0); o.frequency.exponentialRampToValueAtTime(55, t0 + 0.18);
+     g.gain.setValueAtTime(0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+     o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + 0.22);
+     const buf = ac.createBuffer(1, 4410, 44100);
+     const data = buf.getChannelData(0);
+     for (let i = 0; i < 4410; i++) data[i] = (Math.random() - 0.5) * (1 - i / 4410) * 0.4;
+     const src = ac.createBufferSource(); const ng = ac.createGain();
+     src.buffer = buf; ng.gain.value = 0.3; src.connect(ng).connect(ac.destination); src.start(t0);
+   } catch {}
+ };
+ const triggerTerfi = () => {
+   if (navigator.vibrate) navigator.vibrate([80, 40, 120, 60, 200]);
+   damgaSesi();
+   setParitiAcik(true);
+   setTimeout(() => setParitiAcik(false), 1700);
+ };
+ const longPressTimerRef = useRef(null);
+ const longPressBaslat = () => {
+   if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+   longPressTimerRef.current = setTimeout(() => {
+     if (navigator.vibrate) navigator.vibrate(30);
+     const metin = zamanOgutSec(pir, liyakat.lakap || pir.hitap);
+     setLongPressOgut({ metin });
+     hatiraEkle("ogut", `Pîr'in long-press öğüdü: "${metin}"`);
+     damgaSesi();
+   }, 2000);
+ };
+ const longPressBitir = () => {
+   if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
+ };
  const acilanSirIndex = () => {
    const m = liyakat.mertebe || "sagirt";
    const cozulenSayisi = ((liyakat.cozulenSualler || {})[m] || []).length;
@@ -5805,6 +5879,7 @@ export default function App() {
    });
    setAhdModal(null);
    setYeniMertebeBildirim(mertebeK);
+   triggerTerfi();
  };
  const sualCozuldu = (mertebeK, sualNo) => {
    setLiyakat(o => {
@@ -5902,6 +5977,7 @@ export default function App() {
  useEffect(() => { if (guncelModal && liyakat.pirSesi) pirOku(guncelModal.metin); }, [guncelModal]);
  useEffect(() => { if (korkunUyari && liyakat.pirSesi) pirOku(`${liyakat.lakap || korkunUyari.pir.hitap}, sen ${korkunUyari.korkun.ad} tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla.`); }, [korkunUyari]);
  useEffect(() => { if (yoklukModal && liyakat.pirSesi) pirOku(yoklukModal.metin); }, [yoklukModal]);
+ useEffect(() => { if (longPressOgut && liyakat.pirSesi) pirOku(longPressOgut.metin); }, [longPressOgut]);
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
@@ -5932,6 +6008,7 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (longPressOgut) { setLongPressOgut(null); return true; }
    if (erbainTamamlandiModal) { setErbainTamamlandiModal(false); return true; }
    if (sirModal) { setSirModal(null); return true; }
    if (guncelModal) { setGuncelModal(null); return true; }
@@ -5955,7 +6032,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6726,6 +6803,27 @@ export default function App() {
        <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
        <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
        <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {paritiAcik && (
+   <div style={{ position: "fixed", inset: 0, zIndex: 1395, pointerEvents: "none", overflow: "hidden" }}>
+     {Array.from({length: 28}, (_, i) => {
+       const x = Math.random() * 100;
+       const delay = Math.random() * 0.3;
+       const dur = 1 + Math.random() * 0.6;
+       const size = 5 + Math.random() * 6;
+       return <div key={i} style={{ position: "absolute", left: `${x}%`, top: "100%", width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle, ${C.altinA}, ${C.altin}80, transparent)`, boxShadow: `0 0 ${size}px ${C.altin}`, animation: `pariltiYagmur ${dur}s ${delay}s ease-out forwards` }} />;
+     })}
+   </div>
+ )}
+ {longPressOgut && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GİZLİ ÖĞÜDÜ</div>
+       <div style={{ fontSize: 20, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{longPressOgut.metin}</div>
+       <button onClick={() => setLongPressOgut(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Anladım</button>
      </div>
    </div>
  )}
@@ -8036,7 +8134,7 @@ export default function App() {
          {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
          {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
          {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
-         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite` }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
+         <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite`, cursor: "pointer", userSelect: "none", WebkitUserSelect: "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
          <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative", zIndex: 1, textShadow: mevcut.k === "hekimbasi" ? `0 0 18px ${mevcut.renk}40` : "none" }}>{mevcut.ad}</div>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic", position: "relative", zIndex: 1 }}>{mevcut.anlam}</div>
          <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1, position: "relative", zIndex: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
@@ -8595,6 +8693,27 @@ export default function App() {
        <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
        <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
        <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {paritiAcik && (
+   <div style={{ position: "fixed", inset: 0, zIndex: 1395, pointerEvents: "none", overflow: "hidden" }}>
+     {Array.from({length: 28}, (_, i) => {
+       const x = Math.random() * 100;
+       const delay = Math.random() * 0.3;
+       const dur = 1 + Math.random() * 0.6;
+       const size = 5 + Math.random() * 6;
+       return <div key={i} style={{ position: "absolute", left: `${x}%`, top: "100%", width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle, ${C.altinA}, ${C.altin}80, transparent)`, boxShadow: `0 0 ${size}px ${C.altin}`, animation: `pariltiYagmur ${dur}s ${delay}s ease-out forwards` }} />;
+     })}
+   </div>
+ )}
+ {longPressOgut && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GİZLİ ÖĞÜDÜ</div>
+       <div style={{ fontSize: 20, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{longPressOgut.metin}</div>
+       <button onClick={() => setLongPressOgut(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Anladım</button>
      </div>
    </div>
  )}
