@@ -6714,15 +6714,15 @@ export default function App() {
    </div>
  )}
  {sirModal && (
-   <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSirModal(null)}>
-     <div style={{ background: `linear-gradient(180deg, ${C.altin}15, ${C.y})`, borderRadius: 18, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}30` }} onClick={e => e.stopPropagation()}>
-       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
        <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
-       <div style={{ fontSize: 24, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>✦</div>
-       <div style={{ color: C.altin, fontSize: 16, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
-       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>{sirModal.sir.metin}</div>
-       <div style={{ color: C.cok, fontSize: 10, marginBottom: 20, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
-       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: C.altin, color: "#fff", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Sırrı Aldım</button>
+       <div style={{ fontSize: 20, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 10 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 22, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Sırrı Aldım</button>
      </div>
    </div>
  )}
@@ -8554,15 +8554,15 @@ export default function App() {
    </div>
  )}
  {sirModal && (
-   <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setSirModal(null)}>
-     <div style={{ background: `linear-gradient(180deg, ${C.altin}15, ${C.y})`, borderRadius: 18, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}30` }} onClick={e => e.stopPropagation()}>
-       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
        <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
-       <div style={{ fontSize: 24, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>✦</div>
-       <div style={{ color: C.altin, fontSize: 16, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
-       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>{sirModal.sir.metin}</div>
-       <div style={{ color: C.cok, fontSize: 10, marginBottom: 20, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
-       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: C.altin, color: "#fff", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Sırrı Aldım</button>
+       <div style={{ fontSize: 20, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 10 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 22, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Sırrı Aldım</button>
      </div>
    </div>
  )}
