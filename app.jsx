@@ -6270,10 +6270,11 @@ export default function App() {
    if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
    if (kritikSayi > 0 && Math.random() < 0.6) {
      const tumOrganlar = sonuc.flatMap(r => r.organlar || []);
-     const eslesenler = tumOrganlar.filter(o => ORGAN_KONUSMALARI[o]);
+     const kKeys = Object.keys(ORGAN_KONUSMALARI);
+     const eslesenler = tumOrganlar.map(o => ({ ham: o, anahtar: kKeys.find(k => o.includes(k)) })).filter(x => x.anahtar);
      if (eslesenler.length > 0) {
-       const o = eslesenler[Math.floor(Math.random() * eslesenler.length)];
-       setTimeout(() => setBedenKonusuyor({ organ: o, soz: ORGAN_KONUSMALARI[o] }), 1800);
+       const sec = eslesenler[Math.floor(Math.random() * eslesenler.length)];
+       setTimeout(() => setBedenKonusuyor({ organ: sec.anahtar, soz: ORGAN_KONUSMALARI[sec.anahtar] }), 1800);
      }
    }
    ahdCatlatKontrol(sonuc, metin);
