@@ -104,5 +104,5 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - **ULTRATHINK**: Prompt sonuna eklenince derin düşünme moduna geçer
 - **/compact**: Uzun sohbeti sıkıştırır, token tasarrufu
-- **/model opusplan**: Plan modunda Opus 4.8, normal işte Sonnet 4.6
+- **/model opusplan**: Plan modunda Opus 4.6, normal işte Sonnet 4.6
 
