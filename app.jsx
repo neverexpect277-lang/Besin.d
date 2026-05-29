@@ -8061,11 +8061,28 @@ export default function App() {
              <div style={{ color: C.cok, fontSize: 10 }}>içinde sıran</div>
            </div>
          </div>
-         <div onClick={pirSesiToggle} style={{ marginTop: 10, padding: "8px 12px", background: liyakat.pirSesi ? C.altin + "20" : C.y2, border: `1px solid ${liyakat.pirSesi ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
-           <span style={{ color: liyakat.pirSesi ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Pîr'in Sesi {liyakat.pirSesi ? "açık" : "kapalı"}</span>
-           <div style={{ width: 32, height: 18, background: liyakat.pirSesi ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
-             <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: liyakat.pirSesi ? 16 : 2, transition: "left .2s" }} />
+         <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
+           <div onClick={pirSesiToggle} style={{ flex: 1, padding: "8px 12px", background: liyakat.pirSesi ? C.altin + "20" : C.y2, border: `1px solid ${liyakat.pirSesi ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+             <span style={{ color: liyakat.pirSesi ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Pîr'in Sesi {liyakat.pirSesi ? "açık" : "kapalı"}</span>
+             <div style={{ width: 32, height: 18, background: liyakat.pirSesi ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
+               <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: liyakat.pirSesi ? 16 : 2, transition: "left .2s" }} />
+             </div>
            </div>
+           <button onClick={() => {
+             const hit = liyakat.lakap || pir.hitap;
+             const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
+             const veri = {
+               taramaSayisi: 0,
+               kritik: 0,
+               muridYasi: muridYasi(),
+               hatm: liyakat.gunlukSeri || 0,
+               korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+               hicriAy: hicriCevir(new Date()).ay,
+               sefaat: (liyakat.sefaatler || []).length,
+               kalan: 0,
+             };
+             setGuncelModal({ metin: sablon(pir, hit, veri) });
+           }} style={{ padding: "8px 14px", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 8, fontWeight: 600, fontSize: 12, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Dene</button>
          </div>
        </div>
        {liyakat.korkun && liyakat.korkun !== "yok" && (() => {
