@@ -5364,6 +5364,23 @@ export default function App() {
    "Kadim hekim, kadim sofradan doğar",
    "Sofranı koruyan, soyunu korur",
  ];
+ const ORGAN_KONUSMALARI = {
+   "Karaciğer": "der ki: bu yağı sindiremem, beni yorma.",
+   "Mide": "der ki: bu çok ağır, eritmeye gücüm yok.",
+   "Böbrek": "der ki: bu sodyum yükünü tek başıma süzemem.",
+   "Bağırsak": "der ki: bu katkıyı tanımıyorum, beni kaşır.",
+   "Kalp": "der ki: damarlarıma sıkıştırıyorsun, derdimi bil.",
+   "Beyin": "der ki: bu şekerin ardı kesilmiyor — benimle alay etme.",
+   "Sinir Sistemi": "der ki: bu tatlandırıcı beni delirtiyor.",
+   "Cilt": "der ki: içerideki iltihap bana çıkıyor, sebep sensin.",
+   "Akciğer": "der ki: bu nefes bana yetmiyor, temizini iste.",
+   "Pankreas": "der ki: insülin makinem yoruldu, rahat ver.",
+   "Tiroid": "der ki: hormonum sallanıyor, ben de sallanıyorum.",
+   "Damar": "der ki: çeperim sertleşiyor, sebep bu yağdır.",
+   "Kemikler": "der ki: kalsiyumumu çalıyorlar, dur engelle.",
+   "Bağışıklık": "der ki: ben senin ordunum, bana zehir yedirme.",
+   "Üreme": "der ki: gelecek nesil benden geçer, bunu unutma.",
+ };
  const zamanOgutSec = (pir, hit) => {
    const s = new Date().getHours();
    let havuz;
@@ -5670,6 +5687,7 @@ export default function App() {
    });
  };
  const [longPressOgut, setLongPressOgut] = useState(null);
+ const [bedenKonusuyor, setBedenKonusuyor] = useState(null);
  const [paritiAcik, setParitiAcik] = useState(false);
  const [serefKart, setSerefKart] = useState(null);
  const serefKartRef = useRef(null);
@@ -6067,6 +6085,7 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (bedenKonusuyor) { setBedenKonusuyor(null); return true; }
    if (serefKart) { setSerefKart(null); return true; }
    if (longPressOgut) { setLongPressOgut(null); return true; }
    if (erbainTamamlandiModal) { setErbainTamamlandiModal(false); return true; }
@@ -6092,7 +6111,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6249,6 +6268,14 @@ export default function App() {
    try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
    puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
    if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
+   if (kritikSayi > 0 && Math.random() < 0.6) {
+     const tumOrganlar = sonuc.flatMap(r => r.organlar || []);
+     const eslesenler = tumOrganlar.filter(o => ORGAN_KONUSMALARI[o]);
+     if (eslesenler.length > 0) {
+       const o = eslesenler[Math.floor(Math.random() * eslesenler.length)];
+       setTimeout(() => setBedenKonusuyor({ organ: o, soz: ORGAN_KONUSMALARI[o] }), 1800);
+     }
+   }
    ahdCatlatKontrol(sonuc, metin);
    if (kritikSayi > 0 && liyakat.korkun && liyakat.korkun !== "yok") {
      const k = KORKULAR.find(x => x.k === liyakat.korkun);
@@ -6908,6 +6935,17 @@ export default function App() {
      </div>
    );
  })()}
+ {bedenKonusuyor && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
+       <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 16, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
+     </div>
+   </div>
+ )}
  {longPressOgut && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
@@ -6972,8 +7010,43 @@ export default function App() {
  </div>
  </div>
 
- <div style={{ background: `linear-gradient(90deg,${C.altin}15,transparent)`, borderBottom: `1px solid ${C.altin}20`, padding: "6px 16px", color: C.altin, fontSize: 11 }}>
- {es.ikon} {es.saat} · <b>{es.organ}</b> vakti · {es.eylem}
+ <div style={{ background: `linear-gradient(90deg,${C.altin}15,transparent)`, borderBottom: `1px solid ${C.altin}20`, padding: "6px 16px", color: C.altin, fontSize: 11, display: "flex", alignItems: "center", gap: 10 }}>
+ <div style={{ flex: 1 }}>{es.ikon} {es.saat} · <b>{es.organ}</b> vakti · {es.eylem}</div>
+ {(() => {
+   const baslangic = new Date(); baslangic.setHours(0,0,0,0);
+   const bg = (gecmis || []).filter(g => g.zaman && g.zaman >= baslangic.getTime());
+   const t = bg.length;
+   const kr = bg.reduce((a,g) => a + (g.kritik || 0), 0);
+   const oran = t > 0 ? kr / Math.max(t, 1) : 0;
+   const egim = Math.max(-1, Math.min(1, oran * 2 - 0.3));
+   const renk = oran < 0.2 ? "#16A34A" : oran < 0.5 ? C.altin : C.kirmizi;
+   return (
+     <div title={`Bugün ${t} tarama · ${kr} kritik`} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+       <svg width="22" height="14" viewBox="0 0 22 14" style={{ overflow: "visible" }}>
+         <line x1="11" y1="2" x2="11" y2="6" stroke={renk} strokeWidth="1" />
+         <line x1="3" y1="6" x2="19" y2="6" stroke={renk} strokeWidth="1.2" strokeLinecap="round" transform={`rotate(${egim * 18} 11 6)`} />
+         <circle cx={3 + (1 - egim) * 0.5} cy={6 + Math.abs(egim) * 1.5} r="1.8" fill={renk} transform={`rotate(${egim * 18} 11 6)`} />
+         <circle cx={19 - (1 + egim) * 0.5} cy={6 + Math.abs(egim) * 1.5} r="1.8" fill={renk} transform={`rotate(${egim * 18} 11 6)`} />
+       </svg>
+       <span style={{ color: renk, fontSize: 10, fontWeight: 700 }}>{t}</span>
+     </div>
+   );
+ })()}
+ {profil && profil.dogum && (() => {
+   const dogum = new Date(profil.dogum).getTime();
+   const yas = (Date.now() - dogum) / (365.25 * 86400000);
+   const oran = Math.max(0, Math.min(1, yas / 80));
+   const erimisYukseklik = oran * 10;
+   return (
+     <div title={`Yaşın: ${Math.floor(yas)} · Ömrünün %${Math.round(oran*100)}`} style={{ display: "flex", alignItems: "center" }}>
+       <svg width="9" height="16" viewBox="0 0 9 16">
+         <rect x="2.5" y={1.5 + erimisYukseklik} width="4" height={12 - erimisYukseklik} fill={C.altin} opacity="0.85" rx="0.5" />
+         <ellipse cx="4.5" cy={1.5 + erimisYukseklik} rx="2.2" ry="0.6" fill={C.altinA} />
+         <path d={`M4.5 ${1.5 + erimisYukseklik - 0.5} Q5.2 ${0.5 + erimisYukseklik} 4.5 ${-0.5 + erimisYukseklik} Q3.8 ${0.5 + erimisYukseklik} 4.5 ${1.5 + erimisYukseklik - 0.5}`} fill="#FFA500" />
+       </svg>
+     </div>
+   );
+ })()}
  </div>
 
  <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","mertebe","hizmetler","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
@@ -8862,6 +8935,17 @@ export default function App() {
      </div>
    );
  })()}
+ {bedenKonusuyor && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
+       <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 16, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
+     </div>
+   </div>
+ )}
  {longPressOgut && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
