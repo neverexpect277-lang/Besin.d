@@ -5648,44 +5648,6 @@ export default function App() {
      return yeni;
    });
  };
- const PIR_SES_PARAMS = { aktar: {pitch:1.0,rate:0.95}, lokman: {pitch:1.05,rate:0.9}, edviye: {pitch:1.0,rate:1.0}, mizan: {pitch:0.95,rate:0.85} };
- const pirOku = (metin) => {
-   if (!liyakat.pirSesi) return;
-   if (typeof window === "undefined" || !window.speechSynthesis) return;
-   try {
-     window.speechSynthesis.cancel();
-     const u = new SpeechSynthesisUtterance(metin);
-     u.lang = "tr-TR";
-     const p = PIR_SES_PARAMS[pir.k] || { pitch: 1, rate: 1 };
-     u.pitch = p.pitch;
-     u.rate = p.rate;
-     const voices = window.speechSynthesis.getVoices();
-     const trVoices = voices.filter(v => v.lang === "tr-TR" || (v.lang && v.lang.startsWith("tr")));
-     const cinsiyet = (profil && profil.cinsiyet) || (typeof localStorage !== "undefined" ? localStorage.getItem("bd_cinsiyet") : null) || "Erkek";
-     const erkekRegex = /\b(cem|tolga|burak|mehmet|erkek|male|man)\b/i;
-     const kadinRegex = /\b(yelda|aylin|ayşe|seda|kadın|female|woman)\b/i;
-     const istenenRegex = cinsiyet === "Kadın" ? kadinRegex : erkekRegex;
-     const istenmeyen = cinsiyet === "Kadın" ? erkekRegex : kadinRegex;
-     let voice = trVoices.find(v => istenenRegex.test(v.name));
-     if (!voice) voice = trVoices.find(v => !istenmeyen.test(v.name));
-     if (!voice) voice = trVoices[0];
-     if (voice) u.voice = voice;
-     if (cinsiyet === "Erkek" && voice && istenmeyen.test(voice.name)) {
-       u.pitch = Math.max(0.55, p.pitch * 0.7);
-     } else if (cinsiyet === "Kadın" && voice && istenmeyen.test(voice.name)) {
-       u.pitch = Math.min(1.6, p.pitch * 1.3);
-     }
-     window.speechSynthesis.speak(u);
-   } catch {}
- };
- const pirSesiToggle = () => {
-   setLiyakat(o => {
-     const yeni = { ...o, pirSesi: !o.pirSesi };
-     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
-     if (!yeni.pirSesi && window.speechSynthesis) window.speechSynthesis.cancel();
-     return yeni;
-   });
- };
  const [longPressOgut, setLongPressOgut] = useState(null);
  const [bedenKonusuyor, setBedenKonusuyor] = useState(null);
  const [paritiAcik, setParitiAcik] = useState(false);
@@ -6050,11 +6012,6 @@ export default function App() {
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni;
    });
  };
- useEffect(() => { if (sirModal && liyakat.pirSesi) pirOku(`${sirModal.sir.baslik}. ${sirModal.sir.metin}`); }, [sirModal]);
- useEffect(() => { if (guncelModal && liyakat.pirSesi) pirOku(guncelModal.metin); }, [guncelModal]);
- useEffect(() => { if (korkunUyari && liyakat.pirSesi) pirOku(`${liyakat.lakap || korkunUyari.pir.hitap}, sen ${korkunUyari.korkun.ad} tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var. Hatırla.`); }, [korkunUyari]);
- useEffect(() => { if (yoklukModal && liyakat.pirSesi) pirOku(yoklukModal.metin); }, [yoklukModal]);
- useEffect(() => { if (longPressOgut && liyakat.pirSesi) pirOku(longPressOgut.metin); }, [longPressOgut]);
  const [saglikModalAcik, setSaglikModalAcik] = useState(false);
  const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
  const SAGLIK_KOSULLARI = [
@@ -6941,8 +6898,8 @@ export default function App() {
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
        <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
-       <div style={{ color: C.metin, fontSize: 16, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8 }}>{bedenKonusuyor.organ}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
        <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
      </div>
    </div>
@@ -8332,29 +8289,6 @@ export default function App() {
              <div style={{ color: C.cok, fontSize: 10 }}>içinde sıran</div>
            </div>
          </div>
-         <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
-           <div onClick={pirSesiToggle} style={{ flex: 1, padding: "8px 12px", background: liyakat.pirSesi ? C.altin + "20" : C.y2, border: `1px solid ${liyakat.pirSesi ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
-             <span style={{ color: liyakat.pirSesi ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Pîr'in Sesi {liyakat.pirSesi ? "açık" : "kapalı"}</span>
-             <div style={{ width: 32, height: 18, background: liyakat.pirSesi ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
-               <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: liyakat.pirSesi ? 16 : 2, transition: "left .2s" }} />
-             </div>
-           </div>
-           <button onClick={() => {
-             const hit = liyakat.lakap || pir.hitap;
-             const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
-             const veri = {
-               taramaSayisi: 0,
-               kritik: 0,
-               muridYasi: muridYasi(),
-               hatm: liyakat.gunlukSeri || 0,
-               korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
-               hicriAy: hicriCevir(new Date()).ay,
-               sefaat: (liyakat.sefaatler || []).length,
-               kalan: 0,
-             };
-             setGuncelModal({ metin: sablon(pir, hit, veri) });
-           }} style={{ padding: "8px 14px", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 8, fontWeight: 600, fontSize: 12, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Dene</button>
-         </div>
          <div onClick={parallaxAktif ? () => setParallaxAktif(false) : parallaxAc} style={{ marginTop: 8, padding: "7px 12px", background: parallaxAktif ? C.altin + "20" : C.y2, border: `1px solid ${parallaxAktif ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
            <div>
              <div style={{ color: parallaxAktif ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Eğim hassasiyeti {parallaxAktif ? "açık" : "kapalı"}</div>
@@ -8941,8 +8875,8 @@ export default function App() {
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
        <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
-       <div style={{ color: C.metin, fontSize: 16, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8 }}>{bedenKonusuyor.organ}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
        <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
      </div>
    </div>
