@@ -5532,6 +5532,25 @@ export default function App() {
    setLiyakat(o => { const yeni = { ...o, kazanilanRozetler: [...(o.kazanilanRozetler || []), rozet] }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
    puanEkle(puan, rozet);
  };
+ const CountUp = ({ value, duration = 700 }) => {
+   const [v, setV] = useState(0);
+   useEffect(() => {
+     if (typeof value !== "number") { setV(0); return; }
+     const start = Date.now();
+     let raf;
+     const tick = () => {
+       const e = Date.now() - start;
+       const p = Math.min(e / duration, 1);
+       const eased = 1 - Math.pow(1 - p, 3);
+       setV(Math.floor(value * eased));
+       if (p < 1) raf = requestAnimationFrame(tick);
+       else setV(value);
+     };
+     raf = requestAnimationFrame(tick);
+     return () => cancelAnimationFrame(raf);
+   }, [value]);
+   return v.toLocaleString("tr-TR");
+ };
  const Muhur = ({ k, boyut = 28 }) => {
    const m = MERTEBELER.find(x => x.k === k) || MERTEBELER[0];
    const r = m.renk;
@@ -8005,11 +8024,11 @@ export default function App() {
          <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr seni bu isimle anar. Profil ve paylaşımlarda görünür.</div>
        </div>
 
-       <div style={{ background: arkaplan, border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none" }}>
+       <div style={{ background: `${arkaplan}, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0 Q60 20 40 40 Q20 60 40 80 M0 40 Q20 20 40 40 Q60 60 80 40 M20 0 Q40 20 20 40 Q0 60 20 80 M60 0 Q80 20 60 40 Q40 60 60 80' stroke='%23B8862F' stroke-width='0.4' fill='none' opacity='0.5'/%3E%3Ccircle cx='40' cy='40' r='2' fill='%23B8862F' opacity='0.3'/%3E%3C/svg%3E")`, backgroundBlendMode: "normal", backgroundSize: "auto, 80px 80px", border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none" }}>
          {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
          {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
          {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
-         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: mevcut.k === "hekimbasi" ? "muhurNefes 4.5s ease-in-out infinite" : "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
+         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite` }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
          <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative", zIndex: 1, textShadow: mevcut.k === "hekimbasi" ? `0 0 18px ${mevcut.renk}40` : "none" }}>{mevcut.ad}</div>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic", position: "relative", zIndex: 1 }}>{mevcut.anlam}</div>
          <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1, position: "relative", zIndex: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
@@ -8028,17 +8047,17 @@ export default function App() {
          </div>
          <div style={{ display: "flex", gap: 10, padding: "8px 0 0", borderTop: `1px solid ${C.s}` }}>
            <div style={{ flex: 1, textAlign: "center" }}>
-             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{muridYasi()}</div>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={muridYasi()} /></div>
              <div style={{ color: C.cok, fontSize: 10 }}>gündür müridisin</div>
            </div>
            <div style={{ width: 1, background: C.s }} />
            <div style={{ flex: 1, textAlign: "center" }}>
-             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{pirMuridSayisi(pir.k).toLocaleString("tr-TR")}</div>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={pirMuridSayisi(pir.k)} duration={1100} /></div>
              <div style={{ color: C.cok, fontSize: 10 }}>toplam müridi</div>
            </div>
            <div style={{ width: 1, background: C.s }} />
            <div style={{ flex: 1, textAlign: "center" }}>
-             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>#{pirIcindeSiraNo()}</div>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>#<CountUp value={pirIcindeSiraNo()} duration={900} /></div>
              <div style={{ color: C.cok, fontSize: 10 }}>içinde sıran</div>
            </div>
          </div>
@@ -8065,7 +8084,7 @@ export default function App() {
        <div style={{ background: C.y2, border: `1px dashed ${C.altin}50`, borderRadius: 10, padding: 12, marginBottom: 14, textAlign: "center" }}>
          <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>MENSUBİYET TESCİLİ</div>
          <div style={{ color: C.metin, fontSize: 12, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>{hicri.gun} {hicri.ay} {hicri.yil}'de âsitânemize katıldın.</div>
-         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#{siraNoHesapla(liyakat.baslangic)}</b></div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#<CountUp value={siraNoHesapla(liyakat.baslangic)} duration={1100} /></b></div>
        </div>
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
@@ -8074,7 +8093,7 @@ export default function App() {
 
        <div style={{ background: `linear-gradient(135deg, ${C.altin}20, ${C.y2})`, border: `1px solid ${C.altin}50`, borderRadius: 12, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 14 }}>
          <div style={{ width: 50, height: 50, borderRadius: "50%", background: C.altin + "20", border: `1.5px solid ${C.altin}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{hatm}</span>
+           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}><CountUp value={hatm} /></span>
          </div>
          <div style={{ flex: 1 }}>
            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SOFRA NÖBETİ · HATM</div>
@@ -8182,17 +8201,29 @@ export default function App() {
                  const tamamGunler = liyakat.erbain.tamamGunler || [];
                  const buGunTamam = tamamGunler.includes(gun);
                  const gorev = ERBAIN_GOREVLERI[gun - 1] || "";
+                 const oran = tamamGunler.length / 40;
+                 const cevre = 2 * Math.PI * 32;
                  return (
                    <>
-                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                       <div>
-                         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>BUGÜN · GÜN {gun}/40</div>
-                         <div style={{ color: C.metin, fontSize: 13, fontWeight: 600, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{gorev}</div>
+                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+                       <div style={{ position: "relative", width: 76, height: 76, flexShrink: 0 }}>
+                         <svg width="76" height="76" style={{ transform: "rotate(-90deg)" }}>
+                           <circle cx="38" cy="38" r="32" stroke={C.s} strokeWidth="5" fill="none" />
+                           <circle cx="38" cy="38" r="32" stroke={C.altin} strokeWidth="5" fill="none" strokeDasharray={cevre} strokeDashoffset={cevre * (1 - oran)} strokeLinecap="round" style={{ transition: "stroke-dashoffset 1s ease-out", filter: `drop-shadow(0 0 4px ${C.altin}80)` }} />
+                         </svg>
+                         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                           <div style={{ color: C.altin, fontSize: 22, fontWeight: 700, lineHeight: 1 }}><CountUp value={tamamGunler.length} /></div>
+                           <div style={{ color: C.cok, fontSize: 9, marginTop: 1 }}>/ 40</div>
+                         </div>
                        </div>
-                       {!buGunTamam && (
-                         <button onClick={() => erbainGorevTamamla(gun)} style={{ background: C.altin, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Yaptım</button>
-                       )}
-                       {buGunTamam && <div style={{ color: "#16A34A", fontSize: 18 }}>✓</div>}
+                       <div style={{ flex: 1, minWidth: 0 }}>
+                         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>BUGÜN · GÜN {gun}/40</div>
+                         <div style={{ color: C.metin, fontSize: 13, fontWeight: 600, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.4 }}>{gorev}</div>
+                         {!buGunTamam && (
+                           <button onClick={() => erbainGorevTamamla(gun)} style={{ marginTop: 8, background: C.altin, color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>Yaptım</button>
+                         )}
+                         {buGunTamam && <div style={{ color: "#16A34A", fontSize: 14, fontWeight: 700, marginTop: 6 }}>✓ Bugünün görevi tamam</div>}
+                       </div>
                      </div>
                      <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 3, marginBottom: 8 }}>
                        {Array.from({length: 40}, (_, i) => {
