@@ -5645,14 +5645,19 @@ export default function App() {
      const voices = window.speechSynthesis.getVoices();
      const trVoices = voices.filter(v => v.lang === "tr-TR" || (v.lang && v.lang.startsWith("tr")));
      const cinsiyet = (profil && profil.cinsiyet) || (typeof localStorage !== "undefined" ? localStorage.getItem("bd_cinsiyet") : null) || "Erkek";
-     const erkekRegex = /tolga|cem|burak|deniz|mehmet|erkek|male/i;
-     const kadinRegex = /yelda|aylin|ayşe|seda|deniz|kadın|female/i;
+     const erkekRegex = /\b(cem|tolga|burak|mehmet|erkek|male|man)\b/i;
+     const kadinRegex = /\b(yelda|aylin|ayşe|seda|kadın|female|woman)\b/i;
      const istenenRegex = cinsiyet === "Kadın" ? kadinRegex : erkekRegex;
      const istenmeyen = cinsiyet === "Kadın" ? erkekRegex : kadinRegex;
      let voice = trVoices.find(v => istenenRegex.test(v.name));
      if (!voice) voice = trVoices.find(v => !istenmeyen.test(v.name));
      if (!voice) voice = trVoices[0];
      if (voice) u.voice = voice;
+     if (cinsiyet === "Erkek" && voice && istenmeyen.test(voice.name)) {
+       u.pitch = Math.max(0.55, p.pitch * 0.7);
+     } else if (cinsiyet === "Kadın" && voice && istenmeyen.test(voice.name)) {
+       u.pitch = Math.min(1.6, p.pitch * 1.3);
+     }
      window.speechSynthesis.speak(u);
    } catch {}
  };
@@ -5690,9 +5695,12 @@ export default function App() {
    setTimeout(() => setParitiAcik(false), 1700);
  };
  const longPressTimerRef = useRef(null);
- const longPressBaslat = () => {
-   if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+ const longPressStartRef = useRef(null);
+ const longPressBaslat = (e) => {
+   if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
+   longPressStartRef.current = { x: e.clientX || (e.touches && e.touches[0]?.clientX) || 0, y: e.clientY || (e.touches && e.touches[0]?.clientY) || 0 };
    longPressTimerRef.current = setTimeout(() => {
+     longPressTimerRef.current = null;
      if (navigator.vibrate) navigator.vibrate(30);
      const metin = zamanOgutSec(pir, liyakat.lakap || pir.hitap);
      setLongPressOgut({ metin });
@@ -5702,6 +5710,14 @@ export default function App() {
  };
  const longPressBitir = () => {
    if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
+ };
+ const longPressHareket = (e) => {
+   if (!longPressTimerRef.current || !longPressStartRef.current) return;
+   const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+   const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+   const dx = x - longPressStartRef.current.x;
+   const dy = y - longPressStartRef.current.y;
+   if (dx * dx + dy * dy > 100) longPressBitir();
  };
  const acilanSirIndex = () => {
    const m = liyakat.mertebe || "sagirt";
@@ -8134,7 +8150,7 @@ export default function App() {
          {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
          {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
          {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
-         <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onTouchMove={longPressBitir} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite`, cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "manipulation" }}><div style={{ pointerEvents: "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div></div>
+         <div onPointerDown={longPressBaslat} onPointerUp={longPressBitir} onPointerCancel={longPressBitir} onPointerLeave={longPressBitir} onPointerMove={longPressHareket} style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite`, cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "none" }}><div style={{ pointerEvents: "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div></div>
          <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative", zIndex: 1, textShadow: mevcut.k === "hekimbasi" ? `0 0 18px ${mevcut.renk}40` : "none" }}>{mevcut.ad}</div>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic", position: "relative", zIndex: 1 }}>{mevcut.anlam}</div>
          <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1, position: "relative", zIndex: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
@@ -8577,7 +8593,32 @@ export default function App() {
        <div style={{ fontSize: 26, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.85 }}>﷽</div>
        <div style={{ color: C.metin, fontSize: 16, lineHeight: 1.55, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 10 }}>{selamModal.metin}</div>
        {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 20, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
-       <button onClick={() => setSelamModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Ve Aleyküm Selâm</button>
+       <button onClick={() => {
+         if (liyakat.pirSesi && selamModal && selamModal.metin) pirOku(selamModal.metin);
+         setSelamModal(null);
+         const bugun = new Date().toDateString();
+         if (liyakat.sonGuncel !== bugun && liyakat.lakap && !selamModal.yad) {
+           setTimeout(() => {
+             const hit = liyakat.lakap;
+             const dunKayit = (gecmis || []).filter(g => g.zaman && (Date.now() - g.zaman) < 86400000 * 2 && (Date.now() - g.zaman) > 0);
+             const sonraki = sonrakiMertebe(liyakat.puan);
+             const veri = {
+               taramaSayisi: dunKayit.length,
+               kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
+               muridYasi: muridYasi(),
+               hatm: liyakat.gunlukSeri || 0,
+               korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+               hicriAy: hicriCevir(new Date()).ay,
+               sefaat: (liyakat.sefaatler || []).length,
+               kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
+             };
+             const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
+             const metin = sablon(pir, hit, veri);
+             setGuncelModal({ metin });
+             setLiyakat(o => { const yeni = { ...o, sonGuncel: bugun, hatiralar: [...(o.hatiralar || []), { t: Date.now(), tip: "guncel", metin: `Pîr'in günceli: "${metin}"`, pir: pir.k }].slice(-100) }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+           }, 700);
+         }
+       }} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Ve Aleyküm Selâm</button>
      </div>
    </div>
  )}
