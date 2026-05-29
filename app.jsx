@@ -5671,6 +5671,49 @@ export default function App() {
  };
  const [longPressOgut, setLongPressOgut] = useState(null);
  const [paritiAcik, setParitiAcik] = useState(false);
+ const [serefKart, setSerefKart] = useState(null);
+ const serefKartRef = useRef(null);
+ const [parallaxEgim, setParallaxEgim] = useState({ x: 0, y: 0 });
+ const [parallaxAktif, setParallaxAktif] = useState(false);
+ const parallaxAc = async () => {
+   try {
+     if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+       const izin = await DeviceOrientationEvent.requestPermission();
+       if (izin !== "granted") return;
+     }
+     setParallaxAktif(true);
+   } catch {}
+ };
+ useEffect(() => {
+   if (!parallaxAktif) return;
+   const h = (e) => {
+     const x = Math.max(-15, Math.min(15, (e.gamma || 0))) / 15;
+     const y = Math.max(-15, Math.min(15, (e.beta || 0) - 30)) / 15;
+     setParallaxEgim({ x, y });
+   };
+   window.addEventListener("deviceorientation", h);
+   return () => window.removeEventListener("deviceorientation", h);
+ }, [parallaxAktif]);
+ const serefKartIndir = async () => {
+   if (!serefKartRef.current) return;
+   try {
+     const canvas = await html2canvas(serefKartRef.current, { backgroundColor: null, scale: 2 });
+     canvas.toBlob(blob => {
+       if (!blob) return;
+       const url = URL.createObjectURL(blob);
+       const a = document.createElement("a");
+       a.href = url;
+       a.download = `seref-defteri-${(liyakat.lakap || "talib").replace(/\s/g, "-").toLowerCase()}.png`;
+       a.click();
+       setTimeout(() => URL.revokeObjectURL(url), 5000);
+       if (navigator.share) {
+         canvas.toBlob(async b2 => {
+           try { const file = new File([b2], "seref-defteri.png", { type: "image/png" }); await navigator.share({ files: [file], title: "Şeref Defteri" }); } catch {}
+         });
+       }
+     });
+   } catch {}
+ };
  const damgaSesi = () => {
    if (!seslerAcik) return;
    try {
@@ -5896,6 +5939,7 @@ export default function App() {
    setAhdModal(null);
    setYeniMertebeBildirim(mertebeK);
    triggerTerfi();
+   setTimeout(() => setSerefKart({ mertebeK }), 3500);
  };
  const sualCozuldu = (mertebeK, sualNo) => {
    setLiyakat(o => {
@@ -6023,6 +6067,7 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (serefKart) { setSerefKart(null); return true; }
    if (longPressOgut) { setLongPressOgut(null); return true; }
    if (erbainTamamlandiModal) { setErbainTamamlandiModal(false); return true; }
    if (sirModal) { setSirModal(null); return true; }
@@ -6047,7 +6092,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6832,6 +6877,37 @@ export default function App() {
      })}
    </div>
  )}
+ {serefKart && (() => {
+   const m = MERTEBELER.find(x => x.k === serefKart.mertebeK);
+   if (!m) return null;
+   const h = hicriCevir(new Date());
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1392, backdropFilter: "blur(6px)", padding: 16, overflowY: "auto" }} onClick={() => setSerefKart(null)}>
+       <div style={{ maxWidth: 360, width: "100%", margin: "20px 0" }} onClick={e => e.stopPropagation()}>
+         <div ref={serefKartRef} style={{ background: `linear-gradient(135deg, ${m.renk}20, #FFF8E1, ${m.renk}15)`, borderRadius: 18, padding: 28, border: `3px double ${m.renk}`, textAlign: "center", boxShadow: `0 8px 32px ${m.renk}30`, position: "relative" }}>
+           <div style={{ position: "absolute", top: 8, left: 8, right: 8, bottom: 8, border: `1px solid ${m.renk}50`, borderRadius: 14, pointerEvents: "none" }} />
+           <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 3, marginBottom: 10, position: "relative" }}>ŞEREF DEFTERİ</div>
+           <div style={{ fontSize: 28, color: m.renk, marginBottom: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative" }}>✦</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>İşbu tarihte</div>
+           <div style={{ color: m.renk, fontSize: 26, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 1, marginBottom: 4, position: "relative" }}>{liyakat.lakap || pir.hitap}</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>mertebesine erişti:</div>
+           <div style={{ display: "flex", justifyContent: "center", marginBottom: 8, position: "relative" }}><Muhur k={m.k} boyut={56} /></div>
+           <div style={{ color: m.renk, fontSize: 28, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, position: "relative" }}>{m.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic", position: "relative" }}>{m.anlam}</div>
+           <div style={{ marginTop: 18, paddingTop: 14, borderTop: `1px dashed ${m.renk}40`, position: "relative" }}>
+             <div style={{ color: C.metin, fontSize: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{h.gun} {h.ay} {h.yil}</div>
+             <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>Mensubiyet · #{siraNoHesapla(liyakat.baslangic)}</div>
+             <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 2, marginTop: 8 }}>· BESİN DEDEKTİFİ ·</div>
+           </div>
+         </div>
+         <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+           <button onClick={() => setSerefKart(null)} style={{ flex: 1, background: "transparent", color: "#fff", border: `1px solid #ffffff50`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Kapat</button>
+           <button onClick={serefKartIndir} style={{ flex: 2, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>İndir / Paylaş</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
  {longPressOgut && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
@@ -8157,7 +8233,7 @@ export default function App() {
          <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginTop: 10, position: "relative", zIndex: 1 }}>{liyakat.puan} liyakat puanı</div>
        </div>
 
-       <div style={{ background: `linear-gradient(135deg, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+       <div style={{ background: `linear-gradient(135deg, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 14, transform: parallaxAktif ? `perspective(1000px) rotateY(${parallaxEgim.x * 4}deg) rotateX(${-parallaxEgim.y * 4}deg)` : "none", transition: parallaxAktif ? "transform 0.15s ease-out" : "none", transformStyle: "preserve-3d" }}>
          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
            <div style={{ width: 48, height: 48, borderRadius: "50%", background: `radial-gradient(circle, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}, ${C.y2})`, border: `1.5px solid ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{pir.ad.charAt(4)}</div>
            <div style={{ flex: 1 }}>
@@ -8204,6 +8280,12 @@ export default function App() {
              };
              setGuncelModal({ metin: sablon(pir, hit, veri) });
            }} style={{ padding: "8px 14px", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 8, fontWeight: 600, fontSize: 12, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Dene</button>
+         </div>
+         <div onClick={parallaxAktif ? () => setParallaxAktif(false) : parallaxAc} style={{ marginTop: 8, padding: "7px 12px", background: parallaxAktif ? C.altin + "20" : C.y2, border: `1px solid ${parallaxAktif ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+           <span style={{ color: parallaxAktif ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Eğim hassasiyeti {parallaxAktif ? "açık" : "kapalı"}</span>
+           <div style={{ width: 32, height: 18, background: parallaxAktif ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
+             <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: parallaxAktif ? 16 : 2, transition: "left .2s" }} />
+           </div>
          </div>
        </div>
        {liyakat.korkun && liyakat.korkun !== "yok" && (() => {
@@ -8746,6 +8828,37 @@ export default function App() {
      })}
    </div>
  )}
+ {serefKart && (() => {
+   const m = MERTEBELER.find(x => x.k === serefKart.mertebeK);
+   if (!m) return null;
+   const h = hicriCevir(new Date());
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1392, backdropFilter: "blur(6px)", padding: 16, overflowY: "auto" }} onClick={() => setSerefKart(null)}>
+       <div style={{ maxWidth: 360, width: "100%", margin: "20px 0" }} onClick={e => e.stopPropagation()}>
+         <div ref={serefKartRef} style={{ background: `linear-gradient(135deg, ${m.renk}20, #FFF8E1, ${m.renk}15)`, borderRadius: 18, padding: 28, border: `3px double ${m.renk}`, textAlign: "center", boxShadow: `0 8px 32px ${m.renk}30`, position: "relative" }}>
+           <div style={{ position: "absolute", top: 8, left: 8, right: 8, bottom: 8, border: `1px solid ${m.renk}50`, borderRadius: 14, pointerEvents: "none" }} />
+           <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 3, marginBottom: 10, position: "relative" }}>ŞEREF DEFTERİ</div>
+           <div style={{ fontSize: 28, color: m.renk, marginBottom: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative" }}>✦</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>İşbu tarihte</div>
+           <div style={{ color: m.renk, fontSize: 26, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 1, marginBottom: 4, position: "relative" }}>{liyakat.lakap || pir.hitap}</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>mertebesine erişti:</div>
+           <div style={{ display: "flex", justifyContent: "center", marginBottom: 8, position: "relative" }}><Muhur k={m.k} boyut={56} /></div>
+           <div style={{ color: m.renk, fontSize: 28, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, position: "relative" }}>{m.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic", position: "relative" }}>{m.anlam}</div>
+           <div style={{ marginTop: 18, paddingTop: 14, borderTop: `1px dashed ${m.renk}40`, position: "relative" }}>
+             <div style={{ color: C.metin, fontSize: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{h.gun} {h.ay} {h.yil}</div>
+             <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>Mensubiyet · #{siraNoHesapla(liyakat.baslangic)}</div>
+             <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 2, marginTop: 8 }}>· BESİN DEDEKTİFİ ·</div>
+           </div>
+         </div>
+         <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+           <button onClick={() => setSerefKart(null)} style={{ flex: 1, background: "transparent", color: "#fff", border: `1px solid #ffffff50`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Kapat</button>
+           <button onClick={serefKartIndir} style={{ flex: 2, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>İndir / Paylaş</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
  {longPressOgut && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
