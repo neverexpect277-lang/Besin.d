@@ -5608,8 +5608,16 @@ export default function App() {
      u.pitch = p.pitch;
      u.rate = p.rate;
      const voices = window.speechSynthesis.getVoices();
-     const trVoice = voices.find(v => v.lang === "tr-TR") || voices.find(v => v.lang && v.lang.startsWith("tr"));
-     if (trVoice) u.voice = trVoice;
+     const trVoices = voices.filter(v => v.lang === "tr-TR" || (v.lang && v.lang.startsWith("tr")));
+     const cinsiyet = (profil && profil.cinsiyet) || (typeof localStorage !== "undefined" ? localStorage.getItem("bd_cinsiyet") : null) || "Erkek";
+     const erkekRegex = /tolga|cem|burak|deniz|mehmet|erkek|male/i;
+     const kadinRegex = /yelda|aylin|ayşe|seda|deniz|kadın|female/i;
+     const istenenRegex = cinsiyet === "Kadın" ? kadinRegex : erkekRegex;
+     const istenmeyen = cinsiyet === "Kadın" ? erkekRegex : kadinRegex;
+     let voice = trVoices.find(v => istenenRegex.test(v.name));
+     if (!voice) voice = trVoices.find(v => !istenmeyen.test(v.name));
+     if (!voice) voice = trVoices[0];
+     if (voice) u.voice = voice;
      window.speechSynthesis.speak(u);
    } catch {}
  };
