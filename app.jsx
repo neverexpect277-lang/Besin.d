@@ -5206,7 +5206,7 @@ export default function App() {
      const l = localStorage.getItem("bd_liyakat");
      if (l) return JSON.parse(l);
    } catch {}
-   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] };
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, niyet: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] };
  });
  const PK = {
    kart: { background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 },
@@ -5471,12 +5471,6 @@ export default function App() {
    const havuz = SELAM_KALIPLAR[v] || SELAM_KALIPLAR.ogle;
    return havuz[Math.floor(Math.random() * havuz.length)](hit);
  };
- const KORKULAR = [
-   { k: "kanser", ad: "Kanser", kw: /kanseroj|IARC.*(Grup|Group)?\s*[12]|nitrosamin|nitrit|nitrat|BHA|BHT|aspartam|akrilamid|benzen|formaldehit|asbest/i },
-   { k: "diyabet", ad: "Diyabet / Şeker Hastalığı", kw: /şeker|glikoz|fruktoz|sukroz|maltodekstrin|glisemik|HFCS|şurup|tatlandırıcı/i },
-   { k: "kalp", ad: "Kalp / Damar Hastalığı", kw: /trans yağ|palm yağ|palmiye|hidrojene|sodyum|aşırı tuz|kolesterol|doymuş yağ|margarin/i },
-   { k: "alzheimer", ad: "Alzheimer / Nörolojik", kw: /alüminyum|cıva|kurşun|MSG|E621|monosodyum|nörotoksik|ağır metal|kadmiyum|aspartam/i },
- ];
  const TEK_KELIMELER = ["Sabret.", "Şükret.", "Düşün.", "Tövbe.", "Tefekkür.", "Hatırla.", "Sus.", "Bekle.", "İhsan.", "Niyet."];
  const YOKLUK_METINLERI = {
    3: (pir, hit, gun) => `${pir.ad}: "${hit}, üç gündür yolu kestin — hayır mıdır? Sofranı kontrol etmedin."`,
@@ -5556,7 +5550,7 @@ export default function App() {
    (pir, hit, d) => `${hit}, dün ${d.taramaSayisi} ürün taradın — ${d.kritik} tanesinde kritik bulgu vardı. Bugün de uyanık ol.`,
    (pir, hit, d) => `${pir.ad}'in sözü: "Yola gireli ${d.muridYasi} gün oldu. Sebatın güzel, ${hit}."`,
    (pir, hit, d) => `${hit}, sofra nöbetin ${d.hatm} gündür. ${d.hatm < 7 ? "Yedi günü gör, bir kandil yansın" : "Mührün canlı"}.`,
-   (pir, hit, d) => d.korkun ? `${pir.ad} hatırlatır: "Sen ${d.korkun}'tan korkuyordun. Dün ${d.taramaSayisi} ürüne göz attın — bu uyanıklık şifadır."` : `${pir.ad}'in günü: "Bugün niyetini sade tut, ${hit}."`,
+   (pir, hit, d) => d.niyet ? `${pir.ad} hatırlatır: "${d.niyet} — bunun için buradasın. Dün ${d.taramaSayisi} ürüne göz attın, bu sebattır."` : `${pir.ad}'in günü: "Bugün niyetini sade tut, ${hit}."`,
    (pir, hit, d) => `Bugün ${d.hicriAy} ayındayız. ${hit}, mevsim gıdası fıtrat gıdasıdır.`,
    (pir, hit, d) => d.sefaat > 0 ? `${hit}, ${d.sefaat} canı uyarmışsın. Şifa zinciri sende büyür.` : `${hit}, henüz kimseyi uyarmadın. Yedi cana ulaşmak şefaattir.`,
    (pir, hit, d) => `${pir.ad}: "Dünün geçti, bugünün yeni bir mühürdür. Bugünkü ilk lokmana dikkat et, ${hit}."`,
@@ -5619,8 +5613,9 @@ export default function App() {
  const [pir, setPir] = useState(() => pirAta("", ""));
  useEffect(() => { setPir(pirAta(liyakat.lakap || "", profil?.dogum || "")); }, [liyakat.lakap, profil?.dogum]);
  const [yoklukModal, setYoklukModal] = useState(null);
- const [korkunModal, setKorkunModal] = useState(false);
- const [korkunUyari, setKorkunUyari] = useState(null);
+ const [niyetModal, setNiyetModal] = useState(false);
+ const [niyetUyari, setNiyetUyari] = useState(false);
+ const [niyetTaslak, setNiyetTaslak] = useState("");
  const [tekKelime, setTekKelime] = useState(null);
  const [sirModal, setSirModal] = useState(null);
  const [guncelModal, setGuncelModal] = useState(null);
@@ -5809,7 +5804,7 @@ export default function App() {
      kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
      muridYasi: muridYasi(),
      hatm: liyakat.gunlukSeri || 0,
-     korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+     niyet: liyakat.niyet || null,
      hicriAy: hicriCevir(new Date()).ay,
      sefaat: (liyakat.sefaatler || []).length,
      kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
@@ -5866,11 +5861,11 @@ export default function App() {
  }, []);
  useEffect(() => {
    if (sekme !== "mertebe") return;
-   if (liyakat.korkun) return;
+   if (liyakat.niyet) return;
    if (!liyakat.lakap) return;
-   const t = setTimeout(() => setKorkunModal(true), 800);
+   const t = setTimeout(() => setNiyetModal(true), 800);
    return () => clearTimeout(t);
- }, [sekme, liyakat.korkun, liyakat.lakap]);
+ }, [sekme, liyakat.niyet, liyakat.lakap]);
  useEffect(() => {
    const bugun = new Date().toDateString();
    if (liyakat.sonTekKelime === bugun) return;
@@ -6085,8 +6080,8 @@ export default function App() {
    if (sirModal) { setSirModal(null); return true; }
    if (guncelModal) { setGuncelModal(null); return true; }
    if (yoklukModal) { setYoklukModal(null); return true; }
-   if (korkunUyari) { setKorkunUyari(null); return true; }
-   if (korkunModal) { setKorkunModal(false); return true; }
+   if (niyetUyari) { setNiyetUyari(false); return true; }
+   if (niyetModal) { setNiyetModal(false); return true; }
    if (selamModal) { setSelamModal(null); return true; }
    if (ahdModal) { setAhdModal(null); return true; }
    if (sualModal) { setSualModal(null); return true; }
@@ -6104,7 +6099,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || niyetUyari || niyetModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6274,13 +6269,9 @@ export default function App() {
      }
    }
    ahdCatlatKontrol(sonuc, metin);
-   if (kritikSayi > 0 && liyakat.korkun && liyakat.korkun !== "yok") {
-     const k = KORKULAR.find(x => x.k === liyakat.korkun);
-     const taranan = (metin + " " + sonuc.map(r => (r.ad||"")+" "+(r.etki||"")+" "+(r.kat||"")).join(" "));
-     if (k && k.kw.test(taranan)) {
-       setKorkunUyari({ pir, korkun: k });
-       setTimeout(() => hatiraEkle("korkun", `Pîr seni uyardı: ${k.ad} korkunla eşleşen kritik madde tespit edildi.`), 200);
-     }
+   if (kritikSayi > 0 && liyakat.niyet) {
+     setNiyetUyari(true);
+     setTimeout(() => hatiraEkle("niyet", `Niyetini hatırladım: "${liyakat.niyet}" — kritik madde karşısında geri durdum.`), 200);
    }
    setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
@@ -6912,13 +6903,14 @@ export default function App() {
      </div>
    );
  })()}
- {korkunUyari && (
-   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
-     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+ {niyetUyari && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setNiyetUyari(false)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.altin}40`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
-       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
-       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
-       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
+       <div style={{ color: C.cok, fontSize: 10, letterSpacing: 2, marginBottom: 16, fontWeight: 700 }}>NİYETİN</div>
+       <div style={{ color: C.metin, fontSize: 18, lineHeight: 1.6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontStyle: "italic", marginBottom: 10 }}>"{liyakat.niyet}"</div>
+       <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.55, marginBottom: 22 }}>İşte bu yüzden bu ürünü geri koyuyorsun.</div>
+       <button onClick={() => setNiyetUyari(false)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Niyetimi Hatırladım</button>
      </div>
    </div>
  )}
@@ -8469,15 +8461,12 @@ export default function App() {
            </div>
          </div>
        </div>
-       {liyakat.korkun && liyakat.korkun !== "yok" && (() => {
-         const k = KORKULAR.find(x => x.k === liyakat.korkun);
-         if (!k) return null;
+       {liyakat.niyet && (() => {
          return (
-           <div style={{ background: `${C.kirmizi}10`, border: `1px solid ${C.kirmizi}40`, borderRadius: 10, padding: 10, marginBottom: 14, fontSize: 11 }}>
-             <span style={{ color: C.kirmizi, fontWeight: 700, letterSpacing: 0.5 }}>KORKUN · </span>
-             <span style={{ color: C.metin }}>{k.ad}</span>
-             <span style={{ color: C.cok, marginLeft: 8, fontStyle: "italic" }}>— pîr her uyarısında bunu gözünün önüne getirir.</span>
-             <button onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: null }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ background: "none", border: "none", color: C.soluk, fontSize: 10, cursor: "pointer", marginLeft: 8, textDecoration: "underline" }}>değiştir</button>
+           <div style={{ background: `${C.altin}10`, border: `1px solid ${C.altin}40`, borderRadius: 10, padding: "12px 12px", marginBottom: 14 }}>
+             <div style={{ color: C.altin, fontWeight: 700, letterSpacing: 1, fontSize: 10, marginBottom: 5 }}>NİYETİN</div>
+             <div style={{ color: C.metin, fontSize: 14, fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>"{liyakat.niyet}"</div>
+             <button onClick={() => { setNiyetTaslak(liyakat.niyet || ""); setNiyetModal(true); }} style={{ background: "none", border: "none", color: C.soluk, fontSize: 10, cursor: "pointer", marginTop: 6, textDecoration: "underline", padding: 0 }}>değiştir</button>
            </div>
          );
        })()}
@@ -8765,7 +8754,7 @@ export default function App() {
            <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 8, marginBottom: 14, maxHeight: 280, overflowY: "auto" }}>
              {[...(liyakat.hatiralar || [])].slice(-30).reverse().map((h, i) => {
                const tarih = new Date(h.t);
-               const ikon = { selam: "☼", yad: "✦", hediye: "❀", ahd: "✑", sual: "?", terfi: "✦", mahcubiyet: "!", yokluk: "—", korkun: "♥" }[h.tip] || "·";
+               const ikon = { selam: "☼", yad: "✦", hediye: "❀", ahd: "✑", sual: "?", terfi: "✦", mahcubiyet: "!", yokluk: "—", niyet: "♥" }[h.tip] || "·";
                const renk = { mahcubiyet: C.kirmizi, terfi: C.altin, ahd: "#B87333", yokluk: C.soluk }[h.tip] || C.altin;
                return (
                  <div key={i} style={{ display: "flex", gap: 10, padding: "8px 10px", borderBottom: i < Math.min(29, liyakat.hatiralar.length - 1) ? `1px solid ${C.s}` : "none" }}>
@@ -8952,7 +8941,7 @@ export default function App() {
                kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
                muridYasi: muridYasi(),
                hatm: liyakat.gunlukSeri || 0,
-               korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+               niyet: liyakat.niyet || null,
                hicriAy: hicriCevir(new Date()).ay,
                sefaat: (liyakat.sefaatler || []).length,
                kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
@@ -9054,16 +9043,16 @@ export default function App() {
      </div>
    </div>
  )}
- {korkunModal && (
+ {niyetModal && (
    <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1320, backdropFilter: "blur(6px)", padding: 20 }}>
      <div style={{ background: C.y, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}50`, textAlign: "center" }}>
        <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>PÎRİN SORUSU</div>
        <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
-       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 18, fontWeight: 600 }}>{liyakat.lakap || pir.hitap}, en çok hangi hastalıktan korkuyorsun? Bu sorunun cevabı her uyarımda gözümün önünde olacak.</div>
-       {KORKULAR.map(k => (
-         <button key={k.k} onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: k.k }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); hatiraEkle("korkun", `Pîr'e söyledim: '${k.ad}' korkum.`); setKorkunModal(false); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "12px", marginBottom: 6, color: C.metin, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>{k.ad}</button>
-       ))}
-       <button onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: "yok" }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); setKorkunModal(false); }} style={{ width: "100%", background: "none", border: "none", color: C.soluk, fontSize: 12, marginTop: 6, cursor: "pointer", fontFamily: "inherit", padding: "8px" }}>Şimdi söylemek istemiyorum</button>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 18, fontWeight: 600 }}>{liyakat.lakap || pir.hitap}, kimin yahut neyin için temiz besleniyorsun? Bu niyet, her uyarımda gözümün önünde olacak.</div>
+       <textarea value={niyetTaslak} onChange={e => setNiyetTaslak(e.target.value.slice(0, 90))} placeholder="Örn. Kızım büyürken yanında olabilmek için" rows={2} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "12px", color: C.metin, fontSize: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", resize: "none", marginBottom: 4 }} />
+       <div style={{ color: C.cok, fontSize: 10, textAlign: "right", marginBottom: 12 }}>{niyetTaslak.length}/90</div>
+       <button disabled={!niyetTaslak.trim()} onClick={() => { const n = niyetTaslak.trim(); setLiyakat(o => { const yeni = { ...o, niyet: n }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); hatiraEkle("niyet", `Pîr'e niyetimi açtım: "${n}"`); setNiyetModal(false); }} style={{ width: "100%", background: niyetTaslak.trim() ? C.altin : C.s, color: niyetTaslak.trim() ? C.bg : C.cok, border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 13, cursor: niyetTaslak.trim() ? "pointer" : "default", fontFamily: "inherit", letterSpacing: 0.3 }}>Niyetimi Mühürle</button>
+       <button onClick={() => setNiyetModal(false)} style={{ width: "100%", background: "none", border: "none", color: C.soluk, fontSize: 12, marginTop: 6, cursor: "pointer", fontFamily: "inherit", padding: "8px" }}>Şimdi değil</button>
      </div>
    </div>
  )}
@@ -9190,13 +9179,14 @@ export default function App() {
      </div>
    </div>
  )}
- {korkunUyari && (
-   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
-     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+ {niyetUyari && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setNiyetUyari(false)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.altin}40`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
-       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
-       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
-       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
+       <div style={{ color: C.cok, fontSize: 10, letterSpacing: 2, marginBottom: 16, fontWeight: 700 }}>NİYETİN</div>
+       <div style={{ color: C.metin, fontSize: 18, lineHeight: 1.6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontStyle: "italic", marginBottom: 10 }}>"{liyakat.niyet}"</div>
+       <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.55, marginBottom: 22 }}>İşte bu yüzden bu ürünü geri koyuyorsun.</div>
+       <button onClick={() => setNiyetUyari(false)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Niyetimi Hatırladım</button>
      </div>
    </div>
  )}
