@@ -6500,8 +6500,9 @@ export default function App() {
  <path d="M44 92 H76 L70 100 H50 Z" fill={`${C.altin}20`} stroke={C.altin} strokeWidth="1.5" />
  </g>
  </svg>
- <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, marginTop: 28, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.5, textAlign: "center" }}>Pîr maddeleri Mîzân'a koyuyor…</div>
- <div style={{ display: "flex", gap: 6, marginTop: 16 }}>
+ <div style={{ color: C.altin, fontSize: 24, fontWeight: 600, marginTop: 30, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.4, textAlign: "center", lineHeight: 1.3 }}>Pîr maddeleri Mîzân'a koyuyor</div>
+ <div style={{ color: C.soluk, fontSize: 14, marginTop: 8, fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.3 }}>her zerre tartılıyor…</div>
+ <div style={{ display: "flex", gap: 7, marginTop: 18 }}>
  {[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.altin, animation: `nabizNokta 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
  </div>
  </div>
@@ -6635,24 +6636,33 @@ export default function App() {
  const zararli = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
  const aci = Math.min(20, 4 + zararli * 1.6);
  const dengeRenk = zararli >= 6 ? C.kirmizi : zararli >= 3 ? C.turuncu : C.sari;
+ const temizSay = (gecmis || []).length;
+ const hkm = zararli >= 6
+   ? { bas: "Mîzân ağır bastı", alt: `Sağ kefe çöktü — ${sonuclar.length} zararlı yük tartıldı.` }
+   : zararli >= 3
+   ? { bas: "Terazi zararlıya meyletti", alt: `Sağ kefede ${sonuclar.length} madde — dikkat gerek.` }
+   : { bas: "Mîzân hafifçe eğildi", alt: `Sağ kefede ${sonuclar.length} madde — ihtiyatı elden bırakma.` };
  return (
- <div style={{ background: C.y, border: `1.5px solid ${dengeRenk}55`, borderRadius: 18, padding: "16px 14px 12px", marginBottom: 12, textAlign: "center", overflow: "hidden" }}>
- <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1.5, marginBottom: 4 }}>MÎZÂN · AMEL TERAZİSİ</div>
- <svg width="200" height="118" viewBox="0 0 200 118" style={{ maxWidth: "100%" }}>
- <path d="M82 100 H118 L110 112 H90 Z" fill={`${C.altin}18`} stroke={C.altin} strokeWidth="1.5" />
- <line x1="100" y1="30" x2="100" y2="100" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
- <circle cx="100" cy="12" r="5" fill={C.altin} />
- <line x1="100" y1="14" x2="100" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
- <g style={{ transformOrigin: "100px 30px", transform: `rotate(${aci}deg)`, animation: "mizanOtur 2.4s cubic-bezier(.3,1.4,.5,1) both", "--mizan-aci": `${aci}deg` }}>
- <line x1="30" y1="30" x2="170" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
- <line x1="30" y1="30" x2="30" y2="48" stroke={C.altin} strokeWidth="1" />
- <path d="M14 48 a16 9 0 0 0 32 0 Z" fill={`${C.yesil}22`} stroke={C.yesil} strokeWidth="1.5" />
- <line x1="170" y1="30" x2="170" y2="48" stroke={C.altin} strokeWidth="1" />
- <path d="M154 48 a16 9 0 0 0 32 0 Z" fill={`${dengeRenk}22`} stroke={dengeRenk} strokeWidth="1.5" />
+ <div style={{ background: `linear-gradient(180deg, ${C.y}, ${dengeRenk}08)`, border: `1.5px solid ${dengeRenk}55`, borderRadius: 18, padding: "16px 14px 14px", marginBottom: 12, textAlign: "center", overflow: "hidden" }}>
+ <div style={{ color: C.altin, fontSize: 11, fontWeight: 600, letterSpacing: 3, marginBottom: 6, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>MÎZÂN · AMEL TERAZİSİ</div>
+ <svg width="220" height="132" viewBox="0 0 220 132" style={{ maxWidth: "100%" }}>
+ <path d="M92 104 H128 L120 116 H100 Z" fill={`${C.altin}18`} stroke={C.altin} strokeWidth="1.5" />
+ <line x1="110" y1="34" x2="110" y2="104" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <circle cx="110" cy="16" r="5" fill={C.altin} />
+ <line x1="110" y1="18" x2="110" y2="34" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <g style={{ transformOrigin: "110px 34px", transform: `rotate(${aci}deg)`, animation: "mizanOtur 2.4s cubic-bezier(.3,1.4,.5,1) both", "--mizan-aci": `${aci}deg` }}>
+ <line x1="36" y1="34" x2="184" y2="34" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <line x1="36" y1="34" x2="36" y2="52" stroke={C.altin} strokeWidth="1" />
+ <path d="M20 52 a16 9 0 0 0 32 0 Z" fill={`${C.yesil}22`} stroke={C.yesil} strokeWidth="1.5" />
+ <text x="36" y="76" textAnchor="middle" fill={C.yesil} fontSize="9" fontWeight="600" letterSpacing="1" fontFamily="'Cormorant Garamond', Georgia, serif">TEMİZ</text>
+ <line x1="184" y1="34" x2="184" y2="52" stroke={C.altin} strokeWidth="1" />
+ <path d="M168 52 a16 9 0 0 0 32 0 Z" fill={`${dengeRenk}22`} stroke={dengeRenk} strokeWidth="1.5" />
+ <text x="184" y="76" textAnchor="middle" fill={dengeRenk} fontSize="9" fontWeight="600" letterSpacing="1" fontFamily="'Cormorant Garamond', Georgia, serif">ZARARLI</text>
  </g>
  </svg>
- <div style={{ color: dengeRenk, fontSize: 13, fontWeight: 700, marginTop: 2 }}>Terazi zararlı kefeye ağdı</div>
- <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{sonuclar.length} madde sağ kefede · denge bozuldu</div>
+ <div style={{ color: dengeRenk, fontSize: 19, fontWeight: 600, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.3 }}>{hkm.bas}</div>
+ <div style={{ color: C.soluk, fontSize: 13, marginTop: 3, fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.4 }}>{hkm.alt}</div>
+ <div style={{ color: C.cok, fontSize: 11, marginTop: 6, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>Sol kefe niyetin · sağ kefe ürünün yükü</div>
  </div>
  );
  })()}
