@@ -7326,7 +7326,7 @@ export default function App() {
  if (seri < 1) return null;
  return (
  <div style={{ ...PK.kart, display: "flex", alignItems: "center", gap: 14, animation: "manifestoGec 0.4s ease-out 0.12s both" }}>
- <div style={{ fontSize: 30, animation: "muhurNefes 2.4s ease-in-out infinite", lineHeight: 1 }}>🔥</div>
+ <svg width="26" height="30" viewBox="0 0 24 28" style={{ animation: "muhurNefes 2.4s ease-in-out infinite", flexShrink: 0 }}><path d="M12 1c2 4-2 6-2 9a4 4 0 0 0 8 0c0-1.5-.5-2.5-1-3.5 3 2 5 5.5 5 9.5a10 10 0 1 1-20 0c0-5 3.5-8 6-11 .5 2 1.5 3 4 4 0-3-2-5-0-7z" fill={`${C.altin}25`} stroke={C.altin} strokeWidth="1.3" strokeLinejoin="round"/></svg>
  <div style={{ flex: 1 }}>
  <div style={{ color: C.altin, fontSize: 19, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={seri} /> gündür arka arkaya</div>
  <div style={{ color: C.soluk, fontSize: 12, marginTop: 2 }}>{seri >= 7 ? "Sadıkatin sicile işliyor — seriyi bozma." : "Her gün uğra, serini büyüt."}</div>
