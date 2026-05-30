@@ -5165,7 +5165,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}} @keyframes asudeNefes{0%,100%{transform:scale(1);opacity:0.85}50%{transform:scale(1.12);opacity:0.45}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}} @keyframes asudeNefes{0%,100%{transform:scale(1);opacity:0.85}50%{transform:scale(1.12);opacity:0.45}} @keyframes suAkis{to{stroke-dashoffset:-14}} @keyframes suHalka{0%{transform:scale(0.4);opacity:0.6}100%{transform:scale(1);opacity:0}} @keyframes fiskiye{0%,100%{transform:scaleY(0.8)}50%{transform:scaleY(1.25)}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -8457,13 +8457,56 @@ export default function App() {
        return (
          <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
            {sevkMizac && <div style={{ display: "inline-block", background: `${C.altin}22`, border: `1px solid ${C.altin}66`, color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.4, padding: "3px 10px", borderRadius: 20, marginBottom: 12 }}>MİZACIN İÇİN ÖNERİLDİ · {profil.mizac === "Safravi" ? "Safra (öfke/stres)" : "Sevda (melankoli)"}</div>}
-           <div style={{ position: "relative", width: 150, height: 150, margin: "0 auto 14px" }}>
-             <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${m.renk}`, opacity: asudeOynar ? 0.9 : 0.4, animation: asudeOynar ? `asudeNefes ${asudeNefes}s ease-in-out infinite` : "none" }} />
-             <div style={{ position: "absolute", inset: 20, borderRadius: "50%", border: `1px solid ${m.renk}66`, opacity: 0.5, animation: asudeOynar ? `asudeNefes ${asudeNefes}s ease-in-out infinite 0.4s` : "none" }} />
-             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-               <div style={{ color: m.renk, fontSize: 30, lineHeight: 1 }}>≈</div>
-               <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 6 }}>{aktifMakam}</div>
-               <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>{asudeOynar ? `${dk}:${sn}` : m.organ.split(" · ")[0]}</div>
+           <div style={{ position: "relative", overflow: "hidden", borderRadius: 14, background: "linear-gradient(160deg, #0A1A3F, #06102A)", border: `1px solid ${C.altin}40`, padding: "12px 10px 14px", margin: "0 auto 14px" }}>
+             <div style={{ position: "absolute", top: -50, left: "50%", transform: "translateX(-50%)", width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${C.altin}22, transparent 70%)`, pointerEvents: "none" }} />
+             <div style={{ position: "absolute", inset: 0, opacity: 0.55, pointerEvents: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%23C9952C' opacity='0.5'%3E%3Cpath d='M15 8 l1 3 3 1 -3 1 -1 3 -1 -3 -3 -1 3 -1 z'/%3E%3Cpath d='M44 30 l0.8 2.4 2.4 0.8 -2.4 0.8 -0.8 2.4 -0.8 -2.4 -2.4 -0.8 2.4 -0.8 z'/%3E%3Ccircle cx='30' cy='48' r='1'/%3E%3Ccircle cx='8' cy='40' r='1'/%3E%3C/g%3E%3C/svg%3E")`, backgroundSize: "60px 60px" }} />
+             <div style={{ position: "relative", zIndex: 1 }}>
+               <svg viewBox="0 0 200 200" width="172" height="172" style={{ display: "block", margin: "0 auto", filter: `drop-shadow(0 2px 6px ${C.altin}30)` }}>
+                 <defs>
+                   <linearGradient id="asMer" x1="0" y1="0" x2="0" y2="1">
+                     <stop offset="0" stopColor={C.altin} stopOpacity="0.18" />
+                     <stop offset="1" stopColor={C.altin} stopOpacity="0.04" />
+                   </linearGradient>
+                 </defs>
+                 <g stroke={C.altin} strokeWidth="1.4" fill="none" strokeLinejoin="round" strokeLinecap="round">
+                   <path d="M100 6 C96 11 96 16 100 20 C104 16 104 11 100 6 Z" fill={`${C.altin}33`} />
+                   <line x1="100" y1="20" x2="100" y2="26" />
+                   <path d="M100 26 Q72 40 58 62 L142 62 Q128 40 100 26 Z" fill="url(#asMer)" />
+                   <path d="M100 30 Q86 44 80 62 M100 30 Q114 44 120 62" strokeWidth="0.8" opacity="0.7" />
+                   <rect x="54" y="62" width="92" height="6" rx="2" fill={`${C.altin}22`} />
+                   <rect x="55" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
+                   <rect x="70" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
+                   <rect x="125" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
+                   <rect x="140" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
+                   <ellipse cx="100" cy="78" rx="15" ry="3.4" fill={`${C.altin}22`} />
+                   <path d="M85 78 Q100 90 115 78" fill="url(#asMer)" />
+                   <line x1="100" y1="86" x2="100" y2="96" />
+                   <ellipse cx="100" cy="98" rx="26" ry="5" fill={`${C.altin}22`} />
+                   <path d="M74 98 Q100 116 126 98" fill="url(#asMer)" />
+                   <line x1="100" y1="112" x2="100" y2="150" />
+                   <path d="M54 150 L62 138 138 138 146 150 138 178 62 178 Z" fill="url(#asMer)" />
+                   <ellipse cx="100" cy="150" rx="46" ry="10" fill="#0A1A3F" stroke={C.altin} strokeWidth="1.4" />
+                 </g>
+                 <ellipse cx="100" cy="151" rx="42" ry="8" fill="#1E5C8A" opacity="0.55" />
+                 {asudeOynar && [0, 1, 2].map(i => (
+                   <ellipse key={i} cx="100" cy="151" rx="40" ry="7.5" fill="none" stroke="#BFE6FF" strokeWidth="1" style={{ transformBox: "fill-box", transformOrigin: "center", animation: `suHalka 3s ease-out ${i}s infinite` }} />
+                 ))}
+                 {asudeOynar && (
+                   <g stroke="#BFE6FF" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.85" strokeDasharray="2 5">
+                     <path d="M86 88 Q84 94 86 100" style={{ animation: "suAkis 0.5s linear infinite" }} />
+                     <path d="M114 88 Q116 94 114 100" style={{ animation: "suAkis 0.5s linear infinite" }} />
+                     <path d="M80 104 Q78 126 84 148" style={{ animation: "suAkis 0.6s linear infinite" }} />
+                     <path d="M120 104 Q122 126 116 148" style={{ animation: "suAkis 0.6s linear infinite" }} />
+                   </g>
+                 )}
+                 {asudeOynar && (
+                   <line x1="100" y1="78" x2="100" y2="64" stroke="#BFE6FF" strokeWidth="2" strokeLinecap="round" opacity="0.8" style={{ transformBox: "fill-box", transformOrigin: "50% 100%", animation: `fiskiye ${Math.max(2, asudeNefes / 2)}s ease-in-out infinite` }} />
+                 )}
+               </svg>
+               <div style={{ display: "inline-block", background: `${C.altin}1A`, border: `1px solid ${C.altin}55`, borderRadius: 10, padding: "5px 16px", marginTop: 4 }}>
+                 <div style={{ color: C.altin, fontSize: 14, fontWeight: 700, letterSpacing: 0.5 }}>{aktifMakam}</div>
+                 <div style={{ color: "#CFE3FF", fontSize: 11, marginTop: 1 }}>{asudeOynar ? `${dk}:${sn}` : m.organ.split(" · ")[0]}</div>
+               </div>
              </div>
            </div>
            {asudeOynar && <div style={{ color: C.soluk, fontSize: 11, marginBottom: 12, fontStyle: "italic" }}>{asudeNefes >= 9 ? "Theta — derin sükûnet" : asudeNefes >= 7 ? "Alfa — sakinleşme" : "Beta yavaşlıyor — yavaşça nefes ver"}</div>}
