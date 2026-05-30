@@ -7275,30 +7275,36 @@ export default function App() {
  <div>
  {profil ? (
  <>
- <div style={{ textAlign: "center", marginBottom: 20 }}>
+ <div style={{ textAlign: "center", marginBottom: 18, position: "relative" }}>
+ <div style={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", width: 240, height: 200, background: `radial-gradient(ellipse at center, ${profil.renk}18, transparent 70%)`, pointerEvents: "none", zIndex: 0 }} />
+ <div style={{ position: "relative", zIndex: 1 }}>
  <div style={{ width: 96, height: 96, borderRadius: "50%", padding: 3, background: `conic-gradient(from 180deg, ${profil.renk}, ${C.altin}, ${profil.renk})`, margin: "0 auto 12px", boxShadow: `0 0 18px ${profil.renk}40`, animation: "muhurNefes 5s ease-in-out infinite" }}>
  <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
- <svg width="46" height="46" viewBox="0 0 24 24" fill={profil.renk} xmlns="http://www.w3.org/2000/svg">
- <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z"/>
+ {(() => {
+ const e = profil.element;
+ const r = profil.renk;
+ return (
+ <svg width="42" height="42" viewBox="0 0 40 40" fill="none" stroke={r} strokeWidth="1.6" strokeLinejoin="round">
+ {e === "Ateş" && <path d="M20 6 L33 31 H7 Z" fill={`${r}20`} />}
+ {e === "Su" && <path d="M20 34 L7 9 H33 Z" fill={`${r}20`} />}
+ {e === "Hava" && <><path d="M20 6 L33 31 H7 Z" fill={`${r}20`} /><line x1="13" y1="23" x2="27" y2="23" /></>}
+ {e === "Toprak" && <><path d="M20 34 L7 9 H33 Z" fill={`${r}20`} /><line x1="13" y1="17" x2="27" y2="17" /></>}
  </svg>
+ );
+ })()}
  </div>
  </div>
  <div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{profil.burc}</div>
- <div style={{ color: profil.renk, fontSize: 13 }}>{profil.element} · {profil.mizac} Mizacı</div>
+ <div style={{ color: profil.renk, fontSize: 13, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.3 }}>{profil.element} unsuru · {profil.mizac} mizacı · {profil.organ}</div>
  {(() => {
  const m = mevcutMertebe();
  const krit = gecmis.slice(0, 5).reduce((a, g) => a + (g.kritik || 0), 0);
+ const h = new Date().getHours();
+ const selam = h < 6 ? "Geceler hayrola" : h < 11 ? "Sabah-ı şerifin hayrola" : h < 17 ? "Vaktin bereketli olsun" : h < 21 ? "Akşamın hayrola" : "Geceler hayrola";
  const hal = !gecmis.length ? "henüz dosyan açılmadı" : krit === 0 ? "dosyan temiz seyrediyor" : "dosyanda dikkat isteyen kayıtlar var";
- return <div style={{ color: C.soluk, fontSize: 13, marginTop: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.4 }}><b style={{ color: m.renk, fontStyle: "normal" }}>{m.ad}</b>{liyakat.lakap ? ` ${liyakat.lakap}` : ""}, {hal}.</div>;
+ return <div style={{ color: C.soluk, fontSize: 14, marginTop: 12, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.45 }}>{selam}, <b style={{ color: m.renk, fontStyle: "normal" }}>{m.ad}</b>{liyakat.lakap ? ` ${liyakat.lakap}` : ""}. {hal}.</div>;
  })()}
  </div>
- <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
- {[["ELEMENT", profil.element], ["MIZAÇ", profil.mizac], ["HASSAS ORGAN", profil.organ], ["ŞİFA MAKAMI", profil.makam]].map(([k, v]) => (
- <div key={k} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, textAlign: "center" }}>
- <div style={{ color: C.cok, fontSize: 10, letterSpacing: 0, marginBottom: 4 }}>{k}</div>
- <div style={{ color: C.metin, fontWeight: 600, fontSize: 13 }}>{v}</div>
- </div>
- ))}
  </div>
  {/* PREMIUM: SİCİL-İ AHVÂL */}
  {(() => {
