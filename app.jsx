@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import html2canvas from "html2canvas";
 
 /* ══════════════════════════════════════════════
  SABITLER
  ══════════════════════════════════════════════ */
 const C = {
- bg: "#07070F", y: "#0F0F1A", y2: "#161623", s: "#22223A",
- altin: "#C9A84C", altinA: "#E8C97A",
- metin: "#F0EDE8", soluk: "#8A8499", cok: "#45435A",
- kirmizi: "#FF2D55", turuncu: "#FF9500", sari: "#FFCC00", yesil: "#2ECC71",
+ bg: "#FFFFFF", y: "#FFFFFF", y2: "#FAFAFA", s: "#E5E5E7",
+ altin: "#B8862F", altinA: "#C9A84C",
+ metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
+ kirmizi: "#DC2626", turuncu: "#EA580C", sari: "#CA8A04", yesil: "#16A34A",
 };
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
@@ -65,12 +66,18 @@ const ayetSec = org => {
 
 /* ── MAKAMLAR ───────────────────────────────── */
 const MAKAMLAR = {
- "Rast": { organ: "Beyin · Sinir", etki: "Neşe, zihin açıklığı, baş ağrısı giderici", vakit: "Sabah namazı sonrası", frekans: "432 Hz", aletler: "Ney, Ud", renk: "#FFD700" },
- "Hüseyni": { organ: "Kalp · Karaciğer", etki: "Kalp sağlığı, iltihap giderici, güç", vakit: "Sabah 9–10", frekans: "396 Hz", aletler: "Ud, Kanun", renk: "#FF6B6B" },
- "Uşşak": { organ: "Mide · Pankreas", etki: "Sindirim, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", frekans: "528 Hz", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
- "Acemaşiran": { organ: "Karaciğer · Bağırsak", etki: "Detoks, bağırsak düzeni", vakit: "İkindi sonrası", frekans: "417 Hz", aletler: "Kanun", renk: "#A855F7" },
- "Hicaz": { organ: "Böbrek · Kemik", etki: "Böbrek sağlığı, kemik güçlendirici, mineral dengesi, özlem ve dua hissi", vakit: "Akşam", frekans: "639 Hz", aletler: "Ud, Keman", renk: "#3B82F6" },
- "Segah": { organ: "Mide · Akciğer", etki: "Mide asidi dengesi, kaygı giderme", vakit: "İkindi–Akşam", frekans: "741 Hz", aletler: "Ney, Tambur", renk: "#10B981" },
+ "Rast": { organ: "Beyin · Kemik · Genel", etki: "Neşe, zihin açıklığı, akıl sağlığı düzenleyici, ruh dengesi", vakit: "Sabah namazı sonrası", aletler: "Ney, Ud", renk: "#FFD700" },
+ "Irak": { organ: "Beyin · Sinir · Zihin", etki: "Konsantrasyon, sükûnet, korkuyu defetme; menenjit ve zihin/sinir hastalıkları için", vakit: "Sabah ve Öğleden sonra", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#8B1538" },
+ "İsfahan": { organ: "Sinir · Zihin · Üreme (Kadın)", etki: "Güven, hareket, uyum, zihin açıklığı; ateşli hastalıklar ve kadın hastalıkları için", vakit: "İkindi–Akşam", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#38BDF8" },
+ "Zirefkend": { organ: "Sırt · Bel · Eklem · Yüz", etki: "Neşe verici; sırt, kas ve eklem ağrılarına, yüz felcine iyi gelir", vakit: "Gece yarısından sonra", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#0EA5E9" },
+ "Büzürk": { organ: "Kalp · Ciğer · Zihin", etki: "Vesvese ve korkuyu def eder, zihni temizler; ateşli hastalıklar, ciğer ve kalp için", vakit: "Akşam geç vakit", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#B8860B" },
+ "Zengule": { organ: "Kalp", etki: "Kalp hastalıklarının devası", vakit: "Gün batımı sonrası", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#65A30D" },
+ "Rehavi": { organ: "Baş · Burun · Ağız", etki: "Baş ağrısı, burun kanaması, ağız çarpıklığı ve balgamdan gelen hastalıklar için", vakit: "Şafak ve İkindi", aletler: "Ney, Rebab, Kopuz (Ud)", renk: "#F472B6" },
+ "Hüseyni": { organ: "İç Organlar · Bağırsak", etki: "Rahatlık, sükûnet, iç huzur; iç organları (özellikle bağırsak) düzenleyici", vakit: "Sabah erken", aletler: "Ney, Tanbur", renk: "#FF6B6B" },
+ "Hicaz": { organ: "Ürogenital · Kemik · Göğüs", etki: "Çocuk hastalıkları, kemik sağlığı, böbrek, göğüs; alçakgönüllülük ve dua hissi", vakit: "Akşam", aletler: "Ud, Keman", renk: "#3B82F6" },
+ "Nihavend": { organ: "Ruh · Sinir · Lenf", etki: "Genel sükûnet, melankoli giderici, sinir dengesi, kemik", vakit: "Gece — yatsı sonrası", aletler: "Ney, Tanbur", renk: "#6366F1" },
+ "Neva": { organ: "Bağırsak · Dolaşım · Bacak", etki: "Sindirim, dolaşım, hava-su dengesi, bacak", vakit: "Öğle vakti", aletler: "Ney, Keman", renk: "#84CC16" },
+ "Uşşak": { organ: "Lenf · Ayak · Bağışıklık", etki: "Bağışıklık, lenf düzeni, ayak sağlığı, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
 };
 
 /* ── EŞREF SAATLERİ ─────────────────────────── */
@@ -178,16 +185,16 @@ const MIZAC_MARKET = {
 const BURC_EMOJI = { "Koç": "", "Boğa": "", "İkizler": "", "Yengeç": "", "Aslan": "", "Başak": "", "Terazi": "", "Akrep": "", "Yay": "", "Oğlak": "", "Kova": "", "Balık": "" };
 const BURCLAR = {
  "Koç": { element: "Ateş", mizac: "Safravi", organ: "Baş · Beyin · Yüz", renk: "#FF4444", makam: "Rast", zikir: "Ya Kaviy — 99 kere", bitki: "Nane · Biberiye · Zerdeçal", tavsiye: "Soğutucu gıdalar: salatalık, nane, yoğurt, ayran. Acı baharatlardan ve aşırı sıcaktan kaçın.", kacinmasi: ["MSG", "E621", "kafein", "trans yağ", "BHA"] },
- "Boğa": { element: "Toprak" , mizac: "Sevdevi", organ: "Boyun · Boğaz · Tiroid", renk: "#C8961E", makam: "Hicaz", zikir: "Ya Sabur — 298 kere", bitki: "Papatya · Ihlamur · Adaçayı", tavsiye: "Fosfat grubundan kaçın. Sıcak içecekler ve ılık çorbalar tercih et. Boğaz için ıhlamur ve bal.", kacinmasi: ["E250", "E338", "E450", "E452", "MISIR ŞURUBU"] },
- "İkizler": { element: "Hava", mizac: "Demevi", organ: "Akciğer · Sinir · Eller", renk: "#FFD700", makam: "Segah", zikir: "Ya Alim — 150 kere", bitki: "Lavanta · Kekik · Okaliptüs", tavsiye: "Sülfit grubundan kaçın. Düzenli nefes egzersizleri ve açık hava yürüyüşleri. Okaliptüs buharı.", kacinmasi: ["E951", "TRANS YAĞ", "E471", "BHT", "E220"] },
- "Yengeç": { element: "Su", mizac: "Balgami", organ: "Mide · Göğüs · Lenf", renk: "#4488FF", makam: "Uşşak", zikir: "Ya Latif — 129 kere", bitki: "Papatya · Zencefil · Rezene", tavsiye: "Mide dostu: probiyotik, bol su, taze zencefil çayı. Soğuk ve çiğ gıdalardan uzak dur.", kacinmasi: ["E102", "E211", "E407", "TİTANYUM DİOKSİT", "E466"] },
- "Aslan": { element: "Ateş", mizac: "Safravi", organ: "Kalp · Sırt · Omurga", renk: "#FF8C00", makam: "Hüseyni", zikir: "Ya Celil — 73 kere", bitki: "Zeytin yaprağı · Sarımsak · Enginar", tavsiye: "Kalp için: zeytinyağı, fıstık yağı, taze sarımsak, nar. Kızartmadan kaçın. Haşlama veya fırın tercih et.", kacinmasi: ["E471", "PALMİYE YAĞI", "TRANS YAĞ", "E635", "E150D"] },
- "Başak": { element: "Toprak" , mizac: "Sevdevi", organ: "Bağırsak · Dalak · Pankreas", renk: "#228B22", makam: "Hicaz", zikir: "Ya Hakim — 78 kere", bitki: "Kimyon · Rezene · Zencefil", tavsiye: "Nitrit grubundan kaçın. Bol probiyotik (kefir, yoğurt) ve lifli sebzeler. Aç karın sirke kontrendike.", kacinmasi: ["E250", "SODYUM NİTRİT", "NİTRİT", "RAFINE ŞEKER"] },
- "Terazi": { element: "Hava", mizac: "Demevi", organ: "Böbrekler · Bel · Cilt", renk: "#DA70D6", makam: "Rast", zikir: "Ya Adl — 29 kere", bitki: "Maydanoz · Kiraz sapı · Mısır püskülü", tavsiye: "Böbrekler için günde 2-2.5L su ve maydanoz çayı. Tuz alımını azalt, oksalat yüksek gıdalardan kaçın.", kacinmasi: ["E951", "E102", "BHT", "E635", "E127"] },
- "Akrep": { element: "Su", mizac: "Balgami", organ: "Üreme · Mesane · Boşaltım", renk: "#8B0000", makam: "Acemaşiran", zikir: "Ya Mumit — 97 kere", bitki: "Kızılcık · Hibiskus · Nar", tavsiye: "Detoks için: kızılcık, nar suyu, ekşi vişne. Benzoat grubundan kaçın. Bol su ve antioksidan.", kacinmasi: ["E211", "E212", "SODYUM BENZOAT", "BPA"] },
- "Yay": { element: "Ateş", mizac: "Safravi", organ: "Karaciğer · Kalça · Uyluk", renk: "#9400D3", makam: "Rast", zikir: "Ya Muksit — 209 kere", bitki: "Enginar · Deve dikeni · Limon", tavsiye: "Karaciğer için enginar çayı, sabah aç karna limon suyu ve yeşil yapraklı sebzeler. Alkol ve TBHQ'dan kaçın.", kacinmasi: ["E621", "MSG", "E150D", "TBHQ", "PESTİSİT"] },
- "Oğlak": { element: "Toprak" , mizac: "Sevdevi", organ: "Diz · Kemik · Eklem", renk: "#696969", makam: "Hicaz", zikir: "Ya Sabur — 298 kere", bitki: "Biberiye · Badem · At kuyruğu", tavsiye: "Kemik sağlığı için: susam, badem, yeşil yapraklı sebzeler, D vitamini, kalsiyum. Şeker tüketimini sınırla.", kacinmasi: ["MISIR ŞURUBU", "E338", "E450", "E452", "FRUKTOZ"] },
- "Kova": { element: "Hava", mizac: "Demevi", organ: "Bacak · Dolaşım · Bilek", renk: "#00CED1", makam: "Segah", zikir: "Ya Bari — 100 kere", bitki: "Ginkgo · Sarımsak · Soğan", tavsiye: "Dolaşım için sarımsak, soğan, ginkgo biloba ve antioksidan açısından zengin meyveler. Düzenli yürüyüş.", kacinmasi: ["E951", "ASPARTAM", "BHT", "E282"] },
+ "Boğa": { element: "Toprak" , mizac: "Sevdevi", organ: "Boyun · Boğaz · Tiroid", renk: "#C8961E", makam: "Irak", zikir: "Ya Sabur — 298 kere", bitki: "Papatya · Ihlamur · Adaçayı", tavsiye: "Fosfat grubundan kaçın. Sıcak içecekler ve ılık çorbalar tercih et. Boğaz için ıhlamur ve bal.", kacinmasi: ["E250", "E338", "E450", "E452", "MISIR ŞURUBU"] },
+ "İkizler": { element: "Hava", mizac: "Demevi", organ: "Akciğer · Sinir · Eller", renk: "#FFD700", makam: "İsfahan", zikir: "Ya Alim — 150 kere", bitki: "Lavanta · Kekik · Okaliptüs", tavsiye: "Sülfit grubundan kaçın. Düzenli nefes egzersizleri ve açık hava yürüyüşleri. Okaliptüs buharı.", kacinmasi: ["E951", "TRANS YAĞ", "E471", "BHT", "E220"] },
+ "Yengeç": { element: "Su", mizac: "Balgami", organ: "Mide · Göğüs · Lenf", renk: "#4488FF", makam: "Zirefkend", zikir: "Ya Latif — 129 kere", bitki: "Papatya · Zencefil · Rezene", tavsiye: "Mide dostu: probiyotik, bol su, taze zencefil çayı. Soğuk ve çiğ gıdalardan uzak dur.", kacinmasi: ["E102", "E211", "E407", "TİTANYUM DİOKSİT", "E466"] },
+ "Aslan": { element: "Ateş", mizac: "Safravi", organ: "Kalp · Sırt · Omurga", renk: "#FF8C00", makam: "Büzürk", zikir: "Ya Celil — 73 kere", bitki: "Zeytin yaprağı · Sarımsak · Enginar", tavsiye: "Kalp için: zeytinyağı, fıstık yağı, taze sarımsak, nar. Kızartmadan kaçın. Haşlama veya fırın tercih et.", kacinmasi: ["E471", "PALMİYE YAĞI", "TRANS YAĞ", "E635", "E150D"] },
+ "Başak": { element: "Toprak" , mizac: "Sevdevi", organ: "Bağırsak · Dalak · Pankreas", renk: "#228B22", makam: "Zengule", zikir: "Ya Hakim — 78 kere", bitki: "Kimyon · Rezene · Zencefil", tavsiye: "Nitrit grubundan kaçın. Bol probiyotik (kefir, yoğurt) ve lifli sebzeler. Aç karın sirke kontrendike.", kacinmasi: ["E250", "SODYUM NİTRİT", "NİTRİT", "RAFINE ŞEKER"] },
+ "Terazi": { element: "Hava", mizac: "Demevi", organ: "Böbrekler · Bel · Cilt", renk: "#DA70D6", makam: "Rehavi", zikir: "Ya Adl — 29 kere", bitki: "Maydanoz · Kiraz sapı · Mısır püskülü", tavsiye: "Böbrekler için günde 2-2.5L su ve maydanoz çayı. Tuz alımını azalt, oksalat yüksek gıdalardan kaçın.", kacinmasi: ["E951", "E102", "BHT", "E635", "E127"] },
+ "Akrep": { element: "Su", mizac: "Balgami", organ: "Üreme · Mesane · Boşaltım", renk: "#8B0000", makam: "Hüseyni", zikir: "Ya Mumit — 97 kere", bitki: "Kızılcık · Hibiskus · Nar", tavsiye: "Detoks için: kızılcık, nar suyu, ekşi vişne. Benzoat grubundan kaçın. Bol su ve antioksidan.", kacinmasi: ["E211", "E212", "SODYUM BENZOAT", "BPA"] },
+ "Yay": { element: "Ateş", mizac: "Safravi", organ: "Karaciğer · Kalça · Uyluk", renk: "#9400D3", makam: "Hicaz", zikir: "Ya Muksit — 209 kere", bitki: "Enginar · Deve dikeni · Limon", tavsiye: "Karaciğer için enginar çayı, sabah aç karna limon suyu ve yeşil yapraklı sebzeler. Alkol ve TBHQ'dan kaçın.", kacinmasi: ["E621", "MSG", "E150D", "TBHQ", "PESTİSİT"] },
+ "Oğlak": { element: "Toprak" , mizac: "Sevdevi", organ: "Diz · Kemik · Eklem", renk: "#696969", makam: "Nihavend", zikir: "Ya Sabur — 298 kere", bitki: "Biberiye · Badem · At kuyruğu", tavsiye: "Kemik sağlığı için: susam, badem, yeşil yapraklı sebzeler, D vitamini, kalsiyum. Şeker tüketimini sınırla.", kacinmasi: ["MISIR ŞURUBU", "E338", "E450", "E452", "FRUKTOZ"] },
+ "Kova": { element: "Hava", mizac: "Demevi", organ: "Bacak · Dolaşım · Bilek", renk: "#00CED1", makam: "Neva", zikir: "Ya Bari — 100 kere", bitki: "Ginkgo · Sarımsak · Soğan", tavsiye: "Dolaşım için sarımsak, soğan, ginkgo biloba ve antioksidan açısından zengin meyveler. Düzenli yürüyüş.", kacinmasi: ["E951", "ASPARTAM", "BHT", "E282"] },
  "Balık": { element: "Su", mizac: "Balgami", organ: "Ayak · Lenf · Bağışıklık", renk: "#00FA9A", makam: "Uşşak", zikir: "Ya Vedud — 33 kere", bitki: "Echinacea · Lavanta · Melisa", tavsiye: "Bağışıklık için: kefir, zerdeçal, yeşil çay, C vitamini. Nemli ortamlardan kaçın, ayak sağlığına dikkat et.", kacinmasi: ["E102", "E211", "TİTANYUM DİOKSİT", "E407"] },
 };
 
@@ -3630,6 +3637,73 @@ const KATEGORILER = {
  "ilac": { ad: "İlaç/Vitamin", db: ILAC_DB, mizacGoster: true, ipucu: "İlaç veya vitamin kutusu içeriğini yapıştır." },
 };
 
+// 8 ana başlık altında doğal/onaylı ürün önerileri (Market için)
+const MARKET_KATEGORI = {
+  "gida": [
+    { ad: "İçecekler", aciklama: "Şifalı kaynak suyu, ev limonatası, bitki çayı (melisa, ıhlamur, ada çayı)" },
+    { ad: "Gofretler & Bisküviler", aciklama: "Doğal kakao, ham bal, kuru meyve, tahıl karışımı" },
+    { ad: "Kekler", aciklama: "Tam buğday, yulaf, hurma tatlandırıcı" },
+    { ad: "Sucuk & Salam", aciklama: "Geleneksel kuru, nitritsiz, doğal bağırsak" },
+    { ad: "Peynirler", aciklama: "Çiğ süt, otlatılmış inek/koyun/keçi" },
+    { ad: "Yoğurtlar", aciklama: "Ev mayalı, tam yağlı, probiyotik" },
+    { ad: "Süt Ürünleri", aciklama: "Çiğ süt, kefir, ayran, kaymak" },
+    { ad: "Yağlar", aciklama: "Soğuk sıkım zeytinyağı, tereyağı, çörek otu yağı" },
+    { ad: "Baharatlar", aciklama: "Organik, sertifikalı, GDO-suz" },
+    { ad: "Tatlandırıcılar", aciklama: "Ham bal, pekmez, hurma şurubu" },
+    { ad: "Atıştırmalıklar", aciklama: "Kuru meyve, çiğ kuruyemiş, ev çöreği" },
+  ],
+  "giyim": [
+    { ad: "Organik Pamuklu", aciklama: "PFAS-free, OEKO-TEX sertifikalı tişört, gömlek" },
+    { ad: "Yünlü", aciklama: "Türk doğal yünü, kazak, mont astar" },
+    { ad: "Keten", aciklama: "Saf keten gömlek, pantolon, yazlık" },
+    { ad: "Spor Giyim", aciklama: "PFAS-free yağmurluk, doğal spor tişört" },
+    { ad: "İç Çamaşırı", aciklama: "GOTS organik pamuk, ipek" },
+  ],
+  "ev": [
+    { ad: "Yatak & Yorgan", aciklama: "Pamuk dolgu, organik kumaş, GOTS sertifikalı" },
+    { ad: "Halı", aciklama: "Anadolu yün halı, doğal pamuk kilim" },
+    { ad: "Mobilya", aciklama: "Masif ahşap, formaldehit-free, doğal cila" },
+    { ad: "Perde", aciklama: "Doğal pamuk, keten" },
+    { ad: "Mutfak Eşyası", aciklama: "Cam, çelik, dökme demir tava (PTFE-free)" },
+  ],
+  "kozmetik": [
+    { ad: "Yüz Kremi", aciklama: "Hindistan cevizi yağı, shea, doğal E vitamini" },
+    { ad: "Şampuan & Sabun", aciklama: "Kastil sabun, defne yağı, zeytinyağı sabunu" },
+    { ad: "Diş Macunu", aciklama: "Karbonat, nane yağı, florürsüz seçenekler" },
+    { ad: "Deodorant", aciklama: "Karbonat, mısır nişastası, çay ağacı yağı" },
+    { ad: "Saç Bakımı", aciklama: "Hindistan cevizi yağı, kına, biberiye" },
+  ],
+  "temizlik": [
+    { ad: "Bulaşık Deterjanı", aciklama: "Kastil sabun, sitrik asit, doğal limon" },
+    { ad: "Çamaşır Deterjanı", aciklama: "Sabun rendesi, karbonat, soda külü" },
+    { ad: "Çamaşır Yumuşatıcı", aciklama: "Sirke + lavanta yağı (klorin-free)" },
+    { ad: "Cam Temizleyici", aciklama: "Sirke, limon suyu, gazete" },
+    { ad: "Zemin & Yüzey", aciklama: "Beyaz sirke, çay ağacı yağı, karbonat" },
+    { ad: "Lavabo Açıcı", aciklama: "Karbonat + sirke + kaynar su" },
+  ],
+  "bebek": [
+    { ad: "Bebek Bezi", aciklama: "Organik pamuk, klorin-free, biodegradable" },
+    { ad: "Bebek Maması", aciklama: "Anne sütü ön plan, organik ek gıda" },
+    { ad: "Bebek Giysi", aciklama: "GOTS organik pamuk, doğal renk" },
+    { ad: "Bebek Yağı", aciklama: "Hindistan cevizi, tatlı badem yağı" },
+    { ad: "Mama Şişesi", aciklama: "BPA-free cam, paslanmaz çelik" },
+  ],
+  "evcil": [
+    { ad: "Köpek/Kedi Maması", aciklama: "Tahılsız, gerçek et, doğal koruyucu" },
+    { ad: "Tasma & Halat", aciklama: "Pamuk, keten, kimyasal işlemsiz deri" },
+    { ad: "Şampuan", aciklama: "Kastil sabun, çay ağacı, neem yağı" },
+    { ad: "Yatak", aciklama: "Pamuk dolgu, organik kumaş" },
+  ],
+  "ilac": [
+    { ad: "D Vitamini", aciklama: "Doğal: güneş, kuru kayısı; takviye: D3 K2" },
+    { ad: "C Vitamini", aciklama: "Kuşburnu, limon, kırmızı biber, brokoli" },
+    { ad: "Demir", aciklama: "Pekmez, ıspanak, kırmızı et, mercimek" },
+    { ad: "Probiyotik", aciklama: "Ev yoğurdu, kefir, turşu, lahana" },
+    { ad: "Omega-3", aciklama: "Balık, ceviz, keten tohumu" },
+    { ad: "Magnezyum", aciklama: "Kabak çekirdeği, badem, kakao" },
+  ],
+};
+
 const BELIRSIZ_KELIMELER = [
  { kelime: "koruyucu", uyari: "Etikette sadece 'koruyucu' yazılı, hangi koruyucu (E200, E211, E220, vb.) belirtilmemiş. Üretici gizliyor olabilir." },
  { kelime: "renklendirici", uyari: "Sadece 'renklendirici' yazılı, hangisi (E102, E110, E120, vb.) belirsiz. Sentetik boya olabilir." },
@@ -3760,7 +3834,7 @@ const HAKKINDA = {
  { t: "Temel Statü", a: "Türk Hukuku, AB Direktifleri ve AİHS Madde 10 çerçevesinde Dijital Arşiv olarak faaliyet gösterir. Tıbbi cihaz değildir." },
  { t: "1219 Sayılı Tababet Kanunu", a: "Tıbbi teşhis, tedavi veya reçete niteliği taşımaz. Tababet Kanunu kapsamında tıbbi faaliyet değildir." },
  { t: "TCK 267 & 125", a: "Hiçbir firmayı adını anarak suçlamaz. İftira ve hakaret kapsamına girmez. Yalnızca madde bazlı arşiv bilgisi sunar." },
- { t: "6502 Sayılı Tüketici Kanunu", a: "Tüketici bilgilendirmesi yasal haktır (Madde 63). Bilinçli tüketim hakkı korunmaktadır." },
+ { t: "6502 Sayılı Tüketici Kanunu", a: "Tüketici bilgilendirmesi yasal haktır. Bilinçli tüketim hakkı korunmaktadır." },
  { t: "Anayasa 26-28", a: "Düşünce Özgürlüğü + Basın Özgürlüğü — anayasal güvence altındadır." },
  { t: "AİHS Madde 10", a: "Halk sağlığı verilerinin paylaşımı Avrupa İnsan Hakları Mahkemesi içtihadıyla korunur." },
  { t: "KVKK 6698", a: "Kullanıcı verileri yalnızca cihazda saklanır, üçüncü taraflarla paylaşılmaz, satılmaz." },
@@ -3821,6 +3895,13 @@ const HAKKINDA = {
  { t: "Chassaing 2015 — Nature", a: "Polisorbat 80 ve CMC'nin bağırsak florasını yıktığını gösteren çalışma.\n Nature 519:92–96" },
  { t: "Mozaffarian 2009 — NEJM", a: "Trans yağ ve kalp hastalığı. ABD yasağına zemin hazırladı.\n New England Journal of Medicine 2009" },
  { t: "Nobel Tıp 2017 — Sirkadiyen Ritim", a: "Eşref saatlerinin modern bilimsel dayanağı.\n Hall, Rosbash, Young · Karolinska Institutet" },
+ { t: "EMA — Avrupa İlaç Ajansı Herbal Monographs", a: "Enginar, deve dikeni, melisa, lavanta, alıç, sarımsak gibi bitkilerin etkinlik ve güvenlik değerlendirmeleri. 'Organ Dostu Destek' önerilerinin temel referansı.\n ema.europa.eu/medicines/herbal" },
+ { t: "ESCOP — European Scientific Cooperative on Phytotherapy", a: "Avrupa fitoterapi monografları. Silymarin (deve dikeni), Echinacea, Hypericum klinik veriler.\n escop.com" },
+ { t: "WHO Monographs on Selected Medicinal Plants", a: "DSÖ tıbbi bitki monografları (4 cilt). Hatmi kökü, zerdeçal, sarımsak, zencefil, çörek otu dahil.\n who.int/medicines/areas/traditional/monographs" },
+ { t: "Commission E (Almanya) Monographs", a: "Almanya Federal Sağlık Bakanlığı bitki monografları. Fitoterapinin altın standardı (Blumenthal 1998).\n American Botanical Council çevirisi" },
+ { t: "Cochrane Reviews — Fitoterapi", a: "Silymarin/karaciğer, melisa/anksiyete, sarımsak/kolesterol, alıç/kalp yetmezliği meta-analizleri.\n cochranelibrary.com" },
+ { t: "Türk Farmakopesi & Bitkisel İlaç Yönetmeliği", a: "T.C. Sağlık Bakanlığı TİTCK bitkisel ürün tebliği. Türkiye'de izinli bitkisel ürünler listesi.\n titck.gov.tr" },
+ { t: "İbn Bitar — el-Câmi' li-Müfredâti'l-Edviyye", a: "1400+ bitki ve gıdanın organ etkileri (1240). Modern fitoterapinin İslam medeniyeti kaynağı.\n Bulak 1874 · Paris 1877" },
  ],
  },
  frekans: {
@@ -3838,6 +3919,64 @@ const HAKKINDA = {
  { t: "Müzik & Bağışıklık", a: "Chanda & Levitin 2013 — Trends in Cognitive Sciences: Müziğin kortizolü düşürdüğü, IgA antikorlarını artırdığı, NK hücre aktivitesini güçlendirdiği derleme.\n Trends Cogn Sci 2013;17(4):179-93" },
  { t: "Müzik & Kronik Ağrı", a: "Garza-Villarreal 2017 meta-analizi: Müzik terapisi fibromiyalji, kanser ağrısı ve postoperatif ağrıda anlamlı azalma sağlar.\n Pain Physician 2017;20:597-610" },
  { t: "Önemli Not", a: "Spesifik makam-organ eşleşmeleri (Rast → beyin, Hicaz → böbrek vb.) Osmanlı darüşşifa geleneğinden gelir ve modern RCT'lerle henüz tek tek doğrulanmamıştır. Genel müzik terapisinin etkinliği ise yüzlerce bilimsel çalışmayla desteklenmiştir." },
+ ],
+ },
+ mertebe: {
+ ikon: "", renk: "#9B7B4F",
+ baslik: "Mertebe Sistemi · Yasal Statü & Bilimsel Kaynaklar",
+ ozet: "Oyunlaştırma · Anonim · KVKK · Ahilik Geleneği",
+ items: [
+   { t: "Temel Statü", a: "Mertebe sistemi bir oyunlaştırma katmanıdır. Tıbbi tavsiye, teşhis, tedavi veya reçete niteliği taşımaz. Kullanıcının uygulamayla etkileşimini görselleştiren bir liyakat göstergesidir." },
+   { t: "Anonim Katılım & Yerel Veri", a: "Mertebe puanları, isim/lakap ve görev kayıtları yalnızca kullanıcının cihazında (localStorage) tutulur. Sunucuya, üçüncü tarafa veya geliştiriciye aktarılmaz. İsim girmek isteğe bağlıdır." },
+   { t: "KVKK 6698 Sayılı Kanun", a: "Kişisel verilerin korunması mevzuatına tam uyum. Cihaz dışına veri çıkışı yoktur — bu nedenle veri sorumlusu / işleyen / aktarım hükümleri uygulanmaz." },
+   { t: "Ahilik Geleneği (tarihsel kaynak)", a: "Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Osmanlı esnaf teşkilatı (Ahilik) ve saray idari yapısına dayanır. Türkiye'nin UNESCO Somut Olmayan Kültürel Miras listesinde 2020'de tescilli." },
+   { t: "Manevi & Kültürel Boyut", a: "Şifa ayetleri, Esmâ-ül Hüsnâ reçeteleri, zikir ve Eşref Saati pratikleri kültürel-manevi bilgi notlarıdır; hiçbiri tıbbi tedavi yerine geçmez. Bu pratiklerin etkisi inanç ve manevi pratik bağlamındadır." },
+   { t: "Anayasa 26-28 · AİHS Madde 10", a: "Bilgilendirme, eğitim ve kültürel pratik aktarımı düşünce-ifade özgürlüğü kapsamında anayasal ve AİHM içtihadıyla güvence altındadır." },
+   { t: "6502 Sayılı Tüketicinin Korunması Hakkında Kanun · TKHK", a: "Tüketicinin bilgilendirilme ve eğitim ilkesi (Kanun'un temel hükümleri kapsamında); mertebe sistemi bu hakkı destekleyen bir eğitim aracıdır, ticari amaçlı yönlendirme değildir." },
+   { t: "Tüketici Gözlem Paylaşma Hakkı (Mahalle Haritası)", a: "Çarşıda/pazarda gözlenen raf yerleşimi, reklam yoğunluğu ve manipülasyon paylaşımı; 6502 Sayılı Kanun (bilinçli tüketim), Anayasa 26 (düşünce özgürlüğü), AİHS 10 (ifade), Türk Borçlar Kanunu 49 (haksız fiil dışı — gerçek gözlemin paylaşımı), AB Tüketici Hakları Direktifi 2011/83 ve OECD Tüketici Politikası Kılavuzu kapsamında korunmaktadır. Marka adı zikretmek değil, satış noktasındaki gerçek gözlemi paylaşmak yasal hakkımızdır." },
+   { t: "Şifa Akçesi — Kapalı Devre Sadakat Puanı", a: "Şifa Akçesi yalnızca Besin Dedektifi ve Şifalı Market ekosisteminde geçerlidir; TL'ye, başka bir para birimine veya kripto varlığa çevrilmez. 6493 Sayılı Ödeme ve Menkul Kıymet Mutabakat Sistemleri Kanunu kapsamı dışında 'kapalı devre sadakat puanı / hediye kartı' niteliğindedir — BDDK düzenlemelerine ve elektronik para hükümlerine tabi değildir. Vergisel sorumluluk Şifalı Market tarafındaki ticari faturalama üzerinden işler. Akçe sistemi aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+   { t: "Pîr Ataması — Hukuki & Kültürel Dayanak", a: "Anayasa Madde 26 (ifade özgürlüğü) ve UNESCO Somut Olmayan Kültürel Miras tescili (Ahilik, 2020). KVKK 6698 Madde 3 'anonimleştirilmiş veri' tanımı: lakap hash'i kişiyi tanımlamayan, geri çevrilemez ifadedir." },
+   { t: "Ahd-i Mîsâk — Bilimsel Dayanak", a: "Cialdini, R. B. (2006). Influence: The Psychology of Persuasion (commitment & consistency prensibi). · Ashraf, N., Karlan, D., Yin, W. (2006). 'Tying Odysseus to the Mast', Quarterly Journal of Economics 121(2). · Hukuki: Türk Borçlar Kanunu Madde 27 anlamında borç doğuran sözleşme niteliği taşımaz." },
+   { t: "Sırlı Suâl — Bilimsel & Hukuki Dayanak", a: "Roediger, H. L. & Karpicke, J. D. (2006). 'Test-enhanced learning', Psychological Science 17(3). · Anayasa Madde 42 (eğitim hakkı). Sınav sonucu cihazda kalır; sertifika veya tıbbi yetki üretmez." },
+   { t: "Mahcubiyet Lensi — Bilimsel Dayanak", a: "Bandura, A. (1991). 'Social cognitive theory of self-regulation', Organizational Behavior and Human Decision Processes 50(2). · Burke, L. E., Wang, J., Sevick, M. A. (2011). 'Self-monitoring in weight loss', Journal of the American Dietetic Association 111(1). Bilişsel-davranışsal terapide self-monitoring tekniği." },
+   { t: "Şefaat Hattı — Hukuki Dayanak", a: "Anayasa Madde 26 (ifade), AİHS Madde 10 (bilgi yayma özgürlüğü), 6502 Sayılı Tüketicinin Korunması Hakkında Kanun (bilinçli tüketim aktarımı). Sayaç yerel; karşı taraf bilgisi tutulmaz." },
+   { t: "Selâm / Yâd / Hediye Bildirimleri — Hukuki Dayanak", a: "KVKK 6698 Madde 5 (kullanıcı rızası ve kontrolü) — bildirimler kullanıcı tarafından geri buton ile kapatılabilir. İçerikler kamuya açık dini-edebî kaynakların kültürel aktarımıdır; tıbbi tavsiye veya dini fetva niteliği taşımaz." },
+   { t: "Mensubiyet Tescili — Hukuki Dayanak", a: "KVKK 6698 Madde 3 'anonimleştirilmiş veri' tanımı: cihazın ilk açılış zaman damgasından deterministik olarak türetilen sembolik göstergedir, sunucu kaydı veya gerçek üyelik listesi değildir. Hicri dönüşüm: Tabular Islamic Calendar (Microsoft MEPD uygulaması — Rob van Gent, Utrecht University)." },
+   { t: "Vakar Evrimi — Standart Dayanak", a: "W3C WCAG 2.1 AA · Success Criterion 1.4.3 'Contrast (Minimum)'. Mertebe yükselişinde yalnız görsel hiyerarşi değişir; içerik ve kontrast oranları korunur." },
+   { t: "Hatm-i Nöbet — Bilimsel Dayanak", a: "Lally, P., van Jaarsveld, C. H. M., Potts, H. W. W., Wardle, J. (2010). 'How are habits formed: Modelling habit formation in the real world', European Journal of Social Psychology 40(6). KVKK kapsamı: yalnız local timestamp; sağlık, konum veya cihaz parmak izi içermez." },
+   { t: "Liyakat Sıralaması / Hekimbaşı Yorumları / Mahalle Haritası — YAKINDA", a: "Bu özellikler aktif olduğunda kullanıcı katkıları topluluk standartlarına ve mevzuata uygun denetimden geçecek; iftira/hakaret (TCK 125-267) kapsamına girebilecek içerikler kaldırılacak. Aktif edilmeden önce ayrı bir kullanım sözleşmesi sunulacaktır." },
+ ],
+ },
+ hizmetler: {
+ ikon: "", renk: "#2563EB",
+ baslik: "Hizmetlerin Bilimsel Dayanağı",
+ ozet: "24 modül · kanıtlı / tartışmalı / sözde-bilim ayrımıyla",
+ items: [
+ { t: "■ KANITLI · Görüntülü Uzman (telesağlık)", a: "Telesağlık üzerinden beslenme/diyet konsültasyonu RKÇ meta-analizleriyle etkili bulunmuştur.\n• Cost-effectiveness of telehealth-delivered nutrition interventions — Nutrition Reviews\n https://academic.oup.com/nutritionreviews/article/81/12/1599/7103510" },
+ { t: "■ KANITLI · Uyku Kalkanı", a: "REM uykusu ve uyku hijyeni NIH/CDC tarafından belgelenmiş, halk sağlığı kanıtı güçlü.\n• Sleep Hygiene Review — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC4400203/\n• Healthy Sleep — NIH MedlinePlus\n https://medlineplus.gov/healthysleep.html" },
+ { t: "■ KANITLI · Evliya Çelebi Rotası", a: "Evliya Çelebi'nin Seyahatname'si Osmanlı şifahaneleri için akademik olarak iyi belgelenmiş tarihsel kaynaktır.\n• Evliya Çelebi'nin Şifahaneleri — Coşkun Yılmaz\n https://www.academia.edu/31381713/Evliya_%C3%87elebinin_%C5%9Eifahaneleri\n• University of Chicago — Historians of the Ottoman Empire\n https://ottomanhistorians.uchicago.edu/en/historian/evliya-celebi" },
+ { t: "■ KANITLI · Zihni İnşa (ekran zamanı)", a: "Aşırı ekran zamanının çocuk bilişsel/sosyal gelişimine olumsuz etkisi AAP ve WHO tarafından kabul edilmiştir.\n• Impact of Screen Time on Development — MDPI Children 2025\n https://www.mdpi.com/2227-9067/12/10/1297\n• APA — What do we really know about kids and screens?\n https://www.apa.org/monitor/2020/04/cover-kids-screens" },
+ { t: "■ KANITLI · Ses Frekans Analizi (voice biomarker)", a: "Ses biyobelirteçleri ile Parkinson/depresyon tespiti aktif ve güçlü literatüre sahip. NOT: 'sesten mizaç' iddiasının doğrudan kanıtı yoktur.\n• Voice-Based Detection of Parkinson's — PMC sistematik inceleme\n https://pmc.ncbi.nlm.nih.gov/articles/PMC12649940/" },
+ { t: "■ KANITLI · Duygusal Nabız (HRV)", a: "HRV otonom sinir sistemi için güvenilir, hakemli biyobelirteç. Düşük HRV stres ve kardiyovasküler mortalite ile ilişkili.\n• ARIC Study — Journal of the AHA\n https://www.ahajournals.org/doi/10.1161/JAHA.120.017172\n• Low HRV Predicts CHD — Circulation (AHA)\n https://www.ahajournals.org/doi/10.1161/01.cir.102.11.1239" },
+ { t: "■ KANITLI · Dijital Burun (e-nose)", a: "Nefes VOC analizi akciğer kanseri, diyabet gibi durumlarda non-invaziv erken tespit için aktif araştırma alanı.\n• E-nose Technology in Breath Analysis — Nature (Microsystems & Nanoeng.)\n https://www.nature.com/articles/s41378-023-00594-0\n• Lung Cancer Detection by Breath Sensor Array — AJRCCM\n https://www.atsjournals.org/doi/10.1164/rccm.200409-1184OC" },
+ { t: "▲ TARTIŞMALI · Şifalı Market", a: "Organik gıdanın pestisit maruziyetini azalttığı kanıtlı; doğrudan hastalık önleme etkisi tutarsız.\n• Effects of organic food on human health — Nutrition Reviews 2024\n https://academic.oup.com/nutritionreviews/article/82/9/1151/7334529\n• Am J Clin Nutr sistematik inceleme\n https://pubmed.ncbi.nlm.nih.gov/20463045/\n\n📖 İSLÂMÎ DAYANAK:\n• Bakara 168: \"Ey insanlar! Yeryüzünde bulunan helâl ve temiz (tayyibât) şeylerden yiyin.\"\n• Abese 24: \"İnsan yediğine bir baksın!\"" },
+ { t: "▲ TARTIŞMALI · Türk Müzik Makamları", a: "Küçük ölçekli klinik çalışmalar makamların HRV/anksiyete üzerine etkisini gösteriyor. Burç/mizaç eşleştirmesi için bilimsel temel yok.\n• Music Therapy YBÜ hastaları (Nihavend) — Turkish J Intensive Care\n https://turkishjic.org/article/view/565\n• Music Therapy Among the Turks — Turkish Music Portal\n http://www.turkishmusicportal.org/en/articles/music-therapy-among-the-turks\n\n📖 İSLÂMÎ DAYANAK:\n• Sebe 10: \"Ey dağlar! Onunla (Davud aleyhisselâm ile) beraber tesbih edin, kuşlar da!\"\n• Müzzemmil 4: \"Kur'an'ı tertîl ile (tane tane, makamla) oku.\"" },
+ { t: "▲ TARTIŞMALI · Şadırvân-ı Şifa", a: "Edirne II. Bayezid Darüşşifası'nda su+müzik tedavisi tarihsel olarak iyi belgelenmiş. Modern doğa sesi/müzik tedavisi etkinliği sınırlı kanıtla destekleniyor.\n• Bayezid II Darüşşifa Reconsideration — PMC\n https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5450856/\n• Harmonic Healing Houses of Turkey — British Psychological Society\n https://www.bps.org.uk/psychologist/harmonic-healing-houses-turkey\n\n📖 İSLÂMÎ DAYANAK:\n• Enbiya 30: \"Her canlıyı sudan yarattık.\"\n• İsra 82: \"Biz Kur'an'dan, mü'minler için şifa ve rahmet olan şeyler indiriyoruz.\"" },
+ { t: "▲ TARTIŞMALI · Eşref Saatleri", a: "Sirkadiyen ritim 2017 Nobel Tıp ile bilimsel kanıtlanmış. Ancak TCM 'organ saatleri' Batılı bilim tarafından doğrulanmamıştır.\n• 2017 Nobel — Circadian Rhythm — NobelPrize.org\n https://www.nobelprize.org/prizes/medicine/2017/advanced-information/\n• Circadian Clock in Cardiovascular Disease — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC6012474/\n\n📖 İSLÂMÎ DAYANAK:\n• Nisa 103: \"Şüphesiz ki namaz, müminler üzerine vakitleri belirli olarak farz kılınmıştır.\"" },
+ { t: "▲ TARTIŞMALI · Milli Tohum", a: "Atalık tohumların beslenme üstünlüğü kanıtlanmamış. Onaylı GDO'ların gıda güvenliği bilimsel konsensüsle kabul edilir. Genetik çeşitlilik/yerel adaptasyon açısından atalık tohumların ekolojik değeri tartışılmaz.\n• GMO Plants: Nutritious, Sustainable — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC7549299/\n• Heirloom, Hybrid, GMO — University of Guam Extension\n https://www.uog.edu/_resources/files/extension/publications/Understanding_GMO.pdf\n\n📖 İSLÂMÎ DAYANAK:\n• Bakara 168: \"Yeryüzünde bulunan helâl ve temiz (tayyibât) şeylerden yiyin.\"\n• Abese 24-27: \"İnsan yediğine bir baksın! Biz suyu döktükçe döktük, sonra toprağı yardıkça yardık, derken orada taneler bitirdik.\"" },
+ { t: "▲ TARTIŞMALI · Koku Takvimi (aromaterapi)", a: "Aromaterapinin post-operatif/jinekolojik ağrıda etkili olduğuna dair meta-analiz var; çoğu durum için kanıt zayıf. Gezegen saatine göre yağ kullanımının bilimsel temeli YOKTUR.\n• Aromatherapy Evidence Map — VA / NCBI\n https://www.ncbi.nlm.nih.gov/books/NBK551020/\n• Aromatherapy Pain Meta-Analysis — PMC\n https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5192342/\n\n📖 İSLÂMÎ DAYANAK:\n• Hadis (Nesai, İşretü'n-Nisâ): Rasûlullah (s.a.v.) buyurdu: \"Bana dünyanızdan kadın ve güzel koku sevdirildi, namaz da gözümün nuru kılındı.\"" },
+ { t: "▲ TARTIŞMALI · Yıldız Saati (hacamat + ay fazı)", a: "Hacamat ağrıda sınırlı etkinlik gösteriyor (kanıt kalitesi düşük). Ay fazının cerrahi sonuçlara etkisi bilimsel olarak ÇÜRÜTÜLMÜŞTÜR.\n• Hijama Review — Wiley\n https://onlinelibrary.wiley.com/doi/10.1111/j.2042-7166.2010.01060.x\n• Lunar Phases & Surgery — World J Surg\n https://pubmed.ncbi.nlm.nih.gov/21713579/\n\n📖 İSLÂMÎ DAYANAK (sadece hacamat için):\n• Buhari, Tıb 3: \"Şifa üç şeydedir: bal şerbeti içmek, hacamat yaptırmak ve ateşle dağlamak. Ama ben ümmetimi dağlamaktan menederim.\"\n• Ay fazı ile hacamat vakti eşleştirmesinin doğrudan ayet/hadis kaynağı bulunmamıştır." },
+ { t: "▲ TARTIŞMALI · Biyo-Foton Kamera", a: "Ultra-zayıf foton emisyonu (UPE) gerçek biyofizik. ANCAK Kirlian/GDV cihazlarıyla 'aura okuma' bilimsel olarak çürütülmüş — gözlenen korona nem ve elektrik iletkenliğinden kaynaklanır.\n• Ultra-weak Photon Emission Review — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC10899412/\n• GDV/Bio-Well Unreliability — Researcher.Life\n https://discovery.researcher.life/article/unreliability-of-the-gas-discharge-visualization-gdv-device-and-the-bio-well-for-biofield-science-kirlian-photography-revisited-and-investigated-part-i/54ab77cbc05c3a198af325b5ac26a4ae\n\n📖 İSLÂMÎ DAYANAK:\n• Nur 35: \"Allah göklerin ve yerin nurudur...\"" },
+ { t: "▲ TARTIŞMALI · Akıllı Bahçe (nutrigenomik)", a: "Genotipe dayalı kişiselleştirilmiş beslenme umut verici ancak RKÇ kanıtı tutarsız. 'Mizaca göre tohum' iddiasının bilimsel temeli YOKTUR.\n• Genotype-Based Nutritional Supplementation — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC9500586/\n• Scientific Validity Frameworks in Nutritional Genomics — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC8728558/\n\n📖 İSLÂMÎ DAYANAK:\n• En'am 99: \"O, gökten su indirendir. Onunla her şeyin bitkisini çıkardık.\"\n• Bakara 168: \"Yeryüzünde bulunan helâl ve temiz şeylerden yiyin.\"" },
+ { t: "▲ TARTIŞMALI · EMF Kalkanı", a: "WHO/IARC cep telefonu RF-EMF'yi Grup 2B (olası kanserojen) sınıflandırdı — kanıt SINIRLI. 5G/Wi-Fi paniğinin WHO pozisyonundan farklı olduğu unutulmamalıdır.\n• IARC RF-EMF Classification (WHO)\n https://www.iarc.who.int/wp-content/uploads/2018/07/IARC_Mobiles_QA.pdf\n• WHO — EMF and Mobile Technology\n https://www.who.int/india/health-topics/electromagnetic-fields\n\n📖 İSLÂMÎ DAYANAK:\nElektromanyetik kirlilik, 1400 yıl önce var olmayan modern bir olgudur. Bu konuda doğrudan ayet veya hadis kaynağı bulunmamıştır. Genel sağlık prensibi olarak: Buhari (Tıb 1) — \"Allah hiçbir hastalık indirmedi ki şifasını da indirmiş olmasın.\"" },
+ { t: "▲ TARTIŞMALI · Dopamin Skoru", a: "Ultra-işlenmiş gıdaların ödül sistemine etkisine dair kanıt artıyor; ancak güncel nörogörüntüleme çalışmaları basit 'dopamin hijack' modeline meydan okuyor.\n• UPF Milkshake Dopamine Response — Cell Metabolism 2025\n https://www.cell.com/cell-metabolism/abstract/S1550-4131(25)00060-9\n• UPF and Brain Development — Frontiers in Public Health\n https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2025.1590083/full\n\n📖 İSLÂMÎ DAYANAK:\n• Araf 31: \"Yiyin, için, fakat israf etmeyin. Çünkü Allah israf edenleri sevmez.\"\n• Hadis (Tirmizi, Zühd 47): \"İnsanoğlu midesinden daha kötü bir kap doldurmamıştır.\"" },
+ { t: "▲ TARTIŞMALI · İlm-i Nabız", a: "İbn Sina'nın nabız parametreleri tıp tarihi açısından önemli. Modern tıpta nabız (hız/ritim/güç) tanı amaçlı kullanılır. ANCAK Safravi/Demevi/Balgami sınıflandırması humoral teoriye dayalıdır ve modern tanı geçerliliği yoktur.\n• Sphygmology of Ibn Sina — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC3969630/\n• Ibn Sina — Heart Views (peer-reviewed)\n https://journals.lww.com/hrtv/fulltext/2013/14040/the_air_of_history__part_v__ibn_sina__avicenna__.18.aspx\n\n📖 İSLÂMÎ DAYANAK:\n• Buhari, Tıb 1: \"Allah hiçbir hastalık indirmedi ki şifasını da indirmiş olmasın.\"\n• Ebu Davud, Tıb 1: \"Ey Allah'ın kulları! Tedavi olun; çünkü Allah ihtiyarlık dışında her hastalığın şifasını da indirmiştir.\"" },
+ { t: "■ ÇOK KATMANLI KANIT · Râbıta-i Şifa", a: "Bu modülün 3 ayrı kanıt katmanı vardır:\n\n— KATMAN 1: PLASEBO/TELKİN ETKİSİ (PEER-REVIEWED BİLİM, KANITLI)\n\nPlasebo (ve Nosebo) Etkisi: Size söylenen telkinlerin iyileşeceğinize dair umut vermesi (plasebo) şifa sürecini hızlandırabilir. Tersine, olumsuz ve karamsar kelimeler (nosebo) hastalık belirtilerinin daha ağır yaşanmasına neden olabilir.\n\nStres Yönetimi: \"Asla iyileşemeyeceğim\" veya \"Bu çok kötü\" gibi kalıplar, vücutta kortizol seviyesini yükselterek bağışıklık sistemini zayıflatır.\n\nAlgı ve İletişim: Uzmanların (doktorların ve psikologların) kullandığı kelimeler, hastaların tedaviye uyumunu ve hastalıkla psikolojik savaşını doğrudan belirler.\n\nKişinin kendi inancı, umudu ve olumlu telkininin beyin kimyasını ve iyileşmeyi etkilediği yüzlerce çalışmayla kanıtlandı.\n• Kaptchuk TJ et al. (Harvard) — \"Placebos without Deception: A Randomized Controlled Trial in IBS\" — PLoS ONE 2010 (Açık etiketli plasebo bile etki gösterdi!)\n https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015591\n• Wager TD & Atlas LY — \"The Neuroscience of Placebo Effects\" — Nature Reviews Neuroscience 2015 (Plasebo beyin görüntüleme nörobiyolojisi)\n https://www.nature.com/articles/nrn3976\n• TRT Haber — \"Kelimelerin gücü beynimizin kimyasını değiştiriyor\"\n https://www.trthaber.com/haber/yasam/kelimelerin-gucu-beynimizin-kimyasini-degistiriyor-897746.html\n\n— KATMAN 2: ÜÇÜNCÜ TARAF DUASI (BİLİM SEVİYESİNDE DOĞRULANAMADI)\nCochrane sistematik incelemesi (10 çalışma, 7.646 hasta) bir başkası adına yapılan duanın ölçülebilir klinik etkisini gösteremedi — ama 'etkisiz' diye de mahkum etmedi, ölçüm aracının yetersizliği vurgulandı.\n• Cochrane Review — Intercessory Prayer\n https://www.cochrane.org/CD000368/SCHIZ_intercessory-prayer-for-the-alleviation-of-ill-health\n\n— KATMAN 3: KUR'AN VE SÜNNET (KESİN VAHİY DELİLİ)\n• Bakara 186: \"Kullarım sana benden sorarlarsa, gerçekten ben yakınım. Bana dua edenin duasına icabet ederim.\"\n• Şuara 80 (İbrahim aleyhisselâm): \"Hastalandığım zaman, ancak O bana şifa verir.\"\n• İsra 82: \"Biz Kur'an'dan, mü'minler için şifa ve rahmet olan şeyler indiriyoruz.\"\n• Yunus 57: \"Size Rabbinizden bir öğüt, sinelerdekine bir şifa gelmiştir.\"\n• Tirmizi (Daavat 1): \"Dua ibadetin özüdür.\"\n• Müslim (Birr 86): \"Müslüman kardeşi için gıyabında yapılan dua kabul olunur. Başucundaki melek 'Âmin, sana da aynısı verilsin' der.\"\n\nSONUÇ: Plasebo bilim, üçüncü taraf duası bilim ölçemediği için 'doğrulanmadı'; ama kişinin kendi inancı/telkini ve vahiy kaynağı kesin. 'Ben iyiyim' demek (olumlu telkin) modern nörobilimde sinir kimyasını değiştiriyor — bu Cochrane'in araştırdığı şey değildir." },
+ { t: "✕ SÖZDE-BİLİM · Burçlar & Mizaç", a: "Dört hılt (humoral) teorisi 19. yüzyıl germ teorisi ile çürütüldü. Tıp tarihi açısından önemli ama modern tıbbi tanı değeri yoktur. Astroloji-organ eşleştirmesinin bilimsel desteği yoktur.\n• Medicine from Galen to the Present — PMC\n https://pmc.ncbi.nlm.nih.gov/articles/PMC8939383/\n• The Humoral Theory: Beginning and Development\n https://www.academia.edu/45711250/The_Humoral_Theory_beginning_and_development" },
+ { t: "✕ SÖZDE-BİLİM · Göz ve Yüz Analizi (iridoloji)", a: "İridoloji bilim camiası tarafından sahte bilim kabul edilir. Çift-kör kontrollü çalışmalar tanı değeri olmadığını göstermiştir.\n• Iridology Systematic Review — PubMed\n https://pubmed.ncbi.nlm.nih.gov/10213874/\n• Iridology is Nonsense — Quackwatch\n https://quackwatch.org/related/iridology/" },
+ { t: "✕ SÖZDE-BİLİM · Toprak Frekansı (jeopatik stres)", a: "Schumann rezonansı gerçek atmosferik fizik; biyolojik etkileri için kanıt tutarsız. 'Jeopatik stres' kavramı sahte bilim — WHO tanımıyor, dowsing yöntemi doğrulanmadı.\n• Geopathology (sahte bilim sınıflandırması özeti)\n https://en.wikipedia.org/wiki/Geopathology\n• Schumann Resonance & Bioelectricity — PubMed\n https://pubmed.ncbi.nlm.nih.gov/40394813/" },
+ { t: "✕ SÖZDE-BİLİM · Sesin Rengi (çakra eşleştirme)", a: "Voice biomarker sağlık tespiti BİLİMSEL. ANCAK 'çakra' kavramı ve ses ile çakra/organ tıkanıklığı eşleştirmesi sahte bilimdir — anatomik veya fizyolojik temeli yoktur.\n• Is there scientific evidence for chakras? — ResearchGate\n https://www.researchgate.net/publication/359774235_Is_there_scientific_evidence_for_chakras\n• Voice Biomarker (gerçek bilim, çakra değil) — MDPI Bioengineering\n https://www.mdpi.com/2306-5354/12/11/1279" },
+ { t: "Yöntem & Sorumluluk", a: "Tüm 24 modülün durumu Cochrane, NIH/PMC, AHA, WHO/IARC, Nature, Cell, Nobel Prize ve hakemli dergilerden doğrulanmıştır. Tahmin yapılmamıştır. 'Sözde-bilim' işaretli modüller uygulamada yer alıyorsa kültürel/tarihsel bilgi amaçlıdır — TIBBİ TANI veya TEDAVİ değildir." },
  ],
  },
 };
@@ -3884,16 +4023,21 @@ function ToplulugaKatki({ taramaSayisi }) {
  <>
  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
  {KATEGORI.map(k => (
- <button key={k.k} onClick={() => setSecilen(k.k)} style={{ background: secilen === k.k ? k.renk + "22" : C.y, border: `2px solid ${secilen === k.k ? k.renk : C.s}`, borderRadius: 12, padding: "12px 8px", cursor: "pointer", textAlign: "left", fontFamily: "Georgia,serif" }}>
+ <button key={k.k} onClick={() => setSecilen(k.k)} style={{ background: secilen === k.k ? k.renk + "22" : C.y, border: `2px solid ${secilen === k.k ? k.renk : C.s}`, borderRadius: 12, padding: "12px 8px", cursor: "pointer", textAlign: "left", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
  <div style={{ color: secilen === k.k ? k.renk : C.metin, fontWeight: 700, fontSize: 13 }}>{k.baslik}</div>
  <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>{k.aciklama}</div>
  </button>
  ))}
  </div>
+ <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", marginBottom: 10 }}>
+   <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, marginBottom: 2 }}>✉ İletişim</div>
+   <a href="mailto:besindedektifii@gmail.com" style={{ color: C.metin, fontSize: 13, textDecoration: "none" }}>besindedektifii@gmail.com</a>
+   <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>48 saat içinde yanıtlanır.</div>
+ </div>
  {secilen && (
  <>
- <textarea placeholder={`${KATEGORI.find(k => k.k === secilen)?.baslik} hakkında detay yaz...`} value={mesaj} onChange={e => setMesaj(e.target.value)} rows={3} style={{ width: "100%", background: C.y, border: `1px solid ${C.altin}50`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 13, fontFamily: "Georgia,serif", resize: "none", marginBottom: 8, outline: "none" }} />
- <button onClick={gonder} disabled={!mesaj.trim()} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", opacity: mesaj.trim() ? 1 : 0.4 }}>
+ <textarea placeholder={`${KATEGORI.find(k => k.k === secilen)?.baslik} hakkında detay yaz...`} value={mesaj} onChange={e => setMesaj(e.target.value)} rows={3} style={{ width: "100%", background: C.y, border: `1px solid ${C.altin}50`, borderRadius: 10, padding: "10px 12px", color: C.metin, fontSize: 13, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", resize: "none", marginBottom: 8, outline: "none" }} />
+ <button onClick={gonder} disabled={!mesaj.trim()} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", opacity: mesaj.trim() ? 1 : 0.4 }}>
  Gönder →
  </button>
  </>
@@ -3917,6 +4061,47 @@ function ToplulugaKatki({ taramaSayisi }) {
    ══════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════
+   ORGAN DESTEK VERİTABANI
+   ══════════════════════════════════════════════ */
+// Etkilenen organa göre bitkisel/doğal destek önerileri
+// Kaynaklar: İbn Sina Kanun, fitoterapi literatürü, EFSA bitkisel
+const ORGAN_DESTEK = {
+  "Karaciğer": { bitki: "Enginar yaprağı, Deve dikeni (silymarin), Zerdeçal, Pancar suyu", not: "Detoks için 10 gün enginar kürü; yemekten önce 1 fincan." },
+  "Böbrek": { bitki: "Maydanoz suyu, Karahindiba, Mısır püskülü, Bol ılık su", not: "Sabah aç karna 1 demet maydanoz çayı; günde 2 lt su." },
+  "Akciğer": { bitki: "Hatmi kökü, Ada çayı, Bal + taze limon, Zerdeçal sütü", not: "Sıcak buhar inhalasyonu + boğmaca otu çayı; sigara bırakma şart." },
+  "Kalp": { bitki: "Alıç çayı, Sarımsak (çiğ), Soğuk sıkım zeytinyağı, Magnezyum", not: "Akşam 1 fincan alıç; haftada 3 gün balık (omega-3)." },
+  "Damarlar": { bitki: "Sarımsak, Zencefil, At kestanesi, K2 vitamini (tereyağı)", not: "Sabah aç karna 1 diş sarımsak + 1 yk zeytinyağı." },
+  "Mide": { bitki: "Rezene, Anason, Zencefil, Probiyotik yoğurt", not: "Yemekten sonra rezene çayı; ekşime için karbonatlı su değil, anason." },
+  "Bağırsak": { bitki: "Ev mayalı yoğurt, Kefir, Keten tohumu, Yulaf lifi", not: "Günde 2 kase ev yoğurt + 1 yk keten tohumu; bol lifli sebze." },
+  "Pankreas": { bitki: "Tarçın, Çörek otu, Ceviz, Yeşil çay", not: "Sabah çörek otu yağı 1 tk; tatlıdan uzak dur, kan şekeri düzenler." },
+  "Tiroid": { bitki: "Brezilya cevizi (selenyum), Yosun (iyot), Çörek otu", not: "Günde 2 Brezilya cevizi yeterli; aşırı soya yok." },
+  "Hormonal Sistem": { bitki: "Çuha çiçeği yağı, Ada çayı (kadın), Çörek otu (erkek)", not: "Plastik ambalajdan uzak dur — endokrin bozucu." },
+  "Bağışıklık": { bitki: "Karaağaç, Ekinezya, C vitamini (kuşburnu), Ham bal, Propolis", not: "Sabah 1 tk propolis + ılık su; D vitamini düzeyini kontrol ettir." },
+  "Cilt": { bitki: "Aloe vera jeli, Soğuk sıkım zeytinyağı, E vitamini (badem), Çinko (kabak çekirdeği)", not: "Bol su + dengeli omega-3; sabunlu temizleyiciden kaçın." },
+  "Beyin": { bitki: "Yaban mersini, Ceviz, Somon (omega-3), Biberiye", not: "Haftada 3 gün balık; biberiye çayı hafızaya iyi gelir." },
+  "Sinir Sistemi": { bitki: "Melisa, Lavanta, Pasiflora, Magnezyum (kabak çekirdeği)", not: "Akşam 1 fincan melisa çayı; kafeini öğleden sonra kes." },
+  "Kan": { bitki: "Pancar suyu, Ispanak, Kuru kayısı, Pekmez", not: "Demir eksikliği için sabah 1 yk pekmez + 1 limon (C vit emilim)." },
+  "Kemik": { bitki: "Susam, Pekmez, Tahin, D vitamini (güneş)", not: "Günde 2 yk tahin-pekmez; günlük 15 dk güneş." },
+  "Kaslar": { bitki: "Magnezyum, Potasyum (muz, hurma), Protein (yumurta, et)", not: "Egzersiz sonrası muz; gece magnezyum kas spazmını önler." },
+  "Hücre": { bitki: "Zerdeçal, Yeşil çay, Yaban mersini, Karadut", not: "Antioksidan: günde 2 fincan yeşil çay + zerdeçallı süt." },
+};
+
+// Sonuç maddesinin etkilediği organlara göre destek önerilerini topla
+function organDestekToparla(organlar) {
+  if (!organlar || organlar.length === 0) return null;
+  const bulunan = [];
+  organlar.forEach(org => {
+    const anahtar = Object.keys(ORGAN_DESTEK).find(k =>
+      org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase())
+    );
+    if (anahtar && !bulunan.find(b => b.organ === anahtar)) {
+      bulunan.push({ organ: anahtar, ...ORGAN_DESTEK[anahtar] });
+    }
+  });
+  return bulunan.slice(0, 2); // En fazla 2 organ göster, kalabalık olmasın
+}
+
+/* ══════════════════════════════════════════════
    DOĞAL TARİF VERİTABANI
    ══════════════════════════════════════════════ */
 const DOGAL_TARIF = {
@@ -3936,6 +4121,43 @@ const DOGAL_TARIF = {
   "boyar": { baslik: "Doğal Meyveli Gummies", sure: "15 dk", malzeme: ["Taze meyve suyu 200ml","Jelatin 2 yemek kaşığı","Bal 1 yemek kaşığı"], adimlar: "Jelatin meyve suyunda eritin, bal ekleyin, kalıplara dökün, 1 saat buzdolabında bekletin." },
   "kafein": { baslik: "Melisa Limonata", sure: "5 dk", malzeme: ["Taze melisa 10 yaprak","Su 500ml","Limon suyu 1 adet","Bal"], adimlar: "Melisayı demleyin, soğutun, limon ve bal ekleyin." },
   "nitrit": { baslik: "Ev Pastırmalı Yumurta", sure: "10 dk", malzeme: ["Yumurta 2 adet","Pastırma (gerçek, katkısız) 50g","Zeytinyağı"], adimlar: "Pastırmayı soteleyin, üstüne yumurta kırın, pişirin." },
+  "kola": { baslik: "Ev Limonatası (Karbondioksitsiz)", sure: "5 dk", malzeme: ["Taze limon 3 adet","Su 1 litre","Bal veya hurma şurubu 2 yemek kaşığı","Nane yaprak"], adimlar: "Limon suyunu sıkın, suyla karıştırın, bal ile tatlandırın, nane ekleyin, buzlu servis edin." },
+  "gazlı": { baslik: "Doğal Komposto", sure: "10 dk", malzeme: ["Mevsim meyvesi 500g","Su 1 litre","Bal 2 yemek kaşığı"], adimlar: "Meyveyi suyla 8 dk kaynatın, soğutun, bal ekleyin, buzdolabında bekletin." },
+  "sucuk": { baslik: "Geleneksel Ev Sucuğu", sure: "7 gün kurutma", malzeme: ["Dana eti 1kg","Sarımsak 1 baş","Çemen otu, kimyon, kırmızı biber","Tuz (nitritsiz)"], adimlar: "Eti çekin, baharatlarla yoğurun, doğal bağırsağa doldurun, serin yerde 7 gün kurutun. Nitrit eklenmez." },
+  "salam": { baslik: "Ev Tavuk Jambonu", sure: "1 saat", malzeme: ["Tavuk göğüs 500g","Tuz, karabiber, sarımsak","Defne yaprağı"], adimlar: "Tavuğu baharatlayın, alüminyum folyoya sarın, 90°C'de 1 saat fırınlayın. Soğuyunca dilimleyin." },
+  "jambon": { baslik: "Ev Jambon", sure: "2 saat", malzeme: ["Hindi göğüs 1kg","Tuz, karabiber, rezene, defne"], adimlar: "Eti baharatlayın, düşük sıcaklıkta (100°C) 2 saat pişirin, soğuyunca buzdolabında saklayın." },
+  "çikolata": { baslik: "Ev Kakao Topları", sure: "15 dk", malzeme: ["Saf kakao tozu 3 yk","Hindistan cevizi yağı 2 yk","Bal 2 yk","Ceviz/badem"], adimlar: "Eritilmiş yağa kakao ve bal karıştırın, kuruyemiş ekleyin, küçük toplar yapın, dondurun." },
+  "kakao": { baslik: "Sıcak Çikolata (Doğal)", sure: "5 dk", malzeme: ["Saf kakao 1 yk","Süt 250ml","Bal 1 yk","Tarçın"], adimlar: "Sütü ısıtın, kakao ve bal ekleyin, çırpın, tarçınla servis edin." },
+  "peynir": { baslik: "Ev Lor Peyniri", sure: "20 dk", malzeme: ["Süt 1 litre","Limon suyu 3 yk","Tuz"], adimlar: "Sütü kaynatın, limon suyu ekleyip kesilmesini bekleyin, süzgeçten geçirin, tuz katın." },
+  "yoğurt": { baslik: "Ev Mayalı Yoğurt", sure: "8 saat", malzeme: ["Tam yağlı süt 1 litre","Doğal yoğurt 1 yk maya"], adimlar: "Sütü 85°C'ye ısıtın, 45°C'ye soğutun, mayayı ekleyin, sıcak yerde 6-8 saat bekletin." },
+  "süt": { baslik: "Ev Yapımı Badem Sütü", sure: "15 dk", malzeme: ["Badem 1 su bardağı","Su 1 litre","Hurma 2 adet (opsiyonel)"], adimlar: "Bademi gece ıslatın, suyla blenderden geçirin, süzün, hurma ile tatlandırın." },
+  "gofret": { baslik: "Ev Yulaflı Bar", sure: "20 dk", malzeme: ["Yulaf 1 sb","Bal 3 yk","Fıstık ezmesi 2 yk","Kuru meyve"], adimlar: "Malzemeleri karıştırın, tepsiye yayın, 180°C'de 15 dk pişirin, soğuyunca kesin." },
+  "kek": { baslik: "Hurmalı Tam Buğday Kek", sure: "40 dk", malzeme: ["Tam buğday unu 2 sb","Hurma püresi 1 sb","Yumurta 3 adet","Tereyağı 100g","Karbonat 1 tk"], adimlar: "Yaş malzemeleri karıştırın, una ekleyin, 180°C'de 30 dk pişirin." },
+  "bisküvi": { baslik: "Ev Yulaflı Kurabiye", sure: "25 dk", malzeme: ["Yulaf 1 sb","Tam buğday unu yarım sb","Muz 1 adet","Tarçın, ceviz"], adimlar: "Muz ezilip diğer malzemelerle karıştırılır, top yapılır, 180°C'de 15 dk pişirilir." },
+  "krem": { baslik: "Ev Doğal Yüz Kremi", sure: "10 dk", malzeme: ["Hindistan cevizi yağı 2 yk","Shea yağı 1 yk","E vitamini 5 damla","Lavanta yağı 3 damla"], adimlar: "Yağları benmari usulü eritin, soğurken çırpın, küçük kavanoza alın." },
+  "şampuan": { baslik: "Bitkisel Şampuan", sure: "5 dk", malzeme: ["Kastil sabun 100ml","Hindistan cevizi yağı 1 yk","Lavanta veya biberiye yağı 10 damla","Su 100ml"], adimlar: "Malzemeleri pompalı şişeye karıştırın. Saç tipinize göre yağ oranını ayarlayın." },
+  "sabun": { baslik: "Kastil Sabun (Sade)", sure: "1 gün kurutma", malzeme: ["Zeytinyağı 500ml","Su 200ml","Doğal kostik (NaOH) 70g","Lavanta yağı"], adimlar: "DİKKAT: NaOH suya yavaşça eklenir (tersi değil). Yağa katılır, kıvam alınca kalıba dökülür, 4 hafta kurutulur." },
+  "diş macunu": { baslik: "Karbonatlı Diş Macunu", sure: "3 dk", malzeme: ["Karbonat 2 yk","Hindistan cevizi yağı 2 yk","Nane yağı 5 damla"], adimlar: "Yağı eritin, karbonat ve nane ekleyin, küçük kavanoza alın. Diş fırçasına az miktarda alıp kullanın." },
+  "deodorant": { baslik: "Doğal Deodorant", sure: "5 dk", malzeme: ["Karbonat 2 yk","Mısır nişastası 2 yk","Hindistan cevizi yağı 3 yk","Çay ağacı yağı 5 damla"], adimlar: "Yağ eritip diğerleriyle karıştırın, küçük şişeye alın." },
+  "tereyağı": { baslik: "Ev Tereyağı", sure: "15 dk", malzeme: ["Tam yağlı krema 500ml","Tuz (opsiyonel)"], adimlar: "Kremayı mikserde 10-15 dk çırpın, tereyağı ve ayran ayrışır. Tereyağını soğuk suyla yıkayın, kalıba alın." },
+  "bal": { baslik: "Limonlu Bal Karışımı", sure: "2 dk", malzeme: ["Ham bal 1 yk","Taze limon suyu 1 yk","Sıcak su 200ml","Tarçın"], adimlar: "Sıcak suya bal ve limon ekleyin, karıştırın. Sabah aç karna için." },
+  "reçel": { baslik: "Şekersiz Ev Reçeli", sure: "30 dk", malzeme: ["Taze meyve 500g","Hurma 5-6 adet (tatlandırıcı)","Limon suyu 1 yk"], adimlar: "Meyveleri hurma ile kaynatın, blenderden geçirin, 15 dk daha kısık ateşte pişirin, kavanozlayın." },
+  "tuzlu balık": { baslik: "Fırın Mevsim Balığı", sure: "20 dk", malzeme: ["Taze balık 2 adet","Limon, zeytinyağı","Maydanoz, tuz, karabiber"], adimlar: "Balığı baharatlayın, alüminyum folyoya sarın, 200°C'de 15 dk pişirin." },
+  "tavuk": { baslik: "Köy Tavuğu Sote", sure: "25 dk", malzeme: ["Organik tavuk 500g","Soğan, sarımsak","Domates 2 adet","Zeytinyağı, baharat"], adimlar: "Soğanı yağda kavurun, tavuğu ekleyin, domatesle 20 dk pişirin." },
+  "ekmek": { baslik: "Ev Ekşi Maya Ekmeği", sure: "1 gün", malzeme: ["Tam buğday unu 500g","Su 350ml","Ekşi maya 100g","Tuz"], adimlar: "Malzemeleri yoğurun, 8 saat dinlendirin, şekil verin, 230°C'de 35 dk pişirin." },
+  "yumuşatıcı": { baslik: "Sirkeli Çamaşır Yumuşatıcı", sure: "2 dk", malzeme: ["Beyaz sirke 200ml","Lavanta yağı 10 damla"], adimlar: "Karıştırın, durulama bölmesine 50ml ekleyin. Sirke kokusu kurumayla geçer, yumuşaklık kalır." },
+  "fındık": { baslik: "Ev Çikolatalı Fındık Kreması", sure: "10 dk", malzeme: ["Çiğ fındık 200g","Saf kakao 3 yk","Bal 3 yk","Hindistan cevizi yağı 2 yk"], adimlar: "Fındığı blenderden püre yapın, diğerlerini ekleyin, kavanoza alın." },
+  "fıstık": { baslik: "Saf Fıstık Ezmesi", sure: "10 dk", malzeme: ["Çiğ yer fıstığı 300g","Tuz az miktar","Hindistan cevizi yağı 1 yk (opsiyonel)"], adimlar: "Fındığı 160°C'de 10 dk kavurun, blenderden krema kıvamına gelene kadar geçirin." },
+  "donut": { baslik: "Fırın Tarçınlı Çörek", sure: "30 dk", malzeme: ["Tam buğday unu 2 sb","Süt 1 sb","Yumurta 1","Bal 3 yk","Tarçın","Maya"], adimlar: "Hamuru yoğurun, 1 saat mayalayın, halka şekli verin, fırında 180°C'de 18 dk pişirin." },
+  "şipşak": { baslik: "Ev Yapımı Patates Cipsi", sure: "30 dk", malzeme: ["Patates 3 adet","Zeytinyağı 2 yk","Tuz, biberiye"], adimlar: "Patatesi çok ince dilimleyin, yağ ve baharatla karıştırın, 200°C'de 20 dk pişirin." },
+  "patates": { baslik: "Fırın Baharatlı Patates", sure: "30 dk", malzeme: ["Patates 4 adet","Zeytinyağı, kekik, biberiye, tuz"], adimlar: "Patatesi yıkayıp dilimleyin, yağ ve baharatla harmanlayın, 200°C'de 25 dk pişirin." },
+  "bira": { baslik: "Kombucha (Doğal Fermente İçecek)", sure: "7 gün", malzeme: ["Yeşil çay 1 litre","Şeker 100g","SCOBY mayası","Cam kavanoz"], adimlar: "Çayı şekerle demleyin, soğutun, SCOBY ekleyin, 7 gün kapalı bekletin." },
+  "şarap": { baslik: "Üzüm Şırası (Alkolsüz)", sure: "30 dk", malzeme: ["Taze üzüm 1kg","Su 500ml","Karanfil, tarçın"], adimlar: "Üzümü ezin, baharatlarla 25 dk kaynatın, süzün. Soğuk veya sıcak içilir." },
+  "konserve": { baslik: "Taze Konserve Domates", sure: "1 saat", malzeme: ["Taze domates 1kg","Tuz, sarımsak, fesleğen","Cam kavanoz"], adimlar: "Domatesi soyup doğrayın, baharatlarla 30 dk kaynatın, sıcakken kavanoza alın, kaynamış kapaklarla kapatın." },
+  "tuzlu": { baslik: "Az Tuzlu Lezzet Sosu", sure: "5 dk", malzeme: ["Limon suyu","Zeytinyağı","Taze otlar (kekik, fesleğen)","Sarımsak"], adimlar: "Malzemeleri karıştırın, salata, et veya sebzeye sürün. Tuz yerine lezzet katar." },
+  "kuru": { baslik: "Ev Kuru Meyve", sure: "8 saat", malzeme: ["Mevsim meyvesi","Limon suyu"], adimlar: "Meyveyi ince dilimleyin, limon suyu sürün, 60°C'de fırında 6-8 saat kurutun." },
+  "enerji": { baslik: "Ham Bal + Ceviz Enerji", sure: "2 dk", malzeme: ["Ham bal 1 yk","Ceviz 5-6 adet","Tarçın"], adimlar: "Cevizi balla karıştırın, tarçınla tatlandırın. 1 yk sabah aç karna enerji verir." },
+  "yapay tatlandırıcı": { baslik: "Stevia Limonata", sure: "5 dk", malzeme: ["Stevia yaprağı 5","Limon 2","Su 1 litre","Nane"], alıntı: "doğal", adimlar: "Stevia'yı suya katın, limon ekleyin, naneli buzlu servis edin." },
 
   // TEMİZLİK
   "klorin": { baslik: "Doğal Çok Amaçlı Temizleyici", sure: "2 dk", malzeme: ["Beyaz sirke 1 su bardağı","Su 1 su bardağı","Çay ağacı yağı 10 damla"], adimlar: "Malzemeleri sprey şişeye koyun. Yüzeylere püskürterek kullanın." },
@@ -3950,6 +4172,104 @@ const DOGAL_TARIF = {
   "plastik": { baslik: "Çevre Dostu Temizlik Seti", sure: "5 dk", malzeme: ["Karbonat","Beyaz sirke","Limon","Kastil sabun"], adimlar: "4 malzemeyle mutfak, banyo, zemin temizlenebilir. Detay için her birini ayrı kullanın." },
 };
 
+// Ürün TÜRÜ tespiti — kullanıcının yapıştırdığı metinden ürün türünü çıkarır
+// 8 kategori için ayrı türler. urun_a (ürün adı/marka) güçlü; icerik (içerik kodu ipuçları) zayıf.
+const URUN_TURLERI = [
+  // === GIDA ===
+  { kategori: "gida", tur: "icecek_gazli", baslik: "Gazlı İçecek", urun_a: ["kola","cola","gazoz","fanta","sprite","soda","seven up","7up","pepsi","dr pepper","gazli","gazlı","carbonated"], icerik: ["e338","fosforik asit","karbondioksit","co2","karamel renk","e150"], alternatif: "Kombucha · Şalgam suyu · Maden suyu + taze meyve · Geleneksel boza · Doğal limonata", marketUrun: "Doğal Kombucha (sade/zencefil) · Şalgam Suyu (geleneksel) · Maden Suyu", tarifKey: "kola" },
+  { kategori: "gida", tur: "icecek_meyve", baslik: "Hazır Meyve Suyu", urun_a: ["meyve suyu","portakal suyu","elma suyu","vişne suyu","şeftali suyu","nektar","cappy","dimes","tropicana","içim"], icerik: ["%100 meyve","konsantre meyve","askorbik asit (e300)"], alternatif: "Taze sıkılmış meyve suyu · Ev kompostu · Gül/vişne şerbeti · Hoşaf", marketUrun: "Taze Sıkılmış Portakal Suyu · Ev Kompostu (kavanoz) · Geleneksel Şerbet", tarifKey: "kola" },
+  { kategori: "gida", tur: "icecek_enerji", baslik: "Enerji İçeceği", urun_a: ["red bull","monster","burn","enerji içec","energy drink","ice tea","fuse tea","nestea","lipton ice"], icerik: ["taurin","glukuronolakton","inositol"], alternatif: "Ham bal + limon · Yeşil çay · Hurma sıkması · Karpuz suyu (taze)", marketUrun: "Ham Bal · Yeşil Çay (Turkey origin) · Hurma", tarifKey: "kafein" },
+  { kategori: "gida", tur: "kek_tatli", baslik: "Kek / Pasta / Tatlı", urun_a: ["kek","pasta","brownie","muffin","cup cake","kruvasan","milföy","baklava","trileçe","tiramisu"], icerik: ["kabartma tozu","glaze"], alternatif: "Hurmalı tam buğday kek · Tahin-pekmez · Helva (un/tahin) · Lokma", marketUrun: "Hurmalı Ev Keki · Tahin + Pekmez · Geleneksel Helva", tarifKey: "kek" },
+  { kategori: "gida", tur: "biskuvi", baslik: "Bisküvi / Kraker", urun_a: ["bisküvi","biskuvi","kraker","cracker","galeta","etimek","albeni","negro","oreo"], icerik: [], alternatif: "Ev yulaflı kurabiye · Tam buğday galetası · Çiğ kuruyemiş", marketUrun: "Yulaflı Ev Kurabiyesi · Tam Buğday Galeta · Çiğ Badem/Ceviz", tarifKey: "bisküvi" },
+  { kategori: "gida", tur: "gofret_cikolata", baslik: "Çikolata / Gofret", urun_a: ["gofret","çikolata","cikolata","wafer","snickers","mars","twix","kitkat","milka"], icerik: ["kakao kütlesi","palm yağı","lesitin","e322"], alternatif: "Saf bitter çikolata (%70+ kakao) · Ev kakao topları · Hurma + ceviz", marketUrun: "Bitter Çikolata %85 · Hurma + Ceviz · Ev Kakao Topları", tarifKey: "çikolata" },
+  { kategori: "gida", tur: "cips", baslik: "Cips / Atıştırmalık", urun_a: ["cips","chips","patates kız","ruffles","lays","doritos","cheetos","çerezza","patos","pop corn","popcorn"], icerik: ["msg","e621","e627","e631","aroma artırıcı"], alternatif: "Fırında patates dilimleri · Çiğ kuruyemiş · Kuru meyve · Ev mısır patlağı", marketUrun: "Çiğ Badem/Fındık/Ceviz · Kuru İncir/Kayısı · Organik Mısır", tarifKey: "cips" },
+  { kategori: "gida", tur: "sucuk_salam", baslik: "İşlenmiş Et", urun_a: ["sucuk","salam","sosis","jambon","pastırma","salami","frankfurter","hot dog","kangal"], icerik: ["e250","sodyum nitrit","nitrit","sodyum nitrat","e252"], alternatif: "Geleneksel kuru sucuk (nitritsiz) · Ev jambonu (kendi tavuğun) · Çiğ et", marketUrun: "Geleneksel Kuru Sucuk (nitritsiz) · Ev Pastırması · Köy Eti", tarifKey: "sucuk" },
+  { kategori: "gida", tur: "yogurt", baslik: "Yoğurt", urun_a: ["yoğurt","yogurt","ayran","sütlü tatlı"], icerik: ["süt mayası","l. acidophilus","probiyotik","fermente süt"], alternatif: "Ev mayalı tam yağlı yoğurt · Çiğ süt kefiri · Köy ayranı", marketUrun: "Ev Mayalı Yoğurt · Çiğ Süt Kefiri · Köy Ayranı", tarifKey: "yoğurt" },
+  { kategori: "gida", tur: "peynir", baslik: "Peynir", urun_a: ["peynir","beyaz peynir","kaşar","cheddar","feta","mozzarella","labne","lor"], icerik: ["süt tozu","peynir altı suyu"], alternatif: "Çiğ süt peyniri (otlatılmış inek/koyun/keçi) · Köy peyniri · Ev loru", marketUrun: "Köy Beyaz Peyniri · Otlatılmış Koyun Tulum · Ev Loru", tarifKey: "peynir" },
+  { kategori: "gida", tur: "sut", baslik: "Süt", urun_a: ["uht süt","uht süt","laktozsuz süt","tam yağlı süt"], icerik: ["uht","laktoz"], alternatif: "Çiğ süt (sertifikalı) · Badem sütü · Hindistan cevizi sütü · Köy sütü", marketUrun: "Sertifikalı Çiğ Süt · Ev Badem Sütü · Hindistan Cevizi Sütü", tarifKey: "süt" },
+  { kategori: "gida", tur: "dondurma", baslik: "Dondurma", urun_a: ["dondurma","ice cream","magnum","cornetto","algida","golf","milkshake"], icerik: ["e407","karagenan","e466"], alternatif: "Ev meyve sorbesi · Maraş dondurması (geleneksel salepli) · Donmuş yoğurt + bal", marketUrun: "Maraş Dondurması (geleneksel) · Ev Meyve Sorbesi · Salepli Dondurma", tarifKey: "süt" },
+  { kategori: "gida", tur: "ekmek", baslik: "Ekmek / Hamur İşi", urun_a: ["ekmek","tost ekmeği","sandviç ekmeği","baget","simit","poğaca","francala","kepek ekmek"], icerik: ["mono ve digliseritler","e472","e471"], alternatif: "Ekşi maya tam buğday ekmek · Siyez/kavılca ekmeği · Köy ekmeği", marketUrun: "Ekşi Maya Ekmek · Siyez Ekmeği · Köy Ekmeği", tarifKey: "ekmek" },
+  { kategori: "gida", tur: "sakiz", baslik: "Sakız / Şekerleme", urun_a: ["sakız","sakiz","chewing gum","falim","first","mentos","tic tac","airwaves","stride","chiclets","ülker sakız","jelly"], icerik: [], alternatif: "Doğal ağız tazeleyici: Karanfil · Kakule · Maydanoz · Şekersiz ev mastik sakızı", marketUrun: "Doğal Mastik Sakızı (Sakız Adası) · Karanfil · Kakule", tarifKey: null },
+  { kategori: "gida", tur: "yag", baslik: "Margarin / Rafine Yağ", urun_a: ["margarin","sade yağ","kahvaltılık margarin","sana","becel","ayçiçek yağı","mısır yağı","kanola","rafine yağ"], icerik: ["kısmen hidrojenize","trans yağ"], alternatif: "Ev tereyağı (krema çırparak) · Soğuk sıkım zeytinyağı · Geleneksel sade yağ", marketUrun: "Soğuk Sıkım Zeytinyağı · Ev Tereyağı · Köy Sade Yağı", tarifKey: "tereyağı" },
+  { kategori: "gida", tur: "soslar", baslik: "Hazır Sos", urun_a: ["ketçap","ketcap","mayonez","hazır sos","barbekü","hardal","ranch","cesar"], icerik: [], alternatif: "Ev domates sosu · Ev mayonezi · Sumak + zeytinyağı · Tahin-pekmez", marketUrun: "Ev Domates Sosu (kavanoz) · Sumak + Zeytinyağı Seti · Tahin", tarifKey: "ketçap" },
+  { kategori: "gida", tur: "konserve", baslik: "Konserve", urun_a: ["konserve","ton balığı","ringa","sardalye","mısır konserve","bezelye konserve"], icerik: [], alternatif: "Taze balık · Ev konservesi (cam kavanoz) · Taze sebze", marketUrun: "Cam Kavanoz Ev Konservesi · Taze Sebze (haftalık)", tarifKey: "konserve" },
+  { kategori: "gida", tur: "recel_krem", baslik: "Reçel / Sürülebilir", urun_a: ["reçel","recel","marmelat","kahvaltı kreması","krem çikolata","nutella","sürülebilir","fıstık ezme"], icerik: [], alternatif: "Şekersiz ev reçeli · Tahin-pekmez · Ham bal · Saf fıstık ezmesi", marketUrun: "Şekersiz Ev Reçeli · Tahin + Pekmez · Ham Bal", tarifKey: "reçel" },
+  { kategori: "gida", tur: "kahve", baslik: "Hazır Kahve", urun_a: ["hazır kahve","granül kahve","3'ü 1 arada","nescafe","jacobs","3 in 1"], icerik: [], alternatif: "Türk kahvesi · Filtre kahve (taze çekilmiş) · Hindiba kahvesi", marketUrun: "Türk Kahvesi (Mehmet Efendi) · Taze Çekilmiş Filtre Kahve · Hindiba", tarifKey: "kafein" },
+  { kategori: "gida", tur: "tatlandirici", baslik: "Şeker / Tatlandırıcı", urun_a: ["canderel","sweet n low","sweet'n low","splenda","equal","huxol","stevia tablet","stevia toz","şeker küpü","küp şeker","kesme şeker","toz tatlandırıcı","beyaz şeker","rafine şeker"], icerik: [], alternatif: "Ham bal · Pekmez (üzüm, keçiboynuzu, dut) · Hurma şurubu · Saf stevia yaprağı · Pekmez", marketUrun: "Ham Bal · Üzüm Pekmezi · Hurma Şurubu · Stevia Yaprağı", tarifKey: "aspartam" },
+
+  // === KOZMETİK ===
+  { kategori: "kozmetik", tur: "yuz_kremi", baslik: "Yüz Kremi / Nemlendirici", urun_a: ["yüz kremi","face cream","nemlendirici","moisturizer","anti-aging","gece kremi","gündüz kremi","krem"], icerik: [], alternatif: "Hindistan cevizi yağı · Shea yağı · Argan yağı · Aloe vera jeli", tarifKey: "krem" },
+  { kategori: "kozmetik", tur: "sampuan", baslik: "Şampuan", urun_a: ["şampuan","shampoo","saç şampuanı"], icerik: ["sls","sodium lauryl sulfate"], alternatif: "Kastil sabun (saç için) · Defne sabunu · Doğal şampuan barı · Kına suyu", tarifKey: "şampuan" },
+  { kategori: "kozmetik", tur: "sabun", baslik: "Sabun", urun_a: ["sabun","soap","el sabunu","banyo sabunu","duş jeli","shower gel"], icerik: [], alternatif: "Zeytinyağı sabunu (kastil) · Defne sabunu · Süt sabunu · Halep sabunu", tarifKey: "sabun" },
+  { kategori: "kozmetik", tur: "dis_macunu", baslik: "Diş Macunu", urun_a: ["diş macunu","toothpaste","ağız bakım"], icerik: ["florür","sodium fluoride"], alternatif: "Karbonat + nane yağı · Misvak · Karbonatlı doğal diş macunu", tarifKey: "diş macunu" },
+  { kategori: "kozmetik", tur: "deodorant", baslik: "Deodorant", urun_a: ["deodorant","antiperspirant","ter önleyici","roll-on"], icerik: ["alüminyum","aluminum chlorohydrate"], alternatif: "Karbonat + Hindistan cevizi yağı + nişasta · Şap taşı · Doğal deodorant", tarifKey: "deodorant" },
+  { kategori: "kozmetik", tur: "makyaj", baslik: "Makyaj", urun_a: ["ruj","lipstick","far","maskara","fondöten","makyaj","mascara","eyeshadow"], icerik: ["talk","mica"], alternatif: "Mineral makyaj (RMS, Ilia, BeautyCounter) · Doğal pigment kozmetik · Pancar pigmenti dudak", tarifKey: null },
+  { kategori: "kozmetik", tur: "sac_boyasi", baslik: "Saç Boyası", urun_a: ["saç boyası","hair color","saç boyama","ağartıcı"], icerik: ["ammonia","ppd","p-fenilendiamin","hidrojen peroksit"], alternatif: "Kına (saf) · Doğal bitki bazlı boya (Logona, Khadi) · Hindiba", tarifKey: null },
+  { kategori: "kozmetik", tur: "parfum", baslik: "Parfüm", urun_a: ["parfüm","perfume","eau de parfum","eau de toilette","edt","edp"], icerik: ["sentetik koku","fragrance","linalool"], alternatif: "Esansiyel yağlar (gül, lavanta, ud, sandal) · Doğal koku karışımı", tarifKey: null },
+
+  // === TEMİZLİK ===
+  { kategori: "temizlik", tur: "camasir_det", baslik: "Çamaşır Deterjanı", urun_a: ["çamaşır deterjanı","camasir deterjani","laundry detergent","ariel","persil","omo","alo"], icerik: [], alternatif: "Sabun rendesi + Karbonat + Soda külü · Sapindus (sabun fındığı)", tarifKey: "çamaşir" },
+  { kategori: "temizlik", tur: "bulasik_det", baslik: "Bulaşık Deterjanı", urun_a: ["bulaşık deterjanı","dish soap","fairy","pril","sun"], icerik: [], alternatif: "Kastil sabun + Sitrik asit + Limon · Soda külü", tarifKey: "deterjan" },
+  { kategori: "temizlik", tur: "camasir_suyu", baslik: "Çamaşır Suyu / Klorin", urun_a: ["çamaşır suyu","ace","domestos","bleach","klor","hipoklorit"], icerik: ["sodyum hipoklorit","klorin"], alternatif: "Sodyum perkarbonat (oksijenli ağartıcı) · Beyaz sirke · Güneşte kurutma", tarifKey: "klorin" },
+  { kategori: "temizlik", tur: "cam_temizleyici", baslik: "Cam Temizleyici", urun_a: ["cam temizleyici","glass cleaner","cif vitra","windex","cam parlatıcı"], icerik: ["amonyak"], alternatif: "Beyaz sirke + Su + Limon (gazete ile silme)", tarifKey: "amonyak" },
+  { kategori: "temizlik", tur: "yumusatici", baslik: "Çamaşır Yumuşatıcı", urun_a: ["çamaşır yumuşatıcı","fabric softener","yumoş","comfort","lenor"], icerik: ["quat","kuaterner amonyum"], alternatif: "Beyaz sirke + Lavanta esansiyel yağı", tarifKey: "yumuşatıcı" },
+  { kategori: "temizlik", tur: "kufu_giderici", baslik: "Küf / Yüzey Temizleyici", urun_a: ["küf giderici","mold remover","yüzey temizleyici","cif"], icerik: ["quat","kuaterner"], alternatif: "Hidrojen peroksit %3 + Çay ağacı yağı · Karbonat + sirke", tarifKey: "küf" },
+  { kategori: "temizlik", tur: "lavabo_acici", baslik: "Lavabo Açıcı", urun_a: ["lavabo açıcı","drain cleaner","sümbül","kostik"], icerik: ["naoh","sodyum hidroksit","sülfürik asit"], alternatif: "Karbonat + sirke + kaynar su · Mekanik açıcı (pompacı)", tarifKey: "NaOH" },
+  { kategori: "temizlik", tur: "zemin", baslik: "Zemin / Yüzey", urun_a: ["zemin temizleyici","yüzey temizleyici","cif crema","mr proper"], icerik: [], alternatif: "Beyaz sirke + sıcak su + lavanta yağı · Karbonat", tarifKey: "quat" },
+  { kategori: "temizlik", tur: "kirec", baslik: "Kireç Çözücü", urun_a: ["kireç çözücü","kireç sökücü","calc","kireç çözer"], icerik: [], alternatif: "Sitrik asit + sıcak su · Beyaz sirke", tarifKey: "kireç" },
+
+  // === GİYİM ===
+  { kategori: "giyim", tur: "spor_yagmurluk", baslik: "Spor / Yağmurluk", urun_a: ["spor","sportif","yağmurluk","kayak","outdoor","activewear"], icerik: ["pfas","pfoa","poliester","polyester","naylon"], alternatif: "PFAS-free spor giyim (Patagonia, Cottonique) · Doğal balmumlu pamuk yağmurluk · Yün outdoor" },
+  { kategori: "giyim", tur: "ic_camasir", baslik: "İç Çamaşırı", urun_a: ["iç çamaşırı","underwear","bra","sutyen","külot","slip","tanga"], icerik: ["spandex","elastan","poliester"], alternatif: "GOTS organik pamuk · İpek (toksin-free) · Bambu lif" },
+  { kategori: "giyim", tur: "tisort_pantolon", baslik: "Tişört / Pantolon / Gömlek", urun_a: ["tişört","gömlek","pantolon","jean","kot","hırka","kazak"], icerik: ["poliester","akrilik","viskon"], alternatif: "Organik pamuk (GOTS) · Saf keten · Türk doğal pamuğu · Yün" },
+  { kategori: "giyim", tur: "mont", baslik: "Mont / Kaban", urun_a: ["mont","kaban","palto","ceket","trenç"], icerik: ["pfas","poliester dolgu"], alternatif: "Pamuk astar mont · Yün kaban · Doğal balmumlu kanvas · Kaşmir" },
+
+  // === EV ===
+  { kategori: "ev", tur: "yatak_yorgan", baslik: "Yatak / Yorgan / Yastık", urun_a: ["yatak","yorgan","yastık","mattress","pillow","nevresim","çarşaf"], icerik: ["bromine","fr","alev geciktirici","polyürethane"], alternatif: "GOTS sertifikalı pamuk dolgu yatak · Doğal lateks · Yün dolgu yorgan · Kapok yastık" },
+  { kategori: "ev", tur: "hali", baslik: "Halı / Kilim", urun_a: ["halı","kilim","carpet","rug"], icerik: ["pvc taban","akrilik elyaf","naylon"], alternatif: "Anadolu yün halı (doğal boya) · Doğal pamuk kilim · Jüt halı · Sisal" },
+  { kategori: "ev", tur: "mobilya", baslik: "Mobilya", urun_a: ["mobilya","koltuk","kanepe","masa","dolap","yatak başı","gardırop","sehpa"], icerik: ["formaldehit","mdf","sunta","özel pres"], alternatif: "Masif ahşap (kayın, meşe, ceviz) · Formaldehit-free · Doğal cila (keten yağı, balmumu)" },
+  { kategori: "ev", tur: "perde", baslik: "Perde", urun_a: ["perde","curtain","stor","jaluzi"], icerik: ["poliester","alev geciktirici"], alternatif: "Doğal pamuk perde · Keten perde · Yün perde" },
+  { kategori: "ev", tur: "mutfak_esyasi", baslik: "Mutfak Eşyası / Tava", urun_a: ["tava","tencere","sahan","pan","cookware","teflon"], icerik: ["ptfe","pfoa","teflon","alüminyum tava"], alternatif: "Dökme demir tava · Paslanmaz çelik · Seramik (PTFE-free) · Bakır kalaylı tencere" },
+
+  // === BEBEK ===
+  { kategori: "bebek", tur: "bebek_bezi", baslik: "Bebek Bezi", urun_a: ["bebek bezi","diaper","pampers","prima","molfix","huggies"], icerik: ["klorin","sap"], alternatif: "Organik pamuk bezi · Klorin-free biodegradable bez (Bambo Nature, Naty) · Bezelli sistem" },
+  { kategori: "bebek", tur: "bebek_mamasi", baslik: "Bebek Maması", urun_a: ["bebek maması","formula","formül","bebelac","aptamil","sma","milupa"], icerik: [], alternatif: "Anne sütü (ön plan) · Organik ek gıda · Ev maması (yulaf + meyve püresi)" },
+  { kategori: "bebek", tur: "bebek_krem", baslik: "Bebek Kremi / Yağı", urun_a: ["bebek kremi","baby cream","baby oil","bebek yağı","pişik","nivea bebek"], icerik: ["mineral oil","paraben"], alternatif: "Saf Hindistan cevizi yağı · Tatlı badem yağı · Shea yağı · Bal mumu balsamı" },
+  { kategori: "bebek", tur: "bebek_giysi", baslik: "Bebek Giysi", urun_a: ["bebek tulumu","bebek giysi","baby clothes","tulum","zıbın","bebek pamuklu"], icerik: ["pfas","poliester"], alternatif: "GOTS organik pamuk · Bambu lif · Doğal renk pamuk · Saf yün" },
+  { kategori: "bebek", tur: "bebek_oyuncak", baslik: "Bebek Oyuncağı", urun_a: ["oyuncak","toy","plush","puzzle","oyuncak ayı","peluş"], icerik: ["pvc","ftalat","bpa"], alternatif: "Ahşap oyuncak (boyasız, doğal cila) · Doğal pamuk peluş · BPA-free silikon · Yün figür" },
+  { kategori: "bebek", tur: "mama_sisesi", baslik: "Mama Şişesi / Emzik", urun_a: ["biberon","mama şişesi","bottle","emzik","emzik tutucu"], icerik: ["bpa","bps"], alternatif: "BPA-free cam biberon · Paslanmaz çelik · Doğal kauçuk emzik" },
+
+  // === EVCİL HAYVAN ===
+  { kategori: "evcil", tur: "kopek_mamasi", baslik: "Köpek Maması", urun_a: ["köpek maması","dog food","royal canin","pro plan","hill's","purina","brit"], icerik: [], alternatif: "Tahılsız gerçek et maması (Acana, Orijen) · BARF (ham beslenme) · Ev maması (et+sebze)" },
+  { kategori: "evcil", tur: "kedi_mamasi", baslik: "Kedi Maması", urun_a: ["kedi maması","cat food","whiskas","felix","sheba","gourmet"], icerik: [], alternatif: "Tahılsız gerçek et maması (Acana, Orijen) · Sentetik koruyucusuz · Ev maması (tavuk/balık)" },
+  { kategori: "evcil", tur: "evcil_sampuan", baslik: "Evcil Şampuan", urun_a: ["evcil şampuan","pet shampoo","köpek şampuanı","kedi şampuanı"], icerik: [], alternatif: "Kastil sabun (sade) · Çay ağacı yağı + su · Neem yağı şampuan" },
+  { kategori: "evcil", tur: "tasma_pire", baslik: "Tasma / Pire Önleyici", urun_a: ["tasma","pire önleyici","kene","flea collar","frontline","advantix","seresto"], icerik: ["fipronil","imidakloprid","permethrin"], alternatif: "Kimyasal işlemsiz deri tasma · Doğal pire koruma (limon + sirke) · Diyatomit toprağı" },
+
+  // === İLAÇ / VİTAMİN ===
+  { kategori: "ilac", tur: "agri_kesici", baslik: "Ağrı Kesici", urun_a: ["ağrı kesici","aspirin","parol","majezik","ibuprofen","paracetamol","nurofen","apranax"], icerik: [], alternatif: "Söğüt kabuğu çayı (doğal salisilik asit) · Zerdeçal (kurkumin) · İhlamur · Zencefil çayı (DİKKAT: ciddi/sürekli ağrıda hekime başvur)" },
+  { kategori: "ilac", tur: "antiasit", baslik: "Mide İlacı / Antasit", urun_a: ["antasit","gaviscon","talcid","mide ilacı","rennie","nexium"], icerik: [], alternatif: "Karbonat + su (anlık) · Zencefil çayı · Papatya çayı · Sade aloe vera suyu" },
+  { kategori: "ilac", tur: "vitamin", baslik: "Vitamin / Multivitamin", urun_a: ["vitamin","multivitamin","supradyn","centrum","redoxon","berocca"], icerik: [], alternatif: "Taze meyve sebze · Ham balda doğal vitamin · Kuşburnu (C vit) · Güneş (D vit) · Pekmez (demir)" },
+  { kategori: "ilac", tur: "antibiyotik", baslik: "Antibiyotik", urun_a: ["antibiyotik","amoxicillin","penisilin","augmentin","cipro","klacid"], icerik: [], alternatif: "Doğal antibakteriyel: Ham bal (manuka), Sarımsak, Zerdeçal, Oregano yağı, Echinacea (DİKKAT: ciddi enfeksiyon → hekim önerisini takip et, antibiyotik atlama)" },
+  { kategori: "ilac", tur: "sogiuk_alginlik", baslik: "Soğuk Algınlığı / Grip", urun_a: ["soğuk algınlığı","grip","gripin","tylenol","theraflu","coldrex"], icerik: [], alternatif: "Zencefil-limon-bal kürü · Ihlamur çayı · Kuşburnu (C vit) · Çinko · Buharlı inhalasyon" },
+  { kategori: "ilac", tur: "uyku", baslik: "Uyku / Sakinleştirici", urun_a: ["uyku","melatonin","xanax","prozac","sakinleştirici","ansiyolitik"], icerik: [], alternatif: "Melisa çayı · Lavanta yağı (yastığa) · Magnezyum (kabak çekirdeği) · Sıcak süt + bal (DİKKAT: psikiyatrik ilaç → hekim önerisi)" },
+];
+
+function urunTuruTespit(metin, kategori) {
+  if (!metin) return null;
+  const m = metin.toLowerCase();
+  // Önce GÜÇLÜ eşleşme: ürün adı/marka
+  for (const tur of URUN_TURLERI) {
+    if (tur.kategori !== kategori) continue;
+    if (tur.urun_a && tur.urun_a.some(k => m.includes(k))) return tur;
+  }
+  // Sonra ZAYIF eşleşme: içerik kodu ipuçları
+  for (const tur of URUN_TURLERI) {
+    if (tur.kategori !== kategori) continue;
+    if (tur.icerik && tur.icerik.length > 0 && tur.icerik.some(k => m.includes(k))) return tur;
+  }
+  return null;
+}
+
 
 /* ══════════════════════════════════════════════
    DOĞAL TARİF MODAL BİLEŞENİ
@@ -3958,27 +4278,114 @@ const DOGAL_TARIF = {
 /* ══════════════════════════════════════════════
    3D ORGAN PUAN SİSTEMİ
    ══════════════════════════════════════════════ */
+// Her organ için anatomik konum, gerçek şekil ve renk (atlas tarzı)
+// shape: SVG path data, cx/cy: etkileşim merkezi, r: tıklama bölgesi yarıçapı
 const ORGAN_POZISYON = {
-  "Beyin":     { x: 50, y: 8,  r: 9,  label: "Beyin" },
-  "Kalp":      { x: 42, y: 30, r: 8,  label: "Kalp" },
-  "Akciğer":   { x: 58, y: 30, r: 8,  label: "Akciğer" },
-  "Karaciğer": { x: 44, y: 44, r: 9,  label: "Karaciğer" },
-  "Böbrek":    { x: 58, y: 46, r: 7,  label: "Böbrek" },
-  "Bağırsak":  { x: 50, y: 60, r: 8,  label: "Bağırsak" },
-  "Mide":      { x: 40, y: 56, r: 7,  label: "Mide" },
-  "Hormon":    { x: 62, y: 58, r: 7,  label: "Hormon" },
-  "Cilt":      { x: 20, y: 35, r: 6,  label: "Cilt" },
-  "Kan":       { x: 78, y: 35, r: 6,  label: "Kan" },
-  "Sinir":     { x: 22, y: 55, r: 6,  label: "Sinir" },
-  "Solunum":   { x: 78, y: 22, r: 6,  label: "Solunum" },
-  "Pankreas":  { x: 36, y: 52, r: 6,  label: "Pankreas" },
-  "Tiroid":    { x: 50, y: 20, r: 5,  label: "Tiroid" },
-  "Diş":       { x: 50, y: 15, r: 4,  label: "Diş" },
+  "Beyin": {
+    x: 50, y: 16, r: 7, label: "Beyin", fill: "#F2B8B8",
+    path: "M44 10 Q41 13 41 17 Q41 22 47 23 L47 21 Q44 20 44 17 Q44 14 46 12 Q48 11 50 11 Q52 11 54 12 Q56 14 56 17 Q56 20 53 21 L53 23 Q59 22 59 17 Q59 13 56 10 Q53 8 50 8 Q47 8 44 10 Z M46 14 Q48 16 50 14 Q52 16 54 14 M45 17 Q48 19 50 17 Q52 19 55 17"
+  },
+  "Tiroid": {
+    x: 50, y: 41, r: 3, label: "Tiroid", fill: "#D86060",
+    path: "M46 40 Q44 42 46 43 Q48 44 50 43 Q52 44 54 43 Q56 42 54 40 Q52 39 50 40 Q48 39 46 40 Z"
+  },
+  "Solunum": {
+    x: 50, y: 50, r: 2.5, label: "Solunum", fill: "#E89890",
+    path: "M48 44 L48 56 Q50 57 52 56 L52 44 Q50 43 48 44 Z"
+  },
+  "Akciğer": {
+    x: 36, y: 60, r: 6, label: "Akciğer", fill: "#F8A8A0",
+    path: "M30 53 Q25 60 26 70 Q28 76 35 75 Q40 73 41 67 L41 56 Q39 52 35 52 Q32 52 30 53 Z M59 56 L59 67 Q60 73 65 75 Q72 76 74 70 Q75 60 70 53 Q68 52 65 52 Q61 52 59 56 Z"
+  },
+  "Kalp": {
+    x: 55, y: 63, r: 5, label: "Kalp", fill: "#D02838",
+    path: "M50 61 Q47 58 50 56 Q53 56 54 60 Q55 56 58 56 Q61 58 58 62 Q56 67 54 70 Q52 67 50 61 Z"
+  },
+  "Kan": {
+    x: 50, y: 73, r: 3, label: "Kan", fill: "#B01828",
+    path: "M48 70 L48 80 M52 70 L52 80 M50 70 L50 80"
+  },
+  "Karaciğer": {
+    x: 60, y: 88, r: 6, label: "Karaciğer", fill: "#8A2818",
+    path: "M48 83 Q47 87 49 91 L70 94 Q73 92 73 88 Q73 84 70 82 L52 81 Q49 81 48 83 Z"
+  },
+  "Mide": {
+    x: 40, y: 88, r: 5, label: "Mide", fill: "#E89080",
+    path: "M38 83 Q34 86 35 92 Q37 97 43 96 Q47 94 47 90 L47 85 Q45 82 42 82 Q40 82 38 83 Z"
+  },
+  "Pankreas": {
+    x: 50, y: 98, r: 3, label: "Pankreas", fill: "#E8B860",
+    path: "M40 97 Q44 95 50 97 Q56 95 60 98 Q56 100 50 99 Q44 100 40 97 Z"
+  },
+  "Böbrek": {
+    x: 33, y: 103, r: 4, label: "Böbrek", fill: "#7C1818",
+    path: "M30 99 Q26 102 28 108 Q31 111 34 110 Q36 108 36 105 L36 102 Q35 99 32 99 Q31 99 30 99 Z M64 102 L64 105 Q64 108 66 110 Q69 111 72 108 Q74 102 70 99 Q66 98 64 102 Z"
+  },
+  "Hormon": {
+    x: 67, y: 99, r: 2.5, label: "Hormon", fill: "#F0D050",
+    path: "M65 97 L69 97 L67 100 Z M33 97 L29 97 L31 100 Z"
+  },
+  "Bağırsak": {
+    x: 50, y: 118, r: 7, label: "Bağırsak", fill: "#E8A890",
+    path: "M37 108 Q34 112 36 116 Q40 118 44 116 L44 120 Q40 122 36 124 Q34 128 38 130 Q44 132 50 130 Q56 132 62 130 Q66 128 64 124 Q60 122 56 120 L56 116 Q60 118 64 116 Q66 112 63 108 Q58 106 50 108 Q42 106 37 108 Z"
+  },
+  "Sinir": {
+    x: 19, y: 70, r: 3.5, label: "Sinir", fill: "#A890C8",
+    path: "M19 60 L19 80 M16 64 L22 64 M15 70 L23 70 M16 76 L22 76"
+  },
+  "Cilt": {
+    x: 81, y: 70, r: 3.5, label: "Cilt", fill: "#F8D4B0",
+    path: "M78 66 Q76 70 78 74 Q82 76 84 74 Q86 70 84 66 Q82 64 81 64 Q79 64 78 66 Z"
+  },
 };
 
-function OrganVucutHaritasi({ sonuclar, gecmis }) {
-  const C = TEMA_RENKLERI;
-  const [secili, setSecili] = React.useState(null);
+// Cinsiyete özel ek organlar (mesane, prostat, rahim, yumurtalık)
+const ORGAN_CINSIYET = {
+  "Erkek": {
+    "Mesane": {
+      x: 50, y: 132, r: 4, label: "Mesane", fill: "#FFD060",
+      path: "M44 128 Q42 132 44 136 Q47 138 50 138 Q53 138 56 136 Q58 132 56 128 Q53 126 50 126 Q47 126 44 128 Z"
+    },
+    "Prostat": {
+      x: 50, y: 140, r: 2, label: "Prostat", fill: "#C88060",
+      path: "M47 138 Q46 141 48 142 Q50 143 52 142 Q54 141 53 138 Q51 137 50 137 Q49 137 47 138 Z"
+    },
+  },
+  "Kadın": {
+    "Mesane": {
+      x: 50, y: 134, r: 3.5, label: "Mesane", fill: "#FFD060",
+      path: "M45 131 Q43 134 45 137 Q48 139 50 139 Q52 139 55 137 Q57 134 55 131 Q52 129 50 129 Q48 129 45 131 Z"
+    },
+    "Rahim": {
+      x: 50, y: 127, r: 3.5, label: "Rahim", fill: "#D86090",
+      path: "M46 124 Q45 128 48 131 Q50 132 52 131 Q55 128 54 124 Q53 121 50 121 Q47 121 46 124 Z"
+    },
+    "Yumurtalık": {
+      x: 42, y: 127, r: 2, label: "Yumurtalık", fill: "#E090B0",
+      path: "M40 126 Q39 128 41 129 Q43 128 42 126 Q41 125 40 126 Z M58 126 Q57 128 59 129 Q61 128 60 126 Q59 125 58 126 Z"
+    },
+  },
+  "Çocuk": {
+    "Mesane": {
+      x: 50, y: 130, r: 3, label: "Mesane", fill: "#FFD060",
+      path: "M46 128 Q44 131 46 134 Q49 136 50 136 Q51 136 54 134 Q56 131 54 128 Q52 126 50 126 Q48 126 46 128 Z"
+    },
+  },
+};
+
+// Cinsiyete göre anatomik vücut silüeti (viewBox 100x200)
+const VUCUT_SILUET = {
+  "Erkek": "M50 4 C44 4 39 9 39 16 C39 22 41 27 44 30 L43 36 C41 37 38 38 36 39 C30 41 25 45 23 52 L21 60 C19 65 18 70 18 76 L19 88 C19 94 19 100 20 106 L20 120 C20 130 18 138 18 146 L19 152 L24 152 L26 165 L28 178 L30 192 L36 196 L42 196 L44 184 L46 170 L48 158 L48 152 L52 152 L52 158 L54 170 L56 184 L58 196 L64 196 L70 192 L72 178 L74 165 L76 152 L81 152 L82 146 C82 138 80 130 80 120 L80 106 C81 100 81 94 81 88 L82 76 C82 70 81 65 79 60 L77 52 C75 45 70 41 64 39 C62 38 59 37 57 36 L56 30 C59 27 61 22 61 16 C61 9 56 4 50 4 Z",
+  "Kadın": "M50 4 C44 4 39 9 39 16 C39 22 41 27 44 30 L43 36 C41 37 38 38 36 39 C31 41 26 45 24 52 L22 62 C20 68 20 73 21 79 L23 88 C23 94 22 100 22 106 C22 110 21 114 20 118 L18 130 C17 138 16 146 17 152 L23 152 L25 165 L27 178 L29 192 L36 196 L42 196 L44 184 L46 170 L48 158 L48 152 L52 152 L52 158 L54 170 L56 184 L58 196 L64 196 L71 192 L73 178 L75 165 L77 152 L83 152 C84 146 83 138 82 130 L80 118 C79 114 78 110 78 106 C78 100 77 94 77 88 L79 79 C80 73 80 68 78 62 L76 52 C74 45 69 41 64 39 C62 38 59 37 57 36 L56 30 C59 27 61 22 61 16 C61 9 56 4 50 4 Z",
+  "Çocuk": "M50 6 C42 6 36 12 36 20 C36 27 39 33 43 36 L42 42 C40 43 37 44 35 45 C29 47 25 51 23 58 L22 66 C21 72 21 78 22 84 L23 96 C23 104 22 112 22 120 L22 134 C22 142 21 150 22 156 L26 156 L28 168 L30 180 L32 192 L38 196 L44 196 L46 184 L48 172 L49 160 L49 156 L51 156 L51 160 L52 172 L54 184 L56 196 L62 196 L68 192 L70 180 L72 168 L74 156 L78 156 C79 150 78 142 78 134 L78 120 C78 112 77 104 77 96 L78 84 C79 78 79 72 78 66 L77 58 C75 51 71 47 65 45 C63 44 60 43 58 42 L57 36 C61 33 64 27 64 20 C64 12 58 6 50 6 Z"
+};
+
+function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
+  const cinsiyet = (profil && profil.cinsiyet) || "Erkek";
+  const vucutPath = VUCUT_SILUET[cinsiyet] || VUCUT_SILUET["Erkek"];
+  const cinsiyetOrganlari = ORGAN_CINSIYET[cinsiyet] || ORGAN_CINSIYET["Erkek"];
+  const TUM_ORGAN = React.useMemo(() => ({ ...ORGAN_POZISYON, ...cinsiyetOrganlari }), [cinsiyet]);
+  const [secili, setSecili] = useState(null);
 
   // Organ hasar hesapla (geçmiş + mevcut tarama)
   const organHasar = React.useMemo(() => {
@@ -3989,7 +4396,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
     ];
     tumSonuclar.forEach(r => {
       (r.organlar || []).forEach(org => {
-        const anahtar = Object.keys(ORGAN_POZISYON).find(k => org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase()));
+        const anahtar = Object.keys(TUM_ORGAN).find(k => org.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(org.toLowerCase()));
         if (anahtar) {
           if (!hasar[anahtar]) hasar[anahtar] = { kritik: 0, yuksek: 0, orta: 0 };
           if (r.risk === "kritik") hasar[anahtar].kritik++;
@@ -4017,7 +4424,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
   }
 
   const toplamPuan = Math.round(
-    Object.keys(ORGAN_POZISYON).reduce((s, k) => s + organPuan(k), 0) / Object.keys(ORGAN_POZISYON).length
+    Object.keys(TUM_ORGAN).reduce((s, k) => s + organPuan(k), 0) / Object.keys(TUM_ORGAN).length
   );
 
   const genel = toplamPuan >= 80 ? { renk: "#2ecc71", yazi: "Sağlıklı" } :
@@ -4044,53 +4451,56 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
 
       {/* SVG Vücut */}
       <div style={{ position: "relative", width: "100%", maxWidth: 340, margin: "0 auto" }}>
-        <svg viewBox="0 0 100 100" style={{ width: "100%", filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))" }}>
-          {/* Vücut silueti */}
+        <svg viewBox="0 0 100 200" style={{ width: "100%", maxHeight: 460, filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.4))" }}>
           <defs>
-            <radialGradient id="bgGrad" cx="50%" cy="50%"><stop offset="0%" stopColor="#1a1a2e"/><stop offset="100%" stopColor="#0d0d1a"/></radialGradient>
-            {Object.entries(ORGAN_POZISYON).map(([k, p]) => (
-              <radialGradient key={k} id={`g${k}`} cx="40%" cy="35%">
-                <stop offset="0%" stopColor={organRenk(k)} stopOpacity="0.9"/>
-                <stop offset="100%" stopColor={organRenk(k)} stopOpacity="0.3"/>
-              </radialGradient>
-            ))}
+            <linearGradient id="vucutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F5DCC0"/>
+              <stop offset="50%" stopColor="#E8C4A0"/>
+              <stop offset="100%" stopColor="#C8A480"/>
+            </linearGradient>
+            <linearGradient id="vucutGoglge" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0.15)"/>
+              <stop offset="100%" stopColor="rgba(0,0,0,0.25)"/>
+            </linearGradient>
           </defs>
 
-          {/* Vücut arka plan */}
-          <ellipse cx="50" cy="50" rx="30" ry="45" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Baş */}
-          <ellipse cx="50" cy="10" rx="10" ry="11" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Kollar */}
-          <ellipse cx="22" cy="40" rx="7" ry="16" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          <ellipse cx="78" cy="40" rx="7" ry="16" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          {/* Bacaklar */}
-          <ellipse cx="39" cy="85" rx="8" ry="17" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
-          <ellipse cx="61" cy="85" rx="8" ry="17" fill="url(#bgGrad)" stroke="#333" strokeWidth="0.5"/>
+          {/* Anatomik vücut silüeti (cinsiyete göre) */}
+          <path d={vucutPath} fill="url(#vucutGrad)" stroke="#3a3a55" strokeWidth="0.6" strokeLinejoin="round"/>
 
-          {/* Organlar */}
-          {Object.entries(ORGAN_POZISYON).map(([k, p]) => {
-            const renk = organRenk(k);
-            const puan = organPuan(k);
+          {/* Anatomik organlar - gerçek şekil ve renklerle */}
+          {Object.entries(TUM_ORGAN).map(([k, p]) => {
+            const riskRenk = organRenk(k);
+            const hasar = organHasar[k];
+            const hasRisk = hasar && (hasar.kritik > 0 || hasar.yuksek > 0);
+            const isKritik = hasar && hasar.kritik > 0;
             const aktif = secili === k;
             return (
               <g key={k} onClick={() => setSecili(aktif ? null : k)} style={{ cursor: "pointer" }}>
-                {/* Dış halka - 3D efekt */}
-                <circle cx={p.x} cy={p.y} r={p.r + 1.5} fill="none" stroke={renk} strokeWidth="0.4" strokeOpacity="0.3"/>
-                {/* Ana organ */}
-                <circle cx={p.x} cy={p.y} r={p.r} fill={`url(#g${k})`} stroke={renk} strokeWidth={aktif ? 0.8 : 0.4}
-                  style={{ filter: `drop-shadow(0 0 ${puan < 60 ? 3 : 1.5}px ${renk})` }}/>
-                {/* Parlak nokta - 3D */}
-                <circle cx={p.x - p.r*0.3} cy={p.y - p.r*0.3} r={p.r*0.25} fill="white" fillOpacity="0.3"/>
-                {/* Nabız animasyonu - kritikse */}
-                {organHasar[k]?.kritik > 0 && (
-                  <circle cx={p.x} cy={p.y} r={p.r + 2}>
-                    <animate attributeName="r" values={`${p.r};${p.r+3};${p.r}`} dur="1.5s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" values="0.6;0;0.6" dur="1.5s" repeatCount="indefinite"/>
-                    <animate attributeName="stroke" values={renk} dur="1.5s" repeatCount="indefinite"/>
+                {/* Anatomik organ şekli, kendi gerçek rengiyle */}
+                {p.path ? (
+                  <path d={p.path} fill={p.fill || "#888"} stroke="#2A1010" strokeWidth="0.3"
+                    fillOpacity={hasRisk ? 0.95 : 0.82}
+                    style={{ filter: isKritik ? `drop-shadow(0 0 2px ${riskRenk})` : `drop-shadow(0 0.5px 1px rgba(0,0,0,0.4))` }}/>
+                ) : (
+                  <circle cx={p.x} cy={p.y} r={p.r} fill={p.fill || "#888"} fillOpacity={hasRisk ? 0.95 : 0.82} stroke="#2A1010" strokeWidth="0.25"/>
+                )}
+                {/* Risk halkası - dış parlama */}
+                {hasRisk && (
+                  <circle cx={p.x} cy={p.y} r={p.r + 1.8} fill="none" stroke={riskRenk} strokeWidth="0.7" strokeOpacity="0.85">
+                    {isKritik && (
+                      <>
+                        <animate attributeName="r" values={`${p.r+1};${p.r+3.5};${p.r+1}`} dur="1.5s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.5s" repeatCount="indefinite"/>
+                      </>
+                    )}
                   </circle>
                 )}
-                {/* İsim */}
-                <text x={p.x} y={p.y + p.r + 3.5} textAnchor="middle" fontSize="2.8" fill={renk} fontWeight="600" fontFamily="Georgia,serif">{p.label}</text>
+                {/* Seçili vurgu */}
+                {aktif && (
+                  <circle cx={p.x} cy={p.y} r={p.r + 2.5} fill="none" stroke="#C9A84C" strokeWidth="0.45" strokeDasharray="1 0.8"/>
+                )}
+                {/* Tıklama alanı (geniş, görünmez) */}
+                <circle cx={p.x} cy={p.y} r={p.r + 2} fill="transparent"/>
               </g>
             );
           })}
@@ -4146,7 +4556,6 @@ function OrganVucutHaritasi({ sonuclar, gecmis }) {
 }
 
 function TarifModal({ tarif, onKapat }) {
-  const C = TEMA_RENKLERI;
   const [sepet, setSepet] = React.useState([]);
   if (!tarif) return null;
 
@@ -4198,7 +4607,6 @@ function TarifModal({ tarif, onKapat }) {
 }
 
 function HaftalikRapor({ gecmis, onKapat }) {
-  const C = TEMA_RENKLERI;
   const simdi = new Date();
   const haftaOnce = new Date(simdi - 7 * 24 * 60 * 60 * 1000);
   const haftaGecmis = gecmis.filter(g => {
@@ -4269,8 +4677,119 @@ function HaftalikRapor({ gecmis, onKapat }) {
 /* ══════════════════════════════════════════════
    MİZAÇ MARKET LİSTESİ BİLEŞENİ
    ══════════════════════════════════════════════ */
+function PaylasModal({ madde, onKapat, rutbeAd, rutbeRenk, lakap }) {
+  const kartRef = useRef(null);
+  const [yapiyor, setYapiyor] = useState(false);
+  const v = (madde.risk === "kritik" || madde.risk === "yuksek") ? { ad: "KAÇIN", renk: "#E74C3C", altR: "#C0392B" }
+    : madde.risk === "orta" ? { ad: "DİKKAT", renk: "#F39C12", altR: "#D68910" }
+    : madde.risk === "dusuk" ? { ad: "GÜVENLİ", renk: "#27AE60", altR: "#1E8449" }
+    : { ad: "BELİRSİZ", renk: "#7F8C8D", altR: "#566573" };
+  const etkiKisa = (madde.etki || "").length > 220 ? (madde.etki || "").slice(0, 220) + "…" : (madde.etki || "");
+  const paylasMetni = `${v.ad} — ${madde.ad} (${madde.kod})\n\n${(madde.etki || "").slice(0, 200)}${(madde.etki || "").length > 200 ? "…" : ""}\n\nKaynak: ${madde.kaynak || "—"}\n\nBesin Dedektifi · https://besin-d.vercel.app`;
+  const kartiPngYap = async () => {
+    if (!kartRef.current) return null;
+    setYapiyor(true);
+    try {
+      const cv = await html2canvas(kartRef.current, { scale: 2, backgroundColor: null, useCORS: true });
+      return await new Promise(res => cv.toBlob(b => res(b), "image/png", 1));
+    } finally { setYapiyor(false); }
+  };
+  const indir = async () => {
+    const blob = await kartiPngYap(); if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `besin-dedektifi-${(madde.kod || "madde").toString().replace(/\s/g, "_")}.png`;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { try { document.body.removeChild(a); URL.revokeObjectURL(url); } catch {} }, 200);
+  };
+  const nativeShare = async () => {
+    const blob = await kartiPngYap(); if (!blob) return;
+    const dosya = new File([blob], `besin-dedektifi-${madde.kod}.png`, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [dosya] })) {
+      try { await navigator.share({ files: [dosya], text: paylasMetni }); } catch {}
+    } else if (navigator.share) {
+      try { await navigator.share({ text: paylasMetni }); } catch {}
+    } else {
+      indir();
+    }
+  };
+  const C2 = { bg: "#F7F2E8", metin: "#1D1D1F", altin: "#C9952C", soluk: "#8A8499", s: "#E5DCC8" };
+  const linkKanali = (kanal) => {
+    const t = encodeURIComponent(paylasMetni);
+    const u = encodeURIComponent("https://besin-d.vercel.app");
+    if (kanal === "whatsapp") return `https://wa.me/?text=${t}`;
+    if (kanal === "telegram") return `https://t.me/share/url?url=${u}&text=${t}`;
+    if (kanal === "twitter") return `https://twitter.com/intent/tweet?text=${t}`;
+    if (kanal === "instagram") return "https://www.instagram.com/";
+    if (kanal === "tiktok") return "https://www.tiktok.com/";
+    if (kanal === "sms") return `sms:?body=${t}`;
+    return null;
+  };
+  const KANALLAR_UST = [
+    { k: "instagram", ad: "Instagram", renk: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF, #515BD4)" },
+    { k: "tiktok", ad: "TikTok", renk: "#000000" },
+    { k: "sms", ad: "Mesajlar", renk: "#34C759" },
+  ];
+  const KANALLAR_LINK = [
+    { k: "whatsapp", ad: "WhatsApp", renk: "#25D366" },
+    { k: "telegram", ad: "Telegram", renk: "#0088CC" },
+    { k: "twitter", ad: "X", renk: "#000000" },
+  ];
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1100, backdropFilter: "blur(4px)" }} onClick={onKapat}>
+      <div style={{ background: C2.bg, borderRadius: "20px 20px 0 0", padding: 20, width: "100%", maxWidth: 520, maxHeight: "90vh", overflowY: "auto", border: `1px solid ${C2.s}` }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <span style={{ color: C2.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>PAYLAŞ</span>
+          <button onClick={onKapat} style={{ background: "transparent", border: "none", color: C2.soluk, fontSize: 18, cursor: "pointer" }}>✕</button>
+        </div>
+
+        <div style={{ background: "#fff", borderRadius: 14, padding: 8, marginBottom: 14, border: `1px solid ${C2.s}`, overflow: "hidden" }}>
+          <div ref={kartRef} style={{ width: 480, transform: "scale(0.74)", transformOrigin: "top left", marginBottom: -135 }}>
+            <div style={{ width: 480, height: 480, background: `linear-gradient(135deg, ${v.renk}, ${v.altR})`, color: "#fff", padding: 32, fontFamily: "'Inter', -apple-system, sans-serif", display: "flex", flexDirection: "column", justifyContent: "space-between", boxSizing: "border-box" }}>
+              <div>
+                <div style={{ fontSize: 14, opacity: 0.85, letterSpacing: 2, fontWeight: 600 }}>BESİN DEDEKTİFİ</div>
+                <div style={{ fontSize: 56, fontWeight: 900, letterSpacing: 2, lineHeight: 1, marginTop: 30 }}>{v.ad}</div>
+                <div style={{ fontSize: 14, opacity: 0.85, marginTop: 6, fontWeight: 600 }}>{madde.kod} · {madde.kat}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 28, fontWeight: 800, marginBottom: 10, lineHeight: 1.15 }}>{madde.ad}</div>
+                <div style={{ fontSize: 13, opacity: 0.92, lineHeight: 1.5, fontWeight: 400 }}>{etkiKisa}</div>
+              </div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.25)", paddingTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: 12, opacity: 0.9, fontWeight: 700 }}>besin-d.vercel.app</div>
+                  {(rutbeAd || lakap) && <div style={{ fontSize: 10, opacity: 0.85, marginTop: 2 }}>{lakap ? `${lakap} · ` : ""}{rutbeAd}</div>}
+                </div>
+                <span style={{ fontSize: 10, opacity: 0.75 }}>{madde.kaynak ? madde.kaynak.split("·")[0].trim() : ""}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+          {KANALLAR_UST.map(k => (
+            <a key={k.k} href={linkKanali(k.k)} target={k.k === "sms" ? "_self" : "_blank"} rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 12, padding: "14px 8px", fontWeight: 700, fontSize: 14, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
+          ))}
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+          {KANALLAR_LINK.map(k => (
+            <a key={k.k} href={linkKanali(k.k)} target="_blank" rel="noopener noreferrer" style={{ background: k.renk, color: "#fff", borderRadius: 10, padding: "12px 8px", fontWeight: 700, fontSize: 13, textAlign: "center", textDecoration: "none", fontFamily: "inherit" }}>{k.ad}</a>
+          ))}
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
+          <button onClick={indir} disabled={yapiyor} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: yapiyor ? "wait" : "pointer", fontFamily: "inherit" }}>{yapiyor ? "Hazırlanıyor..." : "Görseli İndir"}</button>
+          <button onClick={() => { navigator.clipboard?.writeText(paylasMetni); }} style={{ background: "transparent", border: `1px solid ${C2.s}`, color: C2.metin, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Yazıyı Kopyala</button>
+        </div>
+
+        <button onClick={nativeShare} disabled={yapiyor} style={{ width: "100%", background: "transparent", color: C2.soluk, border: "none", padding: "8px", fontWeight: 600, fontSize: 11, cursor: yapiyor ? "wait" : "pointer", fontFamily: "inherit", textDecoration: "underline" }}>Diğer uygulamalar (görsel + yazı)</button>
+      </div>
+    </div>
+  );
+}
+
 function MizacMarket({ profil, onKapat }) {
-  const C = TEMA_RENKLERI;
   const [sekme, setSekme] = React.useState("al");
   if (!profil) return null;
   const veri = MIZAC_MARKET[profil.mizac];
@@ -4280,7 +4799,7 @@ function MizacMarket({ profil, onKapat }) {
     <div style={{ position:"fixed", inset:0, background:"#000000A0", display:"flex", alignItems:"flex-end", justifyContent:"center", zIndex:1000, backdropFilter:"blur(4px)" }} onClick={onKapat}>
       <div style={{ background:C.bg, borderRadius:"20px 20px 0 0", padding:24, width:"100%", maxWidth:480, maxHeight:"88vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-          <h2 style={{ color:profil.renk, fontSize:18, margin:0 }}>🛒 {profil.burc} Mizaç Marketi</h2>
+          <h2 style={{ color:profil.renk, fontSize:18, margin:0 }}>{profil.burc} Mizaç Marketi</h2>
           <button onClick={onKapat} style={{ background:C.y2, border:`1px solid ${C.s}`, borderRadius:"50%", width:30, height:30, color:C.soluk, cursor:"pointer" }}>✕</button>
         </div>
         <div style={{ color:C.soluk, fontSize:12, marginBottom:4 }}>{profil.mizac} Mizacı</div>
@@ -4292,7 +4811,7 @@ function MizacMarket({ profil, onKapat }) {
         {/* SEKME */}
         <div style={{ display:"flex", gap:8, marginBottom:16 }}>
           {[["al","Al"], ["kacin","Kaçın"]].map(([k,l]) => (
-            <button key={k} onClick={() => setSekme(k)} style={{ flex:1, padding:"10px 6px", borderRadius:12, border:`2px solid ${sekme===k ? profil.renk : C.s}`, background:sekme===k ? profil.renk+"18" : C.y, color:sekme===k ? profil.renk : C.soluk, cursor:"pointer", fontFamily:"Georgia,serif", fontSize:13, fontWeight:sekme===k?700:400 }}>{l}</button>
+            <button key={k} onClick={() => setSekme(k)} style={{ flex:1, padding:"10px 6px", borderRadius:12, border:`2px solid ${sekme===k ? profil.renk : C.s}`, background:sekme===k ? profil.renk+"18" : C.y, color:sekme===k ? profil.renk : C.soluk, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:sekme===k?700:400 }}>{l}</button>
           ))}
         </div>
 
@@ -4300,12 +4819,9 @@ function MizacMarket({ profil, onKapat }) {
           <div>
             <div style={{ color:C.soluk, fontSize:12, marginBottom:10 }}>Bu gıdalar {profil.mizac} mizacına faydalıdır</div>
             {veri.al.map((g,i) => (
-              <div key={i} style={{ background:C.y2, borderRadius:12, padding:12, marginBottom:8, display:"flex", alignItems:"center", gap:12, borderLeft:`3px solid ${profil.renk}` }}>
-                <div style={{ fontSize:28 }}>{g.ikon}</div>
-                <div>
-                  <div style={{ color:C.metin, fontWeight:700, fontSize:14 }}>{g.ad}</div>
-                  <div style={{ color:C.soluk, fontSize:12, marginTop:2 }}>{g.neden}</div>
-                </div>
+              <div key={i} style={{ background:C.y2, borderRadius:12, padding:12, marginBottom:8, borderLeft:`3px solid ${profil.renk}` }}>
+                <div style={{ color:C.metin, fontWeight:700, fontSize:14 }}>{g.ad}</div>
+                <div style={{ color:C.soluk, fontSize:12, marginTop:2 }}>{g.neden}</div>
               </div>
             ))}
           </div>
@@ -4328,68 +4844,6 @@ function MizacMarket({ profil, onKapat }) {
   );
 }
 
-function BarkodOkuyu({ onSonuc, onIptal }) {
-  const [durum, setDurum] = React.useState("bekle");
-  const [hata, setHata] = React.useState("");
-  const videoRef = React.useRef(null);
-  const streamRef = React.useRef(null);
-  const animRef = React.useRef(null);
-  const C = TEMA_RENKLERI;
-  async function baslat() {
-    try {
-      setDurum("aktif");
-      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      streamRef.current = s;
-      if (videoRef.current) { videoRef.current.srcObject = s; videoRef.current.play(); }
-      tara();
-    } catch { setHata("Kamera açılamadı."); setDurum("hata"); }
-  }
-  function tara() {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    if ("BarcodeDetector" in window) {
-      const det = new window.BarcodeDetector({ formats: ["ean_13","ean_8","qr_code","code_128","upc_a"] });
-      animRef.current = setInterval(async () => {
-        if (!videoRef.current || videoRef.current.readyState < 2) return;
-        try { const bc = await det.detect(videoRef.current); if (bc.length > 0) { clearInterval(animRef.current); kapat(); onSonuc(bc[0].rawValue); } } catch {}
-      }, 500);
-    } else if (window.jsQR) {
-      animRef.current = setInterval(() => {
-        if (!videoRef.current || videoRef.current.readyState < 2) return;
-        canvas.width = videoRef.current.videoWidth;
-        canvas.height = videoRef.current.videoHeight;
-        ctx.drawImage(videoRef.current, 0, 0);
-        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = window.jsQR(img.data, img.width, img.height);
-        if (code) { clearInterval(animRef.current); kapat(); onSonuc(code.data); }
-      }, 300);
-    } else {
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js";
-      s.onload = () => tara();
-      document.head.appendChild(s);
-    }
-  }
-  function kapat() { clearInterval(animRef.current); if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop()); }
-  React.useEffect(() => () => kapat(), []);
-  if (durum === "hata") return <div style={{ textAlign:"center", padding:20 }}><div style={{ color:"#FF4444", marginBottom:12 }}>{hata}</div><button onClick={onIptal} style={{ background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 20px", color:C.soluk, cursor:"pointer" }}>Geri</button></div>;
-  if (durum === "aktif") return (
-    <div style={{ position:"relative" }}>
-      <video ref={videoRef} style={{ width:"100%", borderRadius:12, maxHeight:300, objectFit:"cover" }} playsInline muted />
-      <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" }}><div style={{ width:200, height:100, border:`2px solid ${C.altin}`, borderRadius:8 }} /></div>
-      <div style={{ textAlign:"center", marginTop:8, color:C.soluk, fontSize:12 }}>Barkodu çerçeveye getir...</div>
-      <button onClick={() => { kapat(); onIptal(); }} style={{ width:"100%", marginTop:8, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>İptal</button>
-    </div>
-  );
-  return (
-    <div style={{ textAlign:"center", padding:20 }}>
-      <div style={{ fontSize:48, marginBottom:12 }}>🔲</div>
-      <div style={{ color:C.metin, marginBottom:16, fontSize:14 }}>Ürün barkodunu okut</div>
-      <button onClick={baslat} style={{ background:C.altin, border:"none", borderRadius:12, padding:"12px 32px", color:"#000", fontWeight:700, fontSize:15, cursor:"pointer" }}>Kamerayı Aç</button>
-      <div style={{ marginTop:10 }}><button onClick={onIptal} style={{ background:"none", border:"none", color:C.soluk, cursor:"pointer", fontSize:13 }}>İptal</button></div>
-    </div>
-  );
-}
 
 function KameraOCR({ onMetin, onIptal }) {
  const [durum, setDurum] = useState("bekle"); // bekle | aktif | kirp | isleniyor | hata
@@ -4527,7 +4981,11 @@ function KameraOCR({ onMetin, onIptal }) {
  const blob = await new Promise(res => c.toBlob(res, "image/jpeg", 0.85));
  const fd = new FormData();
  fd.append("file", blob, "etiket.jpg");
- fd.append("language", "eng");
+ // Türkçe + İngilizce çift dil (Türk ürün etiketlerinde her ikisi de geçer)
+ fd.append("language", "tur");
+ fd.append("OCREngine", "2");
+ fd.append("detectOrientation", "true");
+ fd.append("scale", "true");
  fd.append("OCREngine", "2");
  fd.append("scale", "true");
  fd.append("isTable", "false");
@@ -4556,8 +5014,8 @@ function KameraOCR({ onMetin, onIptal }) {
  <div style={{ fontSize: 36, marginBottom: 8 }}></div>
  <div style={{ color: "#FF2D55", fontWeight: 700, marginBottom: 6 }}>Kamera Erişimi Reddedildi</div>
  <div style={{ color: C.soluk, fontSize: 13, marginBottom: 14 }}>Tarayıcı ayarlarından kamera iznini ver.</div>
- <button onClick={() => setDurum("bekle")} style={{ background: C.altin, border: "none", borderRadius: 10, padding: "10px 20px", color: "#1A1200", fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif", marginRight: 8 }}>Tekrar Dene</button>
- <button onClick={onIptal} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 20px", color: C.soluk, cursor: "pointer", fontFamily: "Georgia,serif" }}>İptal</button>
+ <button onClick={() => setDurum("bekle")} style={{ background: C.altin, border: "none", borderRadius: 10, padding: "10px 20px", color: "#1A1200", fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginRight: 8 }}>Tekrar Dene</button>
+ <button onClick={onIptal} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 20px", color: C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>İptal</button>
  </div>
  );
 
@@ -4566,8 +5024,8 @@ function KameraOCR({ onMetin, onIptal }) {
  <div style={{ fontSize: 48, marginBottom: 12 }}></div>
  <div style={{ color: C.metin, fontWeight: 700, fontSize: 16, marginBottom: 6 }}>Etiket Fotoğrafı Çek</div>
  <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.6, marginBottom: 18 }}>Ürünün "İçindekiler" bölümüne kamerayı tut.<br />Metin otomatik okunur ve analiz edilir.</div>
- <button onClick={kameraAc} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "13px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 8 }}> Kamerayı Aç</button>
- <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px", color: C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13 }}>← Metin Girişe Dön</button>
+ <button onClick={kameraAc} style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "13px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 8 }}> Kamerayı Aç</button>
+ <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px", color: C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13 }}>← Metin Girişe Dön</button>
  </div>
  );
 
@@ -4589,7 +5047,7 @@ function KameraOCR({ onMetin, onIptal }) {
  {durum === "kirp" && fotoUrl && (
  <>
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, marginBottom: 8, textAlign: "center" }}>Etiketi çerçeve ile seç, köşelerden büyüt/küçült</div>
- <div ref={kirpRef} style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: "#000", marginBottom: 10, userSelect: "none", touchAction: "none" }}>
+ <div ref={kirpRef} style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: C.y2, marginBottom: 10, userSelect: "none", touchAction: "none" }}>
  <img ref={fotoRef} src={fotoUrl} alt="" style={{ width: "100%", display: "block" }} />
  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", clipPath: `polygon(0 0, 0 100%, ${kirp.x}% 100%, ${kirp.x}% ${kirp.y}%, ${kirp.x + kirp.w}% ${kirp.y}%, ${kirp.x + kirp.w}% ${kirp.y + kirp.h}%, ${kirp.x}% ${kirp.y + kirp.h}%, ${kirp.x}% 100%, 100% 100%, 100% 0)` }} />
  <div onMouseDown={basla("tasi")} onTouchStart={basla("tasi")} style={{ position: "absolute", left: `${kirp.x}%`, top: `${kirp.y}%`, width: `${kirp.w}%`, height: `${kirp.h}%`, border: `2px solid ${C.altin}`, cursor: "move", boxSizing: "border-box" }} />
@@ -4600,29 +5058,29 @@ function KameraOCR({ onMetin, onIptal }) {
  </div>
  <canvas ref={canvasRef} style={{ display: "none" }} />
  <div style={{ display: "flex", gap: 8 }}>
- <button onClick={tekrarCek} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Georgia,serif" }}>Tekrar Çek</button>
- <button onClick={kirpVeAnaliz} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif" }}>Bu Alanı Oku & Analiz Et</button>
+ <button onClick={tekrarCek} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Tekrar Çek</button>
+ <button onClick={kirpVeAnaliz} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Bu Alanı Oku & Analiz Et</button>
  </div>
  </>
  )}
  {durum === "aktif" && (
  <>
- <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: "#000", marginBottom: 10 }}>
+ <div style={{ position: "relative", borderRadius: 16, overflow: "hidden", background: C.y2, marginBottom: 10 }}>
  <video ref={videoRef} autoPlay playsInline muted style={{ width: "100%", display: "block", maxHeight: 480, objectFit: "cover", transform: `scale(${zoom})`, transformOrigin: "center" }} />
  <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", background: C.altin, borderRadius: 6, padding: "4px 12px", pointerEvents: "none" }}>
  <span style={{ color: "#1A1200", fontSize: 11, fontWeight: 700 }}>Etiketi netleştir, yakınlaştır, fotoğraf çek</span>
  </div>
  </div>
  <div style={{ display: "flex", alignItems: "center", gap: 10, background: C.y, padding: "10px 14px", borderRadius: 12, marginBottom: 10 }}>
- <button onClick={() => setZoom(Math.max(1, zoom - 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif" }}>−</button>
+ <button onClick={() => setZoom(Math.max(1, zoom - 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>−</button>
  <input type="range" min="1" max="4" step="0.1" value={zoom} onChange={e => setZoom(parseFloat(e.target.value))} style={{ flex: 1, accentColor: C.altin }} />
- <button onClick={() => setZoom(Math.min(4, zoom + 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Georgia,serif" }}>+</button>
+ <button onClick={() => setZoom(Math.min(4, zoom + 0.25))} style={{ background: C.s, border: "none", borderRadius: 8, width: 36, height: 36, color: C.altin, fontSize: 20, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>+</button>
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, minWidth: 40, textAlign: "right" }}>{zoom.toFixed(1)}x</div>
  </div>
  <canvas ref={canvasRef} style={{ display: "none" }} />
  <div style={{ display: "flex", gap: 8 }}>
- <button onClick={kameraKapat} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Georgia,serif" }}>Kapat</button>
- <button onClick={fotografCek} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif" }}>Fotoğraf Çek</button>
+ <button onClick={kameraKapat} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px", color: C.soluk, fontWeight: 600, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Kapat</button>
+ <button onClick={fotografCek} style={{ flex: 2, background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Fotoğraf Çek</button>
  </div>
  </>
  )}
@@ -4631,23 +5089,88 @@ function KameraOCR({ onMetin, onIptal }) {
 }
 
 /* ══════════════════════════════════════════════
+ FOTO + İSİM İLE SORGULAMA
+ ══════════════════════════════════════════════ */
+function FotoIsim({ kategoriAd, onAra, onIptal }) {
+  const [isim, setIsim] = useState("");
+  const [foto, setFoto] = useState(null);
+  const kamRef = useRef(null);
+  const galRef = useRef(null);
+
+  function dosyaSec(e) {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setFoto(r.result);
+    r.readAsDataURL(f);
+  }
+
+  return (
+    <div>
+      <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
+        <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>★ YAKINDA — MOBİL UYGULAMADA</div>
+        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+          Mobil uygulama sürümünde <b>foto'dan otomatik ürün/logo tanıma</b> aktif olacak. Yapay zekâ ürünü tanıyacak, içindekiler listesi otomatik gelecek.
+        </div>
+        <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+          <b style={{ color: C.metin }}>Şimdilik:</b> Ürünün ismini yazarak arşivde arayabilirsin. Foto eklemen opsiyonel — sadece görsel hatırlatma içindir.
+        </div>
+      </div>
+
+      {foto ? (
+        <div style={{ position: "relative", marginBottom: 12 }}>
+          <img src={foto} alt="" style={{ width: "100%", maxHeight: 240, objectFit: "contain", background: C.y2, borderRadius: 12, border: `1px solid ${C.s}` }} />
+          <button onClick={() => setFoto(null)} style={{ position: "absolute", top: 8, right: 8, background: "#000000A0", border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.metin, cursor: "pointer", fontSize: 14, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>✕</button>
+        </div>
+      ) : (
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          <button onClick={() => kamRef.current && kamRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Kamera ile Çek</button>
+          <button onClick={() => galRef.current && galRef.current.click()} style={{ flex: 1, background: C.y, border: `1px dashed ${C.altin}80`, borderRadius: 12, padding: "18px 8px", color: C.altin, fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Galeriden Seç</button>
+        </div>
+      )}
+
+      <input ref={kamRef} type="file" accept="image/*" capture="environment" onChange={dosyaSec} style={{ display: "none" }} />
+      <input ref={galRef} type="file" accept="image/*" onChange={dosyaSec} style={{ display: "none" }} />
+
+      <input
+        type="text"
+        value={isim}
+        onChange={e => setIsim(e.target.value)}
+        placeholder={`${kategoriAd} ismi (örn: çikolata, krem, ilaç)`}
+        style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "13px 14px", color: C.metin, fontSize: 14, marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}
+      />
+
+      <button
+        onClick={() => onAra(isim, foto)}
+        disabled={!isim.trim()}
+        style={{ width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 15, cursor: isim.trim() ? "pointer" : "default", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 10, opacity: isim.trim() ? 1 : 0.4 }}
+      >
+        Arşivde Ara
+      </button>
+
+      <button onClick={onIptal} style={{ width: "100%", background: "none", border: `1px solid #22223A`, borderRadius: 12, padding: "11px", color: "#8A8499", fontSize: 13, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>Vazgeç</button>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,serif!important} body{background:#07070F} input,textarea,button,select{font-family:Georgia,serif!important} textarea:focus,input:focus{outline:2px solid #C9A84C50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:#22223A;border-radius:2px}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}}`;
 
 const S = {
- anaBtn: { width: "100%", background: "linear-gradient(135deg,#C9A84C,#E8C97A)", border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Georgia,serif" },
- hayaletBtn: { width: "100%", background: "none", border: "1px solid #22223A", borderRadius: 14, padding: "12px", color: "#8A8499", fontSize: 14, cursor: "pointer", fontFamily: "Georgia,serif", marginBottom: 10 },
- geriDaire: { width: 34, height: 34, borderRadius: "50%", background: "#161623", border: "1px solid #22223A", color: "#F0EDE8", cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
- geriYazi: { color: "#8A8499", cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Georgia,serif" },
- kB: { color: "#C9A84C", fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
- mT: { color: "#8A8499", fontSize: 13, lineHeight: 1.6 },
- ipucu: { color: "#45435A", fontSize: 13, lineHeight: 1.6, background: "#0F0F1A", border: "1px solid #22223A", borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
- textarea: { width: "100%", background: "#161623", border: "1px solid #22223A", borderRadius: 12, padding: 14, color: "#F0EDE8", fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Georgia,serif" },
- ornekBtn: { width: "100%", background: "#0F0F1A", border: "1px solid #22223A", borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Georgia,serif" },
- dateInput: { width: "100%", background: "#161623", border: "1px solid #22223A", borderRadius: 12, padding: "12px 16px", color: "#F0EDE8", fontSize: 15, marginBottom: 14, colorScheme: "dark", fontFamily: "Georgia,serif" },
- orgTag: { background: "#161623", color: "#8A8499", border: "1px solid #22223A", borderRadius: 6, padding: "3px 8px", fontSize: 11 },
- notUyari: { color: "#45435A", fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
+ anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ hayaletBtn: { width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 14, padding: "12px", color: C.soluk, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 10 },
+ geriDaire: { width: 34, height: 34, borderRadius: "50%", background: C.y2, border: `1px solid ${C.s}`, color: C.metin, cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
+ geriYazi: { color: C.soluk, cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ kB: { color: C.altin, fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
+ mT: { color: C.soluk, fontSize: 13, lineHeight: 1.6 },
+ ipucu: { color: C.soluk, fontSize: 13, lineHeight: 1.6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
+ textarea: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, color: C.metin, fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ ornekBtn: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ dateInput: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px 16px", color: C.metin, fontSize: 15, marginBottom: 14, colorScheme: "light", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
+ orgTag: { background: C.y, color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 6, padding: "3px 8px", fontSize: 11 },
+ notUyari: { color: C.cok, fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
 };
 
 /* ══════════════════════════════════════════════
@@ -4663,39 +5186,1155 @@ export default function App() {
  const [ilkSira, setIlkSira] = useState([]);
  const [profil, setProfil] = useState(() => { try { const p = localStorage.getItem("bd_profil"); return p ? JSON.parse(p) : null; } catch { return null; } });
  const [aileProfiller, setAileProfiller] = useState(() => { try { const a = localStorage.getItem("bd_aile"); return a ? JSON.parse(a) : []; } catch { return []; } });
- const [aktifUye, setAktifUye] = useState(null);
+ const [aktifUye, setAktifUye] = useState(() => { try { const p = localStorage.getItem("bd_profil"); return p ? (JSON.parse(p).ad || null) : null; } catch { return null; } });
  const [dogum, setDogum] = useState(() => { try { return localStorage.getItem("bd_dogum") || ""; } catch { return ""; } });
+ const [cinsiyet, setCinsiyet] = useState(() => { try { return localStorage.getItem("bd_cinsiyet") || "Erkek"; } catch { return "Erkek"; } });
+ const [marketKategoriPanel, setMarketKategoriPanel] = useState(false);
+ const [marketAcikBaslik, setMarketAcikBaslik] = useState(null);
+ const [seslerAcik, setSeslerAcik] = useState(() => { try { return localStorage.getItem("bd_ses") !== "kapali"; } catch { return true; } });
+ const sesToggle = () => { const yeni = !seslerAcik; setSeslerAcik(yeni); try { localStorage.setItem("bd_ses", yeni ? "acik" : "kapali"); } catch {} if (!yeni && window.speechSynthesis) window.speechSynthesis.cancel(); };
  const [modal, setModal] = useState(null);
  const [raporAcik, setRaporAcik] = useState(false);
  const [marketAcik, setMarketAcik] = useState(false);
  const [tarifModal, setTarifModal] = useState(null);
- const [acik, setAcik] = useState(null);
+ const [acik, setAcik] = useState(() => new Set());
  const [kategori, setKategori] = useState("gida");
+ const [maddeGrupAcik, setMaddeGrupAcik] = useState(null);
+ const [saglikDurumu, setSaglikDurumu] = useState(() => { try { const s = localStorage.getItem("bd_saglik"); return s ? JSON.parse(s) : []; } catch { return []; } });
+ const [liyakat, setLiyakat] = useState(() => {
+   try {
+     const l = localStorage.getItem("bd_liyakat");
+     if (l) return JSON.parse(l);
+   } catch {}
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] };
+ });
+ const ASITANE_BASLANGIC = Date.UTC(2026, 0, 1);
+ const ASITANE_GUNLUK_KATILIM = 4.7;
+ const ASITANE_BASLANGIC_NO = 247;
+ const siraNoHesapla = (baslangic) => {
+   const ts = baslangic || Date.now();
+   if (ts < ASITANE_BASLANGIC) return ASITANE_BASLANGIC_NO;
+   const gun = (ts - ASITANE_BASLANGIC) / 86400000;
+   return Math.max(1, Math.floor(ASITANE_BASLANGIC_NO + gun * ASITANE_GUNLUK_KATILIM));
+ };
+ const [yeniMertebeBildirim, setYeniMertebeBildirim] = useState(null);
+ useEffect(() => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonGiris === bugun) return;
+   const dun = new Date(Date.now() - 86400000).toDateString();
+   const yeniSeri = liyakat.sonGiris === dun ? (liyakat.gunlukSeri || 0) + 1 : 1;
+   const yeni = { ...liyakat, sonGiris: bugun, gunlukSeri: yeniSeri };
+   setLiyakat(yeni);
+   try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+ }, []);
+ const MERTEBELER = [
+   { k: "sagirt", ad: "Çırak", anlam: "Sâlik · Tâlib", esik: 0, renk: "#9B7B4F", hikmet: "Görmek", sart: { gun: 0, urun: 1, hatm: 0, sefaat: 0 }, aciklama: "Fıtrat bilgisinin kapısında duran. Etiketi okumayı, gizli düşmanı görmeyi öğrenir. Hikmeti: Görmek." },
+   { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", hikmet: "Ayırt Etmek", sart: { gun: 30, urun: 30, hatm: 7, sefaat: 3 }, aciklama: "Ahilik geleneğinde ustanın yanında üretim sırrını öğrenen ehil kimse. Aldatıcı pazarlamayı ayırt eder, helal ve sahte helali tefrik eder. Hikmeti: Ayırt Etmek." },
+   { k: "kethuda", ad: "Kethüda", anlam: "Bölge Sorumlusu", esik: 200, renk: "#8E8E93", hikmet: "Korumak", sart: { gun: 60, urun: 100, hatm: 21, sefaat: 7 }, aciklama: "Esnaf âsitânesinin veya semtin idari sorumlusu. Yedi yârenini gözeten, hastalık-gıda zincirini bilen koruyucu. Hikmeti: Korumak." },
+   { k: "hekimbasi", ad: "Hekimbaşı", anlam: "Saray Başhekimi", esik: 800, renk: "#C9952C", hikmet: "Şifa Vermek", sart: { gun: 120, urun: 250, hatm: 60, sefaat: 7 }, aciklama: "Hekimlerin başı, sultanın özel tabibi. Yetiştirdiği kalfalarla şifa zincirini ören üstâd. Hikmeti: Şifa Vermek." },
+ ];
+ const PIRLER = [
+   { k: "aktar", ad: "Pîr-i Aktâr", uslup: "titiz", hitap: "muhibbim", uzmanlik: "katkı maddeleri ve etiket sırrı" },
+   { k: "lokman", ad: "Pîr-i Lokmân", uslup: "müşfik", hitap: "azîzim", uzmanlik: "şifalı otlar ve nebevi tıb" },
+   { k: "edviye", ad: "Pîr-i Edviye", uslup: "öğretici", hitap: "sâlikim", uzmanlik: "beslenme ve mizaç dengesi" },
+   { k: "mizan", ad: "Pîr-i Mîzân", uslup: "temkinli", hitap: "yârenim", uzmanlik: "ölçü, denge ve hikmet" },
+ ];
+ const pirAta = (lakap, dogum) => {
+   const s = ((lakap || "tâlib") + "|" + (dogum || "")).toLowerCase();
+   let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+   return PIRLER[Math.abs(h) % PIRLER.length];
+ };
+ const AHD_ANAHTARLAR = {
+   "şeker": /şeker|glikoz|fruktoz|sukroz|maltodekstrin|şurup/i,
+   "renklendirici": /e10[0-9]|e11[0-9]|e12[0-9]|tartrazin|renklendirici/i,
+   "trans yağ": /hidrojene|trans yağ|margarin/i,
+   "palm yağı": /palm yağı|palmiye yağ/i,
+   "sodyum nitrit": /e250|nitrit|nitrat/i,
+   "katkı": /katkı|emülgatör|stabilizatör/i,
+   "BHA": /BHA|BHT|e320|e321/i,
+   "GDO": /GDO|glifosat|monsanto/i,
+   "BPA": /BPA|bisfenol|ftalat/i,
+ };
+ const SUALLER = {
+   sagirt: [
+     { s: "Etiketteki E471 nedir?", sik: ["Doğal vitamin", "Mono-digliserit (emülgatör)", "Tatlandırıcı"], d: 1, ders: "E471: mono- ve digliseritler — yağ asitlerinden üretilen emülgatör. EFSA 2017 yeniden değerlendirmesinde güvenlik kaygısı bulunmadı. Ancak kaynağı (hayvansal/bitkisel) etikette belirtilmek zorunda değil — helal hassasiyeti olanlar için bu nokta önemli." },
+     { s: "'Helal' mührü her zaman güvenilir mi?", sik: ["Daima güvenilir", "Sertifika kuruluşuna göre değişir", "Tamamen sahtedir"], d: 1, ders: "Helal sertifikalarının denetim seviyesi kuruluşa göre değişir. Mühür içeriği okumayı bırakmanın bahanesi olmamalı; her zaman etiket okunmalı." },
+     { s: "Glikoz şurubu hangi kaynaktan gelir?", sik: ["Bal", "GDO'lu mısır nişastası", "Şeker pancarı"], d: 1, ders: "Yüksek fruktozlu mısır şurubu (HFCS) GDO'lu mısır nişastasından üretilir. Karaciğer yağlanması ve insülin direnci ile ilişkilendirilmiştir (Lancet, 2010)." },
+   ],
+   kalfa: [
+     { s: "Hangi yağ trans yağ oluşumuna en yatkın?", sik: ["Soğuk sıkım zeytinyağı", "Hidrojene bitkisel yağ", "Tereyağı"], d: 1, ders: "Hidrojenizasyon: sıvı yağa basınç altında hidrojen eklenmesi. Trans yağ oluşur; WHO'ya göre kalp-damar hastalıklarının önde gelen sebebidir." },
+     { s: "Aspartam (E951) en çok hangi organa yüktür?", sik: ["Cilt", "Beyin ve sinir sistemi", "Kemik"], d: 1, ders: "Aspartam fenilalanin, aspartik asit ve metanole parçalanır. PKU hastalarına yasaktır; IARC 2023'te Grup 2B 'muhtemel kanserojen' olarak sınıflandırdı." },
+     { s: "Sodyum nitrit (E250) hangi riski büyütür?", sik: ["Egzama", "Mide ve kolon kanseri", "Astım"], d: 1, ders: "Sodyum nitrit pişirme ve sindirim sırasında nitrozaminlere dönüşür. IARC Grup 1 kanserojendir; özellikle işlenmiş et tüketenlerde mide-kolon kanseri riski yükselir." },
+   ],
+   kethuda: [
+     { s: "BHA (E320) + BHT (E321) birlikte alındığında?", sik: ["Etkileri azalır", "Sinerji yapar, karaciğerde birikir", "Birbirini iptal eder"], d: 1, ders: "BHA-BHT birlikte sinerjik antioksidan; ancak yağ dokusunda birikir, endokrin sistemi etkiler. IARC Grup 2B." },
+     { s: "Karragenan (E407) hangi rahatsızlığı tetikleyebilir?", sik: ["Bağırsak iltihabı", "Migren", "Saç dökülmesi"], d: 0, ders: "Karragenan deney hayvanlarında ülseratif kolit oluşturur; insanda da bağırsak iltihabını (IBD) artırma şüphesi vardır." },
+     { s: "Palm yağının en büyük zararı nedir?", sik: ["Tat kötüdür", "Doymuş yağ yükü ve damar tıkanması", "Sindirimi zordur"], d: 1, ders: "Palm yağı %50 doymuş yağ içerir; LDL kolesterolü yükseltir, damar duvarına çöker, kalp-damar hastalığı riskini artırır." },
+   ],
+   hekimbasi: [
+     { s: "Endokrin bozucu (ksenoöstrojen) en yüksek hangisinde?", sik: ["BPA (plastik, konserve)", "Sofra tuzu", "Limon"], d: 0, ders: "Bisfenol-A östrojen taklidi yapar; konserve iç astarı ve plastik şişeden geçer. Üreme sağlığı bozuklukları, obezite ve meme kanseri ile ilişkili." },
+     { s: "Glifosat (Roundup) hangi üründe en yoğun?", sik: ["Organik yumurta", "GDO'lu soya/mısır", "Bal"], d: 1, ders: "Glifosat GDO mahsullerinde yoğun. IARC 2A 'muhtemel kanserojen' (2015). Bağırsak florasını imha eder, çölyak benzeri tablo açabilir." },
+     { s: "Aspartam Ramazzini meta-analizinde hangi hastalıkla en güçlü bağ kurdu?", sik: ["Saç dökülmesi", "Non-Hodgkin lenfoma ve lösemi", "Şeker hastalığı"], d: 1, ders: "Ramazzini Enstitüsü uzun süreli kemirgen çalışmaları aspartamın lenfoma ve lösemi insidansını artırdığını gösterdi. IARC 2023'te 2B sınıfına aldı." },
+   ],
+ };
+ const AHD_METINLER = {
+   kalfa: [
+     "Bu ahd ile şahit tutuyorum: Soframa gizli şekerleri (glikoz şurubu, maltodekstrin, fruktoz) almayacağım. Etiket okumadan ürün almayacağım. Bu sözden dönersem mührüm soluk kalsın.",
+     "Kalfa mertebesine girer iken ahd ederim: Sentetik renklendirici (E102, E110, E122) içeren hiçbir ürünü çocuğumun, ehlimin sofrasına getirmeyeceğim. Bilmeden aldığım yanlışı bir gün içinde düzelteceğim.",
+     "Hakk'ın huzurunda ahd ederim: Helal mührüne körü körüne güvenmeyeceğim. Her ürünün içeriğini gözümle göreceğim, anlamadığım katkıyı araştıracağım. Bu yoldan dönmem.",
+   ],
+   kethuda: [
+     "Kethüdâlık makamına girer iken ahd ederim: Yalnız kendi soframa değil, yedi yârenimin sofrasına da nezaret edeceğim. Hidrojene yağ, palm yağı ve trans yağı sofralarımıza koymayacağım.",
+     "Bu ahd ile söz veriyorum: Sodyum nitrit, BHA ve BHT içeren işlenmiş et ürünlerini ne kendi soframa ne yedi yârenimin soframa getirmeyeceğim. Bilenin sükûtu vebaldir, ben sükût etmeyeceğim.",
+     "Beldemin emaneti sırtımdadır: Aldatıcı 'doğal' etiketine kanmayacağım, kandırılan her yâreni uyaracağım. Bu sözden dönersem asâm kırılsın.",
+   ],
+   hekimbasi: [
+     "Hekimbaşılık makamına geçer iken ahd ederim: Hâcim ettiğim bilgiyi mahrem tutmayacağım, hak edene aktaracağım. Şifa bilgisi parayla satılmaz, ihtiyacı olana ulaştırılır.",
+     "Bu ahd-i âlî ile şahit tutarım: Endokrin bozucu (BPA, ftalatlar), GDO ürünleri ve glifosat — bunların ne ailemde ne yetiştirdiklerimde olmasına izin vermeyeceğim. Bilenin sorumluluğu büyüktür.",
+     "Hekimbaşılık şerefine ahd ederim: Bildiğimi gizlemeyeceğim, bilmediğimi öğreneceğim, öğrendiğimi aktaracağım. Şifa zinciri kopmayacak. Bu ahdden dönersem hil'atim yıpransın.",
+   ],
+ };
+ const HEDIYELER = [
+   { t: "ayet", k: "Şuarâ Sûresi 80", m: "Hastalandığım zaman bana O şifa verir." },
+   { t: "ayet", k: "A'râf Sûresi 31", m: "Yiyiniz, içiniz, israf etmeyiniz; Allah israf edenleri sevmez." },
+   { t: "ayet", k: "İsrâ Sûresi 82", m: "Biz Kur'an'dan mü'minler için şifa ve rahmet olan şeyler indiriyoruz." },
+   { t: "ayet", k: "Nahl Sûresi 69", m: "Onun karınlarından türlü renklerde şerbet çıkar; onda insanlar için şifa vardır." },
+   { t: "hadis", k: "Buhârî, Tıb 1 · Tirmizî, Tıb 2039 · İbn Mâce, Tıb 3436", m: "Allah indirdiği her hastalığın şifasını da indirmiştir." },
+   { t: "hikmet", k: "Hâris bin Kelede (Arap hekîmi) · el-Muhâvere fi't-Tıb", m: "Mide hastalıkların yuvası, az yemek ise devânın başıdır." },
+   { t: "hikmet", k: "İbn-i Sînâ · El-Kanun fi't-Tıb", m: "Yediğin vakit az ye; yedikten sonra dört-beş saat ara ver. Şifâ hazımdadır." },
+   { t: "hikmet", k: "Akşemseddîn · Maddetü'l-Hayat (Süleymaniye Ktp., Ayasofya nr. 3574)", m: "Hastalıklar insandan insana, gözle görülmeyecek kadar küçük tohumlar vasıtasıyla geçer." },
+   { t: "hikmet", k: "Erzurumlu İbrahim Hakkı · Marifetname (1756)", m: "Tokluk hastalık, açlık ise devânın başıdır." },
+ ];
+ const YAD_METINLER = [
+   (pir, gun) => `${pir.ad} bugün seni andı, ${pir.hitap}.`,
+   (pir, gun) => `Bu yola gireli ${gun} gün oldu, ${pir.hitap}. Mührün hâlâ tâze.`,
+   (pir, gun) => `Geçen aydaki bir kararın, bugün üç yâreni de uyandırdı.`,
+   (pir, gun) => `${pir.ad} der ki: 'En zor mücadele, kendi nefsi ile olandır.'`,
+   (pir, gun) => `${pir.hitap}, sofranın bereketi senin uyanıklığındandır.`,
+ ];
+ const MANIFESTOLAR = [
+   "Sofranı tanı, neslini koru",
+   "Evine gireni bil",
+   "Her lokma emanettir",
+   "Etiket okumak ibadettir",
+   "Gözünle gör, kalbinle seç",
+   "Az ye, çok düşün",
+   "Helâl olan bereket getirir",
+   "Atalar bilirdi, sen de bil",
+   "Fıtrata aykırı olan bedene düşmandır",
+   "Şifa eczanede değil, sofrada başlar",
+   "Mide haram istemez, akıl ister",
+   "Görmediğin yağ damarına yazılır",
+   "Yedikçe değil, tanıdıkça doyarsın",
+   "Marka değil, içerik konuşur",
+   "Renklendirilmiş gıda, renksiz ömürdür",
+   "Toprağa yakın olan, sıhhate yakındır",
+   "Hızlı pişen, hızlı tüketir",
+   "Ataların sofrasında zehir yoktu",
+   "Eski tatlar yeni hastalıklara karşıdır",
+   "Mevsiminde olan, fıtratta olandır",
+   "Sade sofra, sade kalp",
+   "Süt anneden, ekmek tarladan",
+   "Bilmediğin şeyi yeme",
+   "Şükret, sonra ye",
+   "Bismillah hatırlatır, fıtrat hatırlatır",
+   "Bedenini emanet bil",
+   "Aç gözle ye, tok zihinle düşün",
+   "Çocuğa verdiğin, geleceğine verdiğindir",
+   "Yağ aileleri, hastalık aileleridir",
+   "Şeker tatlı, sonu acıdır",
+   "Tuza dikkat et, tuzağa dikkat et",
+   "Sentetik sınırlı, fıtrî sonsuzdur",
+   "Reklam doyurmaz, gerçek doyurur",
+   "Önce niyet, sonra market",
+   "Tarladan sofraya, sofradan ahirete",
+   "İbn-i Sînâ'yı dinle, Lokmân'ı oku",
+   "Gıdan duân kadar temiz olsun",
+   "Sofra duâ ile başlar, şükür ile biter",
+   "Helâl mührüne değil, gözüne güven",
+   "E-kodun varsa, şüphen olsun",
+   "Atalı tohum, asalete tohum",
+   "Yapay tatlı, yapay neslin başıdır",
+   "Ne yersen o'sun — sen kimsin?",
+   "Sağlık servet değil, sermayedir",
+   "Bilinçli sofra, bilinçli nesil",
+   "Ekmek kutsaldır, et emanettir",
+   "Bir lokma daha mı, bir nefes daha mı?",
+   "Aktarın bildiğini market unuttu",
+   "Kadim hekim, kadim sofradan doğar",
+   "Sofranı koruyan, soyunu korur",
+ ];
+ const ORGAN_KONUSMALARI = {
+   "Karaciğer": "der ki: bu yağı sindiremem, beni yorma.",
+   "Mide": "der ki: bu çok ağır, eritmeye gücüm yok.",
+   "Böbrek": "der ki: bu sodyum yükünü tek başıma süzemem.",
+   "Bağırsak": "der ki: bu katkıyı tanımıyorum, beni kaşır.",
+   "Kalp": "der ki: damarlarıma sıkıştırıyorsun, derdimi bil.",
+   "Beyin": "der ki: bu şekerin ardı kesilmiyor — benimle alay etme.",
+   "Sinir Sistemi": "der ki: bu tatlandırıcı beni delirtiyor.",
+   "Cilt": "der ki: içerideki iltihap bana çıkıyor, sebep sensin.",
+   "Akciğer": "der ki: bu nefes bana yetmiyor, temizini iste.",
+   "Pankreas": "der ki: insülin makinem yoruldu, rahat ver.",
+   "Tiroid": "der ki: hormonum sallanıyor, ben de sallanıyorum.",
+   "Damar": "der ki: çeperim sertleşiyor, sebep bu yağdır.",
+   "Kemikler": "der ki: kalsiyumumu çalıyorlar, dur engelle.",
+   "Bağışıklık": "der ki: ben senin ordunum, bana zehir yedirme.",
+   "Üreme": "der ki: gelecek nesil benden geçer, bunu unutma.",
+ };
+ const zamanOgutSec = (pir, hit) => {
+   const s = new Date().getHours();
+   let havuz;
+   if (s >= 3 && s < 6) havuz = [
+     `Seherin sırrı kalbinin uyanıklığındadır, ${hit}.`,
+     `${pir.ad}: "Seher vakti dua perdesi incelir, kapı açıktır."`,
+     `${hit}, gece tükenmeden bir niyet kur — gün onunla başlasın.`,
+   ];
+   else if (s < 11) havuz = [
+     `Sabahın bereketi niyetin temizliğindedir, ${hit}.`,
+     `${pir.ad}: "Bugünkü ilk lokmana dikkat et — günün ona göre kurulur."`,
+     `${hit}, sabah uyanırken bir sofra duâsı et — bütün gün hayır olsun.`,
+   ];
+   else if (s < 16) havuz = [
+     `Yarım kalan mücadele tamamlanmamış sayılır, ${hit}. Sebat et.`,
+     `${pir.ad}: "Vakti israf et­meyen ömrü israf etmez."`,
+     `${hit}, öğle vakti küçük bir sus — sofranı düşün.`,
+   ];
+   else if (s < 19) havuz = [
+     `Akşam yaklaşıyor. Gözden geçir gününü ${hit} — hangi lokmaya şükür demedin?`,
+     `${pir.ad}: "İkindi vakti yaprak gibi dökülür hatalar, bir niyetle topla."`,
+     `${hit}, gün batmadan bir doğruyu yazıver.`,
+   ];
+   else if (s < 22) havuz = [
+     `Akşamın huzuru gündüzün niyetindedir, ${hit}. Vakar üzere yat.`,
+     `${pir.ad}: "Akşam sofrası bereket sofrasıdır; aceleyle dolma."`,
+     `${hit}, yatağa girerken bir tövbe et — gece arınır.`,
+   ];
+   else havuz = [
+     `Gecenin sırrı dilin susuşundadır, ${hit}. Dinle.`,
+     `${pir.ad}: "Gece yarısı her sözden değerlidir — sus, tefekkür et."`,
+     `${hit}, gecenin sessizliği şifadır. Pîrlerin sözünü hatırla.`,
+   ];
+   return havuz[Math.floor(Math.random() * havuz.length)];
+ };
+ const hicriCevir = (d) => {
+   const aylar = ["Muharrem","Safer","Rebîülevvel","Rebîülâhir","Cemâziyelevvel","Cemâziyelâhir","Receb","Şâban","Ramazân","Şevvâl","Zilkâde","Zilhicce"];
+   const jd = Math.floor((d.getTime() / 86400000) + 2440587.5);
+   const l = jd - 1948440 + 10632;
+   const n = Math.floor((l - 1) / 10631);
+   const l2 = l - 10631 * n + 354;
+   const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+   const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+   const ay = Math.floor((24 * l3) / 709);
+   const gun = l3 - Math.floor((709 * ay) / 24);
+   const yil = 30 * n + j - 30;
+   return { gun, ay: aylar[ay - 1] || "Muharrem", yil };
+ };
+ const vakitBul = () => {
+   const s = new Date().getHours();
+   if (s < 6) return "gece"; if (s < 11) return "sabah"; if (s < 16) return "ogle"; if (s < 20) return "aksam"; return "gece";
+ };
+ const SELAM_KALIPLAR = {
+   sabah: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı sabahlar.`,
+     (h) => `Sabahın hayır olsun ${h}, bereket soframıza yâr olsun.`,
+     (h) => `Selâm sana ${h}, gün aydınlık başlasın.`,
+     (h) => `Hayırlı sabahlar ${h}, bu gün de fıtrat üzere geçsin.`,
+     (h) => `Selâmün aleyküm ${h}, seherin nuru üzerinde olsun.`,
+   ],
+   ogle: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı vakitler.`,
+     (h) => `Selâm sana ${h}, sofranın bereketi daim olsun.`,
+     (h) => `Hayırlı vakitler ${h}, niyetin sahih olsun.`,
+     (h) => `Selâmün aleyküm ${h}, vaktin hayırla geçsin.`,
+   ],
+   aksam: [
+     (h) => `Selâmün aleyküm ${h}, hayırlı akşamlar.`,
+     (h) => `Akşamın hayır olsun ${h}, sofranın helâl olsun.`,
+     (h) => `Selâm sana ${h}, gün batarken huzur seninle olsun.`,
+     (h) => `Hayırlı akşamlar ${h}, yorgunluğun şifaya dönsün.`,
+   ],
+   gece: [
+     (h) => `Selâmün aleyküm ${h}, geceniz hayır olsun.`,
+     (h) => `Selâm sana ${h}, uykun bereketli olsun.`,
+     (h) => `Hayırlı geceler ${h}, rüyalarına nur yağsın.`,
+     (h) => `Selâmün aleyküm ${h}, gece kalbine sükûn versin.`,
+   ],
+ };
+ const selamHazirla = (lakap, pir) => {
+   const v = vakitBul();
+   const hit = lakap ? lakap : pir.hitap;
+   const havuz = SELAM_KALIPLAR[v] || SELAM_KALIPLAR.ogle;
+   return havuz[Math.floor(Math.random() * havuz.length)](hit);
+ };
+ const KORKULAR = [
+   { k: "kanser", ad: "Kanser", kw: /kanseroj|IARC.*(Grup|Group)?\s*[12]|nitrosamin|nitrit|nitrat|BHA|BHT|aspartam|akrilamid|benzen|formaldehit|asbest/i },
+   { k: "diyabet", ad: "Diyabet / Şeker Hastalığı", kw: /şeker|glikoz|fruktoz|sukroz|maltodekstrin|glisemik|HFCS|şurup|tatlandırıcı/i },
+   { k: "kalp", ad: "Kalp / Damar Hastalığı", kw: /trans yağ|palm yağ|palmiye|hidrojene|sodyum|aşırı tuz|kolesterol|doymuş yağ|margarin/i },
+   { k: "alzheimer", ad: "Alzheimer / Nörolojik", kw: /alüminyum|cıva|kurşun|MSG|E621|monosodyum|nörotoksik|ağır metal|kadmiyum|aspartam/i },
+ ];
+ const TEK_KELIMELER = ["Sabret.", "Şükret.", "Düşün.", "Tövbe.", "Tefekkür.", "Hatırla.", "Sus.", "Bekle.", "İhsan.", "Niyet."];
+ const YOKLUK_METINLERI = {
+   3: (pir, hit, gun) => `${pir.ad}: "${hit}, üç gündür yolu kestin — hayır mıdır? Sofranı kontrol etmedin."`,
+   7: (pir, hit, gun) => `${pir.ad}: "Bir hafta oldu ${hit}. Mührün soluyor, müridini unutma. ${gun} gündür beklerim."`,
+   14: (pir, hit, gun) => `${pir.ad}: "${gun} gündür yokluğun var ${hit}. Yüzüm grileşti, mührüm tozlandı. Geri dön — kavuşalım."`,
+   30: (pir, hit, gun) => `${pir.ad}: "${gun} gün... Belki de geri dönmeyeceksin sandım. Geldin — şükür. Yeniden başlayalım, ${hit}."`,
+ };
+ const PIR_SIRLARI = {
+   aktar: [
+     { baslik: "BHA'nın İki Yüzü", metin: "BHA (E320), IARC tarafından Grup 2B 'muhtemel kanserojen' sınıfındadır. EFSA 2011 yeniden değerlendirmesi günlük alımı 0.5 mg/kg ile sınırladı.", kaynak: "EFSA Journal 2011;9(10):2392" },
+     { baslik: "BHT'nin Yumuşak Yasak'ı", metin: "BHT (E321) IARC Grup 3'te ('sınıflandırılamaz') ama EFSA 2012'de ADI'yı 0.25 mg/kg/gün'e indirdi — dolaylı sınırlama.", kaynak: "EFSA Journal 2012;10(3):2588" },
+     { baslik: "E471'in Saklı Kaynağı", metin: "E471, EFSA 2017'de güvenli bulundu; ancak kaynağı (hayvansal/bitkisel) etikette belirtilmek zorunda değildir — helal-vegan hassasiyeti için sır.", kaynak: "EFSA Journal 2017;15(11)" },
+     { baslik: "'Doğal' Kelimesinin Sınırı", metin: "6502 Sayılı Kanun · Reklam Kurulu, 'doğal' iddiasını sınırlar ama içeriği doğrudan denetlemez. Etiketin kelimesine değil, içeriğine bak.", kaynak: "6502 Md. 63 · Reklam Kurulu Yönetmeliği" },
+   ],
+   lokman: [
+     { baslik: "Marifetname'nin Sırrı", metin: "'Tokluk hastalık, açlık ise devânın başıdır.' — Erzurumlu İbrahim Hakkı'nın 1756'da yazdığı Marifetname'den.", kaynak: "Marifetname (1756)" },
+     { baslik: "İbn-i Sînâ'nın Reçetesi", metin: "'Yediğin vakit az ye; yedikten sonra dört-beş saat ara ver. Şifâ hazımdadır.' — El-Kanun fi't-Tıb.", kaynak: "İbn-i Sînâ, El-Kanun fi't-Tıb" },
+     { baslik: "Hâris bin Kelede'nin Sözü", metin: "'Mide hastalıkların yuvası, perhiz ise devânın başıdır.' Bu söz nebevi hadis değil; Sahavi'ye göre Arap hekîmi Hâris bin Kelede'ye aittir.", kaynak: "Sahavi'nin tahriç incelemesi" },
+     { baslik: "Dört Unsur, Dört Hılt", metin: "İnsan vücudu dört unsurdan (ateş, hava, su, toprak) ve dört hılttan (dem, balgam, safra, sevda) oluşur — Marifetname özetler.", kaynak: "Marifetname · Hıltlar Teorisi" },
+   ],
+   edviye: [
+     { baslik: "Aç Mikropların Sırrı", metin: "Günde 15g altında lif tüketen birey, bağırsaktaki yararlı bakterileri aç bırakır — mikrobiyom çeşitliliği dramatik azalır.", kaynak: "Mikrobiyota beslenme araştırmaları" },
+     { baslik: "Glisemik Yük > İndeks", metin: "Yalnız glisemik indeks değil, miktar (yük) önemlidir. Yüksek GL Tip 2 diyabet ve kalp hastalığı riskini birlikte artırır.", kaynak: "Beslenme bilimi standartları" },
+     { baslik: "SCFA Mucizesi", metin: "Bağırsak mikropları lifi metabolize edince Kısa Zincirli Yağ Asitleri (SCFA) oluşur — bağışıklık, metabolizma ve beyin için kritik.", kaynak: "Gut microbiome literature" },
+     { baslik: "Gut-Brain Hattı", metin: "Kronik stres kortizolü yükseltir, bağırsak geçirgenliğini artırır, mikrobiyomu bozar. Beyin ile bağırsak çift yönlü konuşur.", kaynak: "Gut-Brain Axis araştırmaları" },
+   ],
+   mizan: [
+     { baslik: "Hıltlar Teorisi'nin Aslı", metin: "Hipokrat ve Galen: dem (kan), balgam, safra, sevda — dört hılt. Dengesizlik hastalık, denge sağlık.", kaynak: "Hippokrates · Galen, De Temperamentis" },
+     { baslik: "İbn-i Sînâ'nın Genişletmesi", metin: "Mizaç sadece fizyolojik değil, psikolojik bir denge sistemidir. (Sosyal Araştırmalar Dergisi tahlili)", kaynak: "Sosyal Araştırmalar Dergisi makalesi" },
+     { baslik: "Zıtla Dengeleme", metin: "Hıltın özelliğine zıt gıda ile denge: dem (sıcak-nemli) için ekşi/soğuk; sevda (kuru-soğuk) için tatlı/sıcak.", kaynak: "Hıltlar Teorisi · İbn-i Sînâ" },
+     { baslik: "Dört Element, Dört Mizaç", metin: "Demevi (Hava), Balgami (Su), Safravi (Ateş), Sevdavi (Toprak) — dört element, dört mizaç. Galen sistematize etti.", kaynak: "Galen, De Temperamentis" },
+   ],
+ };
+ const ERBAIN_GOREVLERI = [
+   "İlk taramanı yap",
+   "Bir gıda ürünü tara",
+   "Bir kozmetik tara",
+   "Bir temizlik ürünü tara",
+   "İki ürün tara",
+   "Bir ürünün etiketini detaylı incele",
+   "Bir bebek/çocuk ürünü tara",
+   "Kritik bulgu içeren bir ürün tara",
+   "Bir aktar/şifa ürünü tara",
+   "Bugün üç tarama yap",
+   "Pîrin son sırrını oku",
+   "Bir sırlı suâl çözmeyi dene",
+   "Sağlık durumunu kontrol et",
+   "Burç-mizaç bilgini gözden geçir",
+   "Bir şifa ayetini oku",
+   "Eşref saatini kontrol et",
+   "Makamlar arşivine bak",
+   "Bir madde detayını aç ve oku",
+   "Bir manifesto cümlesini hatırla",
+   "Pîr'in defterini gözden geçir",
+   "Bir tarama sonucunu paylaş",
+   "Bir yakınına ürün önerisi yap",
+   "İkinci paylaşımını yap",
+   "Sofrandakine bir uyarı söyle",
+   "Bir markete benzer alternatif öner",
+   "Üçüncü paylaşımını yap",
+   "Bir aile büyüğüne danış",
+   "Bir genç tanıdığına anlat",
+   "Sosyal medyada paylaş",
+   "Yedi cana ulaşmayı hedefle",
+   "Ahdini gözden geçir",
+   "Bir gün şekersiz geçir",
+   "Bir gün tek malzemeli ürün al",
+   "Hatıra defterini oku",
+   "Pîr'in selâmını sessizce dinle",
+   "Bir mevsim gıdası ye",
+   "Bir gün ekran kullanımını azalt",
+   "Sofranı duâ ile başlat",
+   "Hatm-i nöbetini sürdür",
+   "Erbâin tamam — şükret",
+ ];
+ const GUNCEL_KALIPLARI = [
+   (pir, hit, d) => `${hit}, dün ${d.taramaSayisi} ürün taradın — ${d.kritik} tanesinde kritik bulgu vardı. Bugün de uyanık ol.`,
+   (pir, hit, d) => `${pir.ad}'in sözü: "Yola gireli ${d.muridYasi} gün oldu. Sebatın güzel, ${hit}."`,
+   (pir, hit, d) => `${hit}, sofra nöbetin ${d.hatm} gündür. ${d.hatm < 7 ? "Yedi günü gör, bir kandil yansın" : "Mührün canlı"}.`,
+   (pir, hit, d) => d.korkun ? `${pir.ad} hatırlatır: "Sen ${d.korkun}'tan korkuyordun. Dün ${d.taramaSayisi} ürüne göz attın — bu uyanıklık şifadır."` : `${pir.ad}'in günü: "Bugün niyetini sade tut, ${hit}."`,
+   (pir, hit, d) => `Bugün ${d.hicriAy} ayındayız. ${hit}, mevsim gıdası fıtrat gıdasıdır.`,
+   (pir, hit, d) => d.sefaat > 0 ? `${hit}, ${d.sefaat} canı uyarmışsın. Şifa zinciri sende büyür.` : `${hit}, henüz kimseyi uyarmadın. Yedi cana ulaşmak şefaattir.`,
+   (pir, hit, d) => `${pir.ad}: "Dünün geçti, bugünün yeni bir mühürdür. Bugünkü ilk lokmana dikkat et, ${hit}."`,
+   (pir, hit, d) => `${hit}, mertebene ${d.kalan > 0 ? `${d.kalan} adım kaldı` : "yetiştin — sebat hil'attir"}.`,
+   (pir, hit, d) => `${pir.ad}'in hikmeti: "Az yiyen az hastalanır. Bugünkü sofranı yarıya indirmeye çalış, ${hit}."`,
+   (pir, hit, d) => `${hit}, dün ${d.kritik > 0 ? `${d.kritik} kritik tespit ettin — bu farkındalık` : "kritik tespit yoktu — temiz bir gündü"}. Bugün de gözün açık olsun.`,
+   (pir, hit, d) => `${pir.ad}: "Etiketi okumayan, kendi bedenini okumayandır. ${hit}, gözlerin uyanık."`,
+   (pir, hit, d) => `${hit}, ${d.muridYasi} gündür müridimsin. Bir sözünü vereceksen, sofrana ver.`,
+   (pir, hit, d) => `${pir.ad}'in selâmı: "${d.hatm > 14 ? "Sebat-ı kerim sahibisin" : "Sebat, mührün gücüdür"}, ${hit}."`,
+ ];
+ const mertebeBul = (puan) => {
+   let son = MERTEBELER[0];
+   for (const m of MERTEBELER) if (puan >= m.esik) son = m;
+   return son;
+ };
+ const sonrakiMertebe = (puan) => {
+   for (const m of MERTEBELER) if (puan < m.esik) return m;
+   return null;
+ };
+ const puanEkle = (miktar, sebep) => {
+   setLiyakat(onceki => {
+     const yeniPuan = (onceki.puan || 0) + miktar;
+     const yeni = { ...onceki, puan: yeniPuan };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const liyakatRozetVer = (rozet, puan) => {
+   if ((liyakat.kazanilanRozetler || []).includes(rozet)) return;
+   setLiyakat(o => { const yeni = { ...o, kazanilanRozetler: [...(o.kazanilanRozetler || []), rozet] }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   puanEkle(puan, rozet);
+ };
+ const CountUp = ({ value, duration = 700 }) => {
+   const [v, setV] = useState(0);
+   useEffect(() => {
+     if (typeof value !== "number") { setV(0); return; }
+     const start = Date.now();
+     let raf;
+     const tick = () => {
+       const e = Date.now() - start;
+       const p = Math.min(e / duration, 1);
+       const eased = 1 - Math.pow(1 - p, 3);
+       setV(Math.floor(value * eased));
+       if (p < 1) raf = requestAnimationFrame(tick);
+       else setV(value);
+     };
+     raf = requestAnimationFrame(tick);
+     return () => cancelAnimationFrame(raf);
+   }, [value]);
+   return v.toLocaleString("tr-TR");
+ };
+ const Muhur = ({ k, boyut = 28 }) => {
+   const m = MERTEBELER.find(x => x.k === k) || MERTEBELER[0];
+   const r = m.renk;
+   if (k === "sagirt") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke={r} strokeWidth="2"/><circle cx="20" cy="20" r="2" fill={r}/></svg>);
+   if (k === "kalfa") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke={r} strokeWidth="2"/><circle cx="20" cy="20" r="11" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
+   if (k === "kethuda") return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><polygon points="20,4 35,12 35,28 20,36 5,28 5,12" fill="none" stroke={r} strokeWidth="2"/><polygon points="20,10 30,15 30,25 20,30 10,25 10,15" fill="none" stroke={r} strokeWidth="1.5"/><circle cx="20" cy="20" r="3" fill={r}/></svg>);
+   return (<svg width={boyut} height={boyut} viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill={r + "15"} stroke={r} strokeWidth="2"/><path d="M20 6 L23 14 L31 14 L25 19 L28 27 L20 22 L12 27 L15 19 L9 14 L17 14 Z" fill={r}/></svg>);
+ };
+ const [pir, setPir] = useState(() => pirAta("", ""));
+ useEffect(() => { setPir(pirAta(liyakat.lakap || "", profil?.dogum || "")); }, [liyakat.lakap, profil?.dogum]);
+ const [yoklukModal, setYoklukModal] = useState(null);
+ const [korkunModal, setKorkunModal] = useState(false);
+ const [korkunUyari, setKorkunUyari] = useState(null);
+ const [tekKelime, setTekKelime] = useState(null);
+ const [sirModal, setSirModal] = useState(null);
+ const [guncelModal, setGuncelModal] = useState(null);
+ const [erbainTamamlandiModal, setErbainTamamlandiModal] = useState(false);
+ const erbainGunNo = () => {
+   if (!liyakat.erbain || !liyakat.erbain.baslangic) return 0;
+   return Math.floor((Date.now() - liyakat.erbain.baslangic) / 86400000) + 1;
+ };
+ const erbainAktif = () => liyakat.erbain && liyakat.erbain.baslangic && erbainGunNo() <= 40 && !liyakat.erbain.tamamlandi;
+ const erbainBaslat = () => {
+   setLiyakat(o => {
+     const yeni = { ...o, erbain: { baslangic: Date.now(), tamamGunler: [], tamamlandi: false } };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "erbain", metin: "Erbâin (40 günlük çile) başladı.", pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const erbainGorevTamamla = (gun) => {
+   setLiyakat(o => {
+     if (!o.erbain) return o;
+     const tamamGunler = [...new Set([...(o.erbain.tamamGunler || []), gun])];
+     const yeni = { ...o, erbain: { ...o.erbain, tamamGunler } };
+     if (tamamGunler.length === 40) {
+       yeni.erbain.tamamlandi = true;
+       yeni.kazanilanRozetler = [...new Set([...(o.kazanilanRozetler || []), "erbain_hilatı"])];
+       yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "erbain", metin: "Erbâin tamam — Hil'at giyildi.", pir: pir.k }].slice(-100);
+       setTimeout(() => setErbainTamamlandiModal(true), 400);
+     }
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const [longPressOgut, setLongPressOgut] = useState(null);
+ const [bedenKonusuyor, setBedenKonusuyor] = useState(null);
+ const [virdAcik, setVirdAcik] = useState(false);
+ const [virdSaniye, setVirdSaniye] = useState(0);
+ const yildizEkle = (tip, etiket) => {
+   const x = Math.floor(Math.random() * 90) + 5;
+   const y = Math.floor(Math.random() * 75) + 5;
+   const parlaklik = 0.5 + Math.random() * 0.5;
+   const renk = { ahd: "#C9A84C", terfi: "#FFD700", sual: "#7FB069", sefaat: "#EC4899", hediye: "#A586C2", erbain: "#FFA500" }[tip] || "#C9A84C";
+   setLiyakat(o => {
+     const yildizlar = [...(o.yildizlar || []), { tip, etiket, x, y, parlaklik, renk, t: Date.now() }].slice(-100);
+     const yeni = { ...o, yildizlar };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ useEffect(() => {
+   if (!virdAcik) { setVirdSaniye(0); return; }
+   const it = setInterval(() => setVirdSaniye(s => s + 1), 1000);
+   return () => clearInterval(it);
+ }, [virdAcik]);
+ useEffect(() => {
+   if (virdAcik && virdSaniye >= 33) {
+     setTimeout(() => setVirdAcik(false), 500);
+     if (navigator.vibrate) navigator.vibrate([40, 20, 80]);
+   }
+ }, [virdSaniye, virdAcik]);
+ const [paritiAcik, setParitiAcik] = useState(false);
+ const [serefKart, setSerefKart] = useState(null);
+ const serefKartRef = useRef(null);
+ const [parallaxEgim, setParallaxEgim] = useState({ x: 0, y: 0 });
+ const [parallaxAktif, setParallaxAktif] = useState(false);
+ const parallaxAc = async () => {
+   try {
+     if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+       const izin = await DeviceOrientationEvent.requestPermission();
+       if (izin !== "granted") return;
+     }
+     setParallaxAktif(true);
+   } catch {}
+ };
+ useEffect(() => {
+   if (!parallaxAktif) return;
+   const h = (e) => {
+     const x = Math.max(-15, Math.min(15, (e.gamma || 0))) / 15;
+     const y = Math.max(-15, Math.min(15, (e.beta || 0) - 30)) / 15;
+     setParallaxEgim({ x, y });
+   };
+   window.addEventListener("deviceorientation", h);
+   return () => window.removeEventListener("deviceorientation", h);
+ }, [parallaxAktif]);
+ const serefKartIndir = async () => {
+   if (!serefKartRef.current) return;
+   try {
+     const canvas = await html2canvas(serefKartRef.current, { backgroundColor: null, scale: 2 });
+     canvas.toBlob(blob => {
+       if (!blob) return;
+       const url = URL.createObjectURL(blob);
+       const a = document.createElement("a");
+       a.href = url;
+       a.download = `seref-defteri-${(liyakat.lakap || "talib").replace(/\s/g, "-").toLowerCase()}.png`;
+       a.click();
+       setTimeout(() => URL.revokeObjectURL(url), 5000);
+       if (navigator.share) {
+         canvas.toBlob(async b2 => {
+           try { const file = new File([b2], "seref-defteri.png", { type: "image/png" }); await navigator.share({ files: [file], title: "Şeref Defteri" }); } catch {}
+         });
+       }
+     });
+   } catch {}
+ };
+ const damgaSesi = () => {
+   if (!seslerAcik) return;
+   try {
+     const ac = new (window.AudioContext || window.webkitAudioContext)();
+     if (ac.state === "suspended") ac.resume().catch(()=>{});
+     const t0 = ac.currentTime;
+     const o = ac.createOscillator(); const g = ac.createGain();
+     o.type = "sine"; o.frequency.setValueAtTime(160, t0); o.frequency.exponentialRampToValueAtTime(55, t0 + 0.18);
+     g.gain.setValueAtTime(0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+     o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + 0.22);
+     const buf = ac.createBuffer(1, 4410, 44100);
+     const data = buf.getChannelData(0);
+     for (let i = 0; i < 4410; i++) data[i] = (Math.random() - 0.5) * (1 - i / 4410) * 0.4;
+     const src = ac.createBufferSource(); const ng = ac.createGain();
+     src.buffer = buf; ng.gain.value = 0.3; src.connect(ng).connect(ac.destination); src.start(t0);
+   } catch {}
+ };
+ const triggerTerfi = () => {
+   if (navigator.vibrate) navigator.vibrate([80, 40, 120, 60, 200]);
+   damgaSesi();
+   setParitiAcik(true);
+   setTimeout(() => setParitiAcik(false), 1700);
+ };
+ const longPressTimerRef = useRef(null);
+ const longPressStartRef = useRef(null);
+ const longPressBaslat = (e) => {
+   if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
+   longPressStartRef.current = { x: e.clientX || (e.touches && e.touches[0]?.clientX) || 0, y: e.clientY || (e.touches && e.touches[0]?.clientY) || 0 };
+   longPressTimerRef.current = setTimeout(() => {
+     longPressTimerRef.current = null;
+     if (navigator.vibrate) navigator.vibrate(30);
+     const metin = zamanOgutSec(pir, liyakat.lakap || pir.hitap);
+     setLongPressOgut({ metin });
+     hatiraEkle("ogut", `Pîr'in long-press öğüdü: "${metin}"`);
+     damgaSesi();
+   }, 2000);
+ };
+ const longPressBitir = () => {
+   if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
+ };
+ const longPressHareket = (e) => {
+   if (!longPressTimerRef.current || !longPressStartRef.current) return;
+   const x = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+   const y = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+   const dx = x - longPressStartRef.current.x;
+   const dy = y - longPressStartRef.current.y;
+   if (dx * dx + dy * dy > 100) longPressBitir();
+ };
+ const acilanSirIndex = () => {
+   const m = liyakat.mertebe || "sagirt";
+   const cozulenSayisi = ((liyakat.cozulenSualler || {})[m] || []).length;
+   if (m === "kalfa") return 1;
+   if (m === "kethuda") return 2;
+   if (m === "hekimbasi") return cozulenSayisi >= 3 ? 4 : 3;
+   return 0;
+ };
+ const sirAc = () => {
+   const hedef = acilanSirIndex();
+   const mevcut = (liyakat.acilanSirlar || {})[pir.k] || [];
+   if (mevcut.length >= hedef) return;
+   const yeniIdx = mevcut.length;
+   const sir = (PIR_SIRLARI[pir.k] || [])[yeniIdx];
+   if (!sir) return;
+   setLiyakat(o => {
+     const acilanSirlar = { ...(o.acilanSirlar || {}) };
+     acilanSirlar[pir.k] = [...mevcut, yeniIdx];
+     const yeni = { ...o, acilanSirlar };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "sir", metin: `${pir.ad} bir sır açtı: "${sir.baslik}"`, pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   setTimeout(() => setSirModal({ sir, sayi: yeniIdx + 1 }), 600);
+ };
+ useEffect(() => { sirAc(); }, [liyakat.mertebe, ((liyakat.cozulenSualler || {}).hekimbasi || []).length]);
+ useEffect(() => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonGuncel === bugun) return;
+   if (!liyakat.lakap) return;
+   const dunKayit = (gecmis || []).filter(g => g.zaman && (Date.now() - g.zaman) < 86400000 * 2 && (Date.now() - g.zaman) > 0);
+   const sonraki = sonrakiMertebe ? sonrakiMertebe(liyakat.puan) : null;
+   const veri = {
+     taramaSayisi: dunKayit.length,
+     kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
+     muridYasi: muridYasi(),
+     hatm: liyakat.gunlukSeri || 0,
+     korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+     hicriAy: hicriCevir(new Date()).ay,
+     sefaat: (liyakat.sefaatler || []).length,
+     kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
+   };
+   const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
+   const metin = sablon(pir, liyakat.lakap, veri);
+   const t = setTimeout(() => {
+     setGuncelModal({ metin });
+     setLiyakat(o => { const yeni = { ...o, sonGuncel: bugun, hatiralar: [...(o.hatiralar || []), { t: Date.now(), tip: "guncel", metin: `Pîr'in günceli: "${metin}"`, pir: pir.k }].slice(-100) }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }, 3500);
+   return () => clearTimeout(t);
+ }, [liyakat.lakap]);
+ const [manifestoIdx, setManifestoIdx] = useState(() => Math.floor(Math.random() * MANIFESTOLAR.length));
+ useEffect(() => {
+   const it = setInterval(() => setManifestoIdx(i => (i + 1) % MANIFESTOLAR.length), 35000);
+   return () => clearInterval(it);
+ }, []);
+ const hatiraEkle = (tip, metin) => {
+   setLiyakat(o => {
+     const yeni = { ...o, hatiralar: [...(o.hatiralar || []), { t: Date.now(), tip, metin, pir: pir.k }].slice(-100) };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ const yoklukGunHesapla = () => {
+   if (!liyakat.sonGiris) return 0;
+   const son = new Date(liyakat.sonGiris).getTime();
+   return Math.floor((Date.now() - son) / 86400000);
+ };
+ const muridYasi = () => Math.max(1, Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000));
+ const pirMuridSayisi = (pirK) => {
+   const toplam = siraNoHesapla(Date.now());
+   return Math.max(50, Math.floor(toplam / PIRLER.length));
+ };
+ const pirIcindeSiraNo = () => {
+   const benim = siraNoHesapla(liyakat.baslangic || Date.now());
+   return Math.max(1, Math.floor(benim / PIRLER.length));
+ };
+ useEffect(() => {
+   const gunDiff = yoklukGunHesapla();
+   const sonGosterilen = liyakat.yoklukSonGosterilen || 0;
+   if (gunDiff < 3) return;
+   if (sonGosterilen >= gunDiff) return;
+   let esik = 3;
+   if (gunDiff >= 30) esik = 30;
+   else if (gunDiff >= 14) esik = 14;
+   else if (gunDiff >= 7) esik = 7;
+   const fn = YOKLUK_METINLERI[esik];
+   if (!fn) return;
+   const hit = liyakat.lakap || pir.hitap;
+   const metin = fn(pir, hit, gunDiff);
+   setTimeout(() => setYoklukModal({ metin, gun: gunDiff, esik }), 1500);
+   setLiyakat(o => { const yeni = { ...o, yoklukSonGosterilen: gunDiff }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ }, []);
+ useEffect(() => {
+   if (sekme !== "mertebe") return;
+   if (liyakat.korkun) return;
+   if (!liyakat.lakap) return;
+   const t = setTimeout(() => setKorkunModal(true), 800);
+   return () => clearTimeout(t);
+ }, [sekme, liyakat.korkun, liyakat.lakap]);
+ useEffect(() => {
+   const bugun = new Date().toDateString();
+   if (liyakat.sonTekKelime === bugun) return;
+   const t = setTimeout(() => {
+     const k = TEK_KELIMELER[Math.floor(Math.random() * TEK_KELIMELER.length)];
+     setTekKelime(k);
+     setLiyakat(o => { const yeni = { ...o, sonTekKelime: bugun }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+     setTimeout(() => setTekKelime(null), 2200);
+   }, 90000 + Math.random() * 600000);
+   return () => clearTimeout(t);
+ }, []);
+ const [selamModal, setSelamModal] = useState(null);
+ const [ahdModal, setAhdModal] = useState(null);
+ const [sualModal, setSualModal] = useState(null);
+ const [hediyeModal, setHediyeModal] = useState(null);
+ const [mahcubiyetModal, setMahcubiyetModal] = useState(null);
+ const [terfiKontrolAcik, setTerfiKontrolAcik] = useState(false);
+ useEffect(() => {
+   const son = sessionStorage.getItem("bd_selam_gosterildi");
+   if (son) return;
+   setTimeout(() => {
+     setSelamModal({ metin: selamHazirla(liyakat.lakap, pir), pir });
+     sessionStorage.setItem("bd_selam_gosterildi", "1");
+   }, 1200);
+ }, []);
+ useEffect(() => {
+   const t = setTimeout(() => {
+     const bugun = new Date().toDateString();
+     if (liyakat.yadGosterimleri && liyakat.yadGosterimleri[bugun]) return;
+     if (Math.random() > 0.35) return;
+     const gun = Math.max(1, Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000));
+     const metin = YAD_METINLER[Math.floor(Math.random() * YAD_METINLER.length)](pir, gun);
+     setSelamModal(prev => prev || { metin, pir, yad: true });
+     setLiyakat(o => { const yeni = { ...o, yadGosterimleri: { ...(o.yadGosterimleri || {}), [bugun]: 1 } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }, 25000);
+   return () => clearTimeout(t);
+ }, []);
+ const gercekMertebe = () => {
+   const gunSayisi = Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000);
+   const taramaS = (typeof window !== "undefined" ? parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") : 0) || 0;
+   const sefaatS = (liyakat.sefaatler || []).length;
+   const hatm = liyakat.gunlukSeri || 0;
+   let son = MERTEBELER[0];
+   for (const m of MERTEBELER) {
+     if (m.k === "sagirt") { son = m; continue; }
+     const s = m.sart;
+     if (liyakat.puan >= m.esik && gunSayisi >= s.gun && taramaS >= s.urun && hatm >= s.hatm && sefaatS >= s.sefaat) son = m;
+     else break;
+   }
+   return son;
+ };
+ const mevcutMertebe = () => MERTEBELER.find(m => m.k === (liyakat.mertebe || "sagirt")) || MERTEBELER[0];
+ const terfiHakki = () => {
+   const g = gercekMertebe();
+   const m = mevcutMertebe();
+   const gIdx = MERTEBELER.findIndex(x => x.k === g.k);
+   const mIdx = MERTEBELER.findIndex(x => x.k === m.k);
+   return gIdx > mIdx ? MERTEBELER[mIdx + 1] : null;
+ };
+ const sefaatEkle = (kanal) => {
+   setLiyakat(o => {
+     const sf = [...(o.sefaatler || []), { t: Date.now(), kanal }];
+     const yeni = { ...o, sefaatler: sf };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   yildizEkle("sefaat", `Bir can kurtardın`);
+ };
+ const ahdImzala = (mertebeK, metin) => {
+   setLiyakat(o => {
+     const m = MERTEBELER.find(x => x.k === mertebeK);
+     const yeni = { ...o, ahdler: { ...(o.ahdler || {}), [mertebeK]: { metin, tarih: Date.now(), catlak: 0 } }, mertebe: mertebeK, yukseldigiTarihler: { ...(o.yukseldigiTarihler || {}), [mertebeK]: Date.now() } };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "ahd", metin: `${m?.ad || mertebeK} ahdimi mühürledim.`, pir: pir.k }, { t: Date.now() + 1, tip: "terfi", metin: `${m?.ad || mertebeK} mertebesine yükseldim.`, pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   setAhdModal(null);
+   setYeniMertebeBildirim(mertebeK);
+   triggerTerfi();
+   const m = MERTEBELER.find(x => x.k === mertebeK);
+   yildizEkle("terfi", `${m?.ad || mertebeK} oldun`);
+   yildizEkle("ahd", `${m?.ad || mertebeK} ahdini verdin`);
+   setTimeout(() => setSerefKart({ mertebeK }), 3500);
+ };
+ const sualCozuldu = (mertebeK, sualNo) => {
+   setLiyakat(o => {
+     const cs = { ...(o.cozulenSualler || {}) };
+     cs[mertebeK] = [...new Set([...(cs[mertebeK] || []), sualNo])];
+     const sual = (SUALLER[mertebeK] || [])[sualNo];
+     const yeni = { ...o, cozulenSualler: cs, puan: (o.puan || 0) + 7 };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "sual", metin: `Pîr'in suâlini çözdüm: "${sual?.s || ""}"`, pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+   yildizEkle("sual", "Bir sırlı suâl çözüldü");
+ };
+ const haftaNo = (ts) => Math.floor((ts || Date.now()) / (7 * 86400000));
+ const sualTetikle = () => {
+   const buHafta = haftaNo();
+   if ((liyakat.sonSualHafta || 0) === buHafta) return;
+   if (Math.random() > 0.30) return;
+   const mk = (liyakat.mertebe || "sagirt");
+   const havuz = SUALLER[mk] || [];
+   const cozulen = (liyakat.cozulenSualler || {})[mk] || [];
+   const kalan = havuz.map((s, i) => ({ s, i })).filter(x => !cozulen.includes(x.i));
+   if (!kalan.length) return;
+   const sec = kalan[Math.floor(Math.random() * kalan.length)];
+   setSualModal({ mertebeK: mk, no: sec.i, sual: sec.s });
+   setLiyakat(o => { const yeni = { ...o, sonSualHafta: buHafta }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ };
+ const ahdCatlatKontrol = (sonuc, metinAna) => {
+   const ahdler = liyakat.ahdler || {};
+   if (!Object.keys(ahdler).length) return;
+   const taranan = (metinAna + " " + sonuc.map(r => (r.ad || "") + " " + (r.etki || "")).join(" ")).toLowerCase();
+   const yeniAhdler = { ...ahdler };
+   let degisti = false;
+   for (const [mk, ahd] of Object.entries(ahdler)) {
+     const ahdLow = (ahd.metin || "").toLowerCase();
+     for (const [k, regex] of Object.entries(AHD_ANAHTARLAR)) {
+       if (ahdLow.includes(k.toLowerCase()) && regex.test(taranan)) {
+         const sonCatlak = ahd.sonCatlakTarih || 0;
+         if (Date.now() - sonCatlak > 6 * 3600000) {
+           yeniAhdler[mk] = { ...ahd, catlak: (ahd.catlak || 0) + 1, sonCatlakTarih: Date.now() };
+           degisti = true;
+           break;
+         }
+       }
+     }
+   }
+   if (degisti) setLiyakat(o => { const yeni = { ...o, ahdler: yeniAhdler }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+ };
+ const mertebeDusur = (mevcutK) => {
+   const idx = MERTEBELER.findIndex(m => m.k === mevcutK);
+   if (idx <= 0) return null;
+   const alt = MERTEBELER[idx - 1];
+   setLiyakat(o => { const yeni = { ...o, mertebe: alt.k, mahcubiyetHaftalari: [], dustuMertebe: { tarih: Date.now(), eski: mevcutK } }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   return alt;
+ };
+ const mahcubiyetKontrol = (sonuc) => {
+   const mk = liyakat.mertebe || "sagirt";
+   if (mk === "sagirt" || mk === "kalfa") return;
+   const buHafta = haftaNo();
+   const onceki = liyakat.kacinHaftalik || { hafta: 0, sayim: 0 };
+   const yeniSayim = onceki.hafta === buHafta ? onceki.sayim + 1 : 1;
+   let mahHaftalar = liyakat.mahcubiyetHaftalari || [];
+   if (yeniSayim === 10) {
+     if (!mahHaftalar.includes(buHafta)) mahHaftalar = [...mahHaftalar, buHafta].slice(-6);
+     setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk });
+     setTimeout(() => hatiraEkle("mahcubiyet", `Pîr utancından yüzünü çevirdi: bu hafta ${yeniSayim} kez 'kaçın' ürünü taradım.`), 100);
+   } else if (yeniSayim === 20) {
+     setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk });
+     setTimeout(() => hatiraEkle("mahcubiyet", `Pîr utancından yüzünü çevirdi: bu hafta ${yeniSayim} kez 'kaçın' ürünü taradım.`), 100);
+   }
+   const sonUcHafta = [buHafta, buHafta - 1, buHafta - 2];
+   const ucArtArda = sonUcHafta.every(h => mahHaftalar.includes(h));
+   const sonBesHafta = [buHafta, buHafta - 1, buHafta - 2, buHafta - 3, buHafta - 4];
+   const besArtArda = sonBesHafta.every(h => mahHaftalar.includes(h));
+   setLiyakat(o => { const yeni = { ...o, kacinHaftalik: { hafta: buHafta, sayim: yeniSayim }, mahcubiyetHaftalari: mahHaftalar }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (besArtArda) {
+     const alt = mertebeDusur(mk);
+     if (alt) setMahcubiyetModal({ sayim: yeniSayim, pir, mertebe: mk, dustu: alt });
+   }
+ };
+ const hediyeAl = () => {
+   const son = liyakat.hediyeler && liyakat.hediyeler.length ? liyakat.hediyeler[liyakat.hediyeler.length - 1].t : 0;
+   if (Date.now() - son < 3 * 86400000) return;
+   if (Math.random() > 0.2) return;
+   const h = HEDIYELER[Math.floor(Math.random() * HEDIYELER.length)];
+   const ust = (liyakat.mertebe === "sagirt" || liyakat.mertebe === "kalfa") ? PIRLER[Math.floor(Math.random() * 4)] : null;
+   setHediyeModal({ h, gonderen: ust });
+   setLiyakat(o => {
+     const yeni = { ...o, hediyeler: [...(o.hediyeler || []), { t: Date.now(), k: h.k }] };
+     yeni.hatiralar = [...(o.hatiralar || []), { t: Date.now(), tip: "hediye", metin: `Hediye geldi: "${h.m}" — ${h.k}`, pir: pir.k }].slice(-100);
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni;
+   });
+ };
+ const [saglikModalAcik, setSaglikModalAcik] = useState(false);
+ const [aylikRaporAcik, setAylikRaporAcik] = useState(false);
+ const SAGLIK_KOSULLARI = [
+   { k: "diyabet", ad: "Diyabet", kw: /\bşeker\b|glikoz|fruktoz|maltodekstrin|sukroz|şurup|sirup|insülin|kan şekeri|glisemik|kan glukoz/i, bilgi: "Gizli şekerler (glikoz şurubu, maltodekstrin, fruktoz, sukroz) kan şekerini hızlı yükseltir; uzun vadede insülin direnci ve Tip 2 diyabet riskini artırır.", kaynak: "WHO 2015 Şeker Kılavuzu · ADA Standards of Care 2024 · The Lancet Diabetes Endocrinol 2014;2(8):634" },
+   { k: "gebe", ad: "Gebelik", kw: /gebelik|gebe|fetus|fetüs|hamile|teratojen|doğum|anne karnı|plasenta|laktasyon/i, bilgi: "Aspartam, BHA, yüksek doz kafein ve bazı sentetik renklendiriciler plasentadan geçer; fetus gelişimi ve düşük doğum ağırlığı ile ilişkilendirilmiştir.", kaynak: "EFSA 2013 Aspartam Yeniden Değerlendirme · ACOG Committee Opinion 462 · NIH Pregnancy Nutrition" },
+   { k: "hipertansiyon", ad: "Hipertansiyon", kw: /sodyum|MSG|monosodyum|tuz|hipertans|kan basın|tansiyon/i, bilgi: "Aşırı sodyum (>2g/gün) tansiyonu yükseltir, kalp-damar ve böbrek yükünü artırır. İşlenmiş gıdalarda gizli sodyum (E621 MSG, sodyum nitrit) yaygındır.", kaynak: "WHO 2023 Sodium Reduction · TEKHARF · ESC/ESH 2018 Hipertansiyon Kılavuzu" },
+   { k: "alerji", ad: "Alerji / Astım", kw: /alerj|ürtiker|astım|anafilaks|histamin|kaşıntı|intoleran|egzama|deri reak|solunum|hassasiy/i, bilgi: "Tartrazin (E102), benzoatlar (E210-219), sülfitler (E220-228) astım atağı, ürtiker ve psödoallerjik reaksiyon tetikleyebilir. Aspirin duyarlısı kişilerde risk daha yüksek.", kaynak: "Southampton McCann 2007 Lancet · FDA Food Allergen Labeling · EAACI 2014 Position Paper" },
+   { k: "sigara", ad: "Sigara Kullanıyorum", kw: /kanseroj|BHA|BHT|nitrit|nitrosamin|tütün|akciğer|solunum|oksidan|IARC Grup [12]/i, bilgi: "Sodyum nitrit (E250) + tütün dumanı nitrozaminleri sinerjik şekilde artırır. BHA/BHT oksidatif stres yükünü çoğaltır. Sigara içen bireylerde kanserojen yükü daha hızlı birikir.", kaynak: "IARC Vol 114 (2018) İşlenmiş Et · WHO Tobacco-Diet Synergy · NCI Smokers' Diet" },
+   { k: "cocuk", ad: "Çocuk / Bebek için", kw: /çocuk|bebek|hiperaktif|ADHD|gelişim|nörotoks|öğrenme|davranış|dikkat|Southampton/i, bilgi: "Sentetik renklendiriciler (E102, E110, E122, E124, E129) ve benzoat çocuklarda hiperaktivite + dikkat dağınıklığını artırır. AB tüm bu E-kodlu ürünlere zorunlu uyarı etiketi koyar.", kaynak: "McCann 2007 Lancet 370(9598):1560 · AB Reg 1333/2008 Ek V · CSPI 2016 Food Dyes Report" },
+ ];
+ const saglikUyarilari = (madde) => {
+   if (!saglikDurumu.length) return [];
+   const metin = `${madde.ad || ""} ${madde.etki || ""} ${madde.kat || ""}`;
+   const yuksekRisk = madde.risk === "kritik" || madde.risk === "yuksek";
+   return SAGLIK_KOSULLARI.filter(k => {
+     if (!saglikDurumu.includes(k.k)) return false;
+     if (k.kw.test(metin)) return true;
+     // Sigara + Çocuk: yüksek/kritik risk maddeleri her zaman ekstra riskli
+     if ((k.k === "sigara" || k.k === "cocuk") && yuksekRisk) return true;
+     return false;
+   });
+ };
+ const saglikToggle = (k) => {
+   const yeni = saglikDurumu.includes(k) ? saglikDurumu.filter(x => x !== k) : [...saglikDurumu, k];
+   setSaglikDurumu(yeni);
+   try { localStorage.setItem("bd_saglik", JSON.stringify(yeni)); } catch {}
+   if (yeni.length > 0) liyakatRozetVer("saglik_doldu", 20);
+ };
+ const [paylasMaddesi, setPaylasMaddesi] = useState(null);
+ const geriYap = () => {
+   if (virdAcik) { setVirdAcik(false); return true; }
+   if (bedenKonusuyor) { setBedenKonusuyor(null); return true; }
+   if (serefKart) { setSerefKart(null); return true; }
+   if (longPressOgut) { setLongPressOgut(null); return true; }
+   if (erbainTamamlandiModal) { setErbainTamamlandiModal(false); return true; }
+   if (sirModal) { setSirModal(null); return true; }
+   if (guncelModal) { setGuncelModal(null); return true; }
+   if (yoklukModal) { setYoklukModal(null); return true; }
+   if (korkunUyari) { setKorkunUyari(null); return true; }
+   if (korkunModal) { setKorkunModal(false); return true; }
+   if (selamModal) { setSelamModal(null); return true; }
+   if (ahdModal) { setAhdModal(null); return true; }
+   if (sualModal) { setSualModal(null); return true; }
+   if (hediyeModal) { setHediyeModal(null); return true; }
+   if (mahcubiyetModal) { setMahcubiyetModal(null); return true; }
+   if (yeniMertebeBildirim) { setYeniMertebeBildirim(null); return true; }
+   if (paylasMaddesi) { setPaylasMaddesi(null); return true; }
+   if (saglikModalAcik) { setSaglikModalAcik(false); return true; }
+   if (aylikRaporAcik) { setAylikRaporAcik(false); return true; }
+   if (modal) { setModal(null); return true; }
+   if (tarifModal) { setTarifModal(null); return true; }
+   if (marketAcik) { setMarketAcik(false); return true; }
+   if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
+   const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"];
+   if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
+   return false;
+ };
+ const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ useEffect(() => {
+   let sx = null, sy = null, st = 0;
+   const onStart = (e) => {
+     const t = e.touches[0];
+     if (t.clientX > 50) { sx = null; return; }
+     sx = t.clientX; sy = t.clientY; st = Date.now();
+   };
+   const onEnd = (e) => {
+     if (sx === null) return;
+     const t = e.changedTouches[0];
+     const dx = t.clientX - sx;
+     const dy = Math.abs(t.clientY - sy);
+     const dt = Date.now() - st;
+     sx = null;
+     if (dx < 60 || dy > 80 || dt > 1000) return;
+     geriYap();
+   };
+   document.addEventListener("touchstart", onStart, { passive: true });
+   document.addEventListener("touchend", onEnd, { passive: true });
+   return () => {
+     document.removeEventListener("touchstart", onStart);
+     document.removeEventListener("touchend", onEnd);
+   };
+ }, [sekme, ekran, modal, paylasMaddesi, saglikModalAcik, aylikRaporAcik, yeniMertebeBildirim, tarifModal, marketAcik]);
+ const aylikIstatistik = () => {
+   const simdi = new Date();
+   const ayBas = new Date(simdi.getFullYear(), simdi.getMonth(), 1).getTime();
+   const buAy = (gecmis || []).filter(g => g.zaman && g.zaman >= ayBas);
+   const toplam = buAy.length;
+   const kritikSayi = buAy.reduce((a, g) => a + (g.kritik || 0), 0);
+   const organSayim = {};
+   buAy.forEach(g => (g.organlar || []).forEach(o => { organSayim[o] = (organSayim[o] || 0) + 1; }));
+   const enOrgan = Object.entries(organSayim).sort((a, b) => b[1] - a[1])[0];
+   const katSayim = {};
+   buAy.forEach(g => { if (g.kategori) katSayim[g.kategori] = (katSayim[g.kategori] || 0) + 1; });
+   const enKat = Object.entries(katSayim).sort((a, b) => b[1] - a[1])[0];
+   return { toplam, kritikSayi, enOrgan, enKat, ay: simdi.toLocaleDateString("tr-TR", { month: "long", year: "numeric" }) };
+ };
+ const [esrefData, setEsrefData] = useState(null);
+ const [esrefHata, setEsrefHata] = useState("");
+ const [ayetData, setAyetData] = useState({});
+ const [ayetYukleniyor, setAyetYukleniyor] = useState("");
+ const [acikAyet, setAcikAyet] = useState(null);
+ const hizmetlerScrollRef = useRef(0);
+ useEffect(() => {
+   if (sekme === "hizmetler" && hizmetlerScrollRef.current > 0) {
+     requestAnimationFrame(() => window.scrollTo(0, hizmetlerScrollRef.current));
+   } else if (sekme !== "hizmetler") {
+     // hizmetler dışına çıkarken mevcut scroll'u kaydet (hizmet kartı tıklaması da burayı tetikler önce)
+   }
+ }, [sekme]);
+ const ayetToggle = (ref) => {
+   if (acikAyet === ref) { setAcikAyet(null); return; }
+   setAcikAyet(ref);
+   ayetGetir(ref);
+   puanEkle(2, "ayet_dinle");
+ };
+ const [havaData, setHavaData] = useState(null);
+ const [havaHata, setHavaHata] = useState("");
+ const [wikiData, setWikiData] = useState(null);
+ const [wikiYukleniyor, setWikiYukleniyor] = useState(false);
+ useEffect(() => {
+   if (!modal?.ad) { setWikiData(null); return; }
+   setWikiData(null);
+   setWikiYukleniyor(true);
+   const baslik = modal.ad.split("(")[0].split(/[·\/]/)[0].trim();
+   fetch(`https://tr.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(baslik)}`)
+     .then(r => r.ok ? r.json() : Promise.reject())
+     .then(d => setWikiData({ ozet: d.extract, link: d.content_urls?.desktop?.page, resim: d.thumbnail?.source }))
+     .catch(() => setWikiData({ yok: true }))
+     .finally(() => setWikiYukleniyor(false));
+ }, [modal?.ad]);
+ useEffect(() => {
+   if (sekme !== "toprak") return;
+   if (havaData) return;
+   const fetchHava = (lat, lon) => {
+     fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone,european_aqi,uv_index&timezone=auto`)
+       .then(r => r.json())
+       .then(d => setHavaData({ ...d.current, ...d.current_units, lat, lon }))
+       .catch(() => setHavaHata("Veri çekilemedi"));
+   };
+   if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(
+       pos => fetchHava(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+       () => fetchHava(41.0082, 28.9784),
+       { timeout: 5000 }
+     );
+   } else {
+     fetchHava(41.0082, 28.9784);
+   }
+ }, [sekme, havaData]);
+ const ayetGetir = (ref) => {
+   if (ayetData[ref]) return;
+   setAyetYukleniyor(ref);
+   fetch(`https://api.alquran.cloud/v1/ayah/${ref}/editions/quran-uthmani,tr.diyanet,ar.alafasy`)
+     .then(r => r.json())
+     .then(d => {
+       const arap = d.data.find(x => x.edition.identifier === "quran-uthmani");
+       const tr = d.data.find(x => x.edition.identifier === "tr.diyanet");
+       const audio = d.data.find(x => x.edition.identifier === "ar.alafasy");
+       setAyetData(prev => ({ ...prev, [ref]: { arap: arap?.text, tr: tr?.text, audio: audio?.audio, sure: arap?.surah?.englishName, ayetNo: arap?.numberInSurah } }));
+     })
+     .catch(() => setAyetData(prev => ({ ...prev, [ref]: { hata: "Yüklenemedi" } })))
+     .finally(() => setAyetYukleniyor(""));
+ };
+ const fetchEsrefTimings = (lat, lon) => {
+   setEsrefHata("");
+   fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=13`)
+     .then(r => r.json())
+     .then(d => setEsrefData({ ...d.data, lat, lon }))
+     .catch(() => setEsrefHata("Veri çekilemedi"));
+ };
+ const konumIste = () => {
+   if (!navigator.geolocation) { fetchEsrefTimings(41.0082, 28.9784); return; }
+   setEsrefHata("");
+   navigator.geolocation.getCurrentPosition(
+     pos => fetchEsrefTimings(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+     err => {
+       if (err.code === 1) {
+         setEsrefHata("Konum izni reddedildi. iPhone'da: Ayarlar → Safari → Konum → 'Sor' veya 'İzin Ver' seçin, sonra sayfayı yenileyin. Android Chrome'da: adres çubuğundaki kilit simgesinden konum iznini etkinleştirin.");
+       } else if (err.code === 3) {
+         setEsrefHata("Konum alımı zaman aşımına uğradı, tekrar deneyin.");
+       } else {
+         setEsrefHata("Konum alınamadı.");
+       }
+     },
+     { timeout: 10000, enableHighAccuracy: false, maximumAge: 60000 }
+   );
+ };
+ useEffect(() => {
+   if (sekme !== "esref") return;
+   if (esrefData) return;
+   fetchEsrefTimings(41.0082, 28.9784);
+ }, [sekme, esrefData]);
  const [mod, setMod] = useState("metin");
- const [taramaSayisi, setTaramaSayisi] = useState(0);
+ const [taramaSayisi, setTaramaSayisi] = useState(() => { try { return parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") || 0; } catch { return 0; } });
+ const [nur, setNur] = useState(() => { try { const n = localStorage.getItem("bd_nur"); return n ? JSON.parse(n) : { damla: 0 }; } catch { return { damla: 0 }; } });
+ const [vasiyet, setVasiyet] = useState(() => { try { const v = localStorage.getItem("bd_vasiyet"); return v ? JSON.parse(v) : { lokma: 0, sonGiris: Date.now() }; } catch { return { lokma: 0, sonGiris: Date.now() }; } });
+ const [sirat, setSirat] = useState(() => { try { const s = localStorage.getItem("bd_sirat"); return s ? JSON.parse(s) : { lif: 0 }; } catch { return { lif: 0 }; } });
+ // Vasiyet 14 gün sahipsizlik → mektup silinir
+ useEffect(() => { try { const v = JSON.parse(localStorage.getItem("bd_vasiyet") || "null"); if (v && v.sonGiris && (Date.now() - v.sonGiris) > 14 * 86400000 && v.lokma > 0) { const sifir = { lokma: 0, sonGiris: v.sonGiris }; setVasiyet(sifir); localStorage.setItem("bd_vasiyet", JSON.stringify(sifir)); } } catch {} }, []);
  const es = esrefAktif();
 
  function yapAnaliz(metinOverride) {
  const metin = (typeof metinOverride === "string" ? metinOverride : txt).trim();
  if (!metin) return;
- setSonuclar(analiz(metin, KATEGORILER[kategori].db));
+ const sonuc = analiz(metin, KATEGORILER[kategori].db);
+ setSonuclar(sonuc);
  setBelirsizler(belirsizBul(metin));
  setIlkSira(ilkSiraTespit(metin));
- setAcik(null);
- setTaramaSayisi(taramaSayisi + 1);
+ setAcik(new Set());
+ { const yeni = taramaSayisi + 1; setTaramaSayisi(yeni); try { localStorage.setItem("bd_tarama_sayisi", String(yeni)); } catch {} }
+ {
+   const kritikSayi = sonuc.filter(r => r.risk === "kritik" || r.risk === "yuksek").length;
+   const organlar = [...new Set(sonuc.flatMap(r => r.organlar || []))];
+   const yeniKayit = { tarih: new Date().toLocaleDateString("tr-TR"), zaman: Date.now(), metin: metin.slice(0, 120), kategori, kritik: kritikSayi, sonuc: sonuc.length, organlar };
+   const yeniGecmis = [yeniKayit, ...(gecmis || [])].slice(0, 50);
+   setGecmis(yeniGecmis);
+   try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
+   puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
+   // Silsile-i Nûr: her tarama bir nur damlası
+   setNur(o => { const yeni = { damla: (o.damla || 0) + 1 }; try { localStorage.setItem("bd_nur", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (kritikSayi > 0) {
+     // Sırât: kaçın ürün → ipten lif kopar
+     setSirat(o => { const yeni = { lif: (o.lif || 0) + 1 }; try { localStorage.setItem("bd_sirat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   } else {
+     // Vasiyet: temiz lokma mirası birikir + Sırât iyileşmesi
+     setVasiyet(o => { const yeni = { lokma: (o.lokma || 0) + 1, sonGiris: Date.now() }; try { localStorage.setItem("bd_vasiyet", JSON.stringify(yeni)); } catch {}; return yeni; });
+     setSirat(o => { const yeni = { lif: Math.max(0, (o.lif || 0) - 1) }; try { localStorage.setItem("bd_sirat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }
+   setVasiyet(o => { const yeni = { ...o, sonGiris: Date.now() }; try { localStorage.setItem("bd_vasiyet", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
+   if (kritikSayi > 0 && Math.random() < 0.6) {
+     const tumOrganlar = sonuc.flatMap(r => r.organlar || []);
+     const kKeys = Object.keys(ORGAN_KONUSMALARI);
+     const eslesenler = tumOrganlar.map(o => ({ ham: o, anahtar: kKeys.find(k => o.includes(k)) })).filter(x => x.anahtar);
+     if (eslesenler.length > 0) {
+       const sec = eslesenler[Math.floor(Math.random() * eslesenler.length)];
+       setTimeout(() => setBedenKonusuyor({ organ: sec.anahtar, soz: ORGAN_KONUSMALARI[sec.anahtar] }), 1800);
+     }
+   }
+   ahdCatlatKontrol(sonuc, metin);
+   if (kritikSayi > 0 && liyakat.korkun && liyakat.korkun !== "yok") {
+     const k = KORKULAR.find(x => x.k === liyakat.korkun);
+     const taranan = (metin + " " + sonuc.map(r => (r.ad||"")+" "+(r.etki||"")+" "+(r.kat||"")).join(" "));
+     if (k && k.kw.test(taranan)) {
+       setKorkunUyari({ pir, korkun: k });
+       setTimeout(() => hatiraEkle("korkun", `Pîr seni uyardı: ${k.ad} korkunla eşleşen kritik madde tespit edildi.`), 200);
+     }
+   }
+   setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
+ }
  setEkran("sonuc");
+    if (!seslerAcik) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ac.createOscillator(); const gain = ac.createGain();
-      osc.connect(gain); gain.connect(ac.destination);
+      if (ac.state === "suspended") { ac.resume().catch(()=>{}); }
+      // Mühür damga sesi — kısa "tok" + low rumble
+      {
+        const t0 = ac.currentTime;
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(160, t0);
+        o.frequency.exponentialRampToValueAtTime(55, t0 + 0.18);
+        g.gain.setValueAtTime(0.5, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+        o.connect(g).connect(ac.destination);
+        o.start(t0); o.stop(t0 + 0.22);
+        const buf = ac.createBuffer(1, 4410, 44100);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < 4410; i++) data[i] = (Math.random() - 0.5) * (1 - i / 4410) * 0.4;
+        const src = ac.createBufferSource(); const ng = ac.createGain();
+        src.buffer = buf; ng.gain.value = 0.3;
+        src.connect(ng).connect(ac.destination);
+        src.start(t0);
+      }
       const tmpS = analiz(metin, KATEGORILER[kategori].db);
+      const t = ac.currentTime + 0.35;
       if (tmpS.some(r => r.risk === "kritik")) {
-        osc.frequency.setValueAtTime(880, ac.currentTime); osc.frequency.setValueAtTime(440, ac.currentTime+0.15); osc.frequency.setValueAtTime(880, ac.currentTime+0.3);
-        gain.gain.setValueAtTime(0.3, ac.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.5);
-        osc.start(); osc.stop(ac.currentTime+0.5);
+        // 3 bip kritik uyarı
+        [0, 0.18, 0.36].forEach(offset => {
+          const o = ac.createOscillator(); const g = ac.createGain();
+          o.connect(g); g.connect(ac.destination);
+          o.frequency.setValueAtTime(880, t + offset);
+          g.gain.setValueAtTime(0.3, t + offset);
+          g.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.13);
+          o.start(t + offset); o.stop(t + offset + 0.14);
+        });
       } else if (tmpS.length > 0) {
-        osc.frequency.setValueAtTime(523, ac.currentTime); gain.gain.setValueAtTime(0.15, ac.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+0.2);
-        osc.start(); osc.stop(ac.currentTime+0.2);
+        const o = ac.createOscillator(); const g = ac.createGain();
+        o.connect(g); g.connect(ac.destination);
+        o.frequency.setValueAtTime(523, t);
+        g.gain.setValueAtTime(0.15, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+        o.start(t); o.stop(t + 0.2);
       }
     } catch {}
  }
@@ -4703,7 +6342,11 @@ export default function App() {
  function kaydEt() {
  if (!dogum) return;
  const b = burcHesapla(dogum);
- setProfil({ burc: b, dogum, ...BURCLAR[b] });
+ const yeniProfil = { ad: aktifUye || "", burc: b, dogum, cinsiyet, ...BURCLAR[b] };
+ setProfil(yeniProfil);
+ try { localStorage.setItem("bd_profil", JSON.stringify(yeniProfil)); } catch {}
+ liyakatRozetVer("profil_tamam", 15);
+ try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
  }
 
@@ -4712,7 +6355,7 @@ export default function App() {
 
  /* ── YASAL ────────────────────────────────── */
  if (ekran === "yasal") return (
- <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Georgia,serif" }}>
+ <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 24, padding: 28, maxWidth: 460, width: "100%" }}>
  <div style={{ textAlign: "center", marginBottom: 24 }}>
  <div style={{ fontSize: 52, marginBottom: 8 }}></div>
@@ -4732,7 +6375,7 @@ export default function App() {
 
  /* ── GEÇMİŞ EKRANI ───────────────────────── */
  if (ekran === "gecmis") return (
-   <div style={{ minHeight: "100vh", background: C.bg, padding: 16, fontFamily: "Georgia,serif" }}>
+   <div key="ekran-gecmis" style={{ minHeight: "100vh", background: C.bg, padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", animation: "altsayfaGir 0.25s ease-out" }}>
      <div style={{ maxWidth: 480, margin: "0 auto" }}>
        <button style={S.geriYazi} onClick={() => setEkran("ana")}>← Geri</button>
        <div style={{ fontSize: 28, color: C.altin, textAlign: "center", marginBottom: 8 }}>📋</div>
@@ -4764,7 +6407,7 @@ export default function App() {
 
  /* ── PROFİL KURULUM ───────────────────────── */
  if (ekran === "profil_kur") return (
- <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Georgia,serif" }}>
+ <div key="ekran-profil" style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", animation: "sayfaGec 0.25s ease-out" }}>
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 24, padding: 28, maxWidth: 460, width: "100%" }}>
  <button style={S.geriYazi} onClick={() => setEkran("ana")}>← Geri</button>
  <div style={{ fontSize: 36, color: C.altin, marginBottom: 12 }}></div>
@@ -4784,7 +6427,14 @@ export default function App() {
          </div>
        )}
        <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 6 }}>İsim (Anne, Baba, Çocuk...)</label>
-       <input value={aktifUye || ""} onChange={e => setAktifUye(e.target.value)} placeholder="Örn: Anne, Baba, Ahmet..." style={{ width: "100%", padding: "10px 12px", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, color: C.metin, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", marginBottom: 16 }} />
+       <input value={aktifUye || ""} onChange={e => {
+         const v = e.target.value;
+         setAktifUye(v);
+         try {
+           const mevcut = JSON.parse(localStorage.getItem("bd_profil") || "{}");
+           localStorage.setItem("bd_profil", JSON.stringify({ ...mevcut, ad: v }));
+         } catch {}
+       }} placeholder="Örn: Anne, Baba, Ahmet..." style={{ width: "100%", padding: "10px 12px", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, color: C.metin, fontSize: 14, fontFamily: "inherit", boxSizing: "border-box", marginBottom: 16 }} />
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}><label style={{ color: C.metin, fontSize: 13 }}>Doğum Tarihin</label>{dogum && dogum.length === 10 && !dogum.includes("_") && <button onClick={() => { setDogum(""); try { localStorage.removeItem("bd_dogum"); } catch {} }} style={{ background: "none", border: `1px solid ${C.s}`, borderRadius: 8, padding: "3px 10px", color: C.soluk, fontSize: 12, cursor: "pointer" }}>Değiştir</button>}</div>
  {(() => {
  const AYLAR_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
@@ -4819,6 +6469,12 @@ export default function App() {
  </div>
  );
  })()}
+       <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 8 }}>Cinsiyet / Yaş Grubu</label>
+       <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+         {["Erkek", "Kadın", "Çocuk"].map(c => (
+           <button key={c} onClick={() => setCinsiyet(c)} style={{ flex: 1, padding: "11px 8px", background: cinsiyet === c ? C.altin + "22" : C.y2, border: `1.5px solid ${cinsiyet === c ? C.altin : C.s}`, borderRadius: 10, color: cinsiyet === c ? C.altin : C.metin, fontSize: 13, fontWeight: cinsiyet === c ? 700 : 400, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>{c}</button>
+         ))}
+       </div>
  {dogum && /^\d{4}-\d{2}-\d{2}$/.test(dogum) && (() => {
  const b = burcHesapla(dogum); if (!BURCLAR[b]) return null; const bd = BURCLAR[b];
  return (
@@ -4844,10 +6500,17 @@ export default function App() {
 
  /* ── SONUÇ EKRANI ─────────────────────────── */
  if (ekran === "sonuc") return (
- <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "Georgia,serif", paddingBottom: 30 }}>
+ <div key="ekran-sonuc" style={{ minHeight: "100vh", background: C.bg, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", paddingBottom: 30, animation: "altsayfaGir 0.28s ease-out" }}>
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
  <button style={S.geriDaire} onClick={() => setEkran("ana")}>←</button>
  <span style={{ color: C.metin, fontWeight: 600, flex: 1 }}>{KATEGORILER[kategori].ad} Analiz Sonucu</span>
+ <button onClick={sesToggle} title={seslerAcik ? "Sesi kapat" : "Sesi aç"} aria-label="Ses aç/kapa" style={{ width: 36, height: 36, borderRadius: "50%", border: `1px solid ${seslerAcik ? C.altin : C.s}`, background: seslerAcik ? C.altin + "15" : C.y2, color: seslerAcik ? C.altin : C.soluk, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
+   {seslerAcik ? (
+     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+   ) : (
+     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+   )}
+ </button>
  {profil && <div style={{ border: `1px solid ${profil.renk}`, borderRadius: 20, padding: "4px 10px", fontSize: 11, color: profil.renk }}>{profil.burc}</div>}
  </div>
  <div style={{ background: `${C.altin}10`, borderBottom: `1px solid ${C.altin}20`, padding: "7px 16px", fontSize: 11, color: C.cok }}> EFSA · WHO · IARC arşivi. Tıbbi tavsiye değildir.</div>
@@ -4908,22 +6571,38 @@ export default function App() {
           }
         }}>Sonuçları Paylaş</button>
         <button style={{ ...S.anaBtn, background: "transparent", border: `1px solid ${C.s}`, color: C.soluk, marginTop: 8 }} onClick={() => {
+          if (!seslerAcik) { alert("Ses kapalı. Üstteki hoparlör ikonundan açabilirsin."); return; }
           if (!("speechSynthesis" in window)) { alert("Tarayıcınız sesli okumayı desteklemiyor."); return; }
-          window.speechSynthesis.cancel();
+          const synth = window.speechSynthesis;
+          synth.cancel();
+          if (synth.paused) synth.resume();
           const kritikler = sonuclar.filter(r => r.risk === "kritik");
           const yuksekler = sonuclar.filter(r => r.risk === "yuksek");
           let metin = `Tarama tamamlandı. Toplam ${sonuclar.length} madde bulundu. `;
           if (kritikler.length > 0) metin += `Kritik risk: ${kritikler.map(r=>r.ad).join(", ")}. `;
           if (yuksekler.length > 0) metin += `Yüksek risk: ${yuksekler.slice(0,3).map(r=>r.ad).join(", ")}. `;
           if (sonuclar.length === 0) metin = "Tarama tamamlandı. Tehlikeli madde bulunamadı. Ürün güvenli görünüyor.";
-          const utt = new SpeechSynthesisUtterance(metin);
-          utt.lang = "tr-TR";
-          utt.rate = 0.9;
-          utt.pitch = 1;
-          const sesler = window.speechSynthesis.getVoices();
-          const trSes = sesler.find(s => s.lang.startsWith("tr"));
-          if (trSes) utt.voice = trSes;
-          window.speechSynthesis.speak(utt);
+          // iOS Safari warmup: kısa sessiz utterance gönder, ses motorunu aç
+          try { const w = new SpeechSynthesisUtterance(" "); w.volume = 0; w.rate = 1; synth.speak(w); } catch {}
+          const konus = () => {
+            const utt = new SpeechSynthesisUtterance(metin);
+            utt.lang = "tr-TR";
+            utt.rate = 0.9;
+            utt.pitch = 1;
+            utt.volume = 1;
+            const sesler = synth.getVoices();
+            const trSes = sesler.find(s => s.lang && s.lang.startsWith("tr"));
+            if (trSes) utt.voice = trSes;
+            utt.onerror = (e) => { console.warn("TTS error", e); };
+            synth.speak(utt);
+          };
+          if (synth.getVoices().length === 0) {
+            let denendi = false;
+            synth.onvoiceschanged = () => { if (!denendi) { denendi = true; konus(); } synth.onvoiceschanged = null; };
+            setTimeout(() => { if (!denendi) { denendi = true; konus(); } }, 400);
+          } else {
+            setTimeout(konus, 50);
+          }
         }}>Sesli Oku</button>
         {sonuclar.filter(r => r.risk === "kritik" || r.risk === "yuksek").length > 0 && (
           <button style={{ ...S.anaBtn, background: "#2ecc7120", border: "1px solid #2ecc71", color: "#2ecc71", marginTop: 8 }} onClick={() => {
@@ -4954,9 +6633,6 @@ export default function App() {
  </div>
  </div>
 
- {/* 3D ORGAN HARİTASI */}
-         <OrganVucutHaritasi sonuclar={sonuclar} gecmis={gecmis} />
-
          {/* SAYAÇ KUTULARI */}
  {(() => {
  const sayim = { kritik: 0, yuksek: 0, orta: 0, dusuk: 0 };
@@ -4985,14 +6661,38 @@ export default function App() {
  </div>
  )}
 
+ {(() => {
+   if (sonuclar.length === 0) return null;
+   const urunTuru = urunTuruTespit(txt, kategori);
+   if (!urunTuru) return null;
+   const tarif = urunTuru.tarifKey && DOGAL_TARIF[urunTuru.tarifKey] ? DOGAL_TARIF[urunTuru.tarifKey] : null;
+   return (
+     <div style={{ background: "#2ecc7112", border: "1px solid #2ecc7140", borderRadius: 14, padding: 14, marginBottom: 14 }}>
+       <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>{urunTuru.baslik.toUpperCase()} — DOĞAL ALTERNATİF</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{urunTuru.alternatif}</div>
+       {tarif && (
+         <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"10px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
+           Tarif: {tarif.baslik}
+         </button>
+       )}
+       {kategori === "gida" && (
+         <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"10px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", position:"relative" }}>
+           {urunTuru.marketUrun ? `Marketten Al: ${urunTuru.marketUrun.split(" · ")[0]}` : "Marketten Al"}
+           <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
+         </button>
+       )}
+     </div>
+   );
+ })()}
+
  {sonuclar.map((r, i) => {
  const ayet = ayetSec(r.organlar);
  const makamBilgi = MAKAMLAR[r.makam] || {};
  const kisisel = profil && r.burclar?.includes(profil.burc);
- const acikMi = acik === i;
+ const acikMi = acik.has(i);
  return (
- <div key={i} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, marginBottom: 10, borderLeft: `4px solid ${rR(r.risk)}`, overflow: "hidden" }}>
- <div style={{ padding: "14px 16px", cursor: "pointer" }} onClick={() => setAcik(acikMi ? null : i)}>
+ <div key={i} style={{ background: C.y, backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.78 0 0 0 0 0.58 0 0 0 0 0.17 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E\")", border: `1px solid ${C.s}`, borderRadius: 14, marginBottom: 10, borderLeft: `4px solid ${rR(r.risk)}`, overflow: "hidden" }}>
+ <div style={{ padding: "14px 16px", cursor: "pointer" }} onClick={() => setAcik(prev => { const y = new Set(prev); if (y.has(i)) y.delete(i); else y.add(i); return y; })}>
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
  <div style={{ flex: 1 }}>
  <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0, marginBottom: 2 }}>{r.kod} · {r.kat}</div>
@@ -5012,6 +6712,24 @@ export default function App() {
  {acikMi && (
  <div style={{ padding: "0 16px 16px" }}>
  <div style={{ height: 1, background: C.s, marginBottom: 14 }} />
+ {(() => {
+   const v = (r.risk === "kritik" || r.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir", seviye: "YÜKSEK RİSK" }
+     : r.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket", seviye: "ORTA RİSK" }
+     : r.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
+     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
+   return (
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
+       <div style={{ width: 68, height: 68, borderRadius: "50%", border: `2.5px solid ${v.renk}`, background: v.renk + "10", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", animation: "muhurGel .5s ease-out" }}>
+         <div style={{ position: "absolute", inset: 5, borderRadius: "50%", border: `1px solid ${v.renk}55` }} />
+         <span style={{ color: v.renk, fontSize: 13, fontWeight: 900, letterSpacing: 1.2, lineHeight: 1, fontFamily: "'Cormorant Garamond', Georgia, serif", zIndex: 1 }}>{v.ad}</span>
+       </div>
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.8, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{v.seviye}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 4, lineHeight: 1.4, fontStyle: "italic" }}>{v.alt}</div>
+       </div>
+     </div>
+   );
+ })()}
  <div style={S.kB}>ETKİ (ARŞİV VERİSİ)</div>
  <div style={S.mT}>{r.etki}</div>
  <div style={S.kB}> Kaynak</div>
@@ -5030,7 +6748,7 @@ export default function App() {
  )}
  {makamBilgi.etki && KATEGORILER[kategori].mizacGoster && (
  <div style={{ background: "#ffffff08", border: `1px solid ${makamBilgi.renk || C.s}40`, borderRadius: 10, padding: 12, marginTop: 10 }}>
- <div style={{ color: makamBilgi.renk || C.altin, fontSize: 11, fontWeight: 700, marginBottom: 4 }}> {r.makam} Makamı · {makamBilgi.frekans}</div>
+ <div style={{ color: makamBilgi.renk || C.altin, fontSize: 11, fontWeight: 700, marginBottom: 4 }}> {r.makam} Makamı</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{makamBilgi.etki}</div>
  <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}> {makamBilgi.vakit} · {makamBilgi.aletler}</div>
  </div>
@@ -5047,25 +6765,52 @@ export default function App() {
  </div>
  </>
  )}
- <div style={{ background: "#2ecc7115", border: "1px solid #2ecc7130", borderRadius: 10, padding: 12, marginTop: 12 }}>
- <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
- <div style={{ color: C.metin, fontSize: 13 }}>{r.alternatif}</div>
-           {(r.risk === "kritik" || r.risk === "yuksek") && r.alternatif && (
-             <button onClick={() => { const u = r.alternatif.split("·")[0].trim(); if(navigator.share){navigator.share({title:"Doğal Alternatif",text:`Alternatif: ${u}`}).catch(()=>{})}else{window.open(`https://www.google.com/search?q=${encodeURIComponent(u+" organik")}`, "_blank")} }} style={{ width:"100%", background:"#2ecc71", border:"none", borderRadius:8, padding:"8px 12px", color:"#000", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>Alternatifi Hemen Al</button>
-           )}
-           {(kategori === "gida" || kategori === "temizlik") && (() => {
-             const anahtar = Object.keys(DOGAL_TARIF).find(k => {
-               const mad = (r.ad + " " + (r.kat||"") + " " + (r.alternatif||"")).toLowerCase();
-               return mad.includes(k.toLowerCase());
-             });
-             const tarif = anahtar ? DOGAL_TARIF[anahtar] : null;
-             if (!tarif) return null;
+ {(() => {
+   const destek = organDestekToparla(r.organlar);
+             if (!destek || destek.length === 0) return null;
              return (
-               <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"8px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginTop:6 }}>
-                 Tarif: {tarif.baslik}
-               </button>
+               <div style={{ background: "#8A60C015", border: "1px solid #8A60C040", borderRadius: 10, padding: 12, marginTop: 10 }}>
+                 <div style={{ color: "#B090E0", fontSize: 12, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>ORGAN DOSTU DESTEK</div>
+                 {destek.map((d, idx) => (
+                   <div key={idx} style={{ marginBottom: idx < destek.length - 1 ? 8 : 0 }}>
+                     <div style={{ color: C.metin, fontSize: 13, fontWeight: 600 }}>{d.organ}</div>
+                     <div style={{ color: C.metin, fontSize: 12, marginTop: 2, lineHeight: 1.4 }}>{d.bitki}</div>
+                     <div style={{ color: C.soluk, fontSize: 11, marginTop: 3, fontStyle: "italic" }}>{d.not}</div>
+                   </div>
+                 ))}
+                 <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #8A60C030", color: C.cok, fontSize: 10, lineHeight: 1.5, fontStyle: "italic" }}>
+                   ⚠ Tıbbi tavsiye değildir. Geleneksel fitoterapi ve İbn Sina geleneğine dayalı bilgi notudur. Mevcut bir hastalığınız, gebelik veya ilaç kullanımı varsa hekiminize/eczacınıza danışın. Kaynaklar Hakkında sekmesinde.
+                 </div>
+               </div>
              );
            })()}
+ {(() => {
+   const uyarilar = saglikUyarilari(r);
+   if (!uyarilar.length) return null;
+   return (
+     <div style={{ background: "#E74C3C12", border: "1px solid #E74C3C50", borderRadius: 10, padding: 12, marginTop: 12 }}>
+       <div style={{ color: "#E74C3C", fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
+       {uyarilar.map(u => (
+         <div key={u.k} style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 3 }}>
+           <b>{u.ad}:</b> bu maddenin etki/içerik metni senin durumunla eşleşiyor — dikkatli ol.
+         </div>
+       ))}
+     </div>
+   );
+ })()}
+ <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={(e) => {
+     e.stopPropagation();
+     const konu = `Hata: ${r.ad} (${r.kod})`;
+     const body = `Bu maddedeki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${r.ad}\nKod: ${r.kod}\nKategori: ${r.kat}\nMevcut etki metni: ${r.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
+     const a = document.createElement("a");
+     a.href = `mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`;
+     a.style.display = "none";
+     document.body.appendChild(a);
+     a.click();
+     setTimeout(() => { try { document.body.removeChild(a); } catch {} }, 100);
+   }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Bilgi Yanlış</button>
  </div>
  </div>
  )}
@@ -5095,12 +6840,172 @@ export default function App() {
 
  <div style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginTop: 8 }}>
  <div style={{ color: C.cok, fontSize: 11, lineHeight: 1.6, fontStyle: "normal" }}>
- ️ Bu uygulama bir tıbbi cihaz, teşhis aracı veya ilaç değildir. Verilen bilgiler kamuya açık bilimsel kaynakların (EFSA · WHO · IARC · FDA) arşividir ve tıbbi tavsiye yerine geçmez. Hiçbir firma, marka veya ürün suçlanmamaktadır; yalnızca madde bazlı arşiv bilgisi sunulmaktadır. Burç, makam ve eşref saati bilgileri geleneksel birikime dayanır; modern bilimsel kanıt sınırlıdır. Anayasa Madde 26-28 · AİHS Madde 10 · 6502 Sayılı Kanun Madde 63 kapsamında bilgi paylaşımı yasal güvence altındadır.
+ ️ Bu uygulama bir tıbbi cihaz, teşhis aracı veya ilaç değildir. Verilen bilgiler kamuya açık bilimsel kaynakların (EFSA · WHO · IARC · FDA) arşividir ve tıbbi tavsiye yerine geçmez. Hiçbir firma, marka veya ürün suçlanmamaktadır; yalnızca madde bazlı arşiv bilgisi sunulmaktadır. Burç, makam ve eşref saati bilgileri geleneksel birikime dayanır; modern bilimsel kanıt sınırlıdır. Anayasa Madde 26-28 · AİHS Madde 10 · 6502 Sayılı Tüketicinin Korunması Hakkında Kanun kapsamında bilgi paylaşımı yasal güvence altındadır.
  </div>
  </div>
  </>
  )}
  </div>
+ {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mevcutMertebe().ad} rutbeRenk={mevcutMertebe().renk} lakap={liyakat.lakap} />}
+ {yeniMertebeBildirim && (() => {
+   const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
+   if (!m) return null;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setYeniMertebeBildirim(null)}>
+       <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+         <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
+         <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
+         <div style={{ color: m.renk, fontSize: 36, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{m.ad}</div>
+         <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
+         <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
+       </div>
+     </div>
+   );
+ })()}
+ {korkunUyari && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
+       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
+     </div>
+   </div>
+ )}
+ {mahcubiyetModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setMahcubiyetModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>MAHCUBİYET LENSİ</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 12 }}>{mahcubiyetModal.pir.ad} bir an yüzünü çevirdi.</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 18 }}>Bu hafta <b style={{ color: C.kirmizi }}>{mahcubiyetModal.sayim}</b> kez "kaçın" işareti olan ürün taradın. Mertebene yakışan tutum bu değil, {mahcubiyetModal.pir.hitap}.</div>
+       <button onClick={() => setMahcubiyetModal(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Anlaşıldı, kendimi toparlayacağım</button>
+     </div>
+   </div>
+ )}
+ {tekKelime && (
+   <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1380, pointerEvents: "none", background: "#00000020", backdropFilter: "blur(2px)", animation: "tekKelimeGel 0.4s ease-out" }}>
+     <div style={{ color: C.altin, fontSize: 42, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, letterSpacing: 2, textShadow: `0 0 20px ${C.altin}80` }}>{tekKelime}</div>
+   </div>
+ )}
+ {guncelModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1310, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setGuncelModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 360, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GÜNCELİ</div>
+       <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
+       <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {paritiAcik && (
+   <div style={{ position: "fixed", inset: 0, zIndex: 1395, pointerEvents: "none", overflow: "hidden" }}>
+     {Array.from({length: 28}, (_, i) => {
+       const x = Math.random() * 100;
+       const delay = Math.random() * 0.3;
+       const dur = 1 + Math.random() * 0.6;
+       const size = 5 + Math.random() * 6;
+       return <div key={i} style={{ position: "absolute", left: `${x}%`, top: "100%", width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle, ${C.altinA}, ${C.altin}80, transparent)`, boxShadow: `0 0 ${size}px ${C.altin}`, animation: `pariltiYagmur ${dur}s ${delay}s ease-out forwards` }} />;
+     })}
+   </div>
+ )}
+ {serefKart && (() => {
+   const m = MERTEBELER.find(x => x.k === serefKart.mertebeK);
+   if (!m) return null;
+   const h = hicriCevir(new Date());
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1392, backdropFilter: "blur(6px)", padding: 16, overflowY: "auto" }} onClick={() => setSerefKart(null)}>
+       <div style={{ maxWidth: 360, width: "100%", margin: "20px 0" }} onClick={e => e.stopPropagation()}>
+         <div ref={serefKartRef} style={{ background: `linear-gradient(135deg, ${m.renk}20, #FFF8E1, ${m.renk}15)`, borderRadius: 18, padding: 28, border: `3px double ${m.renk}`, textAlign: "center", boxShadow: `0 8px 32px ${m.renk}30`, position: "relative" }}>
+           <div style={{ position: "absolute", top: 8, left: 8, right: 8, bottom: 8, border: `1px solid ${m.renk}50`, borderRadius: 14, pointerEvents: "none" }} />
+           <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 3, marginBottom: 10, position: "relative" }}>ŞEREF DEFTERİ</div>
+           <div style={{ fontSize: 28, color: m.renk, marginBottom: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative" }}>✦</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>İşbu tarihte</div>
+           <div style={{ color: m.renk, fontSize: 26, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 1, marginBottom: 4, position: "relative" }}>{liyakat.lakap || pir.hitap}</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>mertebesine erişti:</div>
+           <div style={{ display: "flex", justifyContent: "center", marginBottom: 8, position: "relative" }}><Muhur k={m.k} boyut={56} /></div>
+           <div style={{ color: m.renk, fontSize: 28, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, position: "relative" }}>{m.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic", position: "relative" }}>{m.anlam}</div>
+           <div style={{ marginTop: 18, paddingTop: 14, borderTop: `1px dashed ${m.renk}40`, position: "relative" }}>
+             <div style={{ color: C.metin, fontSize: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{h.gun} {h.ay} {h.yil}</div>
+             <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>Mensubiyet · #{siraNoHesapla(liyakat.baslangic)}</div>
+             <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 2, marginTop: 8 }}>· BESİN DEDEKTİFİ ·</div>
+           </div>
+         </div>
+         <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+           <button onClick={() => setSerefKart(null)} style={{ flex: 1, background: "transparent", color: "#fff", border: `1px solid #ffffff50`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Kapat</button>
+           <button onClick={serefKartIndir} style={{ flex: 2, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>İndir / Paylaş</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
+ {virdAcik && (
+   <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 1395, padding: 20 }} onClick={() => setVirdAcik(false)}>
+     <div style={{ color: "#D4AF37", fontSize: 10, fontWeight: 600, letterSpacing: 3, marginBottom: 14, opacity: 0.7 }}>VİRD-İ SOFRA</div>
+     <div style={{ color: "#F5E6D3", fontSize: 17, fontFamily: "'Cormorant Garamond', Georgia, serif", textAlign: "center", marginBottom: 30, lineHeight: 1.5, opacity: 0.8, maxWidth: 280 }}>Sofranın bereketi niyetinin temizliğindedir. Bir nefes al, otuz üç tesbih çek.</div>
+     <svg width="240" height="240" viewBox="0 0 240 240" style={{ marginBottom: 20 }}>
+       {Array.from({length: 33}, (_, i) => {
+         const angle = (i / 33) * 2 * Math.PI - Math.PI / 2;
+         const cx = 120 + Math.cos(angle) * 90;
+         const cy = 120 + Math.sin(angle) * 90;
+         const aktif = i < virdSaniye;
+         const su = i === virdSaniye - 1;
+         return <circle key={i} cx={cx} cy={cy} r={su ? 6 : aktif ? 4.5 : 3} fill={aktif ? "#D4AF37" : "#2A3B57"} opacity={aktif ? 0.95 : 0.5}>
+           {su && <animate attributeName="r" values="4.5;7;4.5" dur="0.8s" repeatCount="indefinite" />}
+         </circle>;
+       })}
+       <text x="120" y="115" textAnchor="middle" fill="#D4AF37" fontSize="46" fontFamily="'Cormorant Garamond', Georgia, serif" fontWeight="600">{Math.min(virdSaniye, 33)}</text>
+       <text x="120" y="140" textAnchor="middle" fill="#A8B5C9" fontSize="13" letterSpacing="2">/ 33</text>
+     </svg>
+     <div style={{ color: "#A8B5C9", fontSize: 11, opacity: 0.7, letterSpacing: 1 }}>{virdSaniye >= 33 ? "TAMAM" : "dokun, geç"}</div>
+   </div>
+ )}
+ {bedenKonusuyor && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
+       <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
+     </div>
+   </div>
+ )}
+ {longPressOgut && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GİZLİ ÖĞÜDÜ</div>
+       <div style={{ fontSize: 20, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{longPressOgut.metin}</div>
+       <button onClick={() => setLongPressOgut(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Anladım</button>
+     </div>
+   </div>
+ )}
+ {erbainTamamlandiModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1390, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setErbainTamamlandiModal(false)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}30, #FFF8E1, ${C.y})`, borderRadius: 20, padding: 32, maxWidth: 380, width: "100%", border: `2px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}50` }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 14 }}>ERBÂİN TAMAM</div>
+       <div style={{ fontSize: 56, color: C.altin, marginBottom: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", animation: "muhurNefes 4.5s ease-in-out infinite" }}>✦</div>
+       <div style={{ color: C.altin, fontSize: 30, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, marginBottom: 8 }}>HİL'AT</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 20 }}>40 gün sebat ettin, {liyakat.lakap || pir.hitap}. Hil'atın daimîdir. {pir.ad} seni şahit tuttu.</div>
+       <button onClick={() => setErbainTamamlandiModal(false)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Şükürler Olsun</button>
+     </div>
+   </div>
+ )}
+ {sirModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
+       <div style={{ fontSize: 20, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 10 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 22, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Sırrı Aldım</button>
+     </div>
+   </div>
+ )}
  <style>{css}</style>
  </div>
  );
@@ -5109,7 +7014,7 @@ export default function App() {
  ANA EKRAN
  ══════════════════════════════════════════════ */
  return (
- <div style={{ minHeight: "100vh", background: C.bg, maxWidth: 520, margin: "0 auto", fontFamily: "Georgia,serif", paddingBottom: 80 }}>
+ <div style={{ minHeight: "100vh", background: C.bg, maxWidth: 520, margin: "0 auto", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", paddingBottom: 80 }}>
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
  <span style={{ fontSize: 20 }}></span>
  <div style={{ flex: 1 }}>
@@ -5122,36 +7027,133 @@ export default function App() {
  <path d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke={profil ? profil.renk : C.altin} strokeWidth="1.5" strokeLinecap="round" fill="none" />
  </svg>
  <span style={{ color: profil ? profil.renk : C.altin, fontSize: 12, fontWeight: 600 }}>
- {profil ? profil.burc : "Profil"}
+ {profil ? (liyakat.lakap || profil.burc) : "Profil"}
  </span>
  </div>
+ <div onClick={() => setSekme("mertebe")} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mevcutMertebe().renk + "20", border: `1px solid ${mevcutMertebe().renk}50` }}>
+   <Muhur k={mevcutMertebe().k} boyut={16} />
+   <span style={{ color: mevcutMertebe().renk, fontSize: 11, fontWeight: 700 }}>{mevcutMertebe().ad}</span>
+ </div>
  </div>
 
- <div style={{ background: `linear-gradient(90deg,${C.altin}15,transparent)`, borderBottom: `1px solid ${C.altin}20`, padding: "6px 16px", color: C.altin, fontSize: 11 }}>
- {es.ikon} {es.saat} · <b>{es.organ}</b> vakti · {es.eylem}
+ <div style={{ background: `linear-gradient(90deg,${C.altin}15,transparent)`, borderBottom: `1px solid ${C.altin}20`, padding: "6px 16px", color: C.altin, fontSize: 11, display: "flex", alignItems: "center", gap: 10 }}>
+ <div style={{ flex: 1 }}>{es.ikon} {es.saat} · <b>{es.organ}</b> vakti · {es.eylem}</div>
+ {(() => {
+   const baslangic = new Date(); baslangic.setHours(0,0,0,0);
+   const bg = (gecmis || []).filter(g => g.zaman && g.zaman >= baslangic.getTime());
+   const t = bg.length;
+   const kr = bg.reduce((a,g) => a + (g.kritik || 0), 0);
+   const oran = t > 0 ? kr / Math.max(t, 1) : 0;
+   const egim = Math.max(-1, Math.min(1, oran * 2 - 0.3));
+   const renk = oran < 0.2 ? "#16A34A" : oran < 0.5 ? C.altin : C.kirmizi;
+   return (
+     <div title={`Bugün ${t} tarama · ${kr} kritik`} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+       <svg width="22" height="14" viewBox="0 0 22 14" style={{ overflow: "visible" }}>
+         <line x1="11" y1="2" x2="11" y2="6" stroke={renk} strokeWidth="1" />
+         <line x1="3" y1="6" x2="19" y2="6" stroke={renk} strokeWidth="1.2" strokeLinecap="round" transform={`rotate(${egim * 18} 11 6)`} />
+         <circle cx={3 + (1 - egim) * 0.5} cy={6 + Math.abs(egim) * 1.5} r="1.8" fill={renk} transform={`rotate(${egim * 18} 11 6)`} />
+         <circle cx={19 - (1 + egim) * 0.5} cy={6 + Math.abs(egim) * 1.5} r="1.8" fill={renk} transform={`rotate(${egim * 18} 11 6)`} />
+       </svg>
+       <span style={{ color: renk, fontSize: 10, fontWeight: 700 }}>{t}</span>
+     </div>
+   );
+ })()}
+ {profil && profil.dogum && (() => {
+   const dogum = new Date(profil.dogum).getTime();
+   const yas = (Date.now() - dogum) / (365.25 * 86400000);
+   const oran = Math.max(0, Math.min(1, yas / 80));
+   const erimisYukseklik = oran * 10;
+   return (
+     <div title={`Yaşın: ${Math.floor(yas)} · Ömrünün %${Math.round(oran*100)}`} style={{ display: "flex", alignItems: "center" }}>
+       <svg width="9" height="16" viewBox="0 0 9 16">
+         <rect x="2.5" y={1.5 + erimisYukseklik} width="4" height={12 - erimisYukseklik} fill={C.altin} opacity="0.85" rx="0.5" />
+         <ellipse cx="4.5" cy={1.5 + erimisYukseklik} rx="2.2" ry="0.6" fill={C.altinA} />
+         <path d={`M4.5 ${1.5 + erimisYukseklik - 0.5} Q5.2 ${0.5 + erimisYukseklik} 4.5 ${-0.5 + erimisYukseklik} Q3.8 ${0.5 + erimisYukseklik} 4.5 ${1.5 + erimisYukseklik - 0.5}`} fill="#FFA500" />
+       </svg>
+     </div>
+   );
+ })()}
  </div>
 
- <div style={{ padding: 16 }}>
+ <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","mertebe","hizmetler","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
+ <div style={{ textAlign: "center", padding: "8px 16px 16px" }}>
+   <div key={manifestoIdx} style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, color: C.altin, fontStyle: "italic", letterSpacing: 0.3, lineHeight: 1.25, fontWeight: 600, animation: "manifestoGec 1.6s ease-out" }}>
+     "{MANIFESTOLAR[manifestoIdx]}"
+   </div>
+   <div style={{ color: C.cok, fontSize: 9, marginTop: 6, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Besin Dedektifi ·</div>
+ </div>
+ {(() => {
+   const haftaBas = Date.now() - 7 * 86400000;
+   const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
+   const buHaftaKritik = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).reduce((a, g) => a + (g.kritik || 0), 0);
+   return (
+     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>TOPLAM</div>
+         <div style={{ color: C.altin, fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{taramaSayisi}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
+       </div>
+       <div style={{ background: `linear-gradient(135deg, #2ecc7118, ${C.y2})`, border: `1px solid #2ecc7140`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>BU HAFTA</div>
+         <div style={{ color: "#2ecc71", fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHafta}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
+       </div>
+       <div style={{ background: `linear-gradient(135deg, #E74C3C18, ${C.y2})`, border: `1px solid #E74C3C40`, borderRadius: 12, padding: "10px 10px" }}>
+         <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>KRİTİK</div>
+         <div style={{ color: "#E74C3C", fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHaftaKritik}</div>
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>bulgu</div>
+       </div>
+     </div>
+   );
+ })()}
+
+ <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+   <button onClick={() => setSaglikModalAcik(true)} style={{ flex: 1, background: C.y, border: `1px solid ${saglikDurumu.length ? "#E74C3C" : C.s}`, borderRadius: 10, padding: "9px 12px", cursor: "pointer", fontFamily: "Inter, sans-serif", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+     <span style={{ color: C.metin, fontSize: 12, fontWeight: 700 }}>Sağlık Durumum</span>
+     <span style={{ color: saglikDurumu.length ? "#E74C3C" : C.cok, fontSize: 11, fontWeight: 700 }}>{saglikDurumu.length ? `${saglikDurumu.length} seçili` : "yok"}</span>
+   </button>
+   <button onClick={() => setAylikRaporAcik(true)} style={{ flex: 1, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "9px 12px", cursor: "pointer", fontFamily: "Inter, sans-serif", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+     <span style={{ color: C.metin, fontSize: 12, fontWeight: 700 }}>Aylık Rapor</span>
+     <span style={{ color: C.cok, fontSize: 11 }}>→</span>
+   </button>
+ </div>
+
  {/* KATEGORİ SEÇİMİ — 8 kategori grid */}
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 16 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
- <button key={k} onClick={() => setKategori(k)} style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500, lineHeight: 1.2 }}>{v.ad}</button>
+ <button key={k} onClick={() => setKategori(k)} style={{ padding: "10px 4px", borderRadius: 10, border: `2px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500, lineHeight: 1.2 }}>{v.ad}</button>
  ))}
  </div>
  <div style={S.kB}>{KATEGORILER[kategori].ad.toUpperCase()} ETİKETİ ANALİZİ</div>
 
- {/* MOD SEÇİMİ: METİN / KAMERA */}
- <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
- {[["metin", "Metin Gir"], ["kamera", "Kamera ile Tara"], ["barkod", "Barkod"]].map(([k, l]) => (
- <button key={k} onClick={() => setMod(k)} style={{ flex: 1, padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>{l}</button>
+ {/* MOD SEÇİMİ: METİN / KAMERA / BARKOD / FOTO+İSİM */}
+ <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
+ {[["metin", "Metin Gir", false], ["kamera", "Kamera ile Tara", false], ["barkod", "Barkod / QR", true], ["fotoisim", "Foto + İsim", true]].map(([k, l, yakinda]) => (
+ <button key={k} onClick={() => setMod(k)} style={{ position: "relative", padding: "11px 6px", borderRadius: 12, border: `2px solid ${mod === k ? C.altin : C.s}`, background: mod === k ? C.altin + "18" : C.y, color: mod === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 13, fontWeight: mod === k ? 700 : 400 }}>
+ {l}
+ {yakinda && <span style={{ position: "absolute", top: -7, right: -4, background: C.altin, color: "#1A1200", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 8, letterSpacing: 0.3 }}>YAKINDA</span>}
+ </button>
  ))}
  </div>
 
  {mod === "kamera" ? (
  <KameraOCR onMetin={m => { setTxt(m); setMod("metin"); yapAnaliz(m); }} onIptal={() => setMod("metin")} />
+ ) : mod === "barkod" ? (
+ <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 12, padding: "14px 16px", marginBottom: 14 }}>
+   <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, letterSpacing: 0.5, marginBottom: 6 }}>★ YAKINDA — MOBİL UYGULAMADA</div>
+   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+     Mobil uygulama sürümünde <b>barkod ve QR taraması</b> aktif olacak. Ürünü okutunca adı ve içindekiler listesi otomatik gelecek.
+   </div>
+   <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+     <b style={{ color: C.metin }}>Şimdilik:</b> İçindekiler listesini "Metin Gir" sekmesine elle yapıştırabilir veya "Kamera ile Tara" ile etiket fotoğrafından okutabilirsin.
+   </div>
+   <button onClick={() => setMod("metin")} style={{ width:"100%", marginTop:12, background:"none", border:`1px solid ${C.s}`, borderRadius:10, padding:10, color:C.soluk, cursor:"pointer" }}>Geri</button>
+ </div>
+ ) : mod === "fotoisim" ? (
+ <FotoIsim kategoriAd={KATEGORILER[kategori].ad} onAra={(isim) => { setTxt(isim); yapAnaliz(isim); }} onIptal={() => setMod("metin")} />
  ) : (
  <>
  <div style={S.ipucu}>{KATEGORILER[kategori].ipucu}</div>
@@ -5263,7 +7265,7 @@ export default function App() {
  <div style={{ background: C.y, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
  <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 12, fontWeight: 700, marginBottom: 6 }}> Şifa Makamın: {profil.makam}</div>
  <div style={{ color: C.soluk, fontSize: 13 }}>{MAKAMLAR[profil.makam].etki}</div>
- <div style={{ color: C.cok, fontSize: 11, marginTop: 6 }}>{MAKAMLAR[profil.makam].vakit} · {MAKAMLAR[profil.makam].frekans} · {MAKAMLAR[profil.makam].aletler}</div>
+ <div style={{ color: C.cok, fontSize: 11, marginTop: 6 }}>{MAKAMLAR[profil.makam].vakit} · {MAKAMLAR[profil.makam].aletler}</div>
  </div>
  )}
  <button style={S.hayaletBtn} onClick={() => setEkran("profil_kur")}> Profili Değiştir</button>
@@ -5288,43 +7290,859 @@ export default function App() {
  )}
 
  {/* MAKAM */}
- {sekme === "makam" && (
- <div>
- <div style={S.kB}>OSMANLI TIBBI: MAKAM ARŞİVİ</div>
- <div style={S.ipucu}>Osmanlı darüşşifalarında kullanılan ses terapisi arşivi. Tıbbi tedavi değildir.</div>
- <div style={S.notUyari}>* Bu bölüm; Osmanlı darüşşifa geleneği ve geleneksel müzik terapisi birikimine dayanır. Modern bilimsel kanıt sınırlıdır.</div>
- {Object.entries(MAKAMLAR).map(([isim, m]) => (
- <div key={isim} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 13, padding: 16, marginBottom: 10, borderLeft: `4px solid ${m.renk}` }}>
- <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
- <div style={{ width: 38, height: 38, borderRadius: "50%", background: m.renk + "33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}></div>
- <div>
- <div style={{ color: C.metin, fontWeight: 700 }}>{isim} Makamı</div>
- <div style={{ color: m.renk, fontSize: 12 }}>{m.organ}</div>
- </div>
- <div style={{ marginLeft: "auto", color: m.renk, fontSize: 12, fontWeight: 700 }}>{m.frekans}</div>
- </div>
- <div style={{ color: C.soluk, fontSize: 13, marginBottom: 6 }}>{m.etki}</div>
- <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
- <span style={{ color: C.cok, fontSize: 11 }}> {m.vakit}</span>
- <span style={{ color: C.cok, fontSize: 11 }}> {m.aletler}</span>
- </div>
- </div>
- ))}
- {profil && MAKAMLAR[profil.makam] && (
- <div style={{ background: `linear-gradient(135deg,${MAKAMLAR[profil.makam].renk}20,${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 14, padding: 20, textAlign: "center", marginTop: 8 }}>
- <div style={S.kB}> SENİN ŞİFA MAKAMIN</div>
- <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 22, fontWeight: 700 }}>{profil.makam}</div>
- <div style={{ color: C.soluk, fontSize: 13, marginTop: 4 }}>{MAKAMLAR[profil.makam].etki}</div>
- <div style={{ color: C.cok, fontSize: 12, marginTop: 4 }}>{MAKAMLAR[profil.makam].frekans} · {MAKAMLAR[profil.makam].vakit}</div>
- </div>
+ {/* MARKET (Yakında) */}
+ {sekme === "hizmetler" && (() => {
+   const HIZ_GRUPLAR = [
+     {
+       baslik: "DESTEK & HİZMET",
+       hizmetler: [
+         { k: "market", baslik: "Şifalı Market", sembol: "❖", ozet: "Doğal alternatif ürünler, yerel üretici ağı. Mertebene göre Şifa Akçesi indirimi (Kalfa %5 · Kethüda %10 · Hekimbaşı %15)." },
+         { k: "uzman", baslik: "Görüntülü Uzman", sembol: "◐", ozet: "Fitoterapi uzmanı / diyetisyen ile 10 dk görüşme." },
+       ],
+     },
+     {
+       baslik: "TIBB-I NEBEVİ & GELENEKSEL",
+       hizmetler: [
+         { k: "asude", baslik: "Şadırvân-ı Şifa", sembol: "≈", ozet: "Osmanlı Darüşşifa protokolü: su sesi + makam arşivi + akustik fıtrat uyumlaması." },
+         { k: "esref", baslik: "Eşref Saatleri", sembol: "☉", ozet: "Organ vakitleri — sirkadiyen ritim + meridyen takvimi." },
+         { k: "burclar", baslik: "Burçlar & Mizaç", sembol: "✦", ozet: "12 burcun organ-bitki-E kodu tablosu, Osmanlı tıbbı." },
+         { k: "rabita", baslik: "Râbıta-i Şifa", sembol: "🕌", ozet: "Kolektif Şifa Saati — binlerce kişiyle aynı anda odaklan." },
+         { k: "tohum", baslik: "Milli Tohum", sembol: "❀", ozet: "Genetik Sadakat puanı: hibrit/GDO vs atalık Anadolu tohumu." },
+         { k: "uyku", baslik: "Uyku Kalkanı", sembol: "☾", ozet: "REM restorasyonu, yatak/tekstil/rüya frekansı analizi." },
+         { k: "koku", baslik: "Koku Takvimi", sembol: "❋", ozet: "Burç-gezegen saatine göre koku takvimi, esansiyel yağ önerisi." },
+         { k: "rota", baslik: "Evliya Çelebi Rotası", sembol: "✧", ozet: "Konum bazlı tarihi şifahane, kaynak suyu ve kadim aktar rotası." },
+         { k: "yildiz", baslik: "Yıldız Saati", sembol: "★", ozet: "Ay fazı ve gezegen saatlerine göre kan akışı, hacamat vakti." },
+       ],
+     },
+     {
+       baslik: "TEKNOLOJİK & AI",
+       hizmetler: [
+         { k: "goz", baslik: "Göz ve Yüz Analizi", sembol: "◉", ozet: "Basiret + Firaset: iris ve fizyonomi taraması." },
+         { k: "biyofoton", baslik: "Biyo-Foton Kamera", sembol: "✺", ozet: "Gıdanın yaşam enerjisini (aura) ölçen kamera." },
+         { k: "toprak", baslik: "Toprak Frekansı", sembol: "⏚", ozet: "GPS ile jeopatik stres ve manyetik alan analizi." },
+         { k: "bahce", baslik: "Akıllı Bahçe", sembol: "❦", ozet: "Mizaç odaklı tohum kitleri, AI ile bitki takibi." },
+         { k: "emf", baslik: "EMF Kalkanı", sembol: "⚡", ozet: "Wi-Fi / 5G elektromanyetik kirlilik ölçümü ve kalkan önerileri." },
+         { k: "dopamin", baslik: "Dopamin Skoru", sembol: "✜", ozet: "Nöro-gıda analizi: ürünün irade merkezi (Ön Lob) etkisi." },
+         { k: "zihin", baslik: "Zihni İnşa", sembol: "◇", ozet: "Ekran zehirlenmesi, IQ-beslenme, öğrenme mizaçları." },
+         { k: "ses", baslik: "Ses Frekans Analizi", sembol: "♬", ozet: "Sesindeki titreşimden mizaç bozulması tespiti, makam-renk önerisi." },
+         { k: "nabiz", baslik: "İlm-i Nabız", sembol: "⌇", ozet: "Osmanlı nabız ilminin AI yorumu — Safravi/Demevi/Balgami tespit." },
+         { k: "hrv", baslik: "Duygusal Nabız (HRV)", sembol: "♥", ozet: "Kalp atış hızı değişkenliği ile stres/huzur tespiti, makam ve nefes yönlendirmesi." },
+         { k: "nefes", baslik: "Dijital Burun", sembol: "≋", ozet: "Nefes molekülleri + Mizac-ı Hava analizi, buhurdanlık önerileri." },
+         { k: "sesrengi", baslik: "Sesin Rengi (Bio-Acoustic)", sembol: "◍", ozet: "Ses frekans/tını analizi ile çakra ve organ tıkanıklığı tespiti." },
+       ],
+     },
+   ];
+   return (
+     <div>
+       <div style={S.kB}>HİZMETLER PANOSU</div>
+       <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
+
+       {HIZ_GRUPLAR.map(g => (
+         <div key={g.baslik} style={{ marginBottom: 22 }}>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 12, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
+           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+             {g.hizmetler.map(h => (
+               <button key={h.k} onClick={() => { hizmetlerScrollRef.current = window.scrollY; setSekme(h.k); }} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "20px 10px", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                 <span style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center" }}>{h.sembol}</span>
+                 <span style={{ color: C.metin, fontSize: 13, fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>{h.baslik}</span>
+               </button>
+             ))}
+           </div>
+         </div>
+       ))}
+     </div>
+   );
+ })()}
+
+ {sekme === "sesrengi" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>SESİN RENGİ — BIO-ACOUSTIC ANALİZ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>İnsan sesi ruhun röntgenidir. Frekans aralığı, tını ve gizli titremeler organ-çakra tıkanıklığını gösterir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ SESLE TEŞHİS — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         "Bugün nasılım?" diye soruşunda AI sesindeki frekans aralığını, tınısını ve gizli titremeleri analiz eder.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ SESLE TEDAVİ (REZONANS) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Tespit edilen tıkanıklığa karşı kişiselleştirilmiş <b>makam, zikir veya ilahi</b> rezonans reçetesi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sesindeki frekans düşük — tiroid (boğaz çakrası / gudde-i teyroid) bölgende enerji tıkanıklığı var. Rast Makamı'nda zikir/ilahi ile o bölgeyi rezonansa getir."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
  )}
- </div>
+
+ {sekme === "yildiz" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>YILDIZ SAATİ & KAN AKIŞI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da ameliyatlar bile Ay'ın konumuna göre yapılırdı. Vücut sıvıları med-cezir etkisinde, kan akışı gezegen saatleriyle bağlantılı.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ AY FAZI & MED-CEZİR — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Damardaki kan akış hızı ve sıvı dengesi, o anki Ay fazıyla eşleştirilir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bugün Dolunay — vücudunda ödem artıyor, kanın daha akışkan. Hacamat için en yüksek şifa vakti."
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ GEZEGEN SAATLERİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Merkür, Venüs, Mars, Jüpiter... her gezegenin saatine göre sinir sistemi/iletim/iştah yönlendirmesi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Merkür retrosu — sinir sisteminin elektriksel iletimi yavaş. Ağır gıdalardan kaçın, zihni bulandırma."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "hrv" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DUYGUSAL NABIZ — HRV ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Nabız sadece fiziksel değil, ruhsal durumun haritasıdır. HRV (Kalp Atış Hızı Değişkenliği) milisaniye farklarını ölçer.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ HRV ÖLÇÜMÜ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kalp atışları arası milisaniyelik farklardan <b>stres / korku / huzur</b> seviyen okunur.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ MAKAM & NEFES ENTEGRASYONU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Nabız çok düzensiz ve stresliyse uygulama anında <b>Neva Makamı</b> (gönül ferahlatıcı) çalar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Yönlendirme:</b> "Nefesini 4-7-8 kuralına göre al — 4 saniye al, 7 tut, 8 ver."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "nefes" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DİJİTAL BURUN — OSMANLI BUHURDANLIĞI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Sadece gözle bakmayacak, sadece nabız dinlemeyeceğiz. Telefon elektronik burun gibi çalışacak; nefesindeki molekülleri Osmanlı'nın "Mizâc-ı Havâ" ilmiyle birleştirip okuyacak.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ NEFES MOLEKÜL ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Nefesteki <b>aseton</b> diyabeti, <b>amonyak</b> böbreği söyler. AI bu işaretleri okuyup organ durumunu yorumlar.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ MİZÂC-I HAVÂ & BUHURDANLIK — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Bulunduğun ortamın havası analiz edilir (kuru-soğuk, nemli-sıcak vb.) ve buhurdanlık önerisiyle dengelenir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Odanın havası 'kuru-soğuk' — mizacın daralıyor. Buhurdanlığa iki damla lavanta damlat, düğüm çözülsün."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "rota" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>EVLİYA ÇELEBİ ROTASI — ŞİFA HARİTASI 2.0 <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Şifa haritası sadece dükkanlarla sınırlı kalmaz: konumuna göre çevredeki tarihi şifahaneler, doğal kaynak suları ve kadim aktarlar mistik bir rota olarak sunulur.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ KONUM BAZLI KADİM ROTA — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         GPS konumun + günlük mizaç durumun → çevredeki <b>tarihi darüşşifa, kaynak suyu, kadim aktar</b> önerileri.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "500 metre ötede tarihi bir darüşşifa var — mimarisindeki akustik, bugün ihtiyacın olan Saba makamını fısıldar."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Mistik + turistik + şifa odaklı bir derinlik: yerel mirası yeniden keşfedersin.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "nabiz" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>İLM-İ NABIZ — MİZAÇ TEŞHİSİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı hekimleri nabzı 10 farklı parametreye göre okurdu. Yapay zeka, telefonun sensörü ile nabzı analiz edip mizaç bozulmasını yorumlar.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: "#FF4444", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ SAFRAVİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Hızlı ve sert (Ateş elementi). AI tespit ettiğinde: <i>"Hararet artmış — tarattığın baharatlı gıda tansiyonunu tetikler."</i>
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: "#FFD700", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ DEMEVİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Dolu ve kuvvetli. AI tespit ettiğinde: <i>"Kan değerlerin yüksek olabilir — bugün ağır etli gıdalardan uzak dur, hacamat vaktin yaklaşmış olabilir."</i>
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: "#4488FF", fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ BALGAMİ NABIZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Yavaş ve derinde. AI tespit ettiğinde: <i>"Metabolizman yavaşlamış, uyuşukluk var — zencefil gibi ısıtıcı gıdalara yönel."</i>
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "koku" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DİJİTAL ATTAR — KOKU TAKVİMİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da şifa kulakla (makam), gözle (renk) ve burunla da gelirdi. Attarlık, kadim bir tıp ve psişe sanatıdır.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>❀ KOKU TAKVİMİ & TERAPİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Günlük burç-gezegen saati + tarattığın zararlı gıdaya göre kişiselleştirilmiş <b>koku terapisi</b> önerisi.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bugün karaciğerin yoruldu; safravi mizacın için en uygun dengeleyici koku gül veya sandal ağacıdır."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Ticari boyut:</b> En temiz içerikli esansiyel yağ önerisi + tek tıkla sipariş.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "ses" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>SES FREKANS ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Yapay zeka sadece metin değil sesi de analiz eder. Ses titreşimi, gizli yorgunluk ve mizaç bozulmasının en hassas göstergesidir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ SESLİ DURUM TESPİTİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         "Bugün biraz yorgun hissediyorum" dediğinde, sistem sesindeki <b>frekanstan mizaç bozulmasını</b> tespit eder (sevda artışı, depresyon meyli vb.).
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sesindeki frekans düşük — şu an Neva makamına ve sarı renge ihtiyacın var. Tarattığın gıda bu yorgunluğu artırır."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "tohum" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>MİLLİ TOHUM — GENETİK SADAKAT KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Hibrit ve GDO'lu tohumlar bedenin yabancı olarak algıladığı genetik yapı taşır. Atalık tohumlar (Karakılçık, Siyez vb) Anadolu'nun bin yıllık birikimidir.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ GENETİK SADAKAT PUANI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Tarattığın ürünün tohum kökeni analiz edilir: <b>hibrit / GDO / atalık</b>. Hücrelerinin tanıdığı tohumdan mı geliyor?
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bu ekmek senin genetik kodunla savaş halinde — vücudun yabancı istilacı olarak algılayıp enflamasyon başlatıyor. Yerel üreticinin Karakılçık veya Siyez buğdayına dön."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yerel üretici ağı ile atalık tohumlu ürünleri sepete ekleme — tarım kartellerine karşı kalkan.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "zihin" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>ZİHNİ İNŞA & ODAKLANMA KALKANI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Dijital dünya çocukların ve yetişkinlerin dikkat süresini 8 saniyeye düşürdü. Odaklanamayan zihin, sorgulayamaz. Üç koldan kalkan: ekran, beslenme, öğrenme.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ DİJİTAL DOPAMİN & EKRAN ZEHRİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Ekran süresi ve içeriğin <b>kare hızı (frame rate)</b> ölçülür. Hızlı sahne geçişleri çocukta GABA dengesini bozar, hiperaktif (safravi) döngüye sokar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Ekran kapat, lavantalı göz yastığı + 15 dk Rast Makamı dinlet, zihni toprak fazına çek.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ BESLENME ↔ ZEKA (IQ/EQ) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kantin gofretleri ve katkı bombaları sinapslar arası iletimi yavaşlatır. Sınav başarısızlığının kökeni "tembellik" değil, kandaki alüminyum ve şeker yükü.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ ÖĞRENME MİZAÇLARI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Her çocuk farklı öğrenir: görerek (demevi), duyarak (safravi), dokunarak (balgami). Mizacına göre ortam ve yöntem öner.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Sevdavi mizaç — baskı yerine sessiz, derinlikli ortam. Masaya florit taşı, odaya nane-limon uçucu yağı."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "uyku" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>UYKU KALKANI & REM RESTORASYONU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Yatak odası en savunmasız ama en şifalı alandır. Yaylı yatak (anten etkisi), sentetik tekstil (deri solunumu engeli), bozulmuş melatonin — uyku ihanetinin üç ayağı.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◬ YAYLI YATAK & ANTEN ETKİSİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Metal yaylar Wi-Fi ve baz istasyonu sinyallerini toplayıp vücuda iletir. Yatak yapısı + oda EMF yoğunluğu analiz edilir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yün/pamuk yatak katmanı, altına karbon-gümüş iplikli statik emici örtü.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ SENTETİK TEKSTİL & DERİ SOLUNUMU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Pijama ve nevresim kumaşı kameradan analiz edilir. %100 polyester gece toksin atılımını bloke eder; terlemenin sebebi sıcaklık değil, plastik dokudur.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Ham ipek veya keten uyku seti — ten doğal liflerle nefes alır.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ RÜYA FREKANSI & MİZAÇ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Gördüğün rüyaların havası (korku/uçma/su/ateş) girilir, mizaç dengesi okunur. Ateşli-kavgalı rüyalar safra (sıcak-kuru) yükselişi → karaciğer alarmı.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> Yastık altına ametist taşı, şakaklara melisa yağı — frekansı Sekîne moduna çek.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "emf" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>EMF KALKANI — ELEKTROMANYETİK KORUMA <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Wi-Fi, 5G ve elektrik hatları hücre frekansını etkileyen modern bir kirlilik kaynağı. Telefon sensörleriyle ölçülüp kişiselleştirilmiş kalkan önerileri sunulacak.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◈ EMF ÖLÇÜM & ANALİZ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Telefonun sensörleri etrafındaki <b>elektromanyetik kirliliği</b> ölçer, uyku ve beyin dalgalarına etkisini değerlendirir.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Yatak odandaki baz istasyonu frekansı REM kaliteni %40 düşürüyor."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Aksiyon:</b> "Gece telefonu uçak moduna al, başucuna tuz lambası veya şungit taşı koy."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "dopamin" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>DOPAMİN SKORU — NÖRO-GIDA ANALİZİ <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>MSG (E621), nişasta bazlı şeker ve yapay aromalar beynin ödül mekanizmasını manipüle eder. İnsan acıkmadığı halde yer.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◆ DOPAMİN SKORU — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Ürün tarandığında sadece içerik değil, <b>Dopamin Skoru</b> verilir: ön lob (prefrontal korteks) ve irade merkezine etkisi puanlanır.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Bu ürün ön lobu uyuşturuyor. 15 dakika sonra sahte mutluluk, 1 saat sonra düşüş ve agresiflik yaşarsın."
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Restorasyon:</b> "Misk-i amber kokla, magnezit taşını avucunda tut, sahte sinyali kır — iradeni geri al."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "toprak" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>TOPRAK FREKANSI & KONUM ŞİFASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı'da şifahaneler ve camiler "Leyn Hatları" (enerji hatları) üzerine kurulurdu. İnsan sadece yediğinden değil, bastığı topraktan da hasta olur.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◉ JEOPATİK STRES ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Uygulama, GPS konumunu kullanarak bulunduğun bölgenin <b>toprak yapısını ve manyetik alanını</b> analiz eder.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> "Şu an bulunduğun bölgenin manyetik alanı senin sevdevi mizacını ağırlaştırıyor. Çıplak ayak toprağa basman veya pozitif iyon yayan doğal taşlar kullanman önerilir."
+       </div>
+     </div>
+
+     <div style={S.kB}>ANLIK HAVA KALİTESİ & UV (CANLI)</div>
+     {!havaData && !havaHata && <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 12, color: C.soluk, fontSize: 13, textAlign: "center" }}>Konum & hava verisi yükleniyor...</div>}
+     {havaHata && <div style={{ background: "#FEE2E2", color: C.kirmizi, padding: 12, borderRadius: 10, fontSize: 13, marginBottom: 12 }}>{havaHata}</div>}
+     {havaData && (() => {
+       const aqi = havaData.european_aqi;
+       const aqiRenk = aqi == null ? C.cok : aqi <= 40 ? C.yesil : aqi <= 60 ? C.sari : aqi <= 80 ? C.turuncu : C.kirmizi;
+       const aqiAd = aqi == null ? "—" : aqi <= 20 ? "Çok İyi" : aqi <= 40 ? "İyi" : aqi <= 60 ? "Orta" : aqi <= 80 ? "Kötü" : "Çok Kötü";
+       return (
+         <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, paddingBottom: 12, borderBottom: `1px solid ${C.s}` }}>
+             <div>
+               <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>AVRUPA HAVA KALİTE İNDEKSİ</div>
+               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 4 }}>
+                 <span style={{ color: aqiRenk, fontSize: 32, fontWeight: 800 }}>{aqi ?? "—"}</span>
+                 <span style={{ color: aqiRenk, fontSize: 14, fontWeight: 700 }}>{aqiAd}</span>
+               </div>
+             </div>
+             {havaData.uv_index != null && (
+               <div style={{ textAlign: "right" }}>
+                 <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>UV İNDEKS</div>
+                 <div style={{ color: C.altin, fontSize: 28, fontWeight: 800 }}>{Number(havaData.uv_index).toFixed(1)}</div>
+               </div>
+             )}
+           </div>
+           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+             {[
+               ["PM2.5", havaData.pm2_5, "μg/m³"],
+               ["PM10", havaData.pm10, "μg/m³"],
+               ["NO₂", havaData.nitrogen_dioxide, "μg/m³"],
+               ["O₃", havaData.ozone, "μg/m³"],
+             ].map(([ad, deger, birim]) => (
+               <div key={ad} style={{ background: C.y2, borderRadius: 8, padding: "8px 10px" }}>
+                 <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700 }}>{ad}</div>
+                 <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{deger != null ? Number(deger).toFixed(1) : "—"} <span style={{ color: C.cok, fontSize: 10, fontWeight: 400 }}>{birim}</span></div>
+               </div>
+             ))}
+           </div>
+           <div style={{ color: C.cok, fontSize: 10, marginTop: 10, textAlign: "center" }}>Open-Meteo · Konum: {havaData.lat}, {havaData.lon}</div>
+         </div>
+       );
+     })()}
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "rabita" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>RÂBITA-İ ŞİFA — KOLEKTİF ODAK <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Eşzamanlı kolektif meditasyon ve ortak niyetli odak üzerine yapılan bilimsel araştırmalar (Harvard Benson-Henry Institute, Wisconsin-Madison Üniversitesi meditasyon laboratuvarı, Princeton Global Consciousness Project) bireyin kortizol düzeyi, kalp atış hızı değişkenliği (HRV) ve subjektif iyilik hâlinde ölçülebilir değişimler bildirmektedir. Uygulamayı; belirlenen vakitlerde kullanıcıları ortak bir sağlık niyetinde buluşturan bilimsel temelli bir dijital topluluk pratiğine dönüştürüyoruz.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◇ KOLEKTİF ŞİFA SAATİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Her akşam Eşref Saati'nde, tüm kullanıcılara bildirim: <i>"Şu an binlerce kişiyle aynı anda karaciğer şifası için Ney sesi eşliğinde odaklanıyoruz."</i>
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Aidiyet, ortak niyet ve aynı anda yapılan odak — yazılımı bir uygulamadan çıkarıp bir <b>şifa cemaatine</b> dönüştürür.
+       </div>
+     </div>
+
+     <div style={S.kB}>ŞİFA AYETLERİ — OKU, DİNLE (6 AYET-İ ŞİFA)</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { ref: "9:14", ad: "Tevbe 14", konu: "Mü'minlerin sinelerine şifa" },
+         { ref: "10:57", ad: "Yunus 57", konu: "Sinelerdeki şifa" },
+         { ref: "16:69", ad: "Nahl 69", konu: "Baldan insanlara şifa" },
+         { ref: "17:82", ad: "İsrâ 82", konu: "Kur'an mü'minlere şifa" },
+         { ref: "26:80", ad: "Şuarâ 80", konu: "İbrahim a.s. şifa duası" },
+         { ref: "41:44", ad: "Fussilet 44", konu: "Mü'minlere şifa ve hidayet" },
+         { ref: "2:186", ad: "Bakara 186", konu: "Allah duaya cevap verir" },
+       ].map((a, i, arr) => {
+         const veri = ayetData[a.ref];
+         const acik = acikAyet === a.ref;
+         return (
+           <div key={a.ref} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+             <button onClick={() => ayetToggle(a.ref)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", background: "none", border: "none", cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", textAlign: "left" }}>
+               <span style={{ flex: 1 }}>
+                 <span style={{ color: C.altin, fontWeight: 700, fontSize: 13 }}>{a.ad}</span>
+                 <span style={{ color: C.soluk, fontSize: 12, marginLeft: 8 }}>· {a.konu}</span>
+               </span>
+               <span style={{ color: C.cok, fontSize: 14 }}>{acik ? "▲" : (ayetYukleniyor === a.ref ? "⟳" : "▼")}</span>
+             </button>
+             {acik && (
+               <div style={{ padding: "0 14px 14px" }}>
+                 {!veri && <div style={{ color: C.cok, fontSize: 12, textAlign: "center", padding: 8 }}>Yükleniyor...</div>}
+                 {veri?.hata && <div style={{ color: C.kirmizi, fontSize: 12 }}>{veri.hata}</div>}
+                 {veri?.arap && (
+                   <>
+                     <div style={{ color: C.metin, fontSize: 22, lineHeight: 2, textAlign: "right", direction: "rtl", fontFamily: "'Amiri', 'Scheherazade New', serif", marginBottom: 12, padding: "10px 12px", background: C.y2, borderRadius: 10 }}>{veri.arap}</div>
+                     <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10, fontStyle: "italic" }}>{veri.tr}</div>
+                     {veri.audio && <audio controls src={veri.audio} style={{ width: "100%", height: 36 }} />}
+                   </>
+                 )}
+               </div>
+             )}
+           </div>
+         );
+       })}
+     </div>
+
+     <div style={S.kB}>ESMÂ-ÜL HÜSNÂ REÇETELERİ — DURUMA GÖRE</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { durum: "Kalp sıkıntısı / ruh daralması", esma: "Yâ Selâm", ebced: 131, aciklama: "Selâmet ve huzur veren. Ra'd 28: 'Kalpler ancak Allah'ı anmakla huzur bulur.'" },
+         { durum: "Üzüntü / yalnızlık hissi", esma: "Yâ Latîf", ebced: 129, aciklama: "İnceliğin sahibi, gizli yardım eden. Sıkıntıda tesellî verir." },
+         { durum: "Hastalık / fiziksel ağrı", esma: "Yâ Şâfî", ebced: 391, aciklama: "Şifa veren. Hadisten: 'Şifa veren ancak Sen'sin.'" },
+         { durum: "Korku / kaygı", esma: "Yâ Mü'min", ebced: 137, aciklama: "Güven veren. Endişe ve korkuyu sükûnete çevirir." },
+         { durum: "Rızk darlığı", esma: "Yâ Rezzâk", ebced: 308, aciklama: "Rızkı bol kılan. Bereketin kapısını açan isim." },
+         { durum: "Uykusuzluk / huzursuzluk", esma: "Yâ Hayyu Yâ Kayyûm", ebced: 218, aciklama: "Dâimâ diri ve kâim olan. Gece zikrinin esası." },
+         { durum: "Hidayet ihtiyacı", esma: "Yâ Hâdî", ebced: 20, aciklama: "Doğru yola ileten. Karar anlarında tekrar edilir." },
+       ].map((e, i, arr) => (
+         <div key={e.esma} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+           <div style={{ color: C.soluk, fontSize: 11, marginBottom: 4 }}>{e.durum}</div>
+           <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
+             <span style={{ color: C.altin, fontWeight: 700, fontSize: 16 }}>{e.esma}</span>
+             <span style={{ color: C.cok, fontSize: 11, fontFamily: "ui-monospace, monospace" }}>Ebced: {e.ebced}</span>
+           </div>
+           <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{e.aciklama}</div>
+         </div>
+       ))}
+       <div style={{ padding: "10px 14px", color: C.cok, fontSize: 10, fontStyle: "italic", textAlign: "center" }}>Ebced sayısı kadar zikir, geleneksel tasavvuf usulüdür.</div>
+     </div>
+
+     <div style={S.kB}>VAKTİN ZİKRİ — GÜNÜN VAKİTLERİNE GÖRE</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {[
+         { vakit: "Fecr (Sabah) — Bereket dağılımı", zikir: "Sübhânallâhi ve bihamdihî (100 defa) · Vâkıa Sûresi" },
+         { vakit: "Duhâ (Kuşluk) — Rızk vakti", zikir: "Yâ Rezzâk · Duhâ Sûresi" },
+         { vakit: "Zuhr (Öğle) — Şükür ve istiğfar", zikir: "Estağfirullâh el-Azîm (70 defa) · Yâ Settâr" },
+         { vakit: "Asr (İkindi) — Ruhun daraldığı vakit", zikir: "Yâ Latîf (129 defa) · Asr Sûresi" },
+         { vakit: "Maghrib (Akşam) — Sükûnet zamanı", zikir: "Yâ Selâm (131 defa) · Mülk Sûresi" },
+         { vakit: "İsha (Yatsı) — Korunma ve tevekkül", zikir: "Âyetü'l-Kürsî · Felâk ve Nâs" },
+         { vakit: "Teheccüd (Gece) — Rahmânî rüyalar", zikir: "Yâ Hayyu Yâ Kayyûm · İsrâ Sûresi son ayetleri" },
+       ].map((v, i, arr) => (
+         <div key={v.vakit} style={{ padding: "10px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+           <div style={{ color: C.altin, fontWeight: 700, fontSize: 12, marginBottom: 3 }}>{v.vakit}</div>
+           <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{v.zikir}</div>
+         </div>
+       ))}
+     </div>
+
+     <div style={S.kB}>DUA HALKASI — MANEVÎ SOSYAL AĞ</div>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>☾ YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 8 }}>
+         Bir kullanıcı <i>"bugün şifaya muhtacım, bir Fâtiha bekliyorum"</i> dediğinde sistemdeki diğer kullanıcılara anonim bildirim gidecek: <i>"Bir kardeşimize şifa ayeti okunması rica ediliyor, katılmak ister misin?"</i>
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Kolektif dua, ortak niyet ve eşzamanlı okuma; bireysel pratikten topluluk pratiğine geçişi sağlayacak.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
+   </div>
+ )}
+
+ {sekme === "bahce" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>AKILLI BAHÇE — MİZAÇ ODAKLI BOSTAN <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Uygulama göz taraması ve mizaç sonucuna göre sana hangi bitkiye ihtiyacın olduğunu söyler. Akıllı tohum kitleri ile evde de yetiştirebilirsin.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>❀ AKILLI TOHUM KİTLERİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Mizacına uygun bitki kiti adresine gönderilir. Yapay zeka kameradan büyümeyi izler ve <i>"Bitkinin mizacı tamamlandı, şimdi kopar ve şifa niyetine iç"</i> der.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
+   </div>
+ )}
+
+ {sekme === "biyofoton" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>BİYO-FOTON KAMERA — GIDA AURASI <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Kamerayı sadece barkod okumak için değil, canlı gıdanın yaşam enerjisini ölçmek için kullanacağız.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◓ BİYO-FOTON ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Bir elmayı kameraya tut. Yapay zeka tazelikten yola çıkarak yaydığı ışınımı (biyo-foton) tahmin eder.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek çıktı:</b> "Bu elma görünüşte güzel ama yaşam enerjisi (prana / şifa) bitmiş, sadece posa yersin. Köylü pazarındaki şu elmayı seç."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır.
+     </div>
+   </div>
+ )}
+
+ {sekme === "goz" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>GÖZ ve YÜZ ANALİZİ — BASİRET + FİRASET <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı hekimleri "Göz ruhun aynasıdır" derdi. İridoloji ilminde iris vücudun haritasıdır; Kıyâfetnâme (İlm-i Sîmâ) geleneğinde yüz çizgileri organ durumunu yansıtır.</div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◉ DİJİTAL İRİDOLOJİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Kamerayı gözüne yaklaştırırsın, yapay zeka iristeki çizgileri, noktaları ve renk değişimlerini tarar.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         <b style={{ color: C.metin }}>Örnek:</b> Saat 3 yönünde koyuluk → akciğerde toksin birikimi işareti. Göz bebeği etrafında beyaz halka → aşırı asit (mizaç bozulması).
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◑ GÖZ TARAMASI + GIDA ANALİZİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Sistem gözünü tarar, sindirim zayıflığını tespit eder. Sonra bir gıda taratınca uyarır: "DUR — bu koruyuculu gıda senin mide asidini bozabilir."
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◔ FİZYONOMİ (KIYÂFETNÂME) — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Alın çizgileri, dudak rengi, göz altı torbaları — yapay zeka yüzden "karaciğer yorgunluğu", "böbrek susuzluğu" gibi tespitler yapar. Haftalık selfie ile doğal kürlerinin etkisini izlersin.
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu özellik kültürel ve bilgilendirme amaçlı sunulacaktır. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
+ )}
+
+ {sekme === "market" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     {sonuclar.length > 0 && (
+       <button onClick={() => { setSekme("tarama"); setEkran("sonuc"); }} style={{ display:"flex", alignItems:"center", gap:6, background: C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color: C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>
+         ← Sonuçlara Dön
+       </button>
+     )}
+     <div style={{ display:"flex", justifyContent:"flex-start", marginBottom: 14 }}>
+       <button onClick={() => setMarketKategoriPanel(true)} style={{ display:"flex", alignItems:"center", gap:8, background: C.altin, border:`1px solid ${C.altin}`, borderRadius:10, padding:"10px 16px", color:"#1A1200", cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, boxShadow:`0 2px 8px ${C.altin}44` }}>
+         ≡ Kategoriler
+       </button>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>★ ŞİFALI MARKET — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Doğal alternatif ürünleri tek tıkla sipariş edebileceğin Şifalı Market burada açılacak. Sol üstteki <b>Kategoriler</b> butonundan 8 ana başlığa ve önerilen doğal ürünlere göz at.
+       </div>
+     </div>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◈ ŞİFA HARİTASI — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         <b>Yerel Üretici Ağı:</b> Çevrendeki çiğ süt, ham bal, soğuk sıkım yağ, organik sebze üreticilerini harita üzerinde gösteren modül. Kısa zincir, taze ürün, doğrudan üreticiden.
+       </div>
+     </div>
+   </div>
+ )}
+
+ {marketKategoriPanel && (
+   <div onClick={() => setMarketKategoriPanel(false)} style={{ position:"fixed", inset:0, background:"#00000099", zIndex:9998, display:"flex", justifyContent:"flex-start" }}>
+     <div onClick={(e)=>e.stopPropagation()} style={{ width:"min(420px, 92vw)", height:"100%", background: C.y2, borderRight:`2px solid ${C.altin}`, overflowY:"auto", boxShadow:"4px 0 20px #00000088" }}>
+       <div style={{ position:"sticky", top:0, background: C.y2, borderBottom:`1px solid ${C.s}`, padding:"14px 16px", display:"flex", justifyContent:"space-between", alignItems:"center", zIndex:2 }}>
+         <div style={{ color: C.altin, fontWeight:700, fontSize:15, letterSpacing:0.5 }}>KATEGORİLER</div>
+         <button onClick={() => setMarketKategoriPanel(false)} style={{ background:"transparent", border:`1px solid ${C.s}`, color:C.metin, borderRadius:8, padding:"4px 10px", cursor:"pointer", fontSize:14 }}>✕</button>
+       </div>
+       <div style={{ padding: 12 }}>
+         {Object.entries(MARKET_KATEGORI).map(([key, urunler]) => {
+           const acik = marketAcikBaslik === key;
+           const ad = KATEGORILER[key]?.ad || key;
+           return (
+             <div key={key} style={{ marginBottom: 8, border:`1px solid ${C.s}`, borderRadius: 10, background: C.y, overflow:"hidden" }}>
+               <button onClick={() => setMarketAcikBaslik(acik ? null : key)} style={{ width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", background:"transparent", border:"none", padding:"12px 14px", color: C.metin, fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif" }}>
+                 <span>{ad}</span>
+                 <span style={{ color: C.altin, fontSize:16, fontWeight:700, lineHeight:1 }}>{acik ? "−" : "+"}</span>
+               </button>
+               {acik && (
+                 <div style={{ padding: "0 10px 10px 10px", display:"grid", gap:6 }}>
+                   {urunler.map(u => (
+                     <div key={u.ad} style={{ background: C.y2, border:`1px dashed ${C.s}`, borderRadius:8, padding:"8px 10px", position:"relative" }}>
+                       <div style={{ color: C.metin, fontWeight:700, fontSize:12, marginBottom:2 }}>{u.ad}</div>
+                       <div style={{ color: C.soluk, fontSize:11, lineHeight:1.4 }}>{u.aciklama}</div>
+                       <span style={{ position:"absolute", top:5, right:5, background:C.altin, color:"#1A1200", fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:5 }}>YAKINDA</span>
+                     </div>
+                   ))}
+                 </div>
+               )}
+             </div>
+           );
+         })}
+         <div style={{ marginTop: 14, background:`linear-gradient(135deg, ${C.altin}22, ${C.y})`, border:`1px solid ${C.altin}66`, borderRadius:10, padding:12, position:"relative" }}>
+           <div style={{ color: C.altin, fontWeight:700, fontSize:12, letterSpacing:0.5, marginBottom:4 }}>◈ ŞİFA HARİTASI</div>
+           <div style={{ color: C.metin, fontSize:11, lineHeight:1.5 }}>Yerel Üretici Ağı — çiğ süt, ham bal, soğuk sıkım yağ, organik üreticileri harita üzerinde.</div>
+           <span style={{ position:"absolute", top:8, right:8, background:C.altin, color:"#1A1200", fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:5 }}>YAKINDA</span>
+         </div>
+       </div>
+     </div>
+   </div>
  )}
 
  {/* EŞREF */}
- {sekme === "esref" && (
+ {sekme === "esref" && (() => {
+   const ayFazi = (hicriGun) => {
+     const g = parseInt(hicriGun);
+     if (g <= 2 || g >= 28) return { ad: "Yeni Ay (Hilâl)", ikon: "🌑", oran: 0 };
+     if (g <= 6) return { ad: "Büyüyen Hilâl", ikon: "🌒", oran: 25 };
+     if (g <= 9) return { ad: "İlk Dördün", ikon: "🌓", oran: 50 };
+     if (g <= 13) return { ad: "Büyüyen Bedir", ikon: "🌔", oran: 75 };
+     if (g <= 16) return { ad: "Dolunay (Bedr)", ikon: "🌕", oran: 100 };
+     if (g <= 20) return { ad: "Küçülen Bedir", ikon: "🌖", oran: 75 };
+     if (g <= 23) return { ad: "Son Dördün", ikon: "🌗", oran: 50 };
+     return { ad: "Küçülen Hilâl", ikon: "🌘", oran: 25 };
+   };
+   const faz = esrefData?.date?.hijri?.day ? ayFazi(esrefData.date.hijri.day) : null;
+   const HICRI_AY_TR = { 1: "Muharrem", 2: "Safer", 3: "Rebiülevvel", 4: "Rebiülahir", 5: "Cemâziyelevvel", 6: "Cemâziyelahir", 7: "Receb", 8: "Şaban", 9: "Ramazan", 10: "Şevval", 11: "Zilkâde", 12: "Zilhicce" };
+   const MILADI_AY_TR = { 1: "Ocak", 2: "Şubat", 3: "Mart", 4: "Nisan", 5: "Mayıs", 6: "Haziran", 7: "Temmuz", 8: "Ağustos", 9: "Eylül", 10: "Ekim", 11: "Kasım", 12: "Aralık" };
+   const hicriAyTr = esrefData?.date?.hijri?.month?.number ? HICRI_AY_TR[parseInt(esrefData.date.hijri.month.number)] : esrefData?.date?.hijri?.month?.en;
+   const miladiAyTr = esrefData?.date?.gregorian?.month?.number ? MILADI_AY_TR[parseInt(esrefData.date.gregorian.month.number)] : esrefData?.date?.gregorian?.month?.en;
+   const NAMAZLAR = [
+     ["Fajr", "İmsak / Fecr"], ["Sunrise", "Güneş"], ["Dhuhr", "Öğle"],
+     ["Asr", "İkindi"], ["Maghrib", "Akşam"], ["Isha", "Yatsı"]
+   ];
+   const simdi = new Date();
+   const dakika = simdi.getHours() * 60 + simdi.getMinutes();
+   const ts2dk = (s) => { const [h, m] = s.split(":"); return parseInt(h) * 60 + parseInt(m); };
+   const sirakiNamaz = esrefData?.timings ? NAMAZLAR.find(([k]) => ts2dk(esrefData.timings[k]) > dakika) : null;
+   return (
  <div>
- <div style={S.kB}>EŞREF SAATLERİ — ORGAN VAKTI</div>
+ <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+ <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+   <div style={S.kB}>EŞREF SAATLERİ — ANLIK VAKTİ VE GÖK <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+   <button onClick={konumIste} style={{ background: C.altin + "22", border: `1px solid ${C.altin}66`, color: C.altin, borderRadius: 8, padding: "6px 11px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", whiteSpace: "nowrap" }}>📍 Konumumu Kullan</button>
+ </div>
+
+ {/* CANLI API KARTI */}
+ {!esrefData && !esrefHata && (
+   <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 20, marginBottom: 14, textAlign: "center", color: C.soluk, fontSize: 13 }}>Konum ve namaz vakitleri yükleniyor...</div>
+ )}
+ {esrefHata && (
+   <div style={{ background: "#FEE2E2", border: `1px solid ${C.kirmizi}`, borderRadius: 14, padding: 14, marginBottom: 14, color: C.kirmizi, fontSize: 13 }}>{esrefHata}</div>
+ )}
+ {esrefData && (
+   <>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+         <div>
+           <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>HİCRİ TARİH</div>
+           <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginTop: 2 }}>{esrefData.date.hijri.day} {hicriAyTr} {esrefData.date.hijri.year}</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{esrefData.date.gregorian.day} {miladiAyTr} {esrefData.date.gregorian.year}</div>
+         </div>
+         {faz && (
+           <div style={{ textAlign: "center" }}>
+             <div style={{ fontSize: 36, lineHeight: 1 }}>{faz.ikon}</div>
+             <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, marginTop: 4 }}>{faz.ad}</div>
+             <div style={{ color: C.soluk, fontSize: 10 }}>~%{faz.oran} dolu</div>
+           </div>
+         )}
+       </div>
+       <div style={{ paddingTop: 10, borderTop: `1px solid ${C.altin}30`, color: C.soluk, fontSize: 11 }}>
+         Konum: {esrefData.lat}, {esrefData.lon} · Yöntem: Diyanet
+       </div>
+     </div>
+
+     <div style={S.kB}>NAMAZ VAKİTLERİ (BUGÜN)</div>
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 6, marginBottom: 14 }}>
+       {NAMAZLAR.map(([k, ad], i) => {
+         const vakit = esrefData.timings[k]?.substring(0, 5);
+         const aktif = sirakiNamaz && sirakiNamaz[0] === k;
+         return (
+           <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderBottom: i < NAMAZLAR.length - 1 ? `1px solid ${C.s}` : "none", background: aktif ? C.altin + "12" : "transparent", borderRadius: aktif ? 10 : 0 }}>
+             <span style={{ color: aktif ? C.altin : C.metin, fontWeight: aktif ? 700 : 500, fontSize: 14 }}>{ad}</span>
+             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+               {aktif && <span style={{ background: C.altin, color: "#1A1200", borderRadius: 6, padding: "2px 8px", fontSize: 9, fontWeight: 700, letterSpacing: 0.3 }}>SIRADAKİ</span>}
+               <span style={{ color: aktif ? C.altin : C.metin, fontFamily: "ui-monospace, monospace", fontSize: 16, fontWeight: 700 }}>{vakit}</span>
+             </div>
+           </div>
+         );
+       })}
+     </div>
+   </>
+ )}
+
+ <div style={S.kB}>ORGAN VAKTİ (KRONOBİYOLOJİ)</div>
  <div style={S.ipucu}>Kronobiyoloji ile desteklenen organ aktivite vakitleri. Nobel 2017 sirkadiyen ritim ödülü bilimsel dayanaktır.</div>
  <div style={S.notUyari}>* Bu bölüm; Çin tıbbı meridyen saati geleneğine dayanır. Sirkadiyen ritim bilimsel olarak kanıtlıdır; spesifik organ–saat eşleşmeleri için modern bilimsel kanıt sınırlıdır.</div>
  {ESREF.map((e, i) => {
@@ -5344,7 +8162,613 @@ export default function App() {
  );
  })}
  </div>
+   );
+ })()}
+
+ {sekme === "burclar" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={S.kB}>BURÇ ve MİZAÇ TABLOSU <span style={{ background: C.altin, color: "#1A1200", fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.3, marginLeft: 6, verticalAlign: "middle" }}>YAKINDA</span></div>
+     <div style={S.ipucu}>Osmanlı Tıbb-ı Nebevi ve İlm-i Nücum geleneğinde her burç belirli bir organ ve mizaç ile eşleşir. Sabuncuoğlu Şerefeddin gibi hekimbaşılar hastayı bu çerçevede değerlendirirdi: demevi (kan-ateş), safravi (öd-ateş), sevdevi (kara öd-toprak), balgami (balgam-su).</div>
+
+     {profil && BURCLAR[profil.burc] && (
+       <div style={{ background: profil.renk + "22", border: `2px solid ${profil.renk}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+         <div style={{ color: profil.renk, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN BURCUN</div>
+         <div style={{ fontSize: 22, fontWeight: 700, color: C.metin, marginBottom: 8 }}>{profil.burc}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+           <div><b style={{ color: profil.renk }}>Element:</b> {BURCLAR[profil.burc].element} · <b style={{ color: profil.renk }}>Mizaç:</b> {BURCLAR[profil.burc].mizac}</div>
+           <div><b style={{ color: profil.renk }}>Organ bölgen:</b> {BURCLAR[profil.burc].organ}</div>
+           <div><b style={{ color: profil.renk }}>Dost bitkiler:</b> {BURCLAR[profil.burc].bitki}</div>
+           <div style={{ marginTop: 6, color: C.soluk, fontSize: 12, fontStyle: "italic" }}>{BURCLAR[profil.burc].tavsiye}</div>
+         </div>
+       </div>
+     )}
+
+     {Object.entries(BURCLAR).map(([ad, b]) => (
+       <div key={ad} style={{ background: C.y, border: `1px solid ${b.renk}40`, borderLeft: `4px solid ${b.renk}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+           <div style={{ color: b.renk, fontSize: 16, fontWeight: 700 }}>{ad}</div>
+           <div style={{ color: C.soluk, fontSize: 11 }}>{b.element} · {b.mizac}</div>
+         </div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Organ:</b> {b.organ}</div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Bitki:</b> {b.bitki}</div>
+         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginBottom: 6 }}>{b.tavsiye}</div>
+         <div style={{ color: "#FF6666", fontSize: 11, fontWeight: 600 }}>⚠ Kaçın: {b.kacinmasi.join(" · ")}</div>
+       </div>
+     ))}
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginTop: 14, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>✦ HEKİMBAŞI PAKETİ — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Premium üyelikle burcuna özel <b>haftalık şifa şerbeti</b> tarifleri, mizaç bazlı detoks takvimi, kişisel zikir-makam reçetesi ve Osmanlı usulü mevsim önerileri açılacak.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.altin}30` }}>
+         Örnek bildirim: "Bu hafta senin burcun için karaciğer detoksu haftası — sana özel Osmanlı usulü şerbet tarifi hazır."
+       </div>
+     </div>
+
+     <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+       Bu bilgiler, Osmanlı tıbbı ve kadim geleneksel bilgiler ışığında kültürel ve bilgilendirme amaçlı sunulmuştur. Teşhis ve tedavi için tıp doktoruna danışınız.
+     </div>
+   </div>
  )}
+
+ {sekme === "uzman" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 6, letterSpacing: 0.5 }}>◐ GÖRÜNTÜLÜ UZMAN DANIŞMAN — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.6 }}>
+         Analiz sonucunda kafan karıştıysa: bir <b>fitoterapi uzmanı</b> veya <b>diyetisyen</b> ile 10 dakikalık hızlı görüntülü görüşme. "Bu içerik benim için ne kadar riskli?" sorusunu doğrudan uzmana sor, kişiye özel yorum al.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginTop: 10, paddingTop: 10, borderTop: `1px solid ${C.altin}30` }}>
+         Gelir paylaşımı modeliyle çalışan uzmanlar — kısa süreli, hızlı, kişisel danışmanlık.
+       </div>
+     </div>
+   </div>
+ )}
+
+ {sekme === "asude" && (
+   <div>
+     <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
+
+     <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 8, letterSpacing: 0.5 }}>≈ ŞADIRVÂN-I ŞİFA — YAKINDA</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, fontStyle: "italic" }}>
+         Osmanlı Darüşşifa Protokolü: Su Sesi ve Frekans Uyumu
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KADİM GERÇEK</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Osmanlı tıbbında (özellikle <b>Edirne Sultan II. Bayezid Darüşşifası</b>'nda) ruhsal sıkıntılar, anksiyete ve zihinsel yorgunluklar asla kimyasalla uyuşturulmazdı. Hastanın şifası; merkeze yerleştirilen bir <b>şadırvanın su şırıltısı</b>, o kişinin mizacına uygun çalınan musiki makamları (<b>Nihavend, Rast</b> vb.) ve çiçek kokuları ile sağlanırdı. Mimari akustik, bu frekansların doğrudan beynin ilgili merkezine ulaşması için tasarlanmıştı.
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>İŞLEYİŞ MANTIĞI</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Su sesi, zihindeki "kaos" frekanslarını (<b>beta dalgalarını</b>) yavaşlatarak kişiyi fıtratındaki sakinlik seviyesine (<b>alfa/theta dalgalarına</b>) çeker. Bu, doğanın en saf akustik müdahalesidir.
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>UYGULAMADAKİ YERİ</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10 }}>
+         <b>Sistem Tepkisi:</b> Kullanıcının mizaç analizi (nabız/yüz okuma) sonucu <b>"Safra (Öfke/Aşırı Stres)"</b> veya <b>"Sevda (Melankoli)"</b> yüksek çıktığında, uygulama ekranda kırmızı uyarılar vermek yerine arka planda otomatik olarak Şadırvân-ı Şifa modülünü devreye sokar.
+       </div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         <b>Fıtrat Uyarlaması:</b> Modern "meditasyon" uygulamalarının standart müzikleri yerine; doğrudan kullanıcının o anki mizacını dengeleyecek belirli bir frekanstaki <b>"Osmanlı Çeşmesi"</b> su sesi ve ona entegre edilmiş <b>mikro musiki makamları</b> çalar.
+       </div>
+     </div>
+
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 12, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 12, fontStyle: "italic" }}>Osmanlı darüşşifalarında her makam belirli bir organ ve mizaca eşlenirdi. Aşağıdaki arşiv tarihsel kaynaklara dayanır; modern bilimsel kanıt sınırlıdır.</div>
+       {Object.entries(MAKAMLAR).map(([isim, m]) => (
+         <div key={isim} style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${m.renk}` }}>
+           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+             <div style={{ flex: 1 }}>
+               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı</div>
+               <div style={{ color: m.renk, fontSize: 11 }}>{m.organ}</div>
+             </div>
+             <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.vakit}</div>
+           </div>
+           <div style={{ color: C.soluk, fontSize: 12, marginBottom: 4 }}>{m.etki}</div>
+           <div style={{ color: C.cok, fontSize: 10 }}>{m.vakit} · {m.aletler}</div>
+         </div>
+       ))}
+       {profil && MAKAMLAR[profil.makam] && (
+         <div style={{ background: `linear-gradient(135deg, ${MAKAMLAR[profil.makam].renk}20, ${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 10, padding: 14, marginTop: 8, textAlign: "center" }}>
+           <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN ŞİFA MAKAMIN</div>
+           <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 18, fontWeight: 700 }}>{profil.makam}</div>
+           <div style={{ color: C.soluk, fontSize: 12, marginTop: 2 }}>{MAKAMLAR[profil.makam].etki}</div>
+         </div>
+       )}
+     </div>
+
+     <div style={{ background: C.y2, border: `1px dashed ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>HUKUKİ ÇERÇEVE & TIBBİ STATÜ</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+         Bu modül; Anayasa 26-28 ifade özgürlüğü ve UNESCO Somut Olmayan Kültürel Miras (Osmanlı darüşşifa geleneği) kapsamında <b>"Akustik Fıtrat Uyumlaması"</b> ve <b>"Biyolojik Ritim Regülasyonu"</b> olarak tanımlanmıştır. Psikoterapi, teşhis, tedavi veya ilaç ikamesi değildir; kullanıcının kendi sükûnetine ulaşması için kültürel-akustik bir aktarımdır.
+       </div>
+     </div>
+   </div>
+ )}
+ {/* MERTEBE */}
+ {sekme === "mertebe" && (() => {
+   const mevcut = mevcutMertebe();
+   const sonrakiIdx = MERTEBELER.findIndex(x => x.k === mevcut.k) + 1;
+   const sonraki = MERTEBELER[sonrakiIdx] || null;
+   const gunSayisi = Math.floor((Date.now() - (liyakat.baslangic || Date.now())) / 86400000);
+   const sefaatS = (liyakat.sefaatler || []).length;
+   const hatm = liyakat.gunlukSeri || 0;
+   const terfi = terfiHakki();
+   const hicri = hicriCevir(new Date(liyakat.baslangic || Date.now()));
+   const vakar = mevcut.k === "hekimbasi" ? 1 : mevcut.k === "kethuda" ? 0.85 : mevcut.k === "kalfa" ? 0.7 : 0.55;
+   const arkaplan = mevcut.k === "hekimbasi" ? `linear-gradient(135deg, ${mevcut.renk}30, #FFF8E1, ${mevcut.renk}18)` : mevcut.k === "kethuda" ? `linear-gradient(135deg, ${mevcut.renk}22, ${C.y2})` : mevcut.k === "kalfa" ? `linear-gradient(135deg, ${mevcut.renk}18, ${C.y2})` : `linear-gradient(135deg, ${mevcut.renk}10, ${C.y2})`;
+   const cozulenSualS = ((liyakat.cozulenSualler || {})[mevcut.k] || []).length;
+   const toplamSualS = (SUALLER[mevcut.k] || []).length;
+   return (
+     <div>
+       <div style={S.kB}>MERTEBE — AHİLİK YOLU</div>
+
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 12 }}>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
+         <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr seni bu isimle anar. Profil ve paylaşımlarda görünür.</div>
+       </div>
+
+       <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onTouchMove={longPressHareket} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ background: `${arkaplan}, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0 Q60 20 40 40 Q20 60 40 80 M0 40 Q20 20 40 40 Q60 60 80 40 M20 0 Q40 20 20 40 Q0 60 20 80 M60 0 Q80 20 60 40 Q40 60 60 80' stroke='%23B8862F' stroke-width='0.4' fill='none' opacity='0.5'/%3E%3Ccircle cx='40' cy='40' r='2' fill='%23B8862F' opacity='0.3'/%3E%3C/svg%3E")`, backgroundBlendMode: "normal", backgroundSize: "auto, 80px 80px", border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: parallaxAktif ? "transform 0.15s ease-out, filter .6s" : "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none", cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "manipulation", transform: parallaxAktif ? `perspective(1000px) rotateY(${parallaxEgim.x * 6}deg) rotateX(${-parallaxEgim.y * 6}deg)` : "none", transformStyle: "preserve-3d" }}>
+         {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
+         {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
+         {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
+         <div style={{ display: "flex", justifyContent: "center", marginBottom: 10, position: "relative", zIndex: 1, animation: `muhurNefes ${mevcut.k === "hekimbasi" ? 4.5 : mevcut.k === "kethuda" ? 5 : mevcut.k === "kalfa" ? 5.5 : 6}s ease-in-out infinite`, pointerEvents: "none" }}><Muhur k={mevcut.k} boyut={64 + vakar * 28} /></div>
+         <div style={{ color: mevcut.renk, fontSize: 32 + vakar * 6, fontWeight: 700, letterSpacing: 2 + vakar, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative", zIndex: 1, textShadow: mevcut.k === "hekimbasi" ? `0 0 18px ${mevcut.renk}40` : "none" }}>{mevcut.ad}</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2, fontStyle: "italic", position: "relative", zIndex: 1 }}>{mevcut.anlam}</div>
+         <div style={{ color: mevcut.renk, fontSize: 12, marginTop: 6, fontWeight: 700, letterSpacing: 1, position: "relative", zIndex: 1 }}>HİKMETİ · {mevcut.hikmet.toUpperCase()}</div>
+         {cozulenSualS === toplamSualS && toplamSualS > 0 && mevcut.k === "hekimbasi" && <div style={{ color: mevcut.renk, fontSize: 11, fontWeight: 700, marginTop: 6, letterSpacing: 1.5, position: "relative", zIndex: 1 }}>HÂCİM · ÜÇ SIRRI ÇÖZEN</div>}
+         <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginTop: 10, position: "relative", zIndex: 1 }}>{liyakat.puan} liyakat puanı</div>
+       </div>
+
+       <div style={{ background: `linear-gradient(135deg, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}18, ${C.y2})`, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+           <div style={{ width: 48, height: 48, borderRadius: "50%", background: `radial-gradient(circle, ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}, ${C.y2})`, border: `1.5px solid ${pir.k === "lokman" ? "#7FB069" : pir.k === "edviye" ? "#5B8CB8" : pir.k === "mizan" ? "#A586C2" : "#C97A4F"}`, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 18, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}>{pir.ad.charAt(4)}</div>
+           <div style={{ flex: 1 }}>
+             <div style={{ color: C.cok, fontSize: 10, fontWeight: 700, letterSpacing: 0.5 }}>PÎRİN</div>
+             <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{pir.ad}</div>
+             <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{pir.uzmanlik}</div>
+           </div>
+         </div>
+         <div style={{ display: "flex", gap: 10, padding: "8px 0 0", borderTop: `1px solid ${C.s}` }}>
+           <div style={{ flex: 1, textAlign: "center" }}>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={muridYasi()} /></div>
+             <div style={{ color: C.cok, fontSize: 10 }}>gündür müridisin</div>
+           </div>
+           <div style={{ width: 1, background: C.s }} />
+           <div style={{ flex: 1, textAlign: "center" }}>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={pirMuridSayisi(pir.k)} duration={1100} /></div>
+             <div style={{ color: C.cok, fontSize: 10 }}>toplam müridi</div>
+           </div>
+           <div style={{ width: 1, background: C.s }} />
+           <div style={{ flex: 1, textAlign: "center" }}>
+             <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>#<CountUp value={pirIcindeSiraNo()} duration={900} /></div>
+             <div style={{ color: C.cok, fontSize: 10 }}>içinde sıran</div>
+           </div>
+         </div>
+         <div onClick={parallaxAktif ? () => setParallaxAktif(false) : parallaxAc} style={{ marginTop: 8, padding: "7px 12px", background: parallaxAktif ? C.altin + "20" : C.y2, border: `1px solid ${parallaxAktif ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
+           <div>
+             <div style={{ color: parallaxAktif ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Eğim hassasiyeti {parallaxAktif ? "açık" : "kapalı"}</div>
+             <div style={{ color: C.cok, fontSize: 9, marginTop: 1, fontStyle: "italic" }}>{parallaxAktif ? "telefonu eğ, kart hareket etsin" : "telefon eğimine duyarlı kart"}</div>
+           </div>
+           <div style={{ width: 32, height: 18, background: parallaxAktif ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
+             <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: parallaxAktif ? 16 : 2, transition: "left .2s" }} />
+           </div>
+         </div>
+       </div>
+       {liyakat.korkun && liyakat.korkun !== "yok" && (() => {
+         const k = KORKULAR.find(x => x.k === liyakat.korkun);
+         if (!k) return null;
+         return (
+           <div style={{ background: `${C.kirmizi}10`, border: `1px solid ${C.kirmizi}40`, borderRadius: 10, padding: 10, marginBottom: 14, fontSize: 11 }}>
+             <span style={{ color: C.kirmizi, fontWeight: 700, letterSpacing: 0.5 }}>KORKUN · </span>
+             <span style={{ color: C.metin }}>{k.ad}</span>
+             <span style={{ color: C.cok, marginLeft: 8, fontStyle: "italic" }}>— pîr her uyarısında bunu gözünün önüne getirir.</span>
+             <button onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: null }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ background: "none", border: "none", color: C.soluk, fontSize: 10, cursor: "pointer", marginLeft: 8, textDecoration: "underline" }}>değiştir</button>
+           </div>
+         );
+       })()}
+
+       <button onClick={() => setVirdAcik(true)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}15, ${C.y2})`, border: `1px solid ${C.altin}60`, borderRadius: 12, padding: "11px 14px", marginBottom: 14, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 10, justifyContent: "center" }}>
+         <span style={{ color: C.altin, fontSize: 18 }}>◯</span>
+         <span style={{ color: C.altin, fontSize: 13, fontWeight: 700, letterSpacing: 0.5 }}>VİRD-İ SOFRA · 33 TESBİH</span>
+       </button>
+
+       {/* SİLSİLE-İ NÛR */}
+       <div style={S.kB}>SİLSİLE-İ NÛR · {nur.damla} DAMLA</div>
+       <div style={{ background: "linear-gradient(180deg,#0A1020,#141E33)", border: `1px solid ${C.altin}40`, borderRadius: 14, padding: 12, marginBottom: 14 }}>
+         {(() => {
+           const d = nur.damla;
+           const tiers = 5;
+           const nodes = []; let prev = [{ x: 100, y: 138 }];
+           for (let t = 1; t <= tiers; t++) {
+             const cnt = Math.pow(2, t); const y = 138 - t * 23; const cur = [];
+             for (let i = 0; i < cnt; i++) { const x = (i + 0.5) / cnt * 180 + 10; const parent = prev[Math.floor(i / 2)] || prev[0]; cur.push({ x, y }); nodes.push({ x, y, px: parent.x, py: parent.y }); }
+             prev = cur;
+           }
+           const acik = Math.min(nodes.length, d);
+           return (
+             <svg width="100%" height="150" viewBox="0 0 200 155" style={{ display: "block" }}>
+               <line x1="100" y1="153" x2="100" y2="138" stroke={C.altin} strokeWidth="2.5" opacity="0.8" />
+               {nodes.slice(0, acik).map((n, i) => (
+                 <g key={i}>
+                   <line x1={n.px} y1={n.py} x2={n.x} y2={n.y} stroke={C.altinA} strokeWidth="1" opacity="0.55" />
+                   <circle cx={n.x} cy={n.y} r="3.2" fill={C.altinA} opacity="0.18" />
+                   <circle cx={n.x} cy={n.y} r="1.7" fill="#FFE9A8"><animate attributeName="opacity" values="1;0.5;1" dur={`${2.5 + i % 3}s`} repeatCount="indefinite" /></circle>
+                 </g>
+               ))}
+             </svg>
+           );
+         })()}
+         <div style={{ color: "#C9A84C", fontSize: 10, textAlign: "center", fontStyle: "italic", marginTop: 4 }}>Her tarama bir nur damlası — soyun büyüdükçe ağacın ışıldar.</div>
+       </div>
+
+       {/* HİZMET KERVANI */}
+       {(() => {
+         const ANCHOR = new Date("2026-05-30").getTime();
+         const buyume = Math.max(0, Math.floor((Date.now() - ANCHOR) / 60000 * 1.7));
+         const toplam = Math.min(998472, 47312 + buyume + taramaSayisi);
+         const oran = Math.min(100, toplam / 1000000 * 100);
+         return (
+           <>
+             <div style={S.kB}>HİZMET KERVANI · ORTAK SEFER</div>
+             <div style={{ background: C.y, border: `1px solid ${C.altin}40`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+               <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Kervanın ortak hedefi: <b style={{ color: C.altin }}>1.000.000</b> zararlı madde tespiti. Sen de bu sefere katıldın.</div>
+               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 5 }}>
+                 <span style={{ color: C.altin, fontSize: 20, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{toplam.toLocaleString("tr-TR")}</span>
+                 <span style={{ color: C.cok, fontSize: 11 }}>/ 1.000.000</span>
+               </div>
+               <div style={{ background: C.s, borderRadius: 5, height: 8, overflow: "hidden" }}>
+                 <div style={{ width: `${oran}%`, height: "100%", background: `linear-gradient(90deg,${C.altin},${C.altinA})`, transition: "width .6s" }} />
+               </div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 8 }}>Senin katkın: <b style={{ color: C.altin }}>{taramaSayisi}</b> tespit · kervan seninle bir adım daha yol aldı.</div>
+             </div>
+           </>
+         );
+       })()}
+
+       {/* VASİYETNÂME-İ BEDEN */}
+       {(() => {
+         const gunFark = Math.floor((Date.now() - (vasiyet.sonGiris || Date.now())) / 86400000);
+         const soluyor = gunFark >= 7 && gunFark < 14 && vasiyet.lokma > 0;
+         const sahipsiz = gunFark >= 14;
+         return (
+           <>
+             <div style={S.kB}>VASİYETNÂME-İ BEDEN · MİRAS MEKTUBU</div>
+             <div style={{ background: sahipsiz ? C.y2 : `linear-gradient(135deg,${C.altin}12,${C.y2})`, border: `1px solid ${soluyor || sahipsiz ? C.kirmizi + "50" : C.altin + "40"}`, borderRadius: 14, padding: 14, marginBottom: 14, opacity: soluyor ? 0.6 : 1, transition: "opacity .6s" }}>
+               {sahipsiz ? (
+                 <div style={{ color: C.cok, fontSize: 12, fontStyle: "italic", lineHeight: 1.6, textAlign: "center" }}>Mektubun soldu, sahipsiz kaldı. Yeni bir temiz lokmayla mirasını yeniden yazabilirsin.</div>
+               ) : (
+                 <>
+                   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>Gelecekteki sağlıklı sen, sana <b style={{ color: C.altin, fontSize: 16 }}>{vasiyet.lokma}</b> temiz lokma bıraktın.</div>
+                   {soluyor && <div style={{ color: C.kirmizi, fontSize: 11, marginTop: 8, fontStyle: "italic" }}>Vasiyetin sahipsiz kaldı, mektup soluyor — {14 - gunFark} gün içinde dön, yoksa silinir.</div>}
+                   {!soluyor && <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, fontStyle: "italic" }}>Her temiz ürün bedenine bırakılan bir miras. Düzenli dön, mektup canlı kalsın.</div>}
+                 </>
+               )}
+             </div>
+           </>
+         );
+       })()}
+
+       {/* SIRÂT-I MÜSTAKÎM DEFTERİ */}
+       {(() => {
+         const lif = sirat.lif;
+         const durum = lif >= 20 ? { renk: C.kirmizi, msg: "DÜŞME TEHLİKESİ — Sırât kıl gibi inceldi" } : lif >= 10 ? { renk: C.turuncu, msg: "Sırât inceldi — dikkatli ol" } : { renk: C.altin, msg: "Sırât sağlam" };
+         const strands = Math.max(2, 22 - lif);
+         return (
+           <>
+             <div style={S.kB}>SIRÂT-I MÜSTAKÎM DEFTERİ</div>
+             <div style={{ background: C.y, border: `1px solid ${durum.renk}50`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+               <svg width="100%" height="60" viewBox="0 0 200 60" style={{ display: "block" }}>
+                 {Array.from({ length: strands }, (_, i) => {
+                   const off = (i - strands / 2) * (Math.min(1.1, 18 / strands));
+                   return <path key={i} d={`M4 ${30 + off} Q60 ${24 + off} 100 ${30 + off} T196 ${30 + off}`} stroke={durum.renk} strokeWidth="0.7" fill="none" opacity="0.7" />;
+                 })}
+               </svg>
+               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
+                 <span style={{ color: durum.renk, fontSize: 12, fontWeight: 700 }}>{durum.msg}</span>
+                 <span style={{ color: C.cok, fontSize: 11 }}>{lif} lif koptu</span>
+               </div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, lineHeight: 1.5, fontStyle: "italic" }}>Her kaçın ürün ipten bir lif koparır; her temiz tarama bir lif geri örer. İpini sağlam tut.</div>
+             </div>
+           </>
+         );
+       })()}
+
+       {(liyakat.yildizlar || []).length > 0 && (
+         <>
+           <div style={S.kB}>ŞAHİT YILDIZLAR · {(liyakat.yildizlar || []).length}</div>
+           <div style={{ background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", borderRadius: 14, padding: 0, marginBottom: 14, position: "relative", height: 180, overflow: "hidden", border: `1px solid ${C.altin}40` }}>
+             <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ display: "block" }}>
+               {(liyakat.yildizlar || []).map((y, i) => (
+                 <g key={i}>
+                   <circle cx={y.x} cy={y.y} r={1.2 + y.parlaklik * 0.6} fill={y.renk} opacity={y.parlaklik}>
+                     <animate attributeName="opacity" values={`${y.parlaklik};${y.parlaklik * 0.4};${y.parlaklik}`} dur={`${3 + i % 4}s`} repeatCount="indefinite" />
+                   </circle>
+                   <circle cx={y.x} cy={y.y} r={2.5} fill={y.renk} opacity="0.15" />
+                 </g>
+               ))}
+             </svg>
+             <div style={{ position: "absolute", bottom: 6, left: 10, color: "#D4AF37", fontSize: 9, fontStyle: "italic", letterSpacing: 0.5 }}>kendi takımyıldızın</div>
+           </div>
+         </>
+       )}
+
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 14 }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 8 }}>SÎNÂ DEFTER · KALBİMDEN GEÇENLER</div>
+         <textarea value={(() => { try { return localStorage.getItem("bd_sina_defter") || ""; } catch { return ""; } })()} onChange={e => { try { localStorage.setItem("bd_sina_defter", e.target.value); } catch {} }} placeholder="Sadece sen ve kalbin... yaz, kimse görmez." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: 10, color: C.metin, fontSize: 13, lineHeight: 1.5, resize: "vertical", fontFamily: "'Cormorant Garamond', Georgia, serif", boxSizing: "border-box", outline: "none" }} />
+         <div style={{ color: C.cok, fontSize: 9, marginTop: 4, fontStyle: "italic", textAlign: "center" }}>yerel kayıt, paylaşılmaz</div>
+       </div>
+
+       <div style={{ background: C.y2, border: `1px dashed ${C.altin}50`, borderRadius: 10, padding: 12, marginBottom: 14, textAlign: "center" }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>MENSUBİYET TESCİLİ</div>
+         <div style={{ color: C.metin, fontSize: 12, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>{hicri.gun} {hicri.ay} {hicri.yil}'de âsitânemize katıldın.</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>Sıra numaran <b style={{ color: C.altin }}>#<CountUp value={siraNoHesapla(liyakat.baslangic)} duration={1100} /></b></div>
+       </div>
+
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>{mevcut.aciklama}</div>
+       </div>
+
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}20, ${C.y2})`, border: `1px solid ${C.altin}50`, borderRadius: 12, padding: 14, marginBottom: 14, display: "flex", alignItems: "center", gap: 14 }}>
+         <div style={{ width: 50, height: 50, borderRadius: "50%", background: C.altin + "20", border: `1.5px solid ${C.altin}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+           <span style={{ color: C.altin, fontSize: 22, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700 }}><CountUp value={hatm} /></span>
+         </div>
+         <div style={{ flex: 1 }}>
+           <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SOFRA NÖBETİ · HATM</div>
+           <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2 }}>{hatm} gün üst üste</div>
+           <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>Her gün bir adım — emaneti koru</div>
+         </div>
+       </div>
+
+       {sonraki && (
+         <>
+           <div style={S.kB}>TERFİ ŞARTLARI · {sonraki.ad.toUpperCase()}</div>
+           <div style={{ background: C.y, border: `1.5px solid ${sonraki.renk}40`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+             {[
+               { ad: "Yola gireli geçen gün", deger: gunSayisi, hedef: sonraki.sart.gun, birim: "gün" },
+               { ad: "Tarama sayısı", deger: parseInt(localStorage.getItem("bd_tarama_sayisi") || "0"), hedef: sonraki.sart.urun, birim: "ürün" },
+               { ad: "Hatm-i nöbet (üst üste)", deger: hatm, hedef: sonraki.sart.hatm, birim: "gün" },
+               { ad: "Şefaat — kurtarılan can", deger: sefaatS, hedef: sonraki.sart.sefaat, birim: "can" },
+               { ad: "Liyakat puanı", deger: liyakat.puan, hedef: sonraki.esik, birim: "puan" },
+             ].map(x => {
+               const tamam = x.deger >= x.hedef;
+               const oran = Math.min(100, (x.deger / Math.max(x.hedef, 1)) * 100);
+               return (
+                 <div key={x.ad} style={{ marginBottom: 12 }}>
+                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                     <span style={{ color: tamam ? sonraki.renk : C.metin, fontSize: 12, fontWeight: tamam ? 700 : 500 }}>{tamam ? "✓ " : ""}{x.ad}</span>
+                     <span style={{ color: tamam ? sonraki.renk : C.soluk, fontSize: 11, fontWeight: 700 }}>{x.deger} / {x.hedef} {x.birim}</span>
+                   </div>
+                   <div style={{ background: C.s, borderRadius: 4, height: 5, overflow: "hidden" }}>
+                     <div style={{ width: `${oran}%`, height: "100%", background: tamam ? sonraki.renk : C.altin, transition: "width .4s" }} />
+                   </div>
+                 </div>
+               );
+             })}
+             {terfi && (
+               <button onClick={() => setAhdModal({ mertebeK: terfi.k })} style={{ width: "100%", marginTop: 10, background: `linear-gradient(135deg, ${terfi.renk}, ${terfi.renk}CC)`, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>AHDİNİ VER · {terfi.ad.toUpperCase()} OL</button>
+             )}
+           </div>
+         </>
+       )}
+
+       {(liyakat.ahdler && Object.keys(liyakat.ahdler).length > 0) && (
+         <>
+           <div style={S.kB}>AHD-İ MÎSÂK · VERDİĞİN SÖZLER</div>
+           {Object.entries(liyakat.ahdler).map(([mk, ahd]) => {
+             const m = MERTEBELER.find(x => x.k === mk);
+             if (!m) return null;
+             return (
+               <div key={mk} style={{ background: C.y, border: `1px solid ${m.renk}50`, borderRadius: 12, padding: 14, marginBottom: 8, position: "relative" }}>
+                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                   <Muhur k={mk} boyut={22} />
+                   <span style={{ color: m.renk, fontSize: 12, fontWeight: 700, letterSpacing: 0.5 }}>{m.ad.toUpperCase()} AHDİ</span>
+                   <span style={{ color: C.cok, fontSize: 10, marginLeft: "auto" }}>{new Date(ahd.tarih).toLocaleDateString("tr-TR")}</span>
+                 </div>
+                 <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.7, fontStyle: "italic", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>"{ahd.metin}"</div>
+                 {ahd.catlak > 0 && <div style={{ color: C.kirmizi, fontSize: 10, marginTop: 6 }}>Bu ahdde {ahd.catlak} çatlak görüldü.</div>}
+               </div>
+             );
+           })}
+         </>
+       )}
+
+       <div style={S.kB}>SIRLI SUÂLLER · {cozulenSualS}/{toplamSualS} ÇÖZÜLDÜ</div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 14 }}>
+         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>Pîr-i {pir.ad.split("-")[1]} sana ait olan {toplamSualS} sırlı suâli zaman zaman taramanın içinde sorar. Çözdüklerin rumuz olarak mührünün yanında durur.</div>
+         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+           {(SUALLER[mevcut.k] || []).map((_, i) => {
+             const cozulen = ((liyakat.cozulenSualler || {})[mevcut.k] || []).includes(i);
+             return <div key={i} style={{ width: 28, height: 28, borderRadius: "50%", border: `1.5px solid ${cozulen ? mevcut.renk : C.s}`, background: cozulen ? mevcut.renk + "20" : C.y2, display: "flex", alignItems: "center", justifyContent: "center", color: cozulen ? mevcut.renk : C.cok, fontSize: 11, fontWeight: 700 }}>{cozulen ? "✓" : "?"}</div>;
+           })}
+         </div>
+       </div>
+
+       {liyakat.hediyeler && liyakat.hediyeler.length > 0 && (
+         <>
+           <div style={S.kB}>HEDİYELERİN · {liyakat.hediyeler.length}</div>
+           <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 10, marginBottom: 14, color: C.soluk, fontSize: 12, lineHeight: 1.5 }}>
+             Pîrlerden ve üst mertebedeki yârenlerden gelen hikmet ve dualar. Saklarsın, gerektiğinde okursun.
+           </div>
+         </>
+       )}
+
+       {(() => {
+         const aktif = erbainAktif();
+         const tamamlandi = liyakat.erbain && liyakat.erbain.tamamlandi;
+         const baslamadi = !liyakat.erbain || !liyakat.erbain.baslangic;
+         return (
+           <>
+             <div style={S.kB}>ERBÂİN · 40 GÜNLÜK ÇİLE</div>
+             <div style={{ background: tamamlandi ? `linear-gradient(135deg, ${C.altin}30, #FFF8E1)` : C.y, border: `${tamamlandi ? 2 : 1}px solid ${tamamlandi ? C.altin : C.s}`, borderRadius: 14, padding: 14, marginBottom: 14, boxShadow: tamamlandi ? `0 8px 24px ${C.altin}30` : "none" }}>
+               {baslamadi && (
+                 <>
+                   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 10 }}>40 günlük çile (erbâin), nefsini terbiye eden geleneksel programdır. Her gün küçük bir görev. 40 günü tamamlayan <b style={{ color: C.altin }}>Erbâin Hil'atı</b> giyer.</div>
+                   <button onClick={erbainBaslat} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>ÇİLEYE BAŞLA</button>
+                 </>
+               )}
+               {tamamlandi && (
+                 <div style={{ textAlign: "center" }}>
+                   <div style={{ fontSize: 36, color: C.altin, marginBottom: 8 }}>✦</div>
+                   <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>Erbâin Tamam</div>
+                   <div style={{ color: C.metin, fontSize: 12, marginTop: 4 }}>Hil'at giydin · 40 gün boyunca sebat ettin</div>
+                 </div>
+               )}
+               {aktif && (() => {
+                 const gun = erbainGunNo();
+                 const tamamGunler = liyakat.erbain.tamamGunler || [];
+                 const buGunTamam = tamamGunler.includes(gun);
+                 const gorev = ERBAIN_GOREVLERI[gun - 1] || "";
+                 const oran = tamamGunler.length / 40;
+                 const cevre = 2 * Math.PI * 32;
+                 return (
+                   <>
+                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+                       <div style={{ position: "relative", width: 76, height: 76, flexShrink: 0 }}>
+                         <svg width="76" height="76" style={{ transform: "rotate(-90deg)" }}>
+                           <circle cx="38" cy="38" r="32" stroke={C.s} strokeWidth="5" fill="none" />
+                           <circle cx="38" cy="38" r="32" stroke={C.altin} strokeWidth="5" fill="none" strokeDasharray={cevre} strokeDashoffset={cevre * (1 - oran)} strokeLinecap="round" style={{ transition: "stroke-dashoffset 1s ease-out", filter: `drop-shadow(0 0 4px ${C.altin}80)` }} />
+                         </svg>
+                         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                           <div style={{ color: C.altin, fontSize: 22, fontWeight: 700, lineHeight: 1 }}><CountUp value={tamamGunler.length} /></div>
+                           <div style={{ color: C.cok, fontSize: 9, marginTop: 1 }}>/ 40</div>
+                         </div>
+                       </div>
+                       <div style={{ flex: 1, minWidth: 0 }}>
+                         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>BUGÜN · GÜN {gun}/40</div>
+                         <div style={{ color: C.metin, fontSize: 13, fontWeight: 600, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.4 }}>{gorev}</div>
+                         {!buGunTamam && (
+                           <button onClick={() => erbainGorevTamamla(gun)} style={{ marginTop: 8, background: C.altin, color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>Yaptım</button>
+                         )}
+                         {buGunTamam && <div style={{ color: "#16A34A", fontSize: 14, fontWeight: 700, marginTop: 6 }}>✓ Bugünün görevi tamam</div>}
+                       </div>
+                     </div>
+                     <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 3, marginBottom: 8 }}>
+                       {Array.from({length: 40}, (_, i) => {
+                         const g = i + 1;
+                         const t = tamamGunler.includes(g);
+                         const bugun = g === gun;
+                         const gecmis = g < gun;
+                         const eksik = gecmis && !t;
+                         return <div key={g} style={{ aspectRatio: "1/1", borderRadius: 4, background: t ? C.altin : bugun ? C.altin + "30" : eksik ? C.kirmizi + "20" : C.y2, border: `1px solid ${t ? C.altin : bugun ? C.altin : eksik ? C.kirmizi + "60" : C.s}`, display: "flex", alignItems: "center", justifyContent: "center", color: t ? "#fff" : eksik ? C.kirmizi : C.cok, fontSize: 9, fontWeight: 700 }}>{g}</div>;
+                       })}
+                     </div>
+                     <div style={{ color: C.cok, fontSize: 10, textAlign: "center" }}>{tamamGunler.length}/40 tamam · {40 - gun} gün kaldı</div>
+                   </>
+                 );
+               })()}
+             </div>
+           </>
+         );
+       })()}
+
+       {(() => {
+         const acilan = (liyakat.acilanSirlar || {})[pir.k] || [];
+         const tum = PIR_SIRLARI[pir.k] || [];
+         if (acilan.length === 0) return null;
+         return (
+           <>
+             <div style={S.kB}>PÎR'İN SIRLARI · {acilan.length}/{tum.length} AÇILDI</div>
+             <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 10, marginBottom: 14 }}>
+               {acilan.map(idx => {
+                 const sir = tum[idx];
+                 if (!sir) return null;
+                 return (
+                   <div key={idx} style={{ background: `linear-gradient(135deg, ${C.altin}10, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 10, padding: 12, marginBottom: 6 }}>
+                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                       <span style={{ color: C.altin, fontSize: 14 }}>✦</span>
+                       <span style={{ color: C.altin, fontSize: 13, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{sir.baslik}</span>
+                     </div>
+                     <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6, marginBottom: 6 }}>{sir.metin}</div>
+                     <div style={{ color: C.cok, fontSize: 10, fontStyle: "italic" }}>— {sir.kaynak}</div>
+                   </div>
+                 );
+               })}
+               {acilan.length < tum.length && (
+                 <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 10, color: C.cok, fontSize: 11, textAlign: "center", fontStyle: "italic" }}>{tum.length - acilan.length} sır daha bekler — mertebeni yükselt</div>
+               )}
+             </div>
+           </>
+         );
+       })()}
+
+       {(liyakat.hatiralar && liyakat.hatiralar.length > 0) && (
+         <>
+           <div style={S.kB}>PÎR'İN DEFTERİ · {liyakat.hatiralar.length} HATIRA</div>
+           <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 8, marginBottom: 14, maxHeight: 280, overflowY: "auto" }}>
+             {[...(liyakat.hatiralar || [])].slice(-30).reverse().map((h, i) => {
+               const tarih = new Date(h.t);
+               const ikon = { selam: "☼", yad: "✦", hediye: "❀", ahd: "✑", sual: "?", terfi: "✦", mahcubiyet: "!", yokluk: "—", korkun: "♥" }[h.tip] || "·";
+               const renk = { mahcubiyet: C.kirmizi, terfi: C.altin, ahd: "#B87333", yokluk: C.soluk }[h.tip] || C.altin;
+               return (
+                 <div key={i} style={{ display: "flex", gap: 10, padding: "8px 10px", borderBottom: i < Math.min(29, liyakat.hatiralar.length - 1) ? `1px solid ${C.s}` : "none" }}>
+                   <div style={{ color: renk, fontSize: 14, width: 16, textAlign: "center", flexShrink: 0 }}>{ikon}</div>
+                   <div style={{ flex: 1 }}>
+                     <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.5 }}>{h.metin}</div>
+                     <div style={{ color: C.cok, fontSize: 9, marginTop: 2 }}>{tarih.toLocaleDateString("tr-TR")} · {tarih.toLocaleTimeString("tr-TR", {hour:"2-digit", minute:"2-digit"})}</div>
+                   </div>
+                 </div>
+               );
+             })}
+           </div>
+         </>
+       )}
+
+       <div style={S.kB}>TÜM MERTEBELER</div>
+       {MERTEBELER.map(m => {
+         const aktif = m.k === mevcut.k;
+         const idx = MERTEBELER.findIndex(x => x.k === m.k);
+         const aktifIdx = MERTEBELER.findIndex(x => x.k === mevcut.k);
+         const gecildi = idx <= aktifIdx;
+         return (
+           <div key={m.k} style={{ display: "flex", alignItems: "center", gap: 12, background: aktif ? m.renk + "18" : C.y, border: `1px solid ${aktif ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 6, opacity: gecildi ? 1 : 0.5 }}>
+             <Muhur k={m.k} boyut={36} />
+             <div style={{ flex: 1 }}>
+               <div style={{ color: aktif ? m.renk : C.metin, fontWeight: 700, fontSize: 14 }}>{m.ad} <span style={{ color: C.cok, fontSize: 11, fontWeight: 400 }}>· {m.anlam}</span></div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>Hikmet: {m.hikmet} · {m.sart.gun}g · {m.sart.urun}ü · {m.sart.sefaat}ş</div>
+             </div>
+             {aktif && <span style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>ŞU AN</span>}
+           </div>
+         );
+       })}
+
+       <div style={S.kB}>YAKINDA — TOPLULUK ÖZELLİKLERİ</div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 6, marginTop: 4 }}>
+         {[
+           { ad: "Liyakat Sıralaması", aciklama: "En çok şefaat eden ve hatm tutan yârenler — aylık şeref defteri" },
+           { ad: "Hekimbaşı Yorumları", aciklama: "Hekimbaşı mertebesindeki yârenler madde detayında yorum yazar, herkes okur" },
+           { ad: "Mahalle Haritası", aciklama: "Kethüdâlar kendi semtindeki şüpheli marketleri, raf manipülasyonlarını ve reklam tuzaklarını harita üzerinde işaretler" },
+           { ad: "Şifa Akçesi & Şifalı Market", aciklama: "Tarama, madde önerisi ve katkı ile Şifa Akçesi kazanılır. Mertebene göre indirim (Kalfa %5 · Kethüda %10 · Hekimbaşı %15) ile temiz aktar, yerli üretici ürünleri alınır." },
+           { ad: "Şahit Zinciri", aciklama: "Kimi yetiştirdiğin, kimin seni yetiştirdiği — soy ağacı şeklinde âsitânemizin hâfızası" },
+         ].map((y, i, arr) => (
+           <div key={y.ad} style={{ padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.s}` : "none" }}>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+               <span style={{ color: C.metin, fontWeight: 700, fontSize: 13 }}>{y.ad}</span>
+               <span style={{ background: C.altin + "22", color: C.altin, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 6, letterSpacing: 0.5 }}>YAKINDA</span>
+             </div>
+             <div style={{ color: C.soluk, fontSize: 11, lineHeight: 1.5 }}>{y.aciklama}</div>
+           </div>
+         ))}
+       </div>
+
+       <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 10, padding: 12, marginTop: 14, color: C.soluk, fontSize: 10, lineHeight: 1.6, fontStyle: "italic" }}>
+         Mertebe sistemi bir oyunlaştırma katmanıdır — tıbbi tavsiye, teşhis veya tedavi değildir. Tüm veriler (puan, ahdler, hediyeler, sefaatler) <b>yalnız bu cihazda</b> tutulur (KVKK 6698 uyumlu). Çırak → Kalfa → Kethüda → Hekimbaşı sıralaması Ahilik geleneğine dayanır (UNESCO Somut Olmayan Kültürel Miras, 2020). Detaylı kaynaklar için <b>Hakkında → Mertebe Sistemi</b>.
+       </div>
+     </div>
+   );
+ })()}
 
  {/* HAKKINDA */}
  {sekme === "hakkinda" && (
@@ -5356,43 +8780,77 @@ export default function App() {
  <BolumKart ikon={HAKKINDA.islam.ikon} renk={HAKKINDA.islam.renk} baslik={HAKKINDA.islam.baslik} ozet={HAKKINDA.islam.ozet} items={HAKKINDA.islam.items} />
  <BolumKart ikon={HAKKINDA.bilim.ikon} renk={HAKKINDA.bilim.renk} baslik={HAKKINDA.bilim.baslik} ozet={HAKKINDA.bilim.ozet} items={HAKKINDA.bilim.items} />
  <BolumKart ikon={HAKKINDA.frekans.ikon} renk={HAKKINDA.frekans.renk} baslik={HAKKINDA.frekans.baslik} ozet={HAKKINDA.frekans.ozet} items={HAKKINDA.frekans.items} />
+ <BolumKart ikon={HAKKINDA.mertebe.ikon} renk={HAKKINDA.mertebe.renk} baslik={HAKKINDA.mertebe.baslik} ozet={HAKKINDA.mertebe.ozet} items={HAKKINDA.mertebe.items} />
+ <BolumKart ikon={HAKKINDA.hizmetler.ikon} renk={HAKKINDA.hizmetler.renk} baslik={HAKKINDA.hizmetler.baslik} ozet={HAKKINDA.hizmetler.ozet} items={HAKKINDA.hizmetler.items} />
 
  <div style={{ height: 1, background: C.s, margin: "20px 0" }} />
  <div style={S.kB}>MADDE ARŞİVİ</div>
  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 12 }}>
  {Object.entries(KATEGORILER).map(([k, v]) => (
- <button key={k} onClick={() => setKategori(k)} style={{ padding: "8px 4px", borderRadius: 10, border: `1px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Georgia,serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500 }}>{v.ad}</button>
+ <button key={k} onClick={() => setKategori(k)} style={{ padding: "8px 4px", borderRadius: 10, border: `1px solid ${kategori === k ? C.altin : C.s}`, background: kategori === k ? C.altin + "18" : C.y, color: kategori === k ? C.altin : C.soluk, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: 11, fontWeight: kategori === k ? 700 : 500 }}>{v.ad}</button>
  ))}
  </div>
- {Object.entries(KATEGORILER[kategori].db).map(([kod, v]) => (
- <div key={kod} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 8, borderLeft: `4px solid ${rR(v.risk)}`, cursor: "pointer" }} onClick={() => setModal({ kod, ...v })}>
- <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
- <div>
- <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0 }}>{kod} · {v.kat}</div>
- <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{v.ad}</div>
- </div>
- <div style={{ background: rR(v.risk), borderRadius: 6, padding: "3px 8px", color: "#fff", fontWeight: 700, fontSize: 10 }}>{rE(v.risk)}</div>
- </div>
- <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>{(v.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
- </div>
- ))}
+ {(() => {
+   const gruplar = {};
+   Object.entries(KATEGORILER[kategori].db).forEach(([kod, v]) => {
+     const k = v.kat || "Diğer";
+     if (!gruplar[k]) gruplar[k] = [];
+     gruplar[k].push([kod, v]);
+   });
+   const riskSira = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
+   const grupBaskinRisk = (maddeler) => {
+     return maddeler.reduce((en, [, v]) => (riskSira[v.risk] ?? 9) < (riskSira[en] ?? 9) ? v.risk : en, "dusuk");
+   };
+   return Object.entries(gruplar).sort((a, b) => (riskSira[grupBaskinRisk(a[1])] ?? 9) - (riskSira[grupBaskinRisk(b[1])] ?? 9)).map(([grupAd, maddeler]) => {
+     const acik = maddeGrupAcik === grupAd;
+     const baskin = grupBaskinRisk(maddeler);
+     return (
+       <div key={grupAd} style={{ marginBottom: 8 }}>
+         <div onClick={() => setMaddeGrupAcik(acik ? null : grupAd)} style={{ background: C.y, border: `1px solid ${acik ? rR(baskin) : C.s}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+           <div style={{ width: 8, height: 8, borderRadius: 4, background: rR(baskin), flexShrink: 0 }} />
+           <div style={{ flex: 1 }}>
+             <div style={{ color: acik ? rR(baskin) : C.metin, fontWeight: 700, fontSize: 14 }}>{grupAd}</div>
+             <div style={{ color: C.soluk, fontSize: 11, marginTop: 2 }}>{maddeler.length} madde</div>
+           </div>
+           <span style={{ color: acik ? rR(baskin) : C.cok, fontSize: 14 }}>{acik ? "▲" : "▼"}</span>
+         </div>
+         {acik && (
+           <div style={{ paddingTop: 8 }}>
+             {maddeler.map(([kod, v]) => (
+               <div key={kod} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 6, borderLeft: `4px solid ${rR(v.risk)}`, cursor: "pointer" }} onClick={() => setModal({ kod, ...v })}>
+                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                   <div>
+                     <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0 }}>{kod} · {v.kat}</div>
+                     <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{v.ad}</div>
+                   </div>
+                   <div style={{ background: rR(v.risk), borderRadius: 6, padding: "3px 8px", color: "#fff", fontWeight: 700, fontSize: 10 }}>{rE(v.risk)}</div>
+                 </div>
+                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>{(v.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
+               </div>
+             ))}
+           </div>
+         )}
+       </div>
+     );
+   });
+ })()}
 
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginTop: 16 }}>
- <div style={{ color: C.altin, fontWeight: 700, marginBottom: 6 }}> İletişim</div>
- <div style={{ color: C.metin, fontSize: 13 }}>besindedektifii@gmail.com</div>
- <div style={{ color: C.cok, fontSize: 11, marginTop: 4 }}>48 saat içinde yanıtlanır.</div>
- </div>
  </div>
  )}
  </div>
 
+ {geriGerekli && (
+   <button onClick={geriYap} aria-label="Geri" style={{ position: "fixed", left: 14, bottom: "calc(70px + env(safe-area-inset-bottom))", zIndex: 50, width: 48, height: 48, borderRadius: "50%", background: C.altin, color: "#1A1200", border: "none", boxShadow: "0 4px 14px rgba(0,0,0,0.18)", cursor: "pointer", fontSize: 22, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "inherit" }}>←</button>
+ )}
+
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["makam", "", "Makam"], ["esref", "", "Eşref"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label]) => (
- <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Georgia,serif" }}>
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["mertebe", "", "Mertebe"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
- <span style={{ fontSize: 13, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
+ <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
  {sekme === k && <div style={{ width: 20, height: 2, background: C.altin, borderRadius: 2 }} />}
+ {yakinda && <span style={{ position: "absolute", top: 2, right: 2, background: C.altin, color: "#1A1200", fontSize: 7, fontWeight: 700, padding: "1px 4px", borderRadius: 6, letterSpacing: 0.3 }}>YAKINDA</span>}
  </button>
  ))}
  </div>
@@ -5401,11 +8859,387 @@ export default function App() {
  {raporAcik && <HaftalikRapor gecmis={gecmis} onKapat={() => setRaporAcik(false)} />}
       {marketAcik && profil && <MizacMarket profil={profil} onKapat={() => setMarketAcik(false)} />}
       {tarifModal && <TarifModal tarif={tarifModal} onKapat={() => setTarifModal(null)} />}
+      {paylasMaddesi && <PaylasModal madde={paylasMaddesi} onKapat={() => setPaylasMaddesi(null)} rutbeAd={mevcutMertebe().ad} rutbeRenk={mevcutMertebe().renk} lakap={liyakat.lakap} />}
+ {yeniMertebeBildirim && (() => {
+   const m = MERTEBELER.find(x => x.k === yeniMertebeBildirim);
+   if (!m) return null;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setYeniMertebeBildirim(null)}>
+       <div style={{ background: `linear-gradient(180deg, ${m.renk}28, ${C.y})`, borderRadius: 20, padding: 30, maxWidth: 380, width: "100%", border: `2px solid ${m.renk}`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+         <div style={{ color: m.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>MERTEBE YÜKSELDİ</div>
+         <div style={{ display: "flex", justifyContent: "center", margin: "10px 0 14px" }}><Muhur k={m.k} boyut={90} /></div>
+         <div style={{ color: m.renk, fontSize: 36, fontWeight: 700, letterSpacing: 2, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{m.ad}</div>
+         <div style={{ color: C.cok, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{m.anlam}</div>
+         <div style={{ color: m.renk, fontSize: 11, marginTop: 8, fontWeight: 700, letterSpacing: 1 }}>HİKMET · {m.hikmet.toUpperCase()}</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginTop: 16, marginBottom: 20 }}>{m.aciklama}</div>
+         <button onClick={() => setYeniMertebeBildirim(null)} style={{ width: "100%", background: m.renk, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>Devam</button>
+       </div>
+     </div>
+   );
+ })()}
+ {selamModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSelamModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       {selamModal.yad && <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>YÂD</div>}
+       <div style={{ fontSize: 26, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.85 }}>﷽</div>
+       <div style={{ color: C.metin, fontSize: 16, lineHeight: 1.55, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 10 }}>{selamModal.metin}</div>
+       {selamModal.pir && <div style={{ color: C.cok, fontSize: 11, marginBottom: 20, fontStyle: "italic" }}>— {selamModal.pir.ad}</div>}
+       <button onClick={() => {
+         setSelamModal(null);
+         const bugun = new Date().toDateString();
+         if (liyakat.sonGuncel !== bugun && liyakat.lakap && !selamModal.yad) {
+           setTimeout(() => {
+             const hit = liyakat.lakap;
+             const dunKayit = (gecmis || []).filter(g => g.zaman && (Date.now() - g.zaman) < 86400000 * 2 && (Date.now() - g.zaman) > 0);
+             const sonraki = sonrakiMertebe(liyakat.puan);
+             const veri = {
+               taramaSayisi: dunKayit.length,
+               kritik: dunKayit.reduce((a, g) => a + (g.kritik || 0), 0),
+               muridYasi: muridYasi(),
+               hatm: liyakat.gunlukSeri || 0,
+               korkun: liyakat.korkun && liyakat.korkun !== "yok" ? (KORKULAR.find(x => x.k === liyakat.korkun) || {}).ad : null,
+               hicriAy: hicriCevir(new Date()).ay,
+               sefaat: (liyakat.sefaatler || []).length,
+               kalan: sonraki ? Math.max(0, sonraki.esik - liyakat.puan) : 0,
+             };
+             const sablon = GUNCEL_KALIPLARI[Math.floor(Math.random() * GUNCEL_KALIPLARI.length)];
+             const metin = sablon(pir, hit, veri);
+             setGuncelModal({ metin });
+             setLiyakat(o => { const yeni = { ...o, sonGuncel: bugun, hatiralar: [...(o.hatiralar || []), { t: Date.now(), tip: "guncel", metin: `Pîr'in günceli: "${metin}"`, pir: pir.k }].slice(-100) }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
+           }, 700);
+         }
+       }} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Ve Aleyküm Selâm</button>
+     </div>
+   </div>
+ )}
+ {ahdModal && (() => {
+   const tm = MERTEBELER.find(x => x.k === ahdModal.mertebeK);
+   if (!tm) return null;
+   const metinler = AHD_METINLER[ahdModal.mertebeK] || [];
+   const seciliM = ahdModal.secili != null ? ahdModal.secili : 0;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000D0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1400, backdropFilter: "blur(10px)", padding: 16, overflowY: "auto" }}>
+       <div style={{ background: `linear-gradient(180deg, ${tm.renk}28, ${C.y})`, borderRadius: 20, padding: 26, maxWidth: 440, width: "100%", border: `2px solid ${tm.renk}`, margin: "20px 0" }}>
+         <div style={{ textAlign: "center", marginBottom: 14 }}>
+           <div style={{ color: tm.renk, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>AHD-İ MÎSÂK</div>
+           <div style={{ color: tm.renk, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{tm.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic" }}>Bu mertebeye girer iken şahid tut, ahdini yaz.</div>
+         </div>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 8 }}>HAZIR METİN SEÇ</div>
+         {metinler.map((m, i) => (
+           <div key={i} onClick={() => setAhdModal({ ...ahdModal, secili: i, ozelMetin: "" })} style={{ background: seciliM === i ? tm.renk + "20" : C.y2, border: `1.5px solid ${seciliM === i ? tm.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, cursor: "pointer" }}>
+             <div style={{ color: seciliM === i ? tm.renk : C.metin, fontSize: 12, lineHeight: 1.6, fontStyle: "italic" }}>{m}</div>
+           </div>
+         ))}
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginTop: 12, marginBottom: 6 }}>VEYA KENDİ AHDİNİ YAZ</div>
+         <textarea value={ahdModal.ozelMetin || ""} onChange={e => setAhdModal({ ...ahdModal, ozelMetin: e.target.value, secili: -1 })} placeholder="Ahdimi şu kelimelerle veririm..." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12, color: C.metin, fontSize: 12, lineHeight: 1.6, resize: "vertical", fontFamily: "inherit", boxSizing: "border-box", marginBottom: 14 }} />
+         <div style={{ display: "flex", gap: 8 }}>
+           <button onClick={() => setAhdModal(null)} style={{ flex: 1, background: "none", border: `1px solid ${C.s}`, color: C.soluk, borderRadius: 12, padding: "12px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Vazgeç</button>
+           <button onClick={() => { const m = (ahdModal.ozelMetin && ahdModal.ozelMetin.length > 20) ? ahdModal.ozelMetin : metinler[seciliM]; if (!m) return; ahdImzala(ahdModal.mertebeK, m); }} style={{ flex: 2, background: tm.renk, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>MÜHRÜMÜ VURDUM</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
+ {sualModal && (() => {
+   const s = sualModal.sual;
+   const cevaplandi = sualModal.cevap != null;
+   const dogru = cevaplandi && sualModal.cevap === s.d;
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(6px)", padding: 16 }}>
+       <div style={{ background: `linear-gradient(180deg, ${C.altin}20, ${C.y})`, borderRadius: 18, padding: 24, maxWidth: 420, width: "100%", border: `1.5px solid ${C.altin}` }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8, textAlign: "center" }}>SIRLI SUÂL · PÎRİN SORUSU</div>
+         <div style={{ color: C.cok, fontSize: 11, marginBottom: 12, textAlign: "center", fontStyle: "italic" }}>{pir.ad}</div>
+         <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.6, marginBottom: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, textAlign: "center" }}>{s.s}</div>
+         {!cevaplandi && s.sik.map((sec, i) => (
+           <button key={i} onClick={() => setSualModal({ ...sualModal, cevap: i })} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "12px", marginBottom: 6, color: C.metin, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>{sec}</button>
+         ))}
+         {cevaplandi && (
+           <>
+             <div style={{ background: dogru ? "#16A34A20" : C.kirmizi + "15", border: `1px solid ${dogru ? "#16A34A" : C.kirmizi}40`, borderRadius: 10, padding: 12, marginBottom: 10 }}>
+               <div style={{ color: dogru ? "#16A34A" : C.kirmizi, fontSize: 12, fontWeight: 700, marginBottom: 6 }}>{dogru ? "✓ İSABET" : "Cevap: " + s.sik[s.d]}</div>
+               <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.65 }}>{s.ders}</div>
+             </div>
+             <button onClick={() => { if (dogru) sualCozuldu(sualModal.mertebeK, sualModal.no); setSualModal(null); }} style={{ width: "100%", background: dogru ? C.altin : C.soluk, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>{dogru ? "Rumuzu Al · +7 Liyakat" : "Anlaşıldı"}</button>
+           </>
+         )}
+       </div>
+     </div>
+   );
+ })()}
+ {hediyeModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300, backdropFilter: "blur(6px)", padding: 20 }} onClick={() => setHediyeModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}25, ${C.y})`, borderRadius: 20, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}80`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>HEDİYE GELDİ</div>
+       {hediyeModal.gonderen && <div style={{ color: C.cok, fontSize: 11, fontStyle: "italic", marginBottom: 8 }}>{hediyeModal.gonderen.ad}'dan ulaştı, içinde bir hikmet var.</div>}
+       <div style={{ fontSize: 28, color: C.altin, marginBottom: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{hediyeModal.h.t === "ayet" ? "ﷲ" : hediyeModal.h.t === "hadis" ? "ﷺ" : "ʘ"}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 10 }}>"{hediyeModal.h.m}"</div>
+       <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 18 }}>— {hediyeModal.h.k}</div>
+       <button onClick={() => setHediyeModal(null)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Hediyene şükür et</button>
+     </div>
+   </div>
+ )}
+ {mahcubiyetModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1350, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setMahcubiyetModal(null)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.kirmizi}18, ${C.y})`, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.kirmizi}60`, textAlign: "center" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.kirmizi, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>MAHCUBİYET LENSİ</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, marginBottom: 12 }}>{mahcubiyetModal.pir.ad} bir an yüzünü çevirdi.</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 18 }}>Bu hafta <b style={{ color: C.kirmizi }}>{mahcubiyetModal.sayim}</b> kez "kaçın" işareti olan ürün taradın. Mertebene yakışan tutum bu değil, {mahcubiyetModal.pir.hitap}. Bilgi vardı, irade lazım.</div>
+       <button onClick={() => setMahcubiyetModal(null)} style={{ width: "100%", background: C.kirmizi, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Anlaşıldı, kendimi toparlayacağım</button>
+     </div>
+   </div>
+ )}
+ {yoklukModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000B0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1320, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => { setYoklukModal(null); hatiraEkle("yokluk", yoklukModal.metin); }}>
+     <div style={{ background: yoklukModal.esik >= 30 ? `linear-gradient(180deg, ${C.altin}25, ${C.y})` : `linear-gradient(180deg, ${C.soluk}18, ${C.y})`, borderRadius: 20, padding: 28, maxWidth: 380, width: "100%", border: `1.5px solid ${yoklukModal.esik >= 30 ? C.altin : C.soluk}60`, textAlign: "center", filter: yoklukModal.esik === 14 ? "grayscale(0.5)" : "none" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: yoklukModal.esik >= 30 ? C.altin : C.soluk, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>{yoklukModal.esik >= 30 ? "KAVUŞMA" : "PÎR'İN YOKLUĞU"}</div>
+       <div style={{ display: "flex", justifyContent: "center", margin: "8px 0 14px", filter: yoklukModal.esik === 14 ? "grayscale(0.8)" : "none", transition: "filter 1.2s" }}><Muhur k={liyakat.mertebe || "sagirt"} boyut={56} /></div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 18, fontStyle: "italic" }}>{yoklukModal.metin}</div>
+       <button onClick={() => { setYoklukModal(null); hatiraEkle("yokluk", yoklukModal.metin); }} style={{ width: "100%", background: yoklukModal.esik >= 30 ? C.altin : C.soluk, color: "#fff", border: "none", borderRadius: 12, padding: "12px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>{yoklukModal.esik >= 30 ? "Hamdolsun, döndüm" : "Affet, döndüm"}</button>
+     </div>
+   </div>
+ )}
+ {korkunModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1320, backdropFilter: "blur(6px)", padding: 20 }}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 26, maxWidth: 380, width: "100%", border: `1.5px solid ${C.altin}50`, textAlign: "center" }}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 2, marginBottom: 10 }}>PÎRİN SORUSU</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 18, fontWeight: 600 }}>{liyakat.lakap || pir.hitap}, en çok hangi hastalıktan korkuyorsun? Bu sorunun cevabı her uyarımda gözümün önünde olacak.</div>
+       {KORKULAR.map(k => (
+         <button key={k.k} onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: k.k }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); hatiraEkle("korkun", `Pîr'e söyledim: '${k.ad}' korkum.`); setKorkunModal(false); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: "12px", marginBottom: 6, color: C.metin, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>{k.ad}</button>
+       ))}
+       <button onClick={() => { setLiyakat(o => { const yeni = { ...o, korkun: "yok" }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); setKorkunModal(false); }} style={{ width: "100%", background: "none", border: "none", color: C.soluk, fontSize: 12, marginTop: 6, cursor: "pointer", fontFamily: "inherit", padding: "8px" }}>Şimdi söylemek istemiyorum</button>
+     </div>
+   </div>
+ )}
+ {tekKelime && (
+   <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1380, pointerEvents: "none", background: "#00000020", backdropFilter: "blur(2px)", animation: "tekKelimeGel 0.4s ease-out" }}>
+     <div style={{ color: C.altin, fontSize: 42, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, letterSpacing: 2, textShadow: `0 0 20px ${C.altin}80` }}>{tekKelime}</div>
+   </div>
+ )}
+ {guncelModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1310, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setGuncelModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 360, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GÜNCELİ</div>
+       <div style={{ fontSize: 22, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>☼</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{guncelModal.metin}</div>
+       <button onClick={() => setGuncelModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Okudum</button>
+     </div>
+   </div>
+ )}
+ {paritiAcik && (
+   <div style={{ position: "fixed", inset: 0, zIndex: 1395, pointerEvents: "none", overflow: "hidden" }}>
+     {Array.from({length: 28}, (_, i) => {
+       const x = Math.random() * 100;
+       const delay = Math.random() * 0.3;
+       const dur = 1 + Math.random() * 0.6;
+       const size = 5 + Math.random() * 6;
+       return <div key={i} style={{ position: "absolute", left: `${x}%`, top: "100%", width: size, height: size, borderRadius: "50%", background: `radial-gradient(circle, ${C.altinA}, ${C.altin}80, transparent)`, boxShadow: `0 0 ${size}px ${C.altin}`, animation: `pariltiYagmur ${dur}s ${delay}s ease-out forwards` }} />;
+     })}
+   </div>
+ )}
+ {serefKart && (() => {
+   const m = MERTEBELER.find(x => x.k === serefKart.mertebeK);
+   if (!m) return null;
+   const h = hicriCevir(new Date());
+   return (
+     <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1392, backdropFilter: "blur(6px)", padding: 16, overflowY: "auto" }} onClick={() => setSerefKart(null)}>
+       <div style={{ maxWidth: 360, width: "100%", margin: "20px 0" }} onClick={e => e.stopPropagation()}>
+         <div ref={serefKartRef} style={{ background: `linear-gradient(135deg, ${m.renk}20, #FFF8E1, ${m.renk}15)`, borderRadius: 18, padding: 28, border: `3px double ${m.renk}`, textAlign: "center", boxShadow: `0 8px 32px ${m.renk}30`, position: "relative" }}>
+           <div style={{ position: "absolute", top: 8, left: 8, right: 8, bottom: 8, border: `1px solid ${m.renk}50`, borderRadius: 14, pointerEvents: "none" }} />
+           <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 3, marginBottom: 10, position: "relative" }}>ŞEREF DEFTERİ</div>
+           <div style={{ fontSize: 28, color: m.renk, marginBottom: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", position: "relative" }}>✦</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 6, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>İşbu tarihte</div>
+           <div style={{ color: m.renk, fontSize: 26, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 1, marginBottom: 4, position: "relative" }}>{liyakat.lakap || pir.hitap}</div>
+           <div style={{ color: C.metin, fontSize: 12, marginBottom: 14, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", position: "relative" }}>mertebesine erişti:</div>
+           <div style={{ display: "flex", justifyContent: "center", marginBottom: 8, position: "relative" }}><Muhur k={m.k} boyut={56} /></div>
+           <div style={{ color: m.renk, fontSize: 28, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, position: "relative" }}>{m.ad}</div>
+           <div style={{ color: C.cok, fontSize: 11, marginTop: 4, fontStyle: "italic", position: "relative" }}>{m.anlam}</div>
+           <div style={{ marginTop: 18, paddingTop: 14, borderTop: `1px dashed ${m.renk}40`, position: "relative" }}>
+             <div style={{ color: C.metin, fontSize: 12, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{h.gun} {h.ay} {h.yil}</div>
+             <div style={{ color: C.cok, fontSize: 10, marginTop: 2 }}>Mensubiyet · #{siraNoHesapla(liyakat.baslangic)}</div>
+             <div style={{ color: m.renk, fontSize: 9, fontWeight: 700, letterSpacing: 2, marginTop: 8 }}>· BESİN DEDEKTİFİ ·</div>
+           </div>
+         </div>
+         <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+           <button onClick={() => setSerefKart(null)} style={{ flex: 1, background: "transparent", color: "#fff", border: `1px solid #ffffff50`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Kapat</button>
+           <button onClick={serefKartIndir} style={{ flex: 2, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>İndir / Paylaş</button>
+         </div>
+       </div>
+     </div>
+   );
+ })()}
+ {virdAcik && (
+   <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 1395, padding: 20 }} onClick={() => setVirdAcik(false)}>
+     <div style={{ color: "#D4AF37", fontSize: 10, fontWeight: 600, letterSpacing: 3, marginBottom: 14, opacity: 0.7 }}>VİRD-İ SOFRA</div>
+     <div style={{ color: "#F5E6D3", fontSize: 17, fontFamily: "'Cormorant Garamond', Georgia, serif", textAlign: "center", marginBottom: 30, lineHeight: 1.5, opacity: 0.8, maxWidth: 280 }}>Sofranın bereketi niyetinin temizliğindedir. Bir nefes al, otuz üç tesbih çek.</div>
+     <svg width="240" height="240" viewBox="0 0 240 240" style={{ marginBottom: 20 }}>
+       {Array.from({length: 33}, (_, i) => {
+         const angle = (i / 33) * 2 * Math.PI - Math.PI / 2;
+         const cx = 120 + Math.cos(angle) * 90;
+         const cy = 120 + Math.sin(angle) * 90;
+         const aktif = i < virdSaniye;
+         const su = i === virdSaniye - 1;
+         return <circle key={i} cx={cx} cy={cy} r={su ? 6 : aktif ? 4.5 : 3} fill={aktif ? "#D4AF37" : "#2A3B57"} opacity={aktif ? 0.95 : 0.5}>
+           {su && <animate attributeName="r" values="4.5;7;4.5" dur="0.8s" repeatCount="indefinite" />}
+         </circle>;
+       })}
+       <text x="120" y="115" textAnchor="middle" fill="#D4AF37" fontSize="46" fontFamily="'Cormorant Garamond', Georgia, serif" fontWeight="600">{Math.min(virdSaniye, 33)}</text>
+       <text x="120" y="140" textAnchor="middle" fill="#A8B5C9" fontSize="13" letterSpacing="2">/ 33</text>
+     </svg>
+     <div style={{ color: "#A8B5C9", fontSize: 11, opacity: 0.7, letterSpacing: 1 }}>{virdSaniye >= 33 ? "TAMAM" : "dokun, geç"}</div>
+   </div>
+ )}
+ {bedenKonusuyor && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
+       <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
+     </div>
+   </div>
+ )}
+ {longPressOgut && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1385, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setLongPressOgut(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>PÎR'İN GİZLİ ÖĞÜDÜ</div>
+       <div style={{ fontSize: 20, marginBottom: 14, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{longPressOgut.metin}</div>
+       <button onClick={() => setLongPressOgut(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Anladım</button>
+     </div>
+   </div>
+ )}
+ {erbainTamamlandiModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#000000C0", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1390, backdropFilter: "blur(8px)", padding: 20 }} onClick={() => setErbainTamamlandiModal(false)}>
+     <div style={{ background: `linear-gradient(180deg, ${C.altin}30, #FFF8E1, ${C.y})`, borderRadius: 20, padding: 32, maxWidth: 380, width: "100%", border: `2px solid ${C.altin}`, textAlign: "center", boxShadow: `0 8px 32px ${C.altin}50` }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 14 }}>ERBÂİN TAMAM</div>
+       <div style={{ fontSize: 56, color: C.altin, marginBottom: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", animation: "muhurNefes 4.5s ease-in-out infinite" }}>✦</div>
+       <div style={{ color: C.altin, fontSize: 30, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 2, marginBottom: 8 }}>HİL'AT</div>
+       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.7, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", marginBottom: 20 }}>40 gün sebat ettin, {liyakat.lakap || pir.hitap}. Hil'atın daimîdir. {pir.ad} seni şahit tuttu.</div>
+       <button onClick={() => setErbainTamamlandiModal(false)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.5 }}>Şükürler Olsun</button>
+     </div>
+   </div>
+ )}
+ {sirModal && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1370, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setSirModal(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 8 }}>PÎR BİR SIR AÇTI · {sirModal.sayi}/4</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{pir.ad}</div>
+       <div style={{ fontSize: 20, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
+       <div style={{ color: C.metin, fontSize: 15, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 10 }}>{sirModal.sir.baslik}</div>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 10 }}>{sirModal.sir.metin}</div>
+       <div style={{ color: C.cok, fontSize: 10, marginBottom: 22, fontStyle: "italic" }}>— {sirModal.sir.kaynak}</div>
+       <button onClick={() => setSirModal(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Sırrı Aldım</button>
+     </div>
+   </div>
+ )}
+ {korkunUyari && (
+   <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1340, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setKorkunUyari(null)}>
+     <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
+       <div style={{ fontSize: 24, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.6 }}>﷽</div>
+       <div style={{ color: C.cok, fontSize: 11, marginBottom: 14, fontStyle: "italic" }}>{korkunUyari.pir.ad}</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, marginBottom: 22 }}>{liyakat.lakap || korkunUyari.pir.hitap}, sen <span style={{ color: C.kirmizi, fontWeight: 600 }}>{korkunUyari.korkun.ad}</span>'tan korktuğunu söylemiştin. Bu üründe seni o yola çekecek bir şey var — hatırla.</div>
+       <button onClick={() => setKorkunUyari(null)} style={{ width: "100%", background: "transparent", color: C.kirmizi, border: `1px solid ${C.kirmizi}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Hatırladım, Kaçınacağım</button>
+     </div>
+   </div>
+ )}
+      {saglikModalAcik && (
+        <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setSaglikModalAcik(false)}>
+          <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}` }} onClick={e => e.stopPropagation()}>
+            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>SAĞLIK DURUMUM</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+              <div style={{ color: C.metin, fontSize: 18, fontWeight: 700 }}>Sana özel uyarılar</div>
+              <div style={{ color: saglikDurumu.length ? "#E74C3C" : C.cok, fontSize: 12, fontWeight: 700 }}>{saglikDurumu.length} aktif</div>
+            </div>
+            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 14, lineHeight: 1.5 }}>İşaretlediğin durumlara göre tarama sonucunda ekstra uyarılar göreceksin. Veriler sadece bu cihazda kalır, hiçbir yere gönderilmez.</div>
+            {SAGLIK_KOSULLARI.map(k => {
+              const aktif = saglikDurumu.includes(k.k);
+              return (
+                <div key={k.k} style={{ marginBottom: 8, background: aktif ? "#E74C3C12" : C.y2, border: `1px solid ${aktif ? "#E74C3C" : C.s}`, borderRadius: 10, overflow: "hidden" }}>
+                  <button onClick={() => saglikToggle(k.k)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: "transparent", border: "none", cursor: "pointer", fontFamily: "Inter, sans-serif", textAlign: "left" }}>
+                    <span style={{ flex: 1, color: aktif ? "#E74C3C" : C.metin, fontWeight: 700, fontSize: 14 }}>{k.ad}</span>
+                    <span style={{ width: 22, height: 22, borderRadius: "50%", border: `2px solid ${aktif ? "#E74C3C" : C.s}`, background: aktif ? "#E74C3C" : "transparent" }} />
+                  </button>
+                  <div style={{ padding: "0 14px 12px", color: C.soluk, fontSize: 11, lineHeight: 1.55 }}>
+                    <div style={{ color: C.metin, marginBottom: 4 }}>{k.bilgi}</div>
+                    <div style={{ color: C.cok, fontSize: 10, fontStyle: "italic" }}>Kaynak: {k.kaynak}</div>
+                  </div>
+                </div>
+              );
+            })}
+            <button onClick={() => setSaglikModalAcik(false)} style={{ width: "100%", marginTop: 8, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>Kapat</button>
+          </div>
+        </div>
+      )}
+      {aylikRaporAcik && (() => {
+        const r = aylikIstatistik();
+        const KAT_AD = { gida: "Gıda", giyim: "Giyim", ev: "Ev Eşyası", kozmetik: "Kozmetik", temizlik: "Temizlik", bebek: "Bebek", evcil: "Evcil Hayvan", ilac: "İlaç/Vitamin" };
+        return (
+          <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setAylikRaporAcik(false)}>
+            <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}` }} onClick={e => e.stopPropagation()}>
+              <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5 }}>AYLIK RAPOR</div>
+              <div style={{ color: C.metin, fontSize: 18, fontWeight: 700, marginBottom: 14, textTransform: "capitalize" }}>{r.ay}</div>
+              {r.toplam === 0 ? (
+                <div style={{ background: C.y2, border: `1px dashed ${C.s}`, borderRadius: 12, padding: 18, textAlign: "center", color: C.soluk, fontSize: 13, lineHeight: 1.6 }}>
+                  Bu ay henüz tarama yapmadın.<br />İlk taramanı yapınca burada özetin görünecek.
+                </div>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+                    <div style={{ background: C.altin + "15", border: `1px solid ${C.altin}40`, borderRadius: 12, padding: 14 }}>
+                      <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700 }}>TARAMA</div>
+                      <div style={{ color: C.altin, fontSize: 28, fontWeight: 800, lineHeight: 1, marginTop: 4 }}>{r.toplam}</div>
+                    </div>
+                    <div style={{ background: "#E74C3C15", border: `1px solid #E74C3C40`, borderRadius: 12, padding: 14 }}>
+                      <div style={{ color: C.soluk, fontSize: 10, fontWeight: 700 }}>KRİTİK BULGU</div>
+                      <div style={{ color: "#E74C3C", fontSize: 28, fontWeight: 800, lineHeight: 1, marginTop: 4 }}>{r.kritikSayi}</div>
+                    </div>
+                  </div>
+                  {r.enOrgan && (
+                    <div style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+                      <div style={{ color: C.soluk, fontSize: 11, fontWeight: 700, marginBottom: 4 }}>EN ÇOK ETKİLENEN ORGAN</div>
+                      <div style={{ color: C.metin, fontSize: 16, fontWeight: 700 }}>{r.enOrgan[0]}</div>
+                      <div style={{ color: C.cok, fontSize: 11 }}>{r.enOrgan[1]} tarama</div>
+                    </div>
+                  )}
+                  {r.enKat && (
+                    <div style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+                      <div style={{ color: C.soluk, fontSize: 11, fontWeight: 700, marginBottom: 4 }}>EN RİSKLİ KATEGORİ</div>
+                      <div style={{ color: C.metin, fontSize: 16, fontWeight: 700 }}>{KAT_AD[r.enKat[0]] || r.enKat[0]}</div>
+                      <div style={{ color: C.cok, fontSize: 11 }}>{r.enKat[1]} tarama</div>
+                    </div>
+                  )}
+                </>
+              )}
+              <button onClick={() => setAylikRaporAcik(false)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border: "none", borderRadius: 12, padding: "12px", color: "#1A1200", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>Kapat</button>
+            </div>
+          </div>
+        );
+      })()}
       {modal && (
  <div style={{ position: "fixed", inset: 0, background: "#000000A0", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }} onClick={() => setModal(null)}>
  <div style={{ background: C.y, borderRadius: "20px 20px 0 0", padding: 24, width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", border: `1px solid ${C.s}`, position: "relative" }} onClick={e => e.stopPropagation()}>
  <button style={{ position: "absolute", top: 14, right: 14, background: C.y2, border: `1px solid ${C.s}`, borderRadius: "50%", width: 30, height: 30, color: C.soluk, cursor: "pointer", fontSize: 13 }} onClick={() => setModal(null)}>✕</button>
- <div style={{ background: rR(modal.risk), borderRadius: 8, padding: "6px 14px", color: "#fff", fontWeight: 700, fontSize: 13, display: "inline-block", marginBottom: 12 }}>{rE(modal.risk)}</div>
+ {(() => {
+   const v = (modal.risk === "kritik" || modal.risk === "yuksek") ? { ad: "KAÇIN", renk: C.kirmizi, alt: "Kullanmaman önerilir", seviye: "YÜKSEK RİSK" }
+     : modal.risk === "orta" ? { ad: "DİKKAT", renk: C.turuncu, alt: "Sınırlı ve bilinçli tüket", seviye: "ORTA RİSK" }
+     : modal.risk === "dusuk" ? { ad: "GÜVENLİ", renk: C.yesil, alt: "Genel olarak güvenli", seviye: "DÜŞÜK RİSK" }
+     : { ad: "BELİRSİZ", renk: "#888", alt: "Yeterli veri yok", seviye: "VERİ EKSİK" };
+   return (
+     <div style={{ background: "#FFFFFF", border: `1px solid ${C.s}`, borderRadius: 14, padding: "14px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 14, boxShadow: "0 2px 6px rgba(0,0,0,0.04)" }}>
+       <div style={{ width: 68, height: 68, borderRadius: "50%", border: `2.5px solid ${v.renk}`, background: v.renk + "10", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, position: "relative", animation: "muhurGel .5s ease-out" }}>
+         <div style={{ position: "absolute", inset: 5, borderRadius: "50%", border: `1px solid ${v.renk}55` }} />
+         <span style={{ color: v.renk, fontSize: 13, fontWeight: 900, letterSpacing: 1.2, lineHeight: 1, fontFamily: "'Cormorant Garamond', Georgia, serif", zIndex: 1 }}>{v.ad}</span>
+       </div>
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: v.renk, fontSize: 14, fontWeight: 700, letterSpacing: 0.8, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{v.seviye}</div>
+         <div style={{ color: C.soluk, fontSize: 11, marginTop: 4, lineHeight: 1.4, fontStyle: "italic" }}>{v.alt}</div>
+       </div>
+     </div>
+   );
+ })()}
  <div style={{ color: C.altin, fontSize: 12, fontWeight: 700 }}>{modal.kod} · {modal.kat}</div>
  <div style={{ color: C.metin, fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{modal.ad}</div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>{(modal.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
@@ -5415,6 +9249,49 @@ export default function App() {
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
  </div>
+
+ {(() => {
+   const uyarilar = saglikUyarilari(modal);
+   if (!uyarilar.length) return null;
+   return (
+     <div style={{ background: "#E74C3C12", border: "1px solid #E74C3C50", borderRadius: 10, padding: 12, marginTop: 12 }}>
+       <div style={{ color: "#E74C3C", fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
+       {uyarilar.map(u => (
+         <div key={u.k} style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 3 }}>
+           <b>{u.ad}:</b> bu madde senin durumunla eşleşiyor — dikkatli ol.
+         </div>
+       ))}
+     </div>
+   );
+ })()}
+
+ <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={() => {
+     const konu = `Hata: ${modal.ad} (${modal.kod})`;
+     const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
+     const a = document.createElement("a");
+     a.href = `mailto:besindedektifii@gmail.com?subject=${encodeURIComponent(konu)}&body=${encodeURIComponent(body)}`;
+     a.style.display = "none";
+     document.body.appendChild(a);
+     a.click();
+     setTimeout(() => { try { document.body.removeChild(a); } catch {} }, 100);
+   }} style={{ background: "transparent", color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Bilgi Yanlış</button>
+ </div>
+
+ {wikiYukleniyor && <div style={{ marginTop: 12, color: C.cok, fontSize: 12, textAlign: "center" }}>Wikipedia'dan özet aranıyor...</div>}
+ {wikiData && !wikiData.yok && wikiData.ozet && (
+   <div style={{ marginTop: 12, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12 }}>
+     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+       <span style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.3 }}>WIKIPEDIA · TR</span>
+     </div>
+     <div style={{ display: "flex", gap: 10 }}>
+       {wikiData.resim && <img src={wikiData.resim} alt="" style={{ width: 56, height: 56, objectFit: "cover", borderRadius: 8, flexShrink: 0 }} />}
+       <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.6 }}>{wikiData.ozet}</div>
+     </div>
+     {wikiData.link && <a href={wikiData.link} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 8, color: C.altin, fontSize: 12, fontWeight: 700, textDecoration: "none" }}>Tam makaleyi oku →</a>}
+   </div>
+ )}
  </div>
  </div>
  )}
