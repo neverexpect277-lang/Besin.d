@@ -118,3 +118,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Bulgu özetinden sonra "onaylıyor musun" sorma; direkt yap (onaylı sayılır)
 - Bütün uygulamayı okuma, geçmişe dönük hiçbir şeyi okuma — sadece o anki göreve dair satırları aç
 
+### GEÇMİŞİ OKUMA YASAĞI
+- Sıfırdan açılmışsın gibi davran
+- Önceki sohbet, eski commit, eski karar — hiçbirine bakma
+- Geçmiş bağlamı sorma, hatırlatma yapma
+- Sadece kullanıcının o turdaki mesajı + dosyanın o anki ilgili satırları
+- "Daha önce yapmıştık", "geçen sefer söyledin" gibi atıflar yasak
+
