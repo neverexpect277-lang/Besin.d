@@ -5208,6 +5208,11 @@ export default function App() {
    } catch {}
    return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] };
  });
+ const PK = {
+   kart: { background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 },
+   baslik: { display: "flex", alignItems: "center", gap: 8, color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.5, marginBottom: 12 },
+   cizgi: { width: 18, height: 1.5, background: `linear-gradient(90deg, ${C.altin}, transparent)`, borderRadius: 2 },
+ };
  const ASITANE_BASLANGIC = Date.UTC(2026, 0, 1);
  const ASITANE_GUNLUK_KATILIM = 4.7;
  const ASITANE_BASLANGIC_NO = 247;
@@ -7278,6 +7283,12 @@ export default function App() {
  </div>
  <div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{profil.burc}</div>
  <div style={{ color: profil.renk, fontSize: 13 }}>{profil.element} · {profil.mizac} Mizacı</div>
+ {(() => {
+ const m = mevcutMertebe();
+ const krit = gecmis.slice(0, 5).reduce((a, g) => a + (g.kritik || 0), 0);
+ const hal = !gecmis.length ? "henüz dosyan açılmadı" : krit === 0 ? "dosyan temiz seyrediyor" : "dosyanda dikkat isteyen kayıtlar var";
+ return <div style={{ color: C.soluk, fontSize: 13, marginTop: 10, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.4 }}><b style={{ color: m.renk, fontStyle: "normal" }}>{m.ad}</b>{liyakat.lakap ? ` ${liyakat.lakap}` : ""}, {hal}.</div>;
+ })()}
  </div>
  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
  {[["ELEMENT", profil.element], ["MIZAÇ", profil.mizac], ["HASSAS ORGAN", profil.organ], ["ŞİFA MAKAMI", profil.makam]].map(([k, v]) => (
@@ -7298,14 +7309,28 @@ export default function App() {
  const enOrgan = Object.entries(org).sort((a, b) => b[1] - a[1])[0];
  const gun = Math.max(1, Math.ceil((Date.now() - (liyakat.baslangic || Date.now())) / 86400000));
  return (
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>SİCİL-İ AHVÂL</div>
+ <div style={{ ...PK.kart, animation: "manifestoGec 0.4s ease-out 0.05s both" }}>
+ <div style={PK.baslik}><span style={PK.cizgi} />SİCİL-İ AHVÂL</div>
  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
- <div style={{ textAlign: "center" }}><div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{top}</div><div style={{ color: C.cok, fontSize: 10 }}>TARAMA</div></div>
- <div style={{ textAlign: "center" }}><div style={{ color: C.kirmizi, fontSize: 22, fontWeight: 700 }}>{krit}</div><div style={{ color: C.cok, fontSize: 10 }}>KRİTİK BULGU</div></div>
- <div style={{ textAlign: "center" }}><div style={{ color: C.yesil, fontSize: 22, fontWeight: 700 }}>%{oran}</div><div style={{ color: C.cok, fontSize: 10 }}>TEMİZ GEÇEN</div></div>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.metin, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={top} /></div><div style={{ color: C.cok, fontSize: 10, letterSpacing: 0.5 }}>TARAMA</div></div>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.kirmizi, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={krit} /></div><div style={{ color: C.cok, fontSize: 10, letterSpacing: 0.5 }}>KRİTİK BULGU</div></div>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.yesil, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>%<CountUp value={oran} /></div><div style={{ color: C.cok, fontSize: 10, letterSpacing: 0.5 }}>TEMİZ GEÇEN</div></div>
  </div>
  {enOrgan && <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.s}` }}>Dosyana göre en çok <b style={{ color: profil.renk }}>{enOrgan[0]}</b> bölgen yoruldu · {gun}. gününde âsitânedesin</div>}
+ </div>
+ );
+ })()}
+ {/* PREMIUM: SADIKAT SERİSİ */}
+ {(() => {
+ const seri = liyakat.gunlukSeri || 0;
+ if (seri < 1) return null;
+ return (
+ <div style={{ ...PK.kart, display: "flex", alignItems: "center", gap: 14, animation: "manifestoGec 0.4s ease-out 0.12s both" }}>
+ <div style={{ fontSize: 30, animation: "muhurNefes 2.4s ease-in-out infinite", lineHeight: 1 }}>🔥</div>
+ <div style={{ flex: 1 }}>
+ <div style={{ color: C.altin, fontSize: 19, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}><CountUp value={seri} /> gündür arka arkaya</div>
+ <div style={{ color: C.soluk, fontSize: 12, marginTop: 2 }}>{seri >= 7 ? "Sadıkatin sicile işliyor — seriyi bozma." : "Her gün uğra, serini büyüt."}</div>
+ </div>
  </div>
  );
  })()}
@@ -7318,13 +7343,13 @@ export default function App() {
  const tavan = sonraki ? sonraki.esik : cur.esik;
  const yuzde = sonraki ? Math.min(100, Math.round((puan - taban) / (tavan - taban) * 100)) : 100;
  return (
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+ <div style={{ ...PK.kart, animation: "manifestoGec 0.4s ease-out 0.19s both" }}>
  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
- <span style={{ color: cur.renk, fontSize: 13, fontWeight: 700 }}>{cur.ad}</span>
- <span style={{ color: C.cok, fontSize: 11 }}>{puan} liyakat</span>
+ <span style={{ color: cur.renk, fontSize: 14, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{cur.ad}</span>
+ <span style={{ color: C.cok, fontSize: 11 }}><CountUp value={puan} /> liyakat</span>
  </div>
- <div style={{ height: 8, background: C.s, borderRadius: 6, overflow: "hidden" }}>
- <div style={{ width: `${yuzde}%`, height: "100%", background: `linear-gradient(90deg, ${cur.renk}, ${C.altin})`, borderRadius: 6, transition: "width 0.8s ease" }} />
+ <div style={{ height: 8, background: C.s, borderRadius: 6, overflow: "hidden", position: "relative" }}>
+ <div style={{ width: `${yuzde}%`, height: "100%", background: `linear-gradient(90deg, ${cur.renk}, ${C.altin})`, borderRadius: 6, transition: "width 1s ease 0.2s", boxShadow: `0 0 8px ${C.altin}80` }} />
  </div>
  <div style={{ color: C.soluk, fontSize: 12, marginTop: 8 }}>{sonraki ? `${sonraki.ad} olmana ${Math.max(0, tavan - puan)} liyakat kaldı` : "En yüksek mertebedesin"}</div>
  </div>
@@ -7336,9 +7361,9 @@ export default function App() {
  const gunIdx = Math.floor(Date.now() / 86400000);
  const bitki = bitkiler.length ? bitkiler[gunIdx % bitkiler.length] : profil.bitki;
  return (
- <div style={{ background: `linear-gradient(135deg, ${profil.renk}18, ${C.y2})`, border: `1px solid ${profil.renk}40`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: profil.renk, fontSize: 12, fontWeight: 700, marginBottom: 8, letterSpacing: 0.5 }}>BUGÜNE ÖZEL VİRD</div>
- <div style={{ color: C.metin, fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{profil.zikir}</div>
+ <div style={{ background: `linear-gradient(135deg, ${profil.renk}18, ${C.y2})`, border: `1px solid ${profil.renk}40`, borderRadius: 14, padding: 16, marginBottom: 10, animation: "manifestoGec 0.4s ease-out 0.26s both" }}>
+ <div style={{ ...PK.baslik, color: profil.renk }}><span style={{ ...PK.cizgi, background: `linear-gradient(90deg, ${profil.renk}, transparent)` }} />BUGÜNE ÖZEL VİRD</div>
+ <div style={{ color: C.metin, fontSize: 15, fontWeight: 600, marginBottom: 4, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{profil.zikir}</div>
  <div style={{ color: C.soluk, fontSize: 13 }}>Bugünün şifa bitkisi: <b style={{ color: profil.renk }}>{bitki}</b></div>
  </div>
  );
