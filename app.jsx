@@ -5180,6 +5180,8 @@ export default function App() {
  const [ekran, setEkran] = useState("yasal");
  const [gecmis, setGecmis] = useState(() => { try { const g = localStorage.getItem("bd_gecmis"); return g ? JSON.parse(g) : []; } catch { return []; } });
  const [sinaDefter, setSinaDefter] = useState(() => { try { return localStorage.getItem("bd_sina_defter") || ""; } catch { return ""; } });
+ const [hizArama, setHizArama] = useState("");
+ const [hizFiltre, setHizFiltre] = useState("hepsi");
  const [sekme, setSekme] = useState("tarama");
  const [txt, setTxt] = useState("");
  const [sonuclar, setSonuclar] = useState([]);
@@ -7427,12 +7429,32 @@ export default function App() {
        ],
      },
    ];
+   const q = hizArama.trim().toLocaleLowerCase("tr");
+   const filtreliGruplar = HIZ_GRUPLAR
+     .filter(g => hizFiltre === "hepsi" || g.baslik === hizFiltre)
+     .map(g => ({ ...g, hizmetler: g.hizmetler.filter(h => !q || h.baslik.toLocaleLowerCase("tr").includes(q) || (h.ozet || "").toLocaleLowerCase("tr").includes(q)) }))
+     .filter(g => g.hizmetler.length > 0);
+   const toplamSonuc = filtreliGruplar.reduce((a, g) => a + g.hizmetler.length, 0);
    return (
      <div>
        <div style={S.kB}>HİZMETLER PANOSU</div>
        <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
 
-       {HIZ_GRUPLAR.map(g => (
+       <div style={{ position: "relative", marginBottom: 12 }}>
+         <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: C.cok, fontSize: 14, pointerEvents: "none" }}>⌕</span>
+         <input type="text" value={hizArama} onChange={e => setHizArama(e.target.value)} placeholder="Hizmet ara…" style={{ width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px 36px 11px 32px", color: C.metin, fontSize: 13, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", outline: "none", boxSizing: "border-box" }} />
+         {hizArama && <button onClick={() => setHizArama("")} style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.cok, fontSize: 18, cursor: "pointer", padding: "0 6px", lineHeight: 1 }}>×</button>}
+       </div>
+
+       <div style={{ display: "flex", gap: 8, marginBottom: 18, overflowX: "auto", paddingBottom: 2 }}>
+         {[["hepsi", "Hepsi"], ...HIZ_GRUPLAR.map(g => [g.baslik, g.baslik])].map(([k, l]) => (
+           <button key={k} onClick={() => setHizFiltre(k)} style={{ flexShrink: 0, background: hizFiltre === k ? C.altin : C.y, color: hizFiltre === k ? "#1A1200" : C.soluk, border: `1px solid ${hizFiltre === k ? C.altin : C.s}`, borderRadius: 20, padding: "6px 14px", fontSize: 11, fontWeight: 700, letterSpacing: 0.3, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", whiteSpace: "nowrap" }}>{l}</button>
+         ))}
+       </div>
+
+       {toplamSonuc === 0 ? (
+         <div style={{ textAlign: "center", color: C.soluk, fontSize: 13, padding: "40px 20px", fontStyle: "italic" }}>"{hizArama}" için hizmet bulunamadı.</div>
+       ) : filtreliGruplar.map(g => (
          <div key={g.baslik} style={{ marginBottom: 22 }}>
            <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, marginBottom: 12, paddingLeft: 4, borderLeft: `3px solid ${C.altin}`, lineHeight: 1.3 }}>{g.baslik}</div>
            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
