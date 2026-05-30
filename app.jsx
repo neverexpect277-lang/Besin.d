@@ -6280,7 +6280,7 @@ export default function App() {
    setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
  setEkran("tartiliyor");
- setTimeout(() => setEkran("sonuc"), 1500);
+ setTimeout(() => setEkran("sonuc"), 2400);
     if (!seslerAcik) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -6490,7 +6490,7 @@ export default function App() {
  if (ekran === "tartiliyor") return (
  <div key="ekran-tartiliyor" style={{ minHeight: "100vh", background: `radial-gradient(circle at 50% 38%, ${C.altin}10, ${C.bg} 70%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", padding: 24 }}>
  <svg width="120" height="120" viewBox="0 0 120 120" style={{ animation: "muhurNefes 1.6s ease-in-out infinite" }}>
- <g style={{ transformOrigin: "60px 60px", animation: "tartiSalla 1.5s ease-in-out infinite" }}>
+ <g style={{ transformOrigin: "60px 60px", animation: "tartiSalla 2.6s ease-in-out infinite" }}>
  <line x1="60" y1="20" x2="60" y2="38" stroke={C.altin} strokeWidth="2.5" strokeLinecap="round" />
  <line x1="22" y1="38" x2="98" y2="38" stroke={C.altin} strokeWidth="2.5" strokeLinecap="round" />
  <path d="M22 38 L13 62 a13 8 0 0 0 18 0 Z" fill={`${C.altin}20`} stroke={C.altin} strokeWidth="1.5" />
@@ -6643,7 +6643,7 @@ export default function App() {
  <line x1="100" y1="30" x2="100" y2="100" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
  <circle cx="100" cy="12" r="5" fill={C.altin} />
  <line x1="100" y1="14" x2="100" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
- <g style={{ transformOrigin: "100px 30px", transform: `rotate(${aci}deg)`, animation: "mizanOtur 1.4s cubic-bezier(.3,1.4,.5,1) both", "--mizan-aci": `${aci}deg` }}>
+ <g style={{ transformOrigin: "100px 30px", transform: `rotate(${aci}deg)`, animation: "mizanOtur 2.4s cubic-bezier(.3,1.4,.5,1) both", "--mizan-aci": `${aci}deg` }}>
  <line x1="30" y1="30" x2="170" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
  <line x1="30" y1="30" x2="30" y2="48" stroke={C.altin} strokeWidth="1" />
  <path d="M14 48 a16 9 0 0 0 32 0 Z" fill={`${C.yesil}22`} stroke={C.yesil} strokeWidth="1.5" />
