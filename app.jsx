@@ -80,6 +80,15 @@ const MAKAMLAR = {
  "Uşşak": { organ: "Lenf · Ayak · Bağışıklık", etki: "Bağışıklık, lenf düzeni, ayak sağlığı, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
 };
 
+/* Makam karar perdesi temel frekansları (Hz) — Bolahenk akort, Yegâh=110 Hz temel alınarak
+   Türk müziği ana dizi aralıklarıyla (9/8·10/9·16/15…) türetildi: Irak≈137.5, Rast≈146.7, Dügâh≈165.
+   Şadırvân çaların ney-vâri drone temelidir; uydurma değil, perde nazariyesine dayanır. */
+const MAKAM_KARAR_HZ = {
+ "Rast": 146.7, "Irak": 137.5, "İsfahan": 165, "Zirefkend": 165, "Büzürk": 137.5,
+ "Zengule": 165, "Rehavi": 146.7, "Hüseyni": 165, "Hicaz": 165, "Nihavend": 146.7,
+ "Neva": 165, "Uşşak": 165,
+};
+
 /* ── EŞREF SAATLERİ ─────────────────────────── */
 const ESREF = [
  { saat: "03–05", organ: "Akciğer", ikon: "", eylem: "Derin nefes egzersizleri" },
@@ -5156,7 +5165,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}} @keyframes asudeNefes{0%,100%{transform:scale(1);opacity:0.85}50%{transform:scale(1.12);opacity:0.45}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -6160,6 +6169,90 @@ export default function App() {
    ayetGetir(ref);
    puanEkle(2, "ayet_dinle");
  };
+
+ /* ── ŞADIRVÂN-I ŞİFA ÇALAR (Web Audio: Osmanlı Çeşmesi + makam karar perdesi) ── */
+ const [asudeOynar, setAsudeOynar] = useState(false);
+ const [asudeMakam, setAsudeMakam] = useState(null);
+ const [asudeSure, setAsudeSure] = useState(180);
+ const [asudeKalan, setAsudeKalan] = useState(0);
+ const [asudeNefes, setAsudeNefes] = useState(5);
+ const asudeRef = useRef(null);
+ const asudeTimerRef = useRef(null);
+
+ const asudeDurdur = () => {
+   if (asudeTimerRef.current) { clearInterval(asudeTimerRef.current); asudeTimerRef.current = null; }
+   const eng = asudeRef.current;
+   if (eng) {
+     try {
+       const t = eng.ac.currentTime;
+       eng.master.gain.cancelScheduledValues(t);
+       eng.master.gain.setValueAtTime(eng.master.gain.value, t);
+       eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.8);
+       setTimeout(() => { try { eng.ac.close(); } catch {} }, 900);
+     } catch { try { eng.ac.close(); } catch {} }
+     asudeRef.current = null;
+   }
+   setAsudeOynar(false);
+   setAsudeKalan(0);
+ };
+
+ const asudeBaslat = (makamAdi) => {
+   if (!seslerAcik) return;
+   asudeDurdur();
+   const makam = makamAdi || asudeMakam || (profil && MAKAMLAR[profil.makam] ? profil.makam : "Rast");
+   setAsudeMakam(makam);
+   try {
+     const ac = new (window.AudioContext || window.webkitAudioContext)();
+     if (ac.state === "suspended") ac.resume().catch(() => {});
+     const master = ac.createGain();
+     master.gain.setValueAtTime(0.0001, ac.currentTime);
+     master.gain.linearRampToValueAtTime(0.6, ac.currentTime + 6);
+     master.connect(ac.destination);
+
+     // Osmanlı Çeşmesi — kahverengi gürültü + alçak geçiren filtre + yavaş LFO (su akışı)
+     const sn = ac.sampleRate, buf = ac.createBuffer(1, 2 * sn, sn), d = buf.getChannelData(0);
+     let son = 0;
+     for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; son = (son + 0.02 * w) / 1.02; d[i] = son * 3.5; }
+     const su = ac.createBufferSource(); su.buffer = buf; su.loop = true;
+     const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 760; lp.Q.value = 0.6;
+     const suG = ac.createGain(); suG.gain.value = 0.5;
+     su.connect(lp).connect(suG).connect(master);
+     const lfo = ac.createOscillator(); lfo.frequency.value = 0.18;
+     const lfoG = ac.createGain(); lfoG.gain.value = 280;
+     lfo.connect(lfoG).connect(lp.frequency); lfo.start(); su.start();
+
+     // Makam karar perdesi droneu (karar + saf beşli) — ney-vâri, çok yumuşak
+     const f = MAKAM_KARAR_HZ[makam] || 165;
+     const droneG = ac.createGain(); droneG.gain.value = 0.05;
+     const dlp = ac.createBiquadFilter(); dlp.type = "lowpass"; dlp.frequency.value = 1200;
+     droneG.connect(dlp).connect(master);
+     [f, f * 1.5].forEach((fr, i) => {
+       const o = ac.createOscillator(); o.type = "sine"; o.frequency.value = fr;
+       const og = ac.createGain(); og.gain.value = i === 0 ? 0.7 : 0.3;
+       o.connect(og).connect(droneG); o.start();
+     });
+     const breath = ac.createOscillator(); breath.frequency.value = 0.1;
+     const breathG = ac.createGain(); breathG.gain.value = 0.02;
+     breath.connect(breathG).connect(droneG.gain); breath.start();
+
+     asudeRef.current = { ac, master };
+   } catch { return; }
+
+   setAsudeOynar(true);
+   setAsudeKalan(asudeSure);
+   setAsudeNefes(5);
+   const bitis = Date.now() + asudeSure * 1000;
+   asudeTimerRef.current = setInterval(() => {
+     const kalan = Math.max(0, Math.round((bitis - Date.now()) / 1000));
+     setAsudeKalan(kalan);
+     const gecen = asudeSure - kalan;
+     setAsudeNefes(gecen > asudeSure * 0.66 ? 9 : gecen > asudeSure * 0.33 ? 7 : 5);
+     if (kalan <= 0) asudeDurdur();
+   }, 1000);
+ };
+
+ useEffect(() => { if (sekme !== "asude" && asudeOynar) asudeDurdur(); }, [sekme]);
+ useEffect(() => () => asudeDurdur(), []);
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
@@ -8350,11 +8443,44 @@ export default function App() {
      <button onClick={() => setSekme("hizmetler")} style={{ display:"inline-flex", alignItems:"center", gap:6, background:C.y, border:`1px solid ${C.s}`, borderRadius:10, padding:"8px 14px", color:C.altin, cursor:"pointer", fontFamily:"Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize:13, fontWeight:700, marginBottom:14 }}>← Hizmetlere Dön</button>
 
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
-       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 8, letterSpacing: 0.5 }}>≈ ŞADIRVÂN-I ŞİFA — YAKINDA</div>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 8, letterSpacing: 0.5 }}>≈ ŞADIRVÂN-I ŞİFA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, fontStyle: "italic" }}>
-         Osmanlı Darüşşifa Protokolü: Su Sesi ve Frekans Uyumu
+         Osmanlı Darüşşifa Protokolü: Osmanlı Çeşmesi su sesi + mizacına eşlenmiş makam karar perdesi.
        </div>
      </div>
+
+     {(() => {
+       const aktifMakam = asudeMakam || (profil && MAKAMLAR[profil.makam] ? profil.makam : "Rast");
+       const m = MAKAMLAR[aktifMakam] || MAKAMLAR["Rast"];
+       const sevkMizac = profil && (profil.mizac === "Safravi" || profil.mizac === "Sevdevi");
+       const dk = Math.floor(asudeKalan / 60), sn = String(asudeKalan % 60).padStart(2, "0");
+       return (
+         <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 16, padding: 18, marginBottom: 14, textAlign: "center" }}>
+           {sevkMizac && <div style={{ display: "inline-block", background: `${C.altin}22`, border: `1px solid ${C.altin}66`, color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.4, padding: "3px 10px", borderRadius: 20, marginBottom: 12 }}>MİZACIN İÇİN ÖNERİLDİ · {profil.mizac === "Safravi" ? "Safra (öfke/stres)" : "Sevda (melankoli)"}</div>}
+           <div style={{ position: "relative", width: 150, height: 150, margin: "0 auto 14px" }}>
+             <div style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `2px solid ${m.renk}`, opacity: asudeOynar ? 0.9 : 0.4, animation: asudeOynar ? `asudeNefes ${asudeNefes}s ease-in-out infinite` : "none" }} />
+             <div style={{ position: "absolute", inset: 20, borderRadius: "50%", border: `1px solid ${m.renk}66`, opacity: 0.5, animation: asudeOynar ? `asudeNefes ${asudeNefes}s ease-in-out infinite 0.4s` : "none" }} />
+             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+               <div style={{ color: m.renk, fontSize: 30, lineHeight: 1 }}>≈</div>
+               <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 6 }}>{aktifMakam}</div>
+               <div style={{ color: C.cok, fontSize: 11, marginTop: 2 }}>{asudeOynar ? `${dk}:${sn}` : m.organ.split(" · ")[0]}</div>
+             </div>
+           </div>
+           {asudeOynar && <div style={{ color: C.soluk, fontSize: 11, marginBottom: 12, fontStyle: "italic" }}>{asudeNefes >= 9 ? "Theta — derin sükûnet" : asudeNefes >= 7 ? "Alfa — sakinleşme" : "Beta yavaşlıyor — yavaşça nefes ver"}</div>}
+           {!asudeOynar && <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 14 }}>
+             {[[60, "1 dk"], [180, "3 dk"], [300, "5 dk"]].map(([s, l]) => (
+               <button key={s} onClick={() => setAsudeSure(s)} style={{ background: asudeSure === s ? C.altin : C.y2, color: asudeSure === s ? "#1A1200" : C.soluk, border: `1px solid ${asudeSure === s ? C.altin : C.s}`, borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>{l}</button>
+             ))}
+           </div>}
+           {!seslerAcik ? (
+             <div style={{ color: C.cok, fontSize: 12, fontStyle: "italic" }}>Çalar için üst menüden sesi açın.</div>
+           ) : (
+             <button onClick={() => asudeOynar ? asudeDurdur() : asudeBaslat(aktifMakam)} style={{ background: asudeOynar ? C.y2 : `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: asudeOynar ? C.altin : "#1A1200", border: `1px solid ${C.altin}`, borderRadius: 24, padding: "11px 30px", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, cursor: "pointer", fontFamily: "inherit" }}>{asudeOynar ? "■ Durdur" : "▶ Şadırvânı Başlat"}</button>
+           )}
+           <div style={{ color: C.cok, fontSize: 10, marginTop: 12, lineHeight: 1.5 }}>Ses cihazında sentezlenir; kayıt yapılmaz, hiçbir veri toplanmaz.</div>
+         </div>
+       );
+     })()}
 
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KADİM GERÇEK</div>
@@ -8382,20 +8508,23 @@ export default function App() {
 
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 12, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</div>
-       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 12, fontStyle: "italic" }}>Osmanlı darüşşifalarında her makam belirli bir organ ve mizaca eşlenirdi. Aşağıdaki arşiv tarihsel kaynaklara dayanır; modern bilimsel kanıt sınırlıdır.</div>
-       {Object.entries(MAKAMLAR).map(([isim, m]) => (
-         <div key={isim} style={{ background: C.y2, border: `1px solid ${C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${m.renk}` }}>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 12, fontStyle: "italic" }}>Osmanlı darüşşifalarında her makam belirli bir organ ve mizaca eşlenirdi. Aşağıdaki arşiv tarihsel kaynaklara dayanır; modern bilimsel kanıt sınırlıdır. Bir makama dokunarak şadırvanda o makamı dinleyebilirsin.</div>
+       {Object.entries(MAKAMLAR).map(([isim, m]) => {
+         const calan = asudeOynar && asudeMakam === isim;
+         return (
+         <button key={isim} onClick={() => asudeBaslat(isim)} style={{ display: "block", width: "100%", textAlign: "left", background: calan ? `${m.renk}1A` : C.y2, border: `1px solid ${calan ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${m.renk}`, cursor: "pointer", fontFamily: "inherit" }}>
            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
              <div style={{ flex: 1 }}>
-               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı</div>
+               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı {calan && <span style={{ color: m.renk, fontSize: 11 }}>· çalıyor ≈</span>}</div>
                <div style={{ color: m.renk, fontSize: 11 }}>{m.organ}</div>
              </div>
              <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.vakit}</div>
            </div>
            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 4 }}>{m.etki}</div>
            <div style={{ color: C.cok, fontSize: 10 }}>{m.vakit} · {m.aletler}</div>
-         </div>
-       ))}
+         </button>
+         );
+       })}
        {profil && MAKAMLAR[profil.makam] && (
          <div style={{ background: `linear-gradient(135deg, ${MAKAMLAR[profil.makam].renk}20, ${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 10, padding: 14, marginTop: 8, textAlign: "center" }}>
            <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN ŞİFA MAKAMIN</div>
@@ -8405,10 +8534,20 @@ export default function App() {
        )}
      </div>
 
+     <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KAYNAK & TARİHSEL DAYANAK</div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.7 }}>
+         Su sesi + makam + koku ile tedavi, <b>Edirne Sultan II. Bayezid Darüşşifası</b>'nda tarihsel olarak belgelenmiştir. Makam-organ eşleşmeleri Hekimbaşı <b>Gevrekzade Hâfız Hasan Efendi</b>, <b>Hasan Şuûrî</b> ve <b>Haşim Bey</b>'in eserlerine dayanır. Drone temel frekansları Türk müziği perde nazariyesinden (Bolahenk akort, Yegâh ≈ 110 Hz) türetilmiştir. Modern bilimsel kanıt sınırlıdır.
+       </div>
+     </div>
+
      <div style={{ background: C.y2, border: `1px dashed ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>HUKUKİ ÇERÇEVE & TIBBİ STATÜ</div>
-       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
+       <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, marginBottom: 10 }}>
          Bu modül; Anayasa 26-28 ifade özgürlüğü ve UNESCO Somut Olmayan Kültürel Miras (Osmanlı darüşşifa geleneği) kapsamında <b>"Akustik Fıtrat Uyumlaması"</b> ve <b>"Biyolojik Ritim Regülasyonu"</b> olarak tanımlanmıştır. Psikoterapi, teşhis, tedavi veya ilaç ikamesi değildir; kullanıcının kendi sükûnetine ulaşması için kültürel-akustik bir aktarımdır.
+       </div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.7 }}>
+         Sağlanan içerik yalnızca <b>kültürel ve bilgilendirme amaçlıdır</b>; tıbbi tavsiye yerine geçmez ve hiçbir hastalığın teşhis, tedavi, önlenmesi veya iyileştirilmesi iddiasını taşımaz. Mevcut bir rahatsızlık, gebelik, işitme/nöbet öyküsü veya psikiyatrik durum hâlinde kullanmadan önce hekiminize danışın; tıbbi tedavinizi bırakmayın. Ses, cihazınızda yerel olarak sentezlenir; <b>kayıt alınmaz, mikrofon kullanılmaz ve KVKK kapsamında hiçbir kişisel veri toplanmaz/aktarılmaz</b>. Kullanımdan doğabilecek sonuçların sorumluluğu kullanıcıya aittir.
        </div>
      </div>
    </div>
