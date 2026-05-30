@@ -5179,6 +5179,7 @@ const S = {
 export default function App() {
  const [ekran, setEkran] = useState("yasal");
  const [gecmis, setGecmis] = useState(() => { try { const g = localStorage.getItem("bd_gecmis"); return g ? JSON.parse(g) : []; } catch { return []; } });
+ const [sinaDefter, setSinaDefter] = useState(() => { try { return localStorage.getItem("bd_sina_defter") || ""; } catch { return ""; } });
  const [sekme, setSekme] = useState("tarama");
  const [txt, setTxt] = useState("");
  const [sonuclar, setSonuclar] = useState([]);
@@ -8551,7 +8552,7 @@ export default function App() {
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 14 }}>
          <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 8 }}>SÎNÂ DEFTER · KALBİMDEN GEÇENLER</div>
-         <textarea value={(() => { try { return localStorage.getItem("bd_sina_defter") || ""; } catch { return ""; } })()} onChange={e => { try { localStorage.setItem("bd_sina_defter", e.target.value); } catch {} }} placeholder="Sadece sen ve kalbin... yaz, kimse görmez." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: 10, color: C.metin, fontSize: 13, lineHeight: 1.5, resize: "vertical", fontFamily: "'Cormorant Garamond', Georgia, serif", boxSizing: "border-box", outline: "none" }} />
+         <textarea value={sinaDefter} onChange={e => { const v = e.target.value; setSinaDefter(v); try { localStorage.setItem("bd_sina_defter", v); } catch {} }} placeholder="Sadece sen ve kalbin... yaz, kimse görmez." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: 10, color: C.metin, fontSize: 13, lineHeight: 1.5, resize: "vertical", fontFamily: "'Cormorant Garamond', Georgia, serif", boxSizing: "border-box", outline: "none" }} />
          <div style={{ color: C.cok, fontSize: 9, marginTop: 4, fontStyle: "italic", textAlign: "center" }}>yerel kayıt, paylaşılmaz</div>
        </div>
 
