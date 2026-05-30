@@ -7287,6 +7287,62 @@ export default function App() {
  </div>
  ))}
  </div>
+ {/* PREMIUM: SİCİL-İ AHVÂL */}
+ {(() => {
+ const top = taramaSayisi || gecmis.length;
+ if (!top) return null;
+ const krit = gecmis.reduce((a, g) => a + (g.kritik || 0), 0);
+ const temiz = gecmis.filter(g => (g.kritik || 0) === 0).length;
+ const oran = gecmis.length ? Math.round(temiz / gecmis.length * 100) : 0;
+ const org = {}; gecmis.forEach(g => (g.organlar || []).forEach(o => org[o] = (org[o] || 0) + 1));
+ const enOrgan = Object.entries(org).sort((a, b) => b[1] - a[1])[0];
+ const gun = Math.max(1, Math.ceil((Date.now() - (liyakat.baslangic || Date.now())) / 86400000));
+ return (
+ <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+ <div style={{ color: C.altin, fontSize: 12, fontWeight: 700, marginBottom: 10, letterSpacing: 0.5 }}>SİCİL-İ AHVÂL</div>
+ <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{top}</div><div style={{ color: C.cok, fontSize: 10 }}>TARAMA</div></div>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.kirmizi, fontSize: 22, fontWeight: 700 }}>{krit}</div><div style={{ color: C.cok, fontSize: 10 }}>KRİTİK BULGU</div></div>
+ <div style={{ textAlign: "center" }}><div style={{ color: C.yesil, fontSize: 22, fontWeight: 700 }}>%{oran}</div><div style={{ color: C.cok, fontSize: 10 }}>TEMİZ GEÇEN</div></div>
+ </div>
+ {enOrgan && <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.s}` }}>Dosyana göre en çok <b style={{ color: profil.renk }}>{enOrgan[0]}</b> bölgen yoruldu · {gun}. gününde âsitânedesin</div>}
+ </div>
+ );
+ })()}
+ {/* PREMIUM: MERTEBE İLERLEME */}
+ {(() => {
+ const puan = liyakat.puan || 0;
+ const cur = MERTEBELER.filter(m => puan >= m.esik).pop() || MERTEBELER[0];
+ const sonraki = sonrakiMertebe(puan);
+ const taban = cur.esik;
+ const tavan = sonraki ? sonraki.esik : cur.esik;
+ const yuzde = sonraki ? Math.min(100, Math.round((puan - taban) / (tavan - taban) * 100)) : 100;
+ return (
+ <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+ <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+ <span style={{ color: cur.renk, fontSize: 13, fontWeight: 700 }}>{cur.ad}</span>
+ <span style={{ color: C.cok, fontSize: 11 }}>{puan} liyakat</span>
+ </div>
+ <div style={{ height: 8, background: C.s, borderRadius: 6, overflow: "hidden" }}>
+ <div style={{ width: `${yuzde}%`, height: "100%", background: `linear-gradient(90deg, ${cur.renk}, ${C.altin})`, borderRadius: 6, transition: "width 0.8s ease" }} />
+ </div>
+ <div style={{ color: C.soluk, fontSize: 12, marginTop: 8 }}>{sonraki ? `${sonraki.ad} olmana ${Math.max(0, tavan - puan)} liyakat kaldı` : "En yüksek mertebedesin"}</div>
+ </div>
+ );
+ })()}
+ {/* PREMIUM: GÜNÜN KİŞİSEL VİRD'İ */}
+ {(() => {
+ const bitkiler = (profil.bitki || "").split("·").map(s => s.trim()).filter(Boolean);
+ const gunIdx = Math.floor(Date.now() / 86400000);
+ const bitki = bitkiler.length ? bitkiler[gunIdx % bitkiler.length] : profil.bitki;
+ return (
+ <div style={{ background: `linear-gradient(135deg, ${profil.renk}18, ${C.y2})`, border: `1px solid ${profil.renk}40`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+ <div style={{ color: profil.renk, fontSize: 12, fontWeight: 700, marginBottom: 8, letterSpacing: 0.5 }}>BUGÜNE ÖZEL VİRD</div>
+ <div style={{ color: C.metin, fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{profil.zikir}</div>
+ <div style={{ color: C.soluk, fontSize: 13 }}>Bugünün şifa bitkisi: <b style={{ color: profil.renk }}>{bitki}</b></div>
+ </div>
+ );
+ })()}
  <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
  <div style={{ color: C.turuncu, fontSize: 12, fontWeight: 700, marginBottom: 8 }}>️ Kaçınman Gereken Maddeler</div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
