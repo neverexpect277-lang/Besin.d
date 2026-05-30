@@ -7286,7 +7286,7 @@ export default function App() {
  </div>
  </div>
  <div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{profil.burc}</div>
- <div style={{ color: profil.renk, fontSize: 13 }}>{profil.element} · {profil.mizac} Mizacı</div>
+ <div style={{ color: C.soluk, fontSize: 13, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.3, marginTop: 2 }}>{profil.element} unsuru · {profil.mizac} mizacı · {profil.organ}</div>
  {(() => {
  const m = mevcutMertebe();
  const krit = gecmis.slice(0, 5).reduce((a, g) => a + (g.kritik || 0), 0);
@@ -7296,14 +7296,6 @@ export default function App() {
  return <div style={{ color: C.soluk, fontSize: 14, marginTop: 12, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.45 }}>{selam}, <b style={{ color: m.renk, fontStyle: "normal" }}>{m.ad}</b>{liyakat.lakap ? ` ${liyakat.lakap}` : ""}. {hal}.</div>;
  })()}
  </div>
- </div>
- <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
- {[["ELEMENT", profil.element], ["MIZAÇ", profil.mizac], ["HASSAS ORGAN", profil.organ], ["ŞİFA MAKAMI", profil.makam]].map(([k, v]) => (
- <div key={k} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, textAlign: "center" }}>
- <div style={{ color: C.cok, fontSize: 10, letterSpacing: 0, marginBottom: 4 }}>{k}</div>
- <div style={{ color: C.metin, fontWeight: 600, fontSize: 13 }}>{v}</div>
- </div>
- ))}
  </div>
  {/* PREMIUM: SİCİL-İ AHVÂL */}
  {(() => {
