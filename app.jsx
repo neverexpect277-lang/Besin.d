@@ -8296,7 +8296,6 @@ export default function App() {
    const toplamSualS = (SUALLER[mevcut.k] || []).length;
    return (
      <div>
-       <div style={{ height: 2, background: `linear-gradient(90deg, transparent 0%, ${C.altin}20 20%, ${C.altin} 50%, ${C.altin}20 80%, transparent 100%)`, backgroundSize: "200% 100%", animation: "vakarTasma 4s linear infinite", marginBottom: 14, borderRadius: 1 }} />
        <div style={S.kB}>MERTEBE — AHİLİK YOLU</div>
 
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 12 }}>
