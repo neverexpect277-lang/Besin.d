@@ -6176,6 +6176,7 @@ export default function App() {
  const [asudeSure, setAsudeSure] = useState(180);
  const [asudeKalan, setAsudeKalan] = useState(0);
  const [asudeNefes, setAsudeNefes] = useState(5);
+ const [asudeHakkinda, setAsudeHakkinda] = useState(false);
  const asudeRef = useRef(null);
  const asudeTimerRef = useRef(null);
 
@@ -6183,6 +6184,8 @@ export default function App() {
    if (asudeTimerRef.current) { clearInterval(asudeTimerRef.current); asudeTimerRef.current = null; }
    const eng = asudeRef.current;
    if (eng) {
+     eng.stopped = true;
+     (eng.timers || []).forEach(id => clearTimeout(id));
      try {
        const t = eng.ac.currentTime;
        eng.master.gain.cancelScheduledValues(t);
@@ -6204,38 +6207,91 @@ export default function App() {
    try {
      const ac = new (window.AudioContext || window.webkitAudioContext)();
      if (ac.state === "suspended") ac.resume().catch(() => {});
+     const comp = ac.createDynamicsCompressor();
+     comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
+     comp.connect(ac.destination);
      const master = ac.createGain();
      master.gain.setValueAtTime(0.0001, ac.currentTime);
-     master.gain.linearRampToValueAtTime(0.6, ac.currentTime + 6);
-     master.connect(ac.destination);
+     master.gain.linearRampToValueAtTime(0.85, ac.currentTime + 2.5);
+     master.connect(comp);
 
-     // Osmanlı Çeşmesi — kahverengi gürültü + alçak geçiren filtre + yavaş LFO (su akışı)
-     const sn = ac.sampleRate, buf = ac.createBuffer(1, 2 * sn, sn), d = buf.getChannelData(0);
-     let son = 0;
-     for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; son = (son + 0.02 * w) / 1.02; d[i] = son * 3.5; }
-     const su = ac.createBufferSource(); su.buffer = buf; su.loop = true;
-     const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 760; lp.Q.value = 0.6;
-     const suG = ac.createGain(); suG.gain.value = 0.5;
-     su.connect(lp).connect(suG).connect(master);
-     const lfo = ac.createOscillator(); lfo.frequency.value = 0.18;
-     const lfoG = ac.createGain(); lfoG.gain.value = 280;
-     lfo.connect(lfoG).connect(lp.frequency); lfo.start(); su.start();
+     // Darüşşifa yankısı — sentetik impulse reverb
+     const conv = ac.createConvolver();
+     { const len = Math.floor(ac.sampleRate * 2.6), ib = ac.createBuffer(2, len, ac.sampleRate);
+       for (let ch = 0; ch < 2; ch++) { const cd = ib.getChannelData(ch); for (let i = 0; i < len; i++) cd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+       conv.buffer = ib; }
+     const wet = ac.createGain(); wet.gain.value = 0.35; conv.connect(wet).connect(master);
 
-     // Makam karar perdesi droneu (karar + saf beşli) — ney-vâri, çok yumuşak
+     const eng = { ac, master, timers: [], stopped: false };
+     const sn = ac.sampleRate;
+
+     // SU — dingin akış yatağı (kahverengi gürültü, çok alçak geçiren)
+     const bedBuf = ac.createBuffer(1, 2 * sn, sn), bd = bedBuf.getChannelData(0);
+     let bp = 0; for (let i = 0; i < bd.length; i++) { const w = Math.random() * 2 - 1; bp = (bp + 0.02 * w) / 1.02; bd[i] = bp * 3.0; }
+     const bed = ac.createBufferSource(); bed.buffer = bedBuf; bed.loop = true;
+     const bedLp = ac.createBiquadFilter(); bedLp.type = "lowpass"; bedLp.frequency.value = 420;
+     const bedG = ac.createGain(); bedG.gain.value = 0.10;
+     bed.connect(bedLp).connect(bedG).connect(master); bed.start();
+
+     // SU — şırıltı (beyaz gürültü, bandpass + yavaş LFO)
+     const triBuf = ac.createBuffer(1, 2 * sn, sn), tdd = triBuf.getChannelData(0);
+     for (let i = 0; i < tdd.length; i++) tdd[i] = Math.random() * 2 - 1;
+     const tri = ac.createBufferSource(); tri.buffer = triBuf; tri.loop = true;
+     const triBp = ac.createBiquadFilter(); triBp.type = "bandpass"; triBp.frequency.value = 1500; triBp.Q.value = 0.8;
+     const triG = ac.createGain(); triG.gain.value = 0.06;
+     tri.connect(triBp).connect(triG).connect(master); tri.start();
+     const triLfo = ac.createOscillator(); triLfo.frequency.value = 0.25;
+     const triLfoG = ac.createGain(); triLfoG.gain.value = 600;
+     triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start();
+
+     // SU — rastgele damlalar (cam "plink", reverb'e gider)
+     const damla = () => {
+       if (eng.stopped) return;
+       const t0 = ac.currentTime, f0 = 900 + Math.random() * 900;
+       const o = ac.createOscillator(); o.type = "sine";
+       o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, t0 + 0.12);
+       const g = ac.createGain();
+       g.gain.setValueAtTime(0.0001, t0);
+       g.gain.exponentialRampToValueAtTime(0.18 + Math.random() * 0.12, t0 + 0.005);
+       g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
+       const bf = ac.createBiquadFilter(); bf.type = "bandpass"; bf.frequency.value = f0; bf.Q.value = 4;
+       o.connect(g).connect(bf); bf.connect(master); bf.connect(conv);
+       o.start(t0); o.stop(t0 + 0.2);
+       eng.timers.push(setTimeout(damla, 220 + Math.random() * 700));
+     };
+     eng.timers.push(setTimeout(damla, 400));
+
+     // MAKAM — ney-vâri ezgi: makam karar perdesi üzerine yumuşak, makam-nötr huzur seyri
      const f = MAKAM_KARAR_HZ[makam] || 165;
-     const droneG = ac.createGain(); droneG.gain.value = 0.05;
-     const dlp = ac.createBiquadFilter(); dlp.type = "lowpass"; dlp.frequency.value = 1200;
-     droneG.connect(dlp).connect(master);
-     [f, f * 1.5].forEach((fr, i) => {
-       const o = ac.createOscillator(); o.type = "sine"; o.frequency.value = fr;
-       const og = ac.createGain(); og.gain.value = i === 0 ? 0.7 : 0.3;
-       o.connect(og).connect(droneG); o.start();
-     });
-     const breath = ac.createOscillator(); breath.frequency.value = 0.1;
-     const breathG = ac.createGain(); breathG.gain.value = 0.02;
-     breath.connect(breathG).connect(droneG.gain); breath.start();
+     const motif = [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 4 / 3, 6 / 5, 9 / 8];
+     let mi = 0;
+     const neyVoice = (freq, t0, sure) => {
+       const o1 = ac.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
+       const o2 = ac.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2.005;
+       const vib = ac.createOscillator(); vib.frequency.value = 5;
+       const vibG = ac.createGain(); vibG.gain.value = freq * 0.006;
+       vib.connect(vibG); vibG.connect(o1.frequency); vibG.connect(o2.frequency); vib.start(t0); vib.stop(t0 + sure + 0.3);
+       const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800;
+       const g = ac.createGain();
+       g.gain.setValueAtTime(0.0001, t0);
+       g.gain.linearRampToValueAtTime(0.16, t0 + 0.5);
+       g.gain.setValueAtTime(0.16, t0 + sure - 0.6);
+       g.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);
+       const og2 = ac.createGain(); og2.gain.value = 0.3;
+       o1.connect(g); o2.connect(og2).connect(g);
+       g.connect(lp); lp.connect(master); lp.connect(conv);
+       o1.start(t0); o1.stop(t0 + sure + 0.1); o2.start(t0); o2.stop(t0 + sure + 0.1);
+     };
+     const ezgi = () => {
+       if (eng.stopped) return;
+       const sure = 2.6;
+       neyVoice(f * motif[mi % motif.length], ac.currentTime + 0.05, sure);
+       mi++;
+       eng.timers.push(setTimeout(ezgi, (sure - 0.5) * 1000));
+     };
+     eng.timers.push(setTimeout(ezgi, 800));
 
-     asudeRef.current = { ac, master };
+     asudeRef.current = eng;
    } catch { return; }
 
    setAsudeOynar(true);
@@ -8461,46 +8517,58 @@ export default function App() {
              <div style={{ position: "absolute", top: -50, left: "50%", transform: "translateX(-50%)", width: 240, height: 240, borderRadius: "50%", background: `radial-gradient(circle, ${C.altin}22, transparent 70%)`, pointerEvents: "none" }} />
              <div style={{ position: "absolute", inset: 0, opacity: 0.55, pointerEvents: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%23C9952C' opacity='0.5'%3E%3Cpath d='M15 8 l1 3 3 1 -3 1 -1 3 -1 -3 -3 -1 3 -1 z'/%3E%3Cpath d='M44 30 l0.8 2.4 2.4 0.8 -2.4 0.8 -0.8 2.4 -0.8 -2.4 -2.4 -0.8 2.4 -0.8 z'/%3E%3Ccircle cx='30' cy='48' r='1'/%3E%3Ccircle cx='8' cy='40' r='1'/%3E%3C/g%3E%3C/svg%3E")`, backgroundSize: "60px 60px" }} />
              <div style={{ position: "relative", zIndex: 1 }}>
-               <svg viewBox="0 0 200 200" width="172" height="172" style={{ display: "block", margin: "0 auto", filter: `drop-shadow(0 2px 6px ${C.altin}30)` }}>
+               <svg viewBox="0 0 200 210" width="188" height="197" style={{ display: "block", margin: "0 auto", filter: `drop-shadow(0 4px 12px ${C.altin}40)` }}>
                  <defs>
-                   <linearGradient id="asMer" x1="0" y1="0" x2="0" y2="1">
-                     <stop offset="0" stopColor={C.altin} stopOpacity="0.18" />
-                     <stop offset="1" stopColor={C.altin} stopOpacity="0.04" />
-                   </linearGradient>
+                   <linearGradient id="asGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F6DA8E" /><stop offset="0.5" stopColor="#C9952C" /><stop offset="1" stopColor="#8A6320" /></linearGradient>
+                   <linearGradient id="asMarble" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FBF5E6" /><stop offset="0.5" stopColor="#E7D6AC" /><stop offset="1" stopColor="#C7AE78" /></linearGradient>
+                   <linearGradient id="asDome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F1E7C9" /><stop offset="1" stopColor="#BE9E60" /></linearGradient>
+                   <radialGradient id="asWater" cx="0.5" cy="0.35" r="0.75"><stop offset="0" stopColor="#BFEEFF" /><stop offset="0.45" stopColor="#3E92C9" /><stop offset="1" stopColor="#0C3A5C" /></radialGradient>
                  </defs>
-                 <g stroke={C.altin} strokeWidth="1.4" fill="none" strokeLinejoin="round" strokeLinecap="round">
-                   <path d="M100 6 C96 11 96 16 100 20 C104 16 104 11 100 6 Z" fill={`${C.altin}33`} />
-                   <line x1="100" y1="20" x2="100" y2="26" />
-                   <path d="M100 26 Q72 40 58 62 L142 62 Q128 40 100 26 Z" fill="url(#asMer)" />
-                   <path d="M100 30 Q86 44 80 62 M100 30 Q114 44 120 62" strokeWidth="0.8" opacity="0.7" />
-                   <rect x="54" y="62" width="92" height="6" rx="2" fill={`${C.altin}22`} />
-                   <rect x="55" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
-                   <rect x="70" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
-                   <rect x="125" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
-                   <rect x="140" y="70" width="5" height="50" rx="2" fill={`${C.altin}14`} />
-                   <ellipse cx="100" cy="78" rx="15" ry="3.4" fill={`${C.altin}22`} />
-                   <path d="M85 78 Q100 90 115 78" fill="url(#asMer)" />
-                   <line x1="100" y1="86" x2="100" y2="96" />
-                   <ellipse cx="100" cy="98" rx="26" ry="5" fill={`${C.altin}22`} />
-                   <path d="M74 98 Q100 116 126 98" fill="url(#asMer)" />
-                   <line x1="100" y1="112" x2="100" y2="150" />
-                   <path d="M54 150 L62 138 138 138 146 150 138 178 62 178 Z" fill="url(#asMer)" />
-                   <ellipse cx="100" cy="150" rx="46" ry="10" fill="#0A1A3F" stroke={C.altin} strokeWidth="1.4" />
+                 <g>
+                   <path d="M100 4 q5 7 0 13 q-5 -6 0 -13 Z" fill="url(#asGold)" />
+                   <circle cx="100" cy="19" r="3" fill="url(#asGold)" />
+                   <path d="M96 25 a5 5 0 1 0 7 -1 a4 4 0 1 1 -7 1 Z" fill="url(#asGold)" />
                  </g>
-                 <ellipse cx="100" cy="151" rx="42" ry="8" fill="#1E5C8A" opacity="0.55" />
+                 <path d="M100 32 C78 34 62 48 62 64 L138 64 C138 48 122 34 100 32 Z" fill="url(#asDome)" stroke="#8A6320" strokeWidth="1" />
+                 <g stroke="#A8843C" strokeWidth="0.7" opacity="0.7" fill="none"><path d="M100 33 C88 42 84 54 84 64" /><path d="M100 33 C112 42 116 54 116 64" /><path d="M100 33 L100 64" /></g>
+                 <rect x="56" y="64" width="88" height="7" rx="2" fill="url(#asGold)" />
+                 <g fill="#8A6320">{[0,1,2,3,4,5,6,7,8,9].map(i => <rect key={i} x={59 + i * 9} y={71} width="4" height="3" />)}</g>
+                 {[60, 80, 120, 140].map((x, i) => (
+                   <g key={i}>
+                     <rect x={x - 3} y={76} width="6" height="46" rx="1.5" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="0.5" />
+                     <rect x={x - 5} y={73} width="10" height="4" rx="1" fill="url(#asGold)" />
+                     <rect x={x - 5} y={122} width="10" height="4" rx="1" fill="url(#asGold)" />
+                   </g>
+                 ))}
+                 <g stroke="#C9952C" strokeWidth="1" fill="none" opacity="0.85"><path d="M80 78 Q70 72 60 78" /><path d="M140 78 Q130 72 120 78" /></g>
+                 <ellipse cx="100" cy="86" rx="16" ry="4" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="0.6" />
+                 <path d="M85 86 Q100 97 115 86" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="0.6" />
+                 <ellipse cx="100" cy="86" rx="15" ry="3.4" fill="url(#asWater)" opacity="0.7" />
+                 <line x1="100" y1="93" x2="100" y2="106" stroke="url(#asGold)" strokeWidth="2" />
+                 <ellipse cx="100" cy="108" rx="28" ry="6" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="0.7" />
+                 <path d="M72 108 Q100 126 128 108" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="0.7" />
+                 <ellipse cx="100" cy="108" rx="27" ry="5.4" fill="url(#asWater)" opacity="0.65" />
+                 <line x1="100" y1="122" x2="100" y2="150" stroke="url(#asGold)" strokeWidth="2.5" />
+                 <path d="M52 152 L62 140 138 140 148 152 138 190 62 190 Z" fill="url(#asMarble)" stroke="#B89A5E" strokeWidth="1" />
+                 <path d="M52 152 L148 152 138 190 62 190 Z" fill="#0C2A44" opacity="0.22" />
+                 <ellipse cx="100" cy="152" rx="48" ry="11" fill="url(#asWater)" stroke="url(#asGold)" strokeWidth="2" />
+                 <ellipse cx="88" cy="149" rx="18" ry="3.4" fill="#FFFFFF" opacity="0.22" />
                  {asudeOynar && [0, 1, 2].map(i => (
-                   <ellipse key={i} cx="100" cy="151" rx="40" ry="7.5" fill="none" stroke="#BFE6FF" strokeWidth="1" style={{ transformBox: "fill-box", transformOrigin: "center", animation: `suHalka 3s ease-out ${i}s infinite` }} />
+                   <ellipse key={i} cx="100" cy="153" rx="42" ry="9" fill="none" stroke="#DCEFFF" strokeWidth="1" style={{ transformBox: "fill-box", transformOrigin: "center", animation: `suHalka 3s ease-out ${i}s infinite` }} />
                  ))}
                  {asudeOynar && (
-                   <g stroke="#BFE6FF" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.85" strokeDasharray="2 5">
-                     <path d="M86 88 Q84 94 86 100" style={{ animation: "suAkis 0.5s linear infinite" }} />
-                     <path d="M114 88 Q116 94 114 100" style={{ animation: "suAkis 0.5s linear infinite" }} />
-                     <path d="M80 104 Q78 126 84 148" style={{ animation: "suAkis 0.6s linear infinite" }} />
-                     <path d="M120 104 Q122 126 116 148" style={{ animation: "suAkis 0.6s linear infinite" }} />
+                   <g stroke="#DCEFFF" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.9" strokeDasharray="2 5">
+                     <path d="M86 96 Q84 101 86 106" style={{ animation: "suAkis 0.5s linear infinite" }} />
+                     <path d="M114 96 Q116 101 114 106" style={{ animation: "suAkis 0.5s linear infinite" }} />
+                     <path d="M78 114 Q75 133 82 150" style={{ animation: "suAkis 0.6s linear infinite" }} />
+                     <path d="M122 114 Q125 133 118 150" style={{ animation: "suAkis 0.6s linear infinite" }} />
                    </g>
                  )}
                  {asudeOynar && (
-                   <line x1="100" y1="78" x2="100" y2="64" stroke="#BFE6FF" strokeWidth="2" strokeLinecap="round" opacity="0.8" style={{ transformBox: "fill-box", transformOrigin: "50% 100%", animation: `fiskiye ${Math.max(2, asudeNefes / 2)}s ease-in-out infinite` }} />
+                   <g style={{ transformBox: "fill-box", transformOrigin: "50% 100%", animation: `fiskiye ${Math.max(2, asudeNefes / 2)}s ease-in-out infinite` }}>
+                     <line x1="100" y1="86" x2="100" y2="68" stroke="#DCEFFF" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
+                     <circle cx="100" cy="68" r="1.6" fill="#EAF6FF" />
+                   </g>
                  )}
                </svg>
                <div style={{ display: "inline-block", background: `${C.altin}1A`, border: `1px solid ${C.altin}55`, borderRadius: 10, padding: "5px 16px", marginTop: 4 }}>
@@ -8525,6 +8593,11 @@ export default function App() {
        );
      })()}
 
+     <button onClick={() => setAsudeHakkinda(v => !v)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "13px 16px", marginBottom: 12, cursor: "pointer", fontFamily: "inherit" }}>
+       <span style={{ color: C.altin, fontWeight: 700, fontSize: 13, letterSpacing: 0.5 }}>HAKKINDA · KADİM GERÇEK</span>
+       <span style={{ color: C.altin, fontSize: 12, transform: asudeHakkinda ? "rotate(180deg)" : "none", transition: "transform .2s" }}>▾</span>
+     </button>
+     {asudeHakkinda && (<>
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KADİM GERÇEK</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
@@ -8548,6 +8621,7 @@ export default function App() {
          <b>Fıtrat Uyarlaması:</b> Modern "meditasyon" uygulamalarının standart müzikleri yerine; doğrudan kullanıcının o anki mizacını dengeleyecek belirli bir frekanstaki <b>"Osmanlı Çeşmesi"</b> su sesi ve ona entegre edilmiş <b>mikro musiki makamları</b> çalar.
        </div>
      </div>
+     </>)}
 
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 12, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</div>
