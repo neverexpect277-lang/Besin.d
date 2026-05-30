@@ -5206,7 +5206,7 @@ export default function App() {
      const l = localStorage.getItem("bd_liyakat");
      if (l) return JSON.parse(l);
    } catch {}
-   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false };
+   return { puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, korkun: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] };
  });
  const ASITANE_BASLANGIC = Date.UTC(2026, 0, 1);
  const ASITANE_GUNLUK_KATILIM = 4.7;
@@ -5650,6 +5650,31 @@ export default function App() {
  };
  const [longPressOgut, setLongPressOgut] = useState(null);
  const [bedenKonusuyor, setBedenKonusuyor] = useState(null);
+ const [virdAcik, setVirdAcik] = useState(false);
+ const [virdSaniye, setVirdSaniye] = useState(0);
+ const yildizEkle = (tip, etiket) => {
+   const x = Math.floor(Math.random() * 90) + 5;
+   const y = Math.floor(Math.random() * 75) + 5;
+   const parlaklik = 0.5 + Math.random() * 0.5;
+   const renk = { ahd: "#C9A84C", terfi: "#FFD700", sual: "#7FB069", sefaat: "#EC4899", hediye: "#A586C2", erbain: "#FFA500" }[tip] || "#C9A84C";
+   setLiyakat(o => {
+     const yildizlar = [...(o.yildizlar || []), { tip, etiket, x, y, parlaklik, renk, t: Date.now() }].slice(-100);
+     const yeni = { ...o, yildizlar };
+     try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
+     return yeni;
+   });
+ };
+ useEffect(() => {
+   if (!virdAcik) { setVirdSaniye(0); return; }
+   const it = setInterval(() => setVirdSaniye(s => s + 1), 1000);
+   return () => clearInterval(it);
+ }, [virdAcik]);
+ useEffect(() => {
+   if (virdAcik && virdSaniye >= 33) {
+     setTimeout(() => setVirdAcik(false), 500);
+     if (navigator.vibrate) navigator.vibrate([40, 20, 80]);
+   }
+ }, [virdSaniye, virdAcik]);
  const [paritiAcik, setParitiAcik] = useState(false);
  const [serefKart, setSerefKart] = useState(null);
  const serefKartRef = useRef(null);
@@ -5907,6 +5932,7 @@ export default function App() {
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
      return yeni;
    });
+   yildizEkle("sefaat", `Bir can kurtardın`);
  };
  const ahdImzala = (mertebeK, metin) => {
    setLiyakat(o => {
@@ -5919,6 +5945,9 @@ export default function App() {
    setAhdModal(null);
    setYeniMertebeBildirim(mertebeK);
    triggerTerfi();
+   const m = MERTEBELER.find(x => x.k === mertebeK);
+   yildizEkle("terfi", `${m?.ad || mertebeK} oldun`);
+   yildizEkle("ahd", `${m?.ad || mertebeK} ahdini verdin`);
    setTimeout(() => setSerefKart({ mertebeK }), 3500);
  };
  const sualCozuldu = (mertebeK, sualNo) => {
@@ -5931,6 +5960,7 @@ export default function App() {
      try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
      return yeni;
    });
+   yildizEkle("sual", "Bir sırlı suâl çözüldü");
  };
  const haftaNo = (ts) => Math.floor((ts || Date.now()) / (7 * 86400000));
  const sualTetikle = () => {
@@ -6042,6 +6072,7 @@ export default function App() {
  };
  const [paylasMaddesi, setPaylasMaddesi] = useState(null);
  const geriYap = () => {
+   if (virdAcik) { setVirdAcik(false); return true; }
    if (bedenKonusuyor) { setBedenKonusuyor(null); return true; }
    if (serefKart) { setSerefKart(null); return true; }
    if (longPressOgut) { setLongPressOgut(null); return true; }
@@ -6068,7 +6099,7 @@ export default function App() {
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || korkunUyari || korkunModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -6893,6 +6924,27 @@ export default function App() {
      </div>
    );
  })()}
+ {virdAcik && (
+   <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 1395, padding: 20 }} onClick={() => setVirdAcik(false)}>
+     <div style={{ color: "#D4AF37", fontSize: 10, fontWeight: 600, letterSpacing: 3, marginBottom: 14, opacity: 0.7 }}>VİRD-İ SOFRA</div>
+     <div style={{ color: "#F5E6D3", fontSize: 17, fontFamily: "'Cormorant Garamond', Georgia, serif", textAlign: "center", marginBottom: 30, lineHeight: 1.5, opacity: 0.8, maxWidth: 280 }}>Sofranın bereketi niyetinin temizliğindedir. Bir nefes al, otuz üç tesbih çek.</div>
+     <svg width="240" height="240" viewBox="0 0 240 240" style={{ marginBottom: 20 }}>
+       {Array.from({length: 33}, (_, i) => {
+         const angle = (i / 33) * 2 * Math.PI - Math.PI / 2;
+         const cx = 120 + Math.cos(angle) * 90;
+         const cy = 120 + Math.sin(angle) * 90;
+         const aktif = i < virdSaniye;
+         const su = i === virdSaniye - 1;
+         return <circle key={i} cx={cx} cy={cy} r={su ? 6 : aktif ? 4.5 : 3} fill={aktif ? "#D4AF37" : "#2A3B57"} opacity={aktif ? 0.95 : 0.5}>
+           {su && <animate attributeName="r" values="4.5;7;4.5" dur="0.8s" repeatCount="indefinite" />}
+         </circle>;
+       })}
+       <text x="120" y="115" textAnchor="middle" fill="#D4AF37" fontSize="46" fontFamily="'Cormorant Garamond', Georgia, serif" fontWeight="600">{Math.min(virdSaniye, 33)}</text>
+       <text x="120" y="140" textAnchor="middle" fill="#A8B5C9" fontSize="13" letterSpacing="2">/ 33</text>
+     </svg>
+     <div style={{ color: "#A8B5C9", fontSize: 11, opacity: 0.7, letterSpacing: 1 }}>{virdSaniye >= 33 ? "TAMAM" : "dokun, geç"}</div>
+   </div>
+ )}
  {bedenKonusuyor && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
@@ -8312,6 +8364,36 @@ export default function App() {
          );
        })()}
 
+       <button onClick={() => setVirdAcik(true)} style={{ width: "100%", background: `linear-gradient(135deg, ${C.altin}15, ${C.y2})`, border: `1px solid ${C.altin}60`, borderRadius: 12, padding: "11px 14px", marginBottom: 14, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: 10, justifyContent: "center" }}>
+         <span style={{ color: C.altin, fontSize: 18 }}>◯</span>
+         <span style={{ color: C.altin, fontSize: 13, fontWeight: 700, letterSpacing: 0.5 }}>VİRD-İ SOFRA · 33 TESBİH</span>
+       </button>
+
+       {(liyakat.yildizlar || []).length > 0 && (
+         <>
+           <div style={S.kB}>ŞAHİT YILDIZLAR · {(liyakat.yildizlar || []).length}</div>
+           <div style={{ background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", borderRadius: 14, padding: 0, marginBottom: 14, position: "relative", height: 180, overflow: "hidden", border: `1px solid ${C.altin}40` }}>
+             <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ display: "block" }}>
+               {(liyakat.yildizlar || []).map((y, i) => (
+                 <g key={i}>
+                   <circle cx={y.x} cy={y.y} r={1.2 + y.parlaklik * 0.6} fill={y.renk} opacity={y.parlaklik}>
+                     <animate attributeName="opacity" values={`${y.parlaklik};${y.parlaklik * 0.4};${y.parlaklik}`} dur={`${3 + i % 4}s`} repeatCount="indefinite" />
+                   </circle>
+                   <circle cx={y.x} cy={y.y} r={2.5} fill={y.renk} opacity="0.15" />
+                 </g>
+               ))}
+             </svg>
+             <div style={{ position: "absolute", bottom: 6, left: 10, color: "#D4AF37", fontSize: 9, fontStyle: "italic", letterSpacing: 0.5 }}>kendi takımyıldızın</div>
+           </div>
+         </>
+       )}
+
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 14 }}>
+         <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1, marginBottom: 8 }}>SÎNÂ DEFTER · KALBİMDEN GEÇENLER</div>
+         <textarea value={(() => { try { return localStorage.getItem("bd_sina_defter") || ""; } catch { return ""; } })()} onChange={e => { try { localStorage.setItem("bd_sina_defter", e.target.value); } catch {} }} placeholder="Sadece sen ve kalbin... yaz, kimse görmez." rows={3} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: 10, color: C.metin, fontSize: 13, lineHeight: 1.5, resize: "vertical", fontFamily: "'Cormorant Garamond', Georgia, serif", boxSizing: "border-box", outline: "none" }} />
+         <div style={{ color: C.cok, fontSize: 9, marginTop: 4, fontStyle: "italic", textAlign: "center" }}>yerel kayıt, paylaşılmaz</div>
+       </div>
+
        <div style={{ background: C.y2, border: `1px dashed ${C.altin}50`, borderRadius: 10, padding: 12, marginBottom: 14, textAlign: "center" }}>
          <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>MENSUBİYET TESCİLİ</div>
          <div style={{ color: C.metin, fontSize: 12, marginTop: 4, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1.5 }}>{hicri.gun} {hicri.ay} {hicri.yil}'de âsitânemize katıldın.</div>
@@ -8870,6 +8952,27 @@ export default function App() {
      </div>
    );
  })()}
+ {virdAcik && (
+   <div style={{ position: "fixed", inset: 0, background: "linear-gradient(180deg, #0A1628 0%, #1A2B47 100%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 1395, padding: 20 }} onClick={() => setVirdAcik(false)}>
+     <div style={{ color: "#D4AF37", fontSize: 10, fontWeight: 600, letterSpacing: 3, marginBottom: 14, opacity: 0.7 }}>VİRD-İ SOFRA</div>
+     <div style={{ color: "#F5E6D3", fontSize: 17, fontFamily: "'Cormorant Garamond', Georgia, serif", textAlign: "center", marginBottom: 30, lineHeight: 1.5, opacity: 0.8, maxWidth: 280 }}>Sofranın bereketi niyetinin temizliğindedir. Bir nefes al, otuz üç tesbih çek.</div>
+     <svg width="240" height="240" viewBox="0 0 240 240" style={{ marginBottom: 20 }}>
+       {Array.from({length: 33}, (_, i) => {
+         const angle = (i / 33) * 2 * Math.PI - Math.PI / 2;
+         const cx = 120 + Math.cos(angle) * 90;
+         const cy = 120 + Math.sin(angle) * 90;
+         const aktif = i < virdSaniye;
+         const su = i === virdSaniye - 1;
+         return <circle key={i} cx={cx} cy={cy} r={su ? 6 : aktif ? 4.5 : 3} fill={aktif ? "#D4AF37" : "#2A3B57"} opacity={aktif ? 0.95 : 0.5}>
+           {su && <animate attributeName="r" values="4.5;7;4.5" dur="0.8s" repeatCount="indefinite" />}
+         </circle>;
+       })}
+       <text x="120" y="115" textAnchor="middle" fill="#D4AF37" fontSize="46" fontFamily="'Cormorant Garamond', Georgia, serif" fontWeight="600">{Math.min(virdSaniye, 33)}</text>
+       <text x="120" y="140" textAnchor="middle" fill="#A8B5C9" fontSize="13" letterSpacing="2">/ 33</text>
+     </svg>
+     <div style={{ color: "#A8B5C9", fontSize: 11, opacity: 0.7, letterSpacing: 1 }}>{virdSaniye >= 33 ? "TAMAM" : "dokun, geç"}</div>
+   </div>
+ )}
  {bedenKonusuyor && (
    <div style={{ position: "fixed", inset: 0, background: "#00000060", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1360, backdropFilter: "blur(4px)", padding: 20 }} onClick={() => setBedenKonusuyor(null)}>
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
