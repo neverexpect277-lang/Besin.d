@@ -6206,7 +6206,9 @@ export default function App() {
    setAsudeMakam(makam);
    try {
      const ac = new (window.AudioContext || window.webkitAudioContext)();
-     if (ac.state === "suspended") ac.resume().catch(() => {});
+     ac.resume().catch(() => {}); // gesture içinde koşulsuz: bazı tarayıcılar "running" raporlayıp askıya alır
+     // sessiz unlock buffer (iOS/Safari otoplay kilidi)
+     try { const ub = ac.createBufferSource(); ub.buffer = ac.createBuffer(1, 1, ac.sampleRate); ub.connect(ac.destination); ub.start(0); } catch {}
      const comp = ac.createDynamicsCompressor();
      comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
      comp.connect(ac.destination);
