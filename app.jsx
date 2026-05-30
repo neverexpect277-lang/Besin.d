@@ -7276,10 +7276,12 @@ export default function App() {
  {profil ? (
  <>
  <div style={{ textAlign: "center", marginBottom: 20 }}>
- <div style={{ width: 90, height: 90, borderRadius: "50%", border: `3px solid ${C.altin}`, background: C.altin + "18", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
- <svg width="50" height="50" viewBox="0 0 24 24" fill={C.altin} xmlns="http://www.w3.org/2000/svg">
+ <div style={{ width: 96, height: 96, borderRadius: "50%", padding: 3, background: `conic-gradient(from 180deg, ${profil.renk}, ${C.altin}, ${profil.renk})`, margin: "0 auto 12px", boxShadow: `0 0 18px ${profil.renk}40`, animation: "muhurNefes 5s ease-in-out infinite" }}>
+ <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+ <svg width="46" height="46" viewBox="0 0 24 24" fill={profil.renk} xmlns="http://www.w3.org/2000/svg">
  <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z"/>
  </svg>
+ </div>
  </div>
  <div style={{ color: C.metin, fontSize: 22, fontWeight: 700 }}>{profil.burc}</div>
  <div style={{ color: profil.renk, fontSize: 13 }}>{profil.element} · {profil.mizac} Mizacı</div>
@@ -7368,32 +7370,24 @@ export default function App() {
  </div>
  );
  })()}
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: C.turuncu, fontSize: 12, fontWeight: 700, marginBottom: 8 }}>️ Kaçınman Gereken Maddeler</div>
+ <div style={PK.kart}>
+ <div style={{ ...PK.baslik, color: C.turuncu }}><span style={{ ...PK.cizgi, background: `linear-gradient(90deg, ${C.turuncu}, transparent)` }} />KAÇINMAN GEREKEN MADDELER</div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
  {profil.kacinmasi.map(k => <span key={k} style={{ background: "#ff2d5520", color: C.kirmizi, border: "1px solid #ff2d5540", borderRadius: 20, padding: "3px 10px", fontSize: 11 }}>{k}</span>)}
  </div>
  </div>
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 6 }}> Şifa Bitkiler</div>
- <div style={{ color: C.soluk, fontSize: 13 }}>{profil.bitki}</div>
- </div>
- <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 6 }}>️ Beslenme Tavsiyesi</div>
- <div style={{ color: C.soluk, fontSize: 13 }}>{profil.tavsiye}</div>
- </div>
- <div style={{ background: `linear-gradient(135deg,${C.altin}18,${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 14, padding: 18, textAlign: "center", marginBottom: 10 }}>
- <div style={S.kB}> GÜNLÜK ZİKRİN</div>
- <div style={{ color: C.metin, fontSize: 20, fontWeight: 700 }}>{profil.zikir}</div>
+ <div style={PK.kart}>
+ <div style={{ ...PK.baslik, color: C.yesil }}><span style={{ ...PK.cizgi, background: `linear-gradient(90deg, ${C.yesil}, transparent)` }} />BESLENME TAVSİYESİ</div>
+ <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.55 }}>{profil.tavsiye}</div>
  </div>
  {MAKAMLAR[profil.makam] && (
- <div style={{ background: C.y, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
- <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 12, fontWeight: 700, marginBottom: 6 }}> Şifa Makamın: {profil.makam}</div>
- <div style={{ color: C.soluk, fontSize: 13 }}>{MAKAMLAR[profil.makam].etki}</div>
+ <div style={{ ...PK.kart, borderColor: `${MAKAMLAR[profil.makam].renk}40` }}>
+ <div style={{ ...PK.baslik, color: MAKAMLAR[profil.makam].renk }}><span style={{ ...PK.cizgi, background: `linear-gradient(90deg, ${MAKAMLAR[profil.makam].renk}, transparent)` }} />ŞİFA MAKAMIN · {profil.makam}</div>
+ <div style={{ color: C.soluk, fontSize: 13, lineHeight: 1.55 }}>{MAKAMLAR[profil.makam].etki}</div>
  <div style={{ color: C.cok, fontSize: 11, marginTop: 6 }}>{MAKAMLAR[profil.makam].vakit} · {MAKAMLAR[profil.makam].aletler}</div>
  </div>
  )}
- <button style={S.hayaletBtn} onClick={() => setEkran("profil_kur")}> Profili Değiştir</button>
+ <button style={S.hayaletBtn} onClick={() => setEkran("profil_kur")}>Profili Değiştir</button>
         <button style={{ ...S.hayaletBtn, marginTop: 8 }} onClick={() => setEkran("gecmis")}>Tarama Geçmişi ({gecmis.length})</button>
         <button style={{ ...S.hayaletBtn, marginTop: 8 }} onClick={() => setRaporAcik(true)}>Haftalık Rapor</button>
         <button style={{ ...S.hayaletBtn, marginTop: 8 }} onClick={() => setMarketAcik(true)}>Mizaç Market Listesi</button>
