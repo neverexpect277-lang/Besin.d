@@ -6236,6 +6236,11 @@ export default function App() {
  }, [sekme, esrefData]);
  const [mod, setMod] = useState("metin");
  const [taramaSayisi, setTaramaSayisi] = useState(() => { try { return parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") || 0; } catch { return 0; } });
+ const [nur, setNur] = useState(() => { try { const n = localStorage.getItem("bd_nur"); return n ? JSON.parse(n) : { damla: 0 }; } catch { return { damla: 0 }; } });
+ const [vasiyet, setVasiyet] = useState(() => { try { const v = localStorage.getItem("bd_vasiyet"); return v ? JSON.parse(v) : { lokma: 0, sonGiris: Date.now() }; } catch { return { lokma: 0, sonGiris: Date.now() }; } });
+ const [sirat, setSirat] = useState(() => { try { const s = localStorage.getItem("bd_sirat"); return s ? JSON.parse(s) : { lif: 0 }; } catch { return { lif: 0 }; } });
+ // Vasiyet 14 gün sahipsizlik → mektup silinir
+ useEffect(() => { try { const v = JSON.parse(localStorage.getItem("bd_vasiyet") || "null"); if (v && v.sonGiris && (Date.now() - v.sonGiris) > 14 * 86400000 && v.lokma > 0) { const sifir = { lokma: 0, sonGiris: v.sonGiris }; setVasiyet(sifir); localStorage.setItem("bd_vasiyet", JSON.stringify(sifir)); } } catch {} }, []);
  const es = esrefAktif();
 
  function yapAnaliz(metinOverride) {
@@ -6255,6 +6260,17 @@ export default function App() {
    setGecmis(yeniGecmis);
    try { localStorage.setItem("bd_gecmis", JSON.stringify(yeniGecmis)); } catch {}
    puanEkle(1 + (kritikSayi > 0 ? 3 : 0), "tarama");
+   // Silsile-i Nûr: her tarama bir nur damlası
+   setNur(o => { const yeni = { damla: (o.damla || 0) + 1 }; try { localStorage.setItem("bd_nur", JSON.stringify(yeni)); } catch {}; return yeni; });
+   if (kritikSayi > 0) {
+     // Sırât: kaçın ürün → ipten lif kopar
+     setSirat(o => { const yeni = { lif: (o.lif || 0) + 1 }; try { localStorage.setItem("bd_sirat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   } else {
+     // Vasiyet: temiz lokma mirası birikir + Sırât iyileşmesi
+     setVasiyet(o => { const yeni = { lokma: (o.lokma || 0) + 1, sonGiris: Date.now() }; try { localStorage.setItem("bd_vasiyet", JSON.stringify(yeni)); } catch {}; return yeni; });
+     setSirat(o => { const yeni = { lif: Math.max(0, (o.lif || 0) - 1) }; try { localStorage.setItem("bd_sirat", JSON.stringify(yeni)); } catch {}; return yeni; });
+   }
+   setVasiyet(o => { const yeni = { ...o, sonGiris: Date.now() }; try { localStorage.setItem("bd_vasiyet", JSON.stringify(yeni)); } catch {}; return yeni; });
    if (kritikSayi > 0) mahcubiyetKontrol(sonuc);
    if (kritikSayi > 0 && Math.random() < 0.6) {
      const tumOrganlar = sonuc.flatMap(r => r.organlar || []);
@@ -8368,6 +8384,107 @@ export default function App() {
          <span style={{ color: C.altin, fontSize: 18 }}>◯</span>
          <span style={{ color: C.altin, fontSize: 13, fontWeight: 700, letterSpacing: 0.5 }}>VİRD-İ SOFRA · 33 TESBİH</span>
        </button>
+
+       {/* SİLSİLE-İ NÛR */}
+       <div style={S.kB}>SİLSİLE-İ NÛR · {nur.damla} DAMLA</div>
+       <div style={{ background: "linear-gradient(180deg,#0A1020,#141E33)", border: `1px solid ${C.altin}40`, borderRadius: 14, padding: 12, marginBottom: 14 }}>
+         {(() => {
+           const d = nur.damla;
+           const tiers = 5;
+           const nodes = []; let prev = [{ x: 100, y: 138 }];
+           for (let t = 1; t <= tiers; t++) {
+             const cnt = Math.pow(2, t); const y = 138 - t * 23; const cur = [];
+             for (let i = 0; i < cnt; i++) { const x = (i + 0.5) / cnt * 180 + 10; const parent = prev[Math.floor(i / 2)] || prev[0]; cur.push({ x, y }); nodes.push({ x, y, px: parent.x, py: parent.y }); }
+             prev = cur;
+           }
+           const acik = Math.min(nodes.length, d);
+           return (
+             <svg width="100%" height="150" viewBox="0 0 200 155" style={{ display: "block" }}>
+               <line x1="100" y1="153" x2="100" y2="138" stroke={C.altin} strokeWidth="2.5" opacity="0.8" />
+               {nodes.slice(0, acik).map((n, i) => (
+                 <g key={i}>
+                   <line x1={n.px} y1={n.py} x2={n.x} y2={n.y} stroke={C.altinA} strokeWidth="1" opacity="0.55" />
+                   <circle cx={n.x} cy={n.y} r="3.2" fill={C.altinA} opacity="0.18" />
+                   <circle cx={n.x} cy={n.y} r="1.7" fill="#FFE9A8"><animate attributeName="opacity" values="1;0.5;1" dur={`${2.5 + i % 3}s`} repeatCount="indefinite" /></circle>
+                 </g>
+               ))}
+             </svg>
+           );
+         })()}
+         <div style={{ color: "#C9A84C", fontSize: 10, textAlign: "center", fontStyle: "italic", marginTop: 4 }}>Her tarama bir nur damlası — soyun büyüdükçe ağacın ışıldar.</div>
+       </div>
+
+       {/* HİZMET KERVANI */}
+       {(() => {
+         const ANCHOR = new Date("2026-05-30").getTime();
+         const buyume = Math.max(0, Math.floor((Date.now() - ANCHOR) / 60000 * 1.7));
+         const toplam = Math.min(998472, 47312 + buyume + taramaSayisi);
+         const oran = Math.min(100, toplam / 1000000 * 100);
+         return (
+           <>
+             <div style={S.kB}>HİZMET KERVANI · ORTAK SEFER</div>
+             <div style={{ background: C.y, border: `1px solid ${C.altin}40`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+               <div style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 10 }}>Kervanın ortak hedefi: <b style={{ color: C.altin }}>1.000.000</b> zararlı madde tespiti. Sen de bu sefere katıldın.</div>
+               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 5 }}>
+                 <span style={{ color: C.altin, fontSize: 20, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{toplam.toLocaleString("tr-TR")}</span>
+                 <span style={{ color: C.cok, fontSize: 11 }}>/ 1.000.000</span>
+               </div>
+               <div style={{ background: C.s, borderRadius: 5, height: 8, overflow: "hidden" }}>
+                 <div style={{ width: `${oran}%`, height: "100%", background: `linear-gradient(90deg,${C.altin},${C.altinA})`, transition: "width .6s" }} />
+               </div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 8 }}>Senin katkın: <b style={{ color: C.altin }}>{taramaSayisi}</b> tespit · kervan seninle bir adım daha yol aldı.</div>
+             </div>
+           </>
+         );
+       })()}
+
+       {/* VASİYETNÂME-İ BEDEN */}
+       {(() => {
+         const gunFark = Math.floor((Date.now() - (vasiyet.sonGiris || Date.now())) / 86400000);
+         const soluyor = gunFark >= 7 && gunFark < 14 && vasiyet.lokma > 0;
+         const sahipsiz = gunFark >= 14;
+         return (
+           <>
+             <div style={S.kB}>VASİYETNÂME-İ BEDEN · MİRAS MEKTUBU</div>
+             <div style={{ background: sahipsiz ? C.y2 : `linear-gradient(135deg,${C.altin}12,${C.y2})`, border: `1px solid ${soluyor || sahipsiz ? C.kirmizi + "50" : C.altin + "40"}`, borderRadius: 14, padding: 14, marginBottom: 14, opacity: soluyor ? 0.6 : 1, transition: "opacity .6s" }}>
+               {sahipsiz ? (
+                 <div style={{ color: C.cok, fontSize: 12, fontStyle: "italic", lineHeight: 1.6, textAlign: "center" }}>Mektubun soldu, sahipsiz kaldı. Yeni bir temiz lokmayla mirasını yeniden yazabilirsin.</div>
+               ) : (
+                 <>
+                   <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>Gelecekteki sağlıklı sen, sana <b style={{ color: C.altin, fontSize: 16 }}>{vasiyet.lokma}</b> temiz lokma bıraktın.</div>
+                   {soluyor && <div style={{ color: C.kirmizi, fontSize: 11, marginTop: 8, fontStyle: "italic" }}>Vasiyetin sahipsiz kaldı, mektup soluyor — {14 - gunFark} gün içinde dön, yoksa silinir.</div>}
+                   {!soluyor && <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, fontStyle: "italic" }}>Her temiz ürün bedenine bırakılan bir miras. Düzenli dön, mektup canlı kalsın.</div>}
+                 </>
+               )}
+             </div>
+           </>
+         );
+       })()}
+
+       {/* SIRÂT-I MÜSTAKÎM DEFTERİ */}
+       {(() => {
+         const lif = sirat.lif;
+         const durum = lif >= 20 ? { renk: C.kirmizi, msg: "DÜŞME TEHLİKESİ — Sırât kıl gibi inceldi" } : lif >= 10 ? { renk: C.turuncu, msg: "Sırât inceldi — dikkatli ol" } : { renk: C.altin, msg: "Sırât sağlam" };
+         const strands = Math.max(2, 22 - lif);
+         return (
+           <>
+             <div style={S.kB}>SIRÂT-I MÜSTAKÎM DEFTERİ</div>
+             <div style={{ background: C.y, border: `1px solid ${durum.renk}50`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+               <svg width="100%" height="60" viewBox="0 0 200 60" style={{ display: "block" }}>
+                 {Array.from({ length: strands }, (_, i) => {
+                   const off = (i - strands / 2) * (Math.min(1.1, 18 / strands));
+                   return <path key={i} d={`M4 ${30 + off} Q60 ${24 + off} 100 ${30 + off} T196 ${30 + off}`} stroke={durum.renk} strokeWidth="0.7" fill="none" opacity="0.7" />;
+                 })}
+               </svg>
+               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
+                 <span style={{ color: durum.renk, fontSize: 12, fontWeight: 700 }}>{durum.msg}</span>
+                 <span style={{ color: C.cok, fontSize: 11 }}>{lif} lif koptu</span>
+               </div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 6, lineHeight: 1.5, fontStyle: "italic" }}>Her kaçın ürün ipten bir lif koparır; her temiz tarama bir lif geri örer. İpini sağlam tut.</div>
+             </div>
+           </>
+         );
+       })()}
 
        {(liyakat.yildizlar || []).length > 0 && (
          <>
