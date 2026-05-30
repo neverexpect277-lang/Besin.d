@@ -5156,7 +5156,7 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}}`;
+const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}}`;
 
 const S = {
  anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
@@ -6279,7 +6279,8 @@ export default function App() {
    }
    setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
- setEkran("sonuc");
+ setEkran("tartiliyor");
+ setTimeout(() => setEkran("sonuc"), 1500);
     if (!seslerAcik) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -6486,6 +6487,26 @@ export default function App() {
  );
 
  /* ── SONUÇ EKRANI ─────────────────────────── */
+ if (ekran === "tartiliyor") return (
+ <div key="ekran-tartiliyor" style={{ minHeight: "100vh", background: `radial-gradient(circle at 50% 38%, ${C.altin}10, ${C.bg} 70%)`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", padding: 24 }}>
+ <svg width="120" height="120" viewBox="0 0 120 120" style={{ animation: "muhurNefes 1.6s ease-in-out infinite" }}>
+ <g style={{ transformOrigin: "60px 60px", animation: "tartiSalla 1.5s ease-in-out infinite" }}>
+ <line x1="60" y1="20" x2="60" y2="38" stroke={C.altin} strokeWidth="2.5" strokeLinecap="round" />
+ <line x1="22" y1="38" x2="98" y2="38" stroke={C.altin} strokeWidth="2.5" strokeLinecap="round" />
+ <path d="M22 38 L13 62 a13 8 0 0 0 18 0 Z" fill={`${C.altin}20`} stroke={C.altin} strokeWidth="1.5" />
+ <path d="M98 38 L89 62 a13 8 0 0 0 18 0 Z" fill={`${C.altin}20`} stroke={C.altin} strokeWidth="1.5" />
+ <circle cx="60" cy="20" r="4" fill={C.altin} />
+ <line x1="60" y1="38" x2="60" y2="92" stroke={C.altin} strokeWidth="2.5" strokeLinecap="round" />
+ <path d="M44 92 H76 L70 100 H50 Z" fill={`${C.altin}20`} stroke={C.altin} strokeWidth="1.5" />
+ </g>
+ </svg>
+ <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, marginTop: 28, fontFamily: "'Cormorant Garamond', Georgia, serif", letterSpacing: 0.5, textAlign: "center" }}>Pîr maddeleri Mîzân'a koyuyor…</div>
+ <div style={{ display: "flex", gap: 6, marginTop: 16 }}>
+ {[0, 1, 2].map(i => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: C.altin, animation: `nabizNokta 1.2s ease-in-out ${i * 0.2}s infinite` }} />)}
+ </div>
+ </div>
+ );
+
  if (ekran === "sonuc") return (
  <div key="ekran-sonuc" style={{ minHeight: "100vh", background: C.bg, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", paddingBottom: 30, animation: "altsayfaGir 0.28s ease-out" }}>
  <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: C.y, borderBottom: `1px solid ${C.s}`, position: "sticky", top: 0, zIndex: 20, gap: 10 }}>
@@ -6609,6 +6630,32 @@ export default function App() {
  </>
  ) : (
  <>
+ {(() => {
+ const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
+ const zararli = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
+ const aci = Math.min(20, 4 + zararli * 1.6);
+ const dengeRenk = zararli >= 6 ? C.kirmizi : zararli >= 3 ? C.turuncu : C.sari;
+ return (
+ <div style={{ background: C.y, border: `1.5px solid ${dengeRenk}55`, borderRadius: 18, padding: "16px 14px 12px", marginBottom: 12, textAlign: "center", overflow: "hidden" }}>
+ <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 1.5, marginBottom: 4 }}>MÎZÂN · AMEL TERAZİSİ</div>
+ <svg width="200" height="118" viewBox="0 0 200 118" style={{ maxWidth: "100%" }}>
+ <path d="M82 100 H118 L110 112 H90 Z" fill={`${C.altin}18`} stroke={C.altin} strokeWidth="1.5" />
+ <line x1="100" y1="30" x2="100" y2="100" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <circle cx="100" cy="12" r="5" fill={C.altin} />
+ <line x1="100" y1="14" x2="100" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <g style={{ transformOrigin: "100px 30px", transform: `rotate(${aci}deg)`, animation: "mizanOtur 1.4s cubic-bezier(.3,1.4,.5,1) both", "--mizan-aci": `${aci}deg` }}>
+ <line x1="30" y1="30" x2="170" y2="30" stroke={C.altin} strokeWidth="3" strokeLinecap="round" />
+ <line x1="30" y1="30" x2="30" y2="48" stroke={C.altin} strokeWidth="1" />
+ <path d="M14 48 a16 9 0 0 0 32 0 Z" fill={`${C.yesil}22`} stroke={C.yesil} strokeWidth="1.5" />
+ <line x1="170" y1="30" x2="170" y2="48" stroke={C.altin} strokeWidth="1" />
+ <path d="M154 48 a16 9 0 0 0 32 0 Z" fill={`${dengeRenk}22`} stroke={dengeRenk} strokeWidth="1.5" />
+ </g>
+ </svg>
+ <div style={{ color: dengeRenk, fontSize: 13, fontWeight: 700, marginTop: 2 }}>Terazi zararlı kefeye ağdı</div>
+ <div style={{ color: C.soluk, fontSize: 11, marginTop: 2, fontStyle: "italic" }}>{sonuclar.length} madde sağ kefede · denge bozuldu</div>
+ </div>
+ );
+ })()}
  {/* RİSK ÖZET KUTUSU + ORGANLAR BİR ARADA */}
  <div style={{ background: C.y, border: `2px solid ${rR(genelRisk)}`, borderRadius: 18, padding: 18, marginBottom: 12 }}>
  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
