@@ -13,6 +13,24 @@ const C = {
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.kirmizi, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
 
+// Uygulama içi yumuşak bildirim (alert yerine). Her ekrandan çağrılabilir.
+function bdToast(mesaj) {
+ if (typeof document === "undefined") return;
+ let host = document.getElementById("bd-toast-host");
+ if (!host) {
+   host = document.createElement("div");
+   host.id = "bd-toast-host";
+   host.style.cssText = "position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:3000;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;max-width:90vw;";
+   document.body.appendChild(host);
+ }
+ const t = document.createElement("div");
+ t.textContent = mesaj;
+ t.style.cssText = "background:#1D1D1F;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:600;line-height:1.4;padding:11px 16px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.18);opacity:0;transform:translateY(8px);transition:opacity .22s ease,transform .22s ease;text-align:center;";
+ host.appendChild(t);
+ requestAnimationFrame(() => { t.style.opacity = "1"; t.style.transform = "translateY(0)"; });
+ setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(() => t.remove(), 250); }, 2600);
+}
+
 // Açılır/kapanır bölüm kartı
 function BolumKart({ ikon, renk, baslik, ozet, items }) {
  const [ac, setAc] = useState(false);
@@ -4736,7 +4754,7 @@ function TarifModal({ tarif, onKapat }) {
           const liste = tarif.malzeme.join("\n");
           const msg = `🛒 ${tarif.baslik} için alışveriş listesi:\n\n${liste}\n\nBesin Dedektifi tarifi`;
           if (navigator.share) { navigator.share({ title:"Alışveriş Listesi", text:msg }).catch(()=>{}); }
-          else { navigator.clipboard.writeText(msg).then(()=>alert("Liste kopyalandı!")).catch(()=>{}); }
+          else { navigator.clipboard.writeText(msg).then(()=>bdToast("Liste kopyalandı!")).catch(()=>{}); }
         }} style={{ width:"100%", marginTop:16, background: C.yesil, border:"none", borderRadius:12, padding:"12px 0", color:"#fff", fontWeight:700, fontSize:14, cursor:"pointer" }}>
           📤 Tüm Malzeme Listesini Paylaş
         </button>
@@ -5143,7 +5161,7 @@ function KameraOCR({ onMetin, onIptal }) {
  onMetin(metin);
  } catch (e) {
  console.error("OCR hatası:", e);
- alert("Metin okunamadı: " + (e.message || "Bilinmeyen hata") + ". Tekrar dene veya manuel giriş yap.");
+ bdToast("Metin okunamadı: " + (e.message || "Bilinmeyen hata") + ". Tekrar dene veya manuel giriş yap.");
  setDurum("kirp");
  }
  }
@@ -6750,10 +6768,10 @@ export default function App() {
  )}
  {sonuclar.length === 0 ? (
  <>
- <div style={{ background: C.y, border: `1px solid ${C.turuncu}40`, borderRadius: 18, padding: 28, textAlign: "center", margin: "20px 0" }}>
- <div style={{ width: 60, height: 60, borderRadius: "50%", background: C.turuncu + "20", border: `2px solid ${C.turuncu}`, color: C.turuncu, fontSize: 32, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontWeight: 700 }}>?</div>
- <div style={{ color: C.turuncu, fontSize: 18, fontWeight: 700, marginBottom: 10 }}>Arşiv Kaydı Bulunamadı</div>
- <p style={{ color: C.metin, fontSize: 14, lineHeight: 1.7, marginBottom: 14 }}>Bu madde için henüz bilimsel arşiv kaydımız yok — topluluk katkısıyla ekleniyor.</p>
+ <div style={{ background: C.y, border: `1px solid ${C.yesil}40`, borderRadius: 18, padding: 28, textAlign: "center", margin: "20px 0" }}>
+ <div style={{ width: 60, height: 60, borderRadius: "50%", background: C.yesil + "18", border: `2px solid ${C.yesil}`, color: C.yesil, fontSize: 34, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontWeight: 700 }}>✓</div>
+ <div style={{ color: C.yesil, fontSize: 18, fontWeight: 700, marginBottom: 10 }}>Tertemiz Görünüyor</div>
+ <p style={{ color: C.metin, fontSize: 14, lineHeight: 1.7, marginBottom: 14 }}>Bu üründe arşivimizdeki zararlı maddelerden iz bulunamadı. Yine de etiketin tamamını okumayı ihmal etme — kaydımızda olmayan maddeler de bulunabilir.</p>
  <div style={{ background: C.bg, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, marginBottom: 16, textAlign: "left" }}>
  <div style={{ color: C.altin, fontSize: 13, fontWeight: 700, marginBottom: 6 }}>Genel Uyarı</div>
  <p style={{ color: C.soluk, fontSize: 13, lineHeight: 1.6, margin: 0 }}>Etikette <strong style={{ color: C.metin }}>E</strong> ile başlayan kod veya tanımadığın <strong style={{ color: C.metin }}>kimyasal isim</strong> varsa dikkatli ol. Mümkünse <strong style={{ color: C.metin }}>doğal alternatif</strong> tercih et.</p>
@@ -6768,12 +6786,12 @@ export default function App() {
           if (navigator.share) {
             navigator.share({ title: "Besin Dedektifi", text: metin }).catch(()=>{});
           } else {
-            navigator.clipboard.writeText(metin).then(()=>alert("Kopyalandı! Arkadaşına yapıştır.")).catch(()=>alert("Paylaşım desteklenmiyor."));
+            navigator.clipboard.writeText(metin).then(()=>bdToast("Kopyalandı! Arkadaşına yapıştır.")).catch(()=>bdToast("Paylaşım desteklenmiyor."));
           }
         }}>Sonuçları Paylaş</button>
         <button style={{ ...S.anaBtn, background: "transparent", border: `1px solid ${C.s}`, color: C.soluk, marginTop: 8 }} onClick={() => {
-          if (!seslerAcik) { alert("Ses kapalı. Üstteki hoparlör ikonundan açabilirsin."); return; }
-          if (!("speechSynthesis" in window)) { alert("Tarayıcınız sesli okumayı desteklemiyor."); return; }
+          if (!seslerAcik) { bdToast("Ses kapalı. Üstteki hoparlör ikonundan açabilirsin."); return; }
+          if (!("speechSynthesis" in window)) { bdToast("Tarayıcınız sesli okumayı desteklemiyor."); return; }
           const synth = window.speechSynthesis;
           synth.cancel();
           if (synth.paused) synth.resume();
@@ -6814,7 +6832,7 @@ export default function App() {
             if (navigator.share) {
               navigator.share({ title: "Şifalı Sepet", text: msg }).catch(()=>{});
             } else {
-              navigator.clipboard.writeText(msg).then(()=>alert("Şifalı sepet kopyalandı!")).catch(()=>{});
+              navigator.clipboard.writeText(msg).then(()=>bdToast("Şifalı sepet kopyalandı!")).catch(()=>{});
             }
           }}>Şifalı Sepete Dönüştür ({sonuclar.filter(r=>r.risk==="kritik"||r.risk==="yuksek").length} ürün)</button>
         )}
@@ -6823,6 +6841,27 @@ export default function App() {
  </>
  ) : (
  <>
+ {(() => {
+   const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
+   const yuk = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
+   const skor = Math.max(5, Math.round(100 - yuk * 11));
+   const sRenk = skor >= 70 ? C.yesil : skor >= 40 ? C.turuncu : C.kirmizi;
+   const cevre = 2 * Math.PI * 34;
+   return (
+     <div style={{ display: "flex", alignItems: "center", gap: 14, background: C.y, border: `1.5px solid ${sRenk}55`, borderRadius: 18, padding: 14, marginBottom: 12 }}>
+       <svg width="84" height="84" viewBox="0 0 84 84" style={{ flexShrink: 0 }}>
+         <circle cx="42" cy="42" r="34" fill="none" stroke={C.s} strokeWidth="8" />
+         <circle cx="42" cy="42" r="34" fill="none" stroke={sRenk} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${cevre * skor / 100} ${cevre}`} transform="rotate(-90 42 42)" />
+         <text x="42" y="40" textAnchor="middle" fill={sRenk} fontSize="22" fontWeight="800" fontFamily="Inter, sans-serif">{skor}</text>
+         <text x="42" y="55" textAnchor="middle" fill={C.cok} fontSize="9" fontWeight="700" fontFamily="Inter, sans-serif">/ 100</text>
+       </svg>
+       <div>
+         <div style={{ color: sRenk, fontSize: 15, fontWeight: 800 }}>Temizlik Skoru</div>
+         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginTop: 3 }}>{skor >= 70 ? "Görece temiz — yine de etiketi oku." : skor >= 40 ? "Orta riskli — dikkatli tüket." : "Yüksek riskli — alternatif düşün."}</div>
+       </div>
+     </div>
+   );
+ })()}
  {(() => {
  const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
  const zararli = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
