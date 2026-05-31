@@ -60,8 +60,8 @@ function BolumKart({ ikon, renk, baslik, ozet, items }) {
 
 /* ── SU ATM · Aqua ATM (Besin Dedektifi) ──────── */
 const ATM_KONUMLAR = [
- { ad: "Şehitkamil · İncilipınar", not: "Besin Dedektifi · Aqua ATM", lat: 37.0662, lng: 37.3833, durum: "Yakında" },
- { ad: "Şahinbey · Bağlar", not: "Besin Dedektifi · Aqua ATM", lat: 37.0560, lng: 37.3690, durum: "Yakında" },
+ { ad: "Şahinbey · Karataş", not: "Besin Dedektifi · Aqua ATM", lat: 37.0380, lng: 37.3300, durum: "Yakında" },
+ { ad: "Şehitkamil · Kale önü", not: "Besin Dedektifi · Aqua ATM", lat: 37.0647, lng: 37.3829, durum: "Yakında" },
 ];
 
 // Haversine — iki konum arası km
@@ -130,7 +130,11 @@ function SuAtmSekmesi() {
    ? [...ATM_KONUMLAR].map(k => ({ ...k, mesafe: atmMesafe(konum.lat, konum.lng, k.lat, k.lng) })).sort((a, b) => a.mesafe - b.mesafe)
    : ATM_KONUMLAR;
 
- const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "5L · 3₺ / 19L · 12₺", "Plastik Atığını Azalt"];
+ const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "11.5 pH'a kadar Alkali", "Plastik Atığını Azalt"];
+ const fiyatlar = [
+   { miktar: "5 Lt", fiyat: "15 ₺" },
+   { miktar: "19 Lt", fiyat: "50 ₺" },
+ ];
 
  return (
    <div>
@@ -151,12 +155,33 @@ function SuAtmSekmesi() {
        ))}
      </div>
 
-     <button onClick={() => window.open("https://aquaatm.com.tr/", "_blank", "noopener")} style={{ width: "100%", marginTop: 14, background: C.altin, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Siteye Git →</button>
+     {/* FİYAT LİSTESİ */}
+     <div style={{ marginTop: 18 }}>
+       <div style={S.kB}>FİYAT LİSTESİ</div>
+       <div style={{ display: "flex", gap: 8 }}>
+         {fiyatlar.map(f => (
+           <div key={f.miktar} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}14, ${C.y2})`, border: `1px solid ${C.altin}40`, borderRadius: 14, padding: "14px 10px", textAlign: "center" }}>
+             <div style={{ color: C.soluk, fontSize: 12, fontWeight: 700 }}>{f.miktar}</div>
+             <div style={{ color: C.altin, fontSize: 24, fontWeight: 800, lineHeight: 1.1, marginTop: 4 }}>{f.fiyat}</div>
+           </div>
+         ))}
+       </div>
+       <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+         <div style={{ flex: 1, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+           <span style={{ color: C.soluk, fontSize: 12, fontWeight: 700 }}>C Vitaminli</span>
+           <span style={{ color: C.altin, fontSize: 13, fontWeight: 800 }}>✓ Var</span>
+         </div>
+         <div style={{ flex: 1, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+           <span style={{ color: C.soluk, fontSize: 12, fontWeight: 700 }}>pH Değeri</span>
+           <span style={{ color: C.altin, fontSize: 13, fontWeight: 800 }}>11.5'a kadar</span>
+         </div>
+       </div>
+     </div>
 
      {/* HARİTA / KONUMLAR */}
      <div style={{ marginTop: 22 }}>
-       <div style={S.kB}>HARİTADA MAKİNALAR</div>
-       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 10 }}>Antep'teki Aqua ATM makinalarının konumları. En yakını cihaz konumuna göre sıralanır.</div>
+       <div style={S.kB}>BESİN DEDEKTİFİ SU ATM MAKİNA KONUMLARI</div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 10 }}>En yakın makina cihaz konumuna göre sıralanır.</div>
 
        <button onClick={enYakinBul} disabled={yukleniyor} style={{ width: "100%", background: konum ? C.y2 : `${C.altin}14`, color: C.altin, border: `1px solid ${C.altin}66`, borderRadius: 12, padding: "11px", fontWeight: 700, fontSize: 13, cursor: yukleniyor ? "default" : "pointer", fontFamily: "inherit", marginBottom: durum ? 6 : 10 }}>
          {konum ? "↻ Konumu Güncelle" : "◎ En Yakın ATM'yi Bul"}
@@ -183,11 +208,13 @@ function SuAtmSekmesi() {
        <div style={S.kB}>BAYİLİK & İLETİŞİM</div>
        <div style={{ background: `linear-gradient(135deg, ${C.altin}1A, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
          <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ ANA BAYİ — ANTEP</div>
-         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Antep'te <b>2 Aqua ATM</b> makinası Besin Dedektifi çatısı altında hizmete giriyor. Üzerinde <b>"Besin Dedektifi"</b> ibaresiyle, güvenilir ve uygun fiyatlı su.</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Antep'teki Besin Dedektifi Su ATM makinaları, üzerinde <b>"Besin Dedektifi"</b> ibaresiyle hizmet veriyor. Temiz, C vitaminli ve uygun fiyatlı su.</div>
        </div>
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16 }}>
-         <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ MAKİNAN MI VAR?</div>
-         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Türkiye genelinde <b>700+ Aqua ATM</b> bulunuyor. Kendi makinanı haritaya ekle, müşterilerin seni bulsun — aylık <b>100₺</b>. Başvuru kanalı yakında açılacak.</div>
+         <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ BAYİLİK İÇİN</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>Kendi makinanı Besin Dedektifi haritasına eklemek, bayilik ve iş birliği için bize e-posta gönder.</div>
+         <a href={`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent("Su ATM Bayilik Başvurusu")}`} style={{ display: "block", width: "100%", background: C.altin, color: "#fff", padding: "12px", borderRadius: 12, fontWeight: 700, fontSize: 14, textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}>Bayilik için Mail Gönder</a>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 8, textAlign: "center" }}>besindedektifii@gmail.com</div>
        </div>
        <div style={{ color: C.cok, fontSize: 11, lineHeight: 1.6, marginTop: 12, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
          Fiyatlar ve hizmet durumu bölgeye göre değişebilir. Bilgiler tanıtım amaçlıdır.
