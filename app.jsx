@@ -8338,28 +8338,28 @@ export default function App() {
      <div style={S.ipucu}>Osmanlı Tıbb-ı Nebevi ve İlm-i Nücum geleneğinde her burç belirli bir organ ve mizaç ile eşleşir. Sabuncuoğlu Şerefeddin gibi hekimbaşılar hastayı bu çerçevede değerlendirirdi: demevi (kan-ateş), safravi (öd-ateş), sevdevi (kara öd-toprak), balgami (balgam-su).</div>
 
      {profil && BURCLAR[profil.burc] && (
-       <div style={{ background: profil.renk + "22", border: `2px solid ${profil.renk}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
-         <div style={{ color: profil.renk, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN BURCUN</div>
+       <div style={{ background: C.y2, border: `1px solid ${C.altin}55`, borderLeft: `3px solid ${C.altin}`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN BURCUN</div>
          <div style={{ fontSize: 22, fontWeight: 700, color: C.metin, marginBottom: 8 }}>{profil.burc}</div>
          <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7 }}>
-           <div><b style={{ color: profil.renk }}>Element:</b> {BURCLAR[profil.burc].element} · <b style={{ color: profil.renk }}>Mizaç:</b> {BURCLAR[profil.burc].mizac}</div>
-           <div><b style={{ color: profil.renk }}>Organ bölgen:</b> {BURCLAR[profil.burc].organ}</div>
-           <div><b style={{ color: profil.renk }}>Dost bitkiler:</b> {BURCLAR[profil.burc].bitki}</div>
+           <div><b style={{ color: C.altin }}>Element:</b> {BURCLAR[profil.burc].element} · <b style={{ color: C.altin }}>Mizaç:</b> {BURCLAR[profil.burc].mizac}</div>
+           <div><b style={{ color: C.altin }}>Organ bölgen:</b> {BURCLAR[profil.burc].organ}</div>
+           <div><b style={{ color: C.altin }}>Dost bitkiler:</b> {BURCLAR[profil.burc].bitki}</div>
            <div style={{ marginTop: 6, color: C.soluk, fontSize: 12, fontStyle: "italic" }}>{BURCLAR[profil.burc].tavsiye}</div>
          </div>
        </div>
      )}
 
      {Object.entries(BURCLAR).map(([ad, b]) => (
-       <div key={ad} style={{ background: C.y, border: `1px solid ${b.renk}40`, borderLeft: `4px solid ${b.renk}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+       <div key={ad} style={{ background: C.y, border: `1px solid ${C.s}`, borderLeft: `3px solid ${C.altin}`, borderRadius: 12, padding: 14, marginBottom: 8 }}>
          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-           <div style={{ color: b.renk, fontSize: 16, fontWeight: 700 }}>{ad}</div>
+           <div style={{ color: C.metin, fontSize: 16, fontWeight: 700 }}>{ad}</div>
            <div style={{ color: C.soluk, fontSize: 11 }}>{b.element} · {b.mizac}</div>
          </div>
-         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Organ:</b> {b.organ}</div>
-         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: b.renk }}>Bitki:</b> {b.bitki}</div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: C.altin }}>Organ:</b> {b.organ}</div>
+         <div style={{ color: C.metin, fontSize: 13, marginBottom: 5 }}><b style={{ color: C.altin }}>Bitki:</b> {b.bitki}</div>
          <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginBottom: 6 }}>{b.tavsiye}</div>
-         <div style={{ color: "#FF6666", fontSize: 11, fontWeight: 600 }}>⚠ Kaçın: {b.kacinmasi.join(" · ")}</div>
+         <div style={{ color: C.soluk, fontSize: 11, fontWeight: 600 }}>⚠ Kaçın: {b.kacinmasi.join(" · ")}</div>
        </div>
      ))}
 
