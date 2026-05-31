@@ -5049,7 +5049,7 @@ function KameraOCR({ onMetin, onIptal }) {
 
  function fotografCek() {
  if (!videoRef.current || !canvasRef.current) {
- alert("Kamera henüz hazır değil, biraz bekle.");
+ bdToast("Kamera henüz hazır değil, biraz bekle.");
  return;
  }
  const v = videoRef.current, c = canvasRef.current;
