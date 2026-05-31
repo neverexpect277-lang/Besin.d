@@ -8529,19 +8529,23 @@ export default function App() {
      </div>
      </>)}
 
+     <button onClick={() => setAsudeArsiv(v => !v)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: "13px 16px", marginBottom: 12, cursor: "pointer", fontFamily: "inherit" }}>
+       <span style={{ color: C.metin, fontWeight: 700, fontSize: 13, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</span>
+       <span style={{ color: C.soluk, fontSize: 12, transform: asudeArsiv ? "rotate(180deg)" : "none", transition: "transform .2s" }}>▾</span>
+     </button>
+     {asudeArsiv && (
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
-       <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 12, letterSpacing: 0.5 }}>ŞİFA MAKAMLARI ARŞİVİ</div>
        <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 12, fontStyle: "italic" }}>Osmanlı darüşşifalarında her makam belirli bir organ ve mizaca eşlenirdi. Aşağıdaki arşiv tarihsel kaynaklara dayanır; modern bilimsel kanıt sınırlıdır. Bir makama dokunarak şadırvanda o makamı dinleyebilirsin.</div>
        {Object.entries(MAKAMLAR).map(([isim, m]) => {
          const calan = asudeOynar && asudeMakam === isim;
          return (
-         <button key={isim} onClick={() => asudeBaslat(isim)} style={{ display: "block", width: "100%", textAlign: "left", background: calan ? `${m.renk}1A` : C.y2, border: `1px solid ${calan ? m.renk : C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${m.renk}`, cursor: "pointer", fontFamily: "inherit" }}>
+         <button key={isim} onClick={() => asudeBaslat(isim)} style={{ display: "block", width: "100%", textAlign: "left", background: calan ? `${C.altin}10` : C.y2, border: `1px solid ${calan ? C.altin : C.s}`, borderRadius: 10, padding: 12, marginBottom: 8, borderLeft: `3px solid ${calan ? C.altin : C.s}`, cursor: "pointer", fontFamily: "inherit" }}>
            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
              <div style={{ flex: 1 }}>
-               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı {calan && <span style={{ color: m.renk, fontSize: 11 }}>· çalıyor ≈</span>}</div>
-               <div style={{ color: m.renk, fontSize: 11 }}>{m.organ}</div>
+               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{isim} Makamı {calan && <span style={{ color: C.altin, fontSize: 11, fontWeight: 700 }}>· çalıyor ≈</span>}</div>
+               <div style={{ color: C.soluk, fontSize: 11, marginTop: 1 }}>{m.organ}</div>
              </div>
-             <div style={{ color: m.renk, fontSize: 11, fontWeight: 700 }}>{m.vakit}</div>
+             <div style={{ color: C.soluk, fontSize: 11, fontWeight: 600 }}>{m.vakit}</div>
            </div>
            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 4 }}>{m.etki}</div>
            <div style={{ color: C.cok, fontSize: 10 }}>{m.vakit} · {m.aletler}</div>
@@ -8549,13 +8553,14 @@ export default function App() {
          );
        })}
        {profil && MAKAMLAR[profil.makam] && (
-         <div style={{ background: `linear-gradient(135deg, ${MAKAMLAR[profil.makam].renk}20, ${C.y2})`, border: `1px solid ${MAKAMLAR[profil.makam].renk}40`, borderRadius: 10, padding: 14, marginTop: 8, textAlign: "center" }}>
+         <div style={{ background: C.y2, border: `1px solid ${C.altin}55`, borderRadius: 10, padding: 14, marginTop: 8, textAlign: "center" }}>
            <div style={{ color: C.altin, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 }}>SENİN ŞİFA MAKAMIN</div>
-           <div style={{ color: MAKAMLAR[profil.makam].renk, fontSize: 18, fontWeight: 700 }}>{profil.makam}</div>
+           <div style={{ color: C.metin, fontSize: 18, fontWeight: 700 }}>{profil.makam}</div>
            <div style={{ color: C.soluk, fontSize: 12, marginTop: 2 }}>{MAKAMLAR[profil.makam].etki}</div>
          </div>
        )}
      </div>
+     )}
 
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KAYNAK & TARİHSEL DAYANAK</div>
