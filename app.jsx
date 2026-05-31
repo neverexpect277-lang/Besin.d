@@ -6178,21 +6178,25 @@ export default function App() {
  const [asudeNefes, setAsudeNefes] = useState(5);
  const [asudeHakkinda, setAsudeHakkinda] = useState(false);
  const asudeRef = useRef(null);
+ const audioCtxRef = useRef(null);
  const asudeTimerRef = useRef(null);
 
  const asudeDurdur = () => {
    if (asudeTimerRef.current) { clearInterval(asudeTimerRef.current); asudeTimerRef.current = null; }
-   const eng = asudeRef.current;
-   if (eng) {
+   const eng = asudeRef.current, ac = audioCtxRef.current;
+   if (eng && ac) {
      eng.stopped = true;
      (eng.timers || []).forEach(id => clearTimeout(id));
      try {
-       const t = eng.ac.currentTime;
+       const t = ac.currentTime;
        eng.master.gain.cancelScheduledValues(t);
        eng.master.gain.setValueAtTime(eng.master.gain.value, t);
-       eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.8);
-       setTimeout(() => { try { eng.ac.close(); } catch {} }, 900);
-     } catch { try { eng.ac.close(); } catch {} }
+       eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+     } catch {}
+     setTimeout(() => {
+       (eng.sources || []).forEach(s => { try { s.stop(); } catch {} });
+       try { eng.master.disconnect(); } catch {}
+     }, 700);
      asudeRef.current = null;
    }
    setAsudeOynar(false);
@@ -6204,113 +6208,122 @@ export default function App() {
    asudeDurdur();
    const makam = makamAdi || asudeMakam || (profil && MAKAMLAR[profil.makam] ? profil.makam : "Rast");
    setAsudeMakam(makam);
-   try {
-     const ac = new (window.AudioContext || window.webkitAudioContext)();
-     ac.resume().catch(() => {}); // gesture içinde koşulsuz: bazı tarayıcılar "running" raporlayıp askıya alır
-     // sessiz unlock buffer (iOS/Safari otoplay kilidi)
-     try { const ub = ac.createBufferSource(); ub.buffer = ac.createBuffer(1, 1, ac.sampleRate); ub.connect(ac.destination); ub.start(0); } catch {}
-     const comp = ac.createDynamicsCompressor();
-     comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
-     comp.connect(ac.destination);
-     const master = ac.createGain();
-     master.gain.setValueAtTime(0.0001, ac.currentTime);
-     master.gain.linearRampToValueAtTime(0.85, ac.currentTime + 2.5);
-     master.connect(comp);
+   let ac;
+   try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch { return; }
+   // iOS/Safari otoplay kilidi: gesture içinde sessiz unlock buffer
+   try { const ub = ac.createBufferSource(); ub.buffer = ac.createBuffer(1, 1, ac.sampleRate); ub.connect(ac.destination); ub.start(0); } catch {}
+   const eng = { ac, master: null, timers: [], stopped: false };
+   asudeRef.current = eng;
 
-     // Darüşşifa yankısı — sentetik impulse reverb
-     const conv = ac.createConvolver();
-     { const len = Math.floor(ac.sampleRate * 2.6), ib = ac.createBuffer(2, len, ac.sampleRate);
-       for (let ch = 0; ch < 2; ch++) { const cd = ib.getChannelData(ch); for (let i = 0; i < len; i++) cd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
-       conv.buffer = ib; }
-     const wet = ac.createGain(); wet.gain.value = 0.35; conv.connect(wet).connect(master);
+   // Grafiği resume tamamlandıktan SONRA kur — iOS'ta context "running" olmadan
+   // currentTime donar, ses rampası ilerlemez ve hiç ses çıkmazdı.
+   const kur = () => {
+     if (eng.stopped) return;
+     try {
+       const comp = ac.createDynamicsCompressor();
+       comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
+       comp.connect(ac.destination);
+       const master = ac.createGain();
+       const t = ac.currentTime;
+       master.gain.setValueAtTime(0.0001, t);
+       master.gain.linearRampToValueAtTime(0.9, t + 1.2);
+       master.connect(comp);
+       eng.master = master;
 
-     const eng = { ac, master, timers: [], stopped: false };
-     const sn = ac.sampleRate;
+       // Darüşşifa yankısı — sentetik impulse reverb
+       const conv = ac.createConvolver();
+       { const len = Math.floor(ac.sampleRate * 2.6), ib = ac.createBuffer(2, len, ac.sampleRate);
+         for (let ch = 0; ch < 2; ch++) { const cd = ib.getChannelData(ch); for (let i = 0; i < len; i++) cd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+         conv.buffer = ib; }
+       const wet = ac.createGain(); wet.gain.value = 0.35; conv.connect(wet).connect(master);
 
-     // SU — dingin akış yatağı (kahverengi gürültü, çok alçak geçiren)
-     const bedBuf = ac.createBuffer(1, 2 * sn, sn), bd = bedBuf.getChannelData(0);
-     let bp = 0; for (let i = 0; i < bd.length; i++) { const w = Math.random() * 2 - 1; bp = (bp + 0.02 * w) / 1.02; bd[i] = bp * 3.0; }
-     const bed = ac.createBufferSource(); bed.buffer = bedBuf; bed.loop = true;
-     const bedLp = ac.createBiquadFilter(); bedLp.type = "lowpass"; bedLp.frequency.value = 420;
-     const bedG = ac.createGain(); bedG.gain.value = 0.10;
-     bed.connect(bedLp).connect(bedG).connect(master); bed.start();
+       const sn = ac.sampleRate;
 
-     // SU — şırıltı (beyaz gürültü, bandpass + yavaş LFO)
-     const triBuf = ac.createBuffer(1, 2 * sn, sn), tdd = triBuf.getChannelData(0);
-     for (let i = 0; i < tdd.length; i++) tdd[i] = Math.random() * 2 - 1;
-     const tri = ac.createBufferSource(); tri.buffer = triBuf; tri.loop = true;
-     const triBp = ac.createBiquadFilter(); triBp.type = "bandpass"; triBp.frequency.value = 1500; triBp.Q.value = 0.8;
-     const triG = ac.createGain(); triG.gain.value = 0.06;
-     tri.connect(triBp).connect(triG).connect(master); tri.start();
-     const triLfo = ac.createOscillator(); triLfo.frequency.value = 0.25;
-     const triLfoG = ac.createGain(); triLfoG.gain.value = 600;
-     triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start();
+       // SU — dingin akış yatağı (kahverengi gürültü, çok alçak geçiren)
+       const bedBuf = ac.createBuffer(1, 2 * sn, sn), bd = bedBuf.getChannelData(0);
+       let bp = 0; for (let i = 0; i < bd.length; i++) { const w = Math.random() * 2 - 1; bp = (bp + 0.02 * w) / 1.02; bd[i] = bp * 3.0; }
+       const bed = ac.createBufferSource(); bed.buffer = bedBuf; bed.loop = true;
+       const bedLp = ac.createBiquadFilter(); bedLp.type = "lowpass"; bedLp.frequency.value = 420;
+       const bedG = ac.createGain(); bedG.gain.value = 0.13;
+       bed.connect(bedLp).connect(bedG).connect(master); bed.start();
 
-     // SU — rastgele damlalar (cam "plink", reverb'e gider)
-     const damla = () => {
-       if (eng.stopped) return;
-       const t0 = ac.currentTime, f0 = 900 + Math.random() * 900;
-       const o = ac.createOscillator(); o.type = "sine";
-       o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, t0 + 0.12);
-       const g = ac.createGain();
-       g.gain.setValueAtTime(0.0001, t0);
-       g.gain.exponentialRampToValueAtTime(0.18 + Math.random() * 0.12, t0 + 0.005);
-       g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
-       const bf = ac.createBiquadFilter(); bf.type = "bandpass"; bf.frequency.value = f0; bf.Q.value = 4;
-       o.connect(g).connect(bf); bf.connect(master); bf.connect(conv);
-       o.start(t0); o.stop(t0 + 0.2);
-       eng.timers.push(setTimeout(damla, 220 + Math.random() * 700));
-     };
-     eng.timers.push(setTimeout(damla, 400));
+       // SU — şırıltı (beyaz gürültü, bandpass + yavaş LFO)
+       const triBuf = ac.createBuffer(1, 2 * sn, sn), tdd = triBuf.getChannelData(0);
+       for (let i = 0; i < tdd.length; i++) tdd[i] = Math.random() * 2 - 1;
+       const tri = ac.createBufferSource(); tri.buffer = triBuf; tri.loop = true;
+       const triBp = ac.createBiquadFilter(); triBp.type = "bandpass"; triBp.frequency.value = 1500; triBp.Q.value = 0.8;
+       const triG = ac.createGain(); triG.gain.value = 0.09;
+       tri.connect(triBp).connect(triG).connect(master); tri.start();
+       const triLfo = ac.createOscillator(); triLfo.frequency.value = 0.25;
+       const triLfoG = ac.createGain(); triLfoG.gain.value = 600;
+       triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start();
 
-     // MAKAM — ney-vâri ezgi: makam karar perdesi üzerine yumuşak, makam-nötr huzur seyri
-     const f = MAKAM_KARAR_HZ[makam] || 165;
-     const motif = [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 4 / 3, 6 / 5, 9 / 8];
-     let mi = 0;
-     const neyVoice = (freq, t0, sure) => {
-       const o1 = ac.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
-       const o2 = ac.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2.005;
-       const vib = ac.createOscillator(); vib.frequency.value = 5;
-       const vibG = ac.createGain(); vibG.gain.value = freq * 0.006;
-       vib.connect(vibG); vibG.connect(o1.frequency); vibG.connect(o2.frequency); vib.start(t0); vib.stop(t0 + sure + 0.3);
-       const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800;
-       const g = ac.createGain();
-       g.gain.setValueAtTime(0.0001, t0);
-       g.gain.linearRampToValueAtTime(0.16, t0 + 0.5);
-       g.gain.setValueAtTime(0.16, t0 + sure - 0.6);
-       g.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);
-       const og2 = ac.createGain(); og2.gain.value = 0.3;
-       o1.connect(g); o2.connect(og2).connect(g);
-       g.connect(lp); lp.connect(master); lp.connect(conv);
-       o1.start(t0); o1.stop(t0 + sure + 0.1); o2.start(t0); o2.stop(t0 + sure + 0.1);
-     };
-     const ezgi = () => {
-       if (eng.stopped) return;
-       const sure = 2.6;
-       neyVoice(f * motif[mi % motif.length], ac.currentTime + 0.05, sure);
-       mi++;
-       eng.timers.push(setTimeout(ezgi, (sure - 0.5) * 1000));
-     };
-     eng.timers.push(setTimeout(ezgi, 800));
+       // SU — rastgele damlalar (cam "plink", reverb'e gider)
+       const damla = () => {
+         if (eng.stopped) return;
+         const t0 = ac.currentTime, f0 = 900 + Math.random() * 900;
+         const o = ac.createOscillator(); o.type = "sine";
+         o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, t0 + 0.12);
+         const g = ac.createGain();
+         g.gain.setValueAtTime(0.0001, t0);
+         g.gain.exponentialRampToValueAtTime(0.2 + Math.random() * 0.12, t0 + 0.005);
+         g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
+         const bf = ac.createBiquadFilter(); bf.type = "bandpass"; bf.frequency.value = f0; bf.Q.value = 4;
+         o.connect(g).connect(bf); bf.connect(master); bf.connect(conv);
+         o.start(t0); o.stop(t0 + 0.2);
+         eng.timers.push(setTimeout(damla, 220 + Math.random() * 700));
+       };
+       eng.timers.push(setTimeout(damla, 400));
 
-     asudeRef.current = eng;
-   } catch { return; }
+       // MAKAM — ney-vâri ezgi: makam karar perdesi üzerine yumuşak huzur seyri
+       const f = MAKAM_KARAR_HZ[makam] || 165;
+       const motif = [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 4 / 3, 6 / 5, 9 / 8];
+       let mi = 0;
+       const neyVoice = (freq, t0, sure) => {
+         const o1 = ac.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
+         const o2 = ac.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2.005;
+         const vib = ac.createOscillator(); vib.frequency.value = 5;
+         const vibG = ac.createGain(); vibG.gain.value = freq * 0.006;
+         vib.connect(vibG); vibG.connect(o1.frequency); vibG.connect(o2.frequency); vib.start(t0); vib.stop(t0 + sure + 0.3);
+         const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800;
+         const g = ac.createGain();
+         g.gain.setValueAtTime(0.0001, t0);
+         g.gain.linearRampToValueAtTime(0.22, t0 + 0.5);
+         g.gain.setValueAtTime(0.22, t0 + sure - 0.6);
+         g.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);
+         const og2 = ac.createGain(); og2.gain.value = 0.3;
+         o1.connect(g); o2.connect(og2).connect(g);
+         g.connect(lp); lp.connect(master); lp.connect(conv);
+         o1.start(t0); o1.stop(t0 + sure + 0.1); o2.start(t0); o2.stop(t0 + sure + 0.1);
+       };
+       const ezgi = () => {
+         if (eng.stopped) return;
+         const sure = 2.6;
+         neyVoice(f * motif[mi % motif.length], ac.currentTime + 0.05, sure);
+         mi++;
+         eng.timers.push(setTimeout(ezgi, (sure - 0.5) * 1000));
+       };
+       eng.timers.push(setTimeout(ezgi, 800));
+     } catch { asudeDurdur(); return; }
 
-   setAsudeOynar(true);
-   setAsudeKalan(asudeSure);
-   setAsudeNefes(5);
-   const bitis = Date.now() + asudeSure * 1000;
-   asudeTimerRef.current = setInterval(() => {
-     const kalan = Math.max(0, Math.round((bitis - Date.now()) / 1000));
-     setAsudeKalan(kalan);
-     const gecen = asudeSure - kalan;
-     setAsudeNefes(gecen > asudeSure * 0.66 ? 9 : gecen > asudeSure * 0.33 ? 7 : 5);
-     if (kalan <= 0) asudeDurdur();
-   }, 1000);
+     setAsudeOynar(true);
+     setAsudeKalan(asudeSure);
+     setAsudeNefes(5);
+     const bitis = Date.now() + asudeSure * 1000;
+     asudeTimerRef.current = setInterval(() => {
+       const kalan = Math.max(0, Math.round((bitis - Date.now()) / 1000));
+       setAsudeKalan(kalan);
+       const gecen = asudeSure - kalan;
+       setAsudeNefes(gecen > asudeSure * 0.66 ? 9 : gecen > asudeSure * 0.33 ? 7 : 5);
+       if (kalan <= 0) asudeDurdur();
+     }, 1000);
+   };
+
+   Promise.resolve(ac.resume()).then(kur).catch(kur);
  };
 
  useEffect(() => { if (sekme !== "asude" && asudeOynar) asudeDurdur(); }, [sekme]);
- useEffect(() => () => asudeDurdur(), []);
+ useEffect(() => () => { asudeDurdur(); try { audioCtxRef.current && audioCtxRef.current.close(); } catch {} }, []);
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
