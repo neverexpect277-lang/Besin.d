@@ -80,15 +80,6 @@ const MAKAMLAR = {
  "Uşşak": { organ: "Lenf · Ayak · Bağışıklık", etki: "Bağışıklık, lenf düzeni, ayak sağlığı, uyku, ruh hali dengesi", vakit: "Öğle–Öğleden sonra", aletler: "Ney, Tanbur", renk: "#4ECDC4" },
 };
 
-/* Makam karar perdesi temel frekansları (Hz) — Bolahenk akort, Yegâh=110 Hz temel alınarak
-   Türk müziği ana dizi aralıklarıyla (9/8·10/9·16/15…) türetildi: Irak≈137.5, Rast≈146.7, Dügâh≈165.
-   Şadırvân çaların ney-vâri drone temelidir; uydurma değil, perde nazariyesine dayanır. */
-const MAKAM_KARAR_HZ = {
- "Rast": 146.7, "Irak": 137.5, "İsfahan": 165, "Zirefkend": 165, "Büzürk": 137.5,
- "Zengule": 165, "Rehavi": 146.7, "Hüseyni": 165, "Hicaz": 165, "Nihavend": 146.7,
- "Neva": 165, "Uşşak": 165,
-};
-
 /* ── EŞREF SAATLERİ ─────────────────────────── */
 const ESREF = [
  { saat: "03–05", organ: "Akciğer", ikon: "", eylem: "Derin nefes egzersizleri" },
@@ -6177,143 +6168,35 @@ export default function App() {
  const [asudeKalan, setAsudeKalan] = useState(0);
  const [asudeNefes, setAsudeNefes] = useState(5);
  const [asudeHakkinda, setAsudeHakkinda] = useState(false);
- const asudeRef = useRef(null);
- const audioCtxRef = useRef(null);
+ const suAudioRef = useRef(null);
+ const neyAudioRef = useRef(null);
  const asudeTimerRef = useRef(null);
 
  const asudeDurdur = () => {
    if (asudeTimerRef.current) { clearInterval(asudeTimerRef.current); asudeTimerRef.current = null; }
-   const eng = asudeRef.current;
-   if (eng) {
-     eng.stopped = true;
-     (eng.timers || []).forEach(id => clearTimeout(id));
-     const ac = audioCtxRef.current;
-     try {
-       if (ac && eng.master) {
-         const t = ac.currentTime;
-         eng.master.gain.cancelScheduledValues(t);
-         eng.master.gain.setValueAtTime(eng.master.gain.value, t);
-         eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.6);
-       }
-     } catch {}
-     setTimeout(() => {
-       (eng.sources || []).forEach(s => { try { s.stop(); } catch {} });
-       try { eng.master && eng.master.disconnect(); } catch {}
-     }, 700);
-     asudeRef.current = null;
-   }
+   [suAudioRef, neyAudioRef].forEach(r => { const a = r.current; if (a) { try { a.pause(); a.currentTime = 0; } catch {} } });
    setAsudeOynar(false);
    setAsudeKalan(0);
  };
 
  const asudeBaslat = (makamAdi) => {
-   if (!seslerAcik) return;
    asudeDurdur();
    const makam = makamAdi || asudeMakam || (profil && MAKAMLAR[profil.makam] ? profil.makam : "Rast");
    setAsudeMakam(makam);
-   let ac = audioCtxRef.current;
-   try {
-     if (!ac || ac.state === "closed") { ac = new (window.AudioContext || window.webkitAudioContext)(); audioCtxRef.current = ac; }
-   } catch { return; }
-   // iOS/Safari otoplay kilidi: gesture içinde sessiz unlock buffer
-   try { const ub = ac.createBufferSource(); ub.buffer = ac.createBuffer(1, 1, ac.sampleRate); ub.connect(ac.destination); ub.start(0); } catch {}
-   const eng = { master: null, sources: [], timers: [], stopped: false };
-   asudeRef.current = eng;
 
-   // Grafiği resume tamamlandıktan SONRA kur — iOS'ta context "running" olmadan
-   // currentTime ilerlemez ve hiç ses çıkmaz. Tek kalıcı context kullanılır.
-   const kur = () => {
-     if (eng.stopped || asudeRef.current !== eng || eng.master) return;
+   // Özgün işitsel deneyim: ney + su sesi kayıtları public/ses/ klasörüne eklenince
+   // otomatik çalar. Dosyalar henüz yoksa modül sessiz çalışır; yalnız görsel
+   // (su akışı, dalga, fıskiye) deneyimi oynar. Ses bağlama: bkz. SES_KILAVUZU.
+   if (seslerAcik) {
+     const base = import.meta.env.BASE_URL || "/";
      try {
-       const comp = ac.createDynamicsCompressor();
-       comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
-       comp.connect(ac.destination);
-       const master = ac.createGain();
-       const t = ac.currentTime;
-       master.gain.setValueAtTime(0.0001, t);
-       master.gain.linearRampToValueAtTime(0.9, t + 1.2);
-       master.connect(comp);
-       eng.master = master;
-
-       // Darüşşifa yankısı — sentetik impulse reverb
-       const conv = ac.createConvolver();
-       { const len = Math.floor(ac.sampleRate * 2.6), ib = ac.createBuffer(2, len, ac.sampleRate);
-         for (let ch = 0; ch < 2; ch++) { const cd = ib.getChannelData(ch); for (let i = 0; i < len; i++) cd[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
-         conv.buffer = ib; }
-       const wet = ac.createGain(); wet.gain.value = 0.35; conv.connect(wet).connect(master);
-
-       const sn = ac.sampleRate;
-
-       // SU — dingin akış yatağı (kahverengi gürültü, çok alçak geçiren)
-       const bedBuf = ac.createBuffer(1, 2 * sn, sn), bd = bedBuf.getChannelData(0);
-       let bp = 0; for (let i = 0; i < bd.length; i++) { const w = Math.random() * 2 - 1; bp = (bp + 0.02 * w) / 1.02; bd[i] = bp * 3.0; }
-       const bed = ac.createBufferSource(); bed.buffer = bedBuf; bed.loop = true;
-       const bedLp = ac.createBiquadFilter(); bedLp.type = "lowpass"; bedLp.frequency.value = 420;
-       const bedG = ac.createGain(); bedG.gain.value = 0.13;
-       bed.connect(bedLp).connect(bedG).connect(master); bed.start(); eng.sources.push(bed);
-
-       // SU — şırıltı (beyaz gürültü, bandpass + yavaş LFO)
-       const triBuf = ac.createBuffer(1, 2 * sn, sn), tdd = triBuf.getChannelData(0);
-       for (let i = 0; i < tdd.length; i++) tdd[i] = Math.random() * 2 - 1;
-       const tri = ac.createBufferSource(); tri.buffer = triBuf; tri.loop = true;
-       const triBp = ac.createBiquadFilter(); triBp.type = "bandpass"; triBp.frequency.value = 1500; triBp.Q.value = 0.8;
-       const triG = ac.createGain(); triG.gain.value = 0.09;
-       tri.connect(triBp).connect(triG).connect(master); tri.start(); eng.sources.push(tri);
-       const triLfo = ac.createOscillator(); triLfo.frequency.value = 0.25;
-       const triLfoG = ac.createGain(); triLfoG.gain.value = 600;
-       triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start(); eng.sources.push(triLfo);
-
-       // SU — rastgele damlalar (cam "plink", reverb'e gider)
-       const damla = () => {
-         if (eng.stopped) return;
-         const t0 = ac.currentTime, f0 = 900 + Math.random() * 900;
-         const o = ac.createOscillator(); o.type = "sine";
-         o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f0 * 0.5, t0 + 0.12);
-         const g = ac.createGain();
-         g.gain.setValueAtTime(0.0001, t0);
-         g.gain.exponentialRampToValueAtTime(0.2 + Math.random() * 0.12, t0 + 0.005);
-         g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.18);
-         const bf = ac.createBiquadFilter(); bf.type = "bandpass"; bf.frequency.value = f0; bf.Q.value = 4;
-         o.connect(g).connect(bf); bf.connect(master); bf.connect(conv);
-         o.start(t0); o.stop(t0 + 0.2);
-         eng.timers.push(setTimeout(damla, 220 + Math.random() * 700));
-       };
-       eng.timers.push(setTimeout(damla, 400));
-
-       // MAKAM — ney-vâri ezgi: makam karar perdesi üzerine yumuşak huzur seyri
-       const f = MAKAM_KARAR_HZ[makam] || 165;
-       const motif = [1, 9 / 8, 6 / 5, 4 / 3, 3 / 2, 4 / 3, 6 / 5, 9 / 8];
-       let mi = 0;
-       const neyVoice = (freq, t0, sure) => {
-         const o1 = ac.createOscillator(); o1.type = "triangle"; o1.frequency.value = freq;
-         const o2 = ac.createOscillator(); o2.type = "sine"; o2.frequency.value = freq * 2.005;
-         const vib = ac.createOscillator(); vib.frequency.value = 5;
-         const vibG = ac.createGain(); vibG.gain.value = freq * 0.006;
-         vib.connect(vibG); vibG.connect(o1.frequency); vibG.connect(o2.frequency); vib.start(t0); vib.stop(t0 + sure + 0.3);
-         const lp = ac.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800;
-         const g = ac.createGain();
-         g.gain.setValueAtTime(0.0001, t0);
-         g.gain.linearRampToValueAtTime(0.22, t0 + 0.5);
-         g.gain.setValueAtTime(0.22, t0 + sure - 0.6);
-         g.gain.exponentialRampToValueAtTime(0.0001, t0 + sure);
-         const og2 = ac.createGain(); og2.gain.value = 0.3;
-         o1.connect(g); o2.connect(og2).connect(g);
-         g.connect(lp); lp.connect(master); lp.connect(conv);
-         o1.start(t0); o1.stop(t0 + sure + 0.1); o2.start(t0); o2.stop(t0 + sure + 0.1);
-       };
-       const ezgi = () => {
-         if (eng.stopped) return;
-         const sure = 2.6;
-         neyVoice(f * motif[mi % motif.length], ac.currentTime + 0.05, sure);
-         mi++;
-         eng.timers.push(setTimeout(ezgi, (sure - 0.5) * 1000));
-       };
-       eng.timers.push(setTimeout(ezgi, 800));
-     } catch { asudeDurdur(); return; }
-   };
-
-   try { ac.resume().then(kur).catch(kur); } catch { kur(); }
-   setTimeout(() => { if (!eng.stopped && !eng.master) kur(); }, 400);
+       if (!suAudioRef.current) { suAudioRef.current = new Audio(base + "ses/su.mp3"); suAudioRef.current.loop = true; suAudioRef.current.volume = 0.75; }
+       if (!neyAudioRef.current) { neyAudioRef.current = new Audio(base + "ses/ney.mp3"); neyAudioRef.current.loop = true; neyAudioRef.current.volume = 0.6; }
+       suAudioRef.current.currentTime = 0; neyAudioRef.current.currentTime = 0;
+       suAudioRef.current.play().catch(() => {});
+       neyAudioRef.current.play().catch(() => {});
+     } catch {}
+   }
 
    setAsudeOynar(true);
    setAsudeKalan(asudeSure);
@@ -6329,7 +6212,7 @@ export default function App() {
  };
 
  useEffect(() => { if (sekme !== "asude" && asudeOynar) asudeDurdur(); }, [sekme]);
- useEffect(() => () => { asudeDurdur(); try { audioCtxRef.current && audioCtxRef.current.close(); } catch {} }, []);
+ useEffect(() => () => asudeDurdur(), []);
  const [havaData, setHavaData] = useState(null);
  const [havaHata, setHavaHata] = useState("");
  const [wikiData, setWikiData] = useState(null);
@@ -8522,7 +8405,7 @@ export default function App() {
      <div style={{ background: `linear-gradient(135deg, ${C.altin}22, ${C.y2})`, border: `1px solid ${C.altin}66`, borderRadius: 14, padding: 16, marginBottom: 14 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 14, marginBottom: 8, letterSpacing: 0.5 }}>≈ ŞADIRVÂN-I ŞİFA</div>
        <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.7, fontStyle: "italic" }}>
-         Osmanlı Darüşşifa Protokolü: Osmanlı Çeşmesi su sesi + mizacına eşlenmiş makam karar perdesi.
+         Osmanlı Darüşşifa Protokolü: Osmanlı Çeşmesi su şırıltısı ve mizacına uygun makam icrasıyla görsel-işitsel sükûnet.
        </div>
      </div>
 
@@ -8604,12 +8487,13 @@ export default function App() {
                <button key={s} onClick={() => setAsudeSure(s)} style={{ background: asudeSure === s ? C.altin : C.y2, color: asudeSure === s ? "#1A1200" : C.soluk, border: `1px solid ${asudeSure === s ? C.altin : C.s}`, borderRadius: 20, padding: "6px 16px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>{l}</button>
              ))}
            </div>}
-           {!seslerAcik ? (
-             <div style={{ color: C.cok, fontSize: 12, fontStyle: "italic" }}>Çalar için üst menüden sesi açın.</div>
-           ) : (
-             <button onClick={() => asudeOynar ? asudeDurdur() : asudeBaslat(aktifMakam)} style={{ background: asudeOynar ? C.y2 : `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: asudeOynar ? C.altin : "#1A1200", border: `1px solid ${C.altin}`, borderRadius: 24, padding: "11px 30px", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, cursor: "pointer", fontFamily: "inherit" }}>{asudeOynar ? "■ Durdur" : "▶ Şadırvânı Başlat"}</button>
-           )}
-           <div style={{ color: C.cok, fontSize: 10, marginTop: 12, lineHeight: 1.5 }}>Ses cihazında sentezlenir; kayıt yapılmaz, hiçbir veri toplanmaz.</div>
+           <button onClick={() => asudeOynar ? asudeDurdur() : asudeBaslat(aktifMakam)} style={{ background: asudeOynar ? C.y2 : `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: asudeOynar ? C.altin : "#1A1200", border: `1px solid ${C.altin}`, borderRadius: 24, padding: "11px 30px", fontSize: 14, fontWeight: 700, letterSpacing: 0.5, cursor: "pointer", fontFamily: "inherit" }}>{asudeOynar ? "■ Sükûneti Bitir" : "▶ Şadırvânı Uyandır"}</button>
+           <div style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 14, padding: "10px 12px", background: `${C.altin}0E`, border: `1px solid ${C.altin}33`, borderRadius: 10, textAlign: "left" }}>
+             <span style={{ color: C.altin, fontSize: 13, lineHeight: 1.3, flexShrink: 0 }}>♪</span>
+             <span style={{ color: C.soluk, fontSize: 11, lineHeight: 1.6 }}>
+               <b style={{ color: C.altin }}>İşitsel deneyim hazırlanıyor.</b> Şadırvânın özgün su şırıltısı ve ney makam icrası, stüdyo kalitesinde kayıtlarla sunulacaktır. Şu an modül <b>görsel sükûnet</b> deneyimi olarak çalışmaktadır; ses kayıtları yüklendiğinde işitsel katman kendiliğinden devreye girer.
+             </span>
+           </div>
          </div>
        );
      })()}
@@ -8675,7 +8559,7 @@ export default function App() {
      <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
        <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 8, letterSpacing: 0.5 }}>KAYNAK & TARİHSEL DAYANAK</div>
        <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.7 }}>
-         Su sesi + makam + koku ile tedavi, <b>Edirne Sultan II. Bayezid Darüşşifası</b>'nda tarihsel olarak belgelenmiştir. Makam-organ eşleşmeleri Hekimbaşı <b>Gevrekzade Hâfız Hasan Efendi</b>, <b>Hasan Şuûrî</b> ve <b>Haşim Bey</b>'in eserlerine dayanır. Drone temel frekansları Türk müziği perde nazariyesinden (Bolahenk akort, Yegâh ≈ 110 Hz) türetilmiştir. Modern bilimsel kanıt sınırlıdır.
+         Su sesi + makam + koku ile tedavi, <b>Edirne Sultan II. Bayezid Darüşşifası</b>'nda tarihsel olarak belgelenmiştir. Makam-organ eşleşmeleri Hekimbaşı <b>Gevrekzade Hâfız Hasan Efendi</b>, <b>Hasan Şuûrî</b> ve <b>Haşim Bey</b>'in eserlerine dayanır. Makam perdeleri Türk müziği nazariyesine (Bolahenk akort, Yegâh ≈ 110 Hz) dayanır. Modern bilimsel kanıt sınırlıdır.
        </div>
      </div>
 
