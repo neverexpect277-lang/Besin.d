@@ -8,7 +8,7 @@ const C = {
  bg: "#FFFFFF", y: "#FFFFFF", y2: "#FAFAFA", s: "#E5E5E7",
  altin: "#B8862F", altinA: "#C9A84C",
  metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
- kirmizi: "#DC2626", turuncu: "#EA580C", sari: "#CA8A04", yesil: "#16A34A",
+ kirmizi: "#C1121F", turuncu: "#D35400", sari: "#B8862F", yesil: "#2E7D32",
 };
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
@@ -6726,7 +6726,7 @@ export default function App() {
  <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{sonuclar.length} zararlı madde tespit edildi</div>
  </div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
- {tumOrganlar.map(o => <span key={o} style={{ background: rR(genelRisk) + "22", color: rR(genelRisk), border: `1px solid ${rR(genelRisk)}66`, borderRadius: 20, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>{o}</span>)}
+ {tumOrganlar.map(o => <span key={o} style={{ background: rR(genelRisk), color: "#fff", borderRadius: 8, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>{o}</span>)}
  </div>
  </div>
 
@@ -6752,9 +6752,9 @@ export default function App() {
  })()}
 
  {profil && sonuclar.some(r => r.burclar?.includes(profil.burc)) && (
- <div style={{ background: "#FF950018", border: "1px solid #FF950050", borderRadius: 14, padding: 14, marginBottom: 12 }}>
- <div style={{ color: C.turuncu, fontWeight: 700, marginBottom: 4 }}>{profil.burc} burcu — Kişisel risk tespit edildi</div>
- <div style={{ color: C.turuncu + "CC", fontSize: 13 }}>{profil.mizac} mizacı bu maddelerden bazılarına özellikle hassas. {profil.organ} bölgen etkilenebilir.</div>
+ <div style={{ background: C.kirmizi + "0D", border: `1px solid ${C.kirmizi}40`, borderRadius: 14, padding: 14, marginBottom: 12 }}>
+ <div style={{ color: C.kirmizi, fontWeight: 700, marginBottom: 4 }}>{profil.burc} burcu — Kişisel risk tespit edildi</div>
+ <div style={{ color: C.metin, fontSize: 13 }}>{profil.mizac} mizacı bu maddelerden bazılarına özellikle hassas. {profil.organ} bölgen etkilenebilir.</div>
  </div>
  )}
 
@@ -6803,7 +6803,7 @@ export default function App() {
  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
  {(r.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}
  </div>
- {kisisel && <div style={{ background: "#FF950018", borderRadius: 8, padding: "6px 10px", color: C.turuncu, fontSize: 12, marginTop: 8 }}> {profil.burc} burcu — yüksek risk!</div>}
+ {kisisel && <div style={{ background: C.kirmizi + "0D", border: `1px solid ${C.kirmizi}33`, borderRadius: 8, padding: "6px 10px", color: C.kirmizi, fontSize: 12, marginTop: 8 }}> {profil.burc} burcu — yüksek risk!</div>}
  </div>
 
  {acikMi && (
@@ -6855,7 +6855,7 @@ export default function App() {
  <div style={S.kB}> Özellikle Etkilenen Burçlar</div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
  {r.burclar.map(b => (
- <span key={b} style={{ background: (BURCLAR[b]?.renk || C.altin) + "33", color: BURCLAR[b]?.renk || C.altin, border: `1px solid ${BURCLAR[b]?.renk || C.altin}50`, borderRadius: 20, padding: "4px 10px", fontSize: 12 }}>
+ <span key={b} style={{ background: C.y2, color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 8, padding: "4px 10px", fontSize: 12 }}>
  {b}
  </span>
  ))}
@@ -6866,8 +6866,8 @@ export default function App() {
    const destek = organDestekToparla(r.organlar);
              if (!destek || destek.length === 0) return null;
              return (
-               <div style={{ background: "#8A60C015", border: "1px solid #8A60C040", borderRadius: 10, padding: 12, marginTop: 10 }}>
-                 <div style={{ color: "#B090E0", fontSize: 12, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>ORGAN DOSTU DESTEK</div>
+               <div style={{ background: C.yesil + "0D", border: `1px solid ${C.yesil}33`, borderRadius: 10, padding: 12, marginTop: 10 }}>
+                 <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>ORGAN DOSTU DESTEK</div>
                  {destek.map((d, idx) => (
                    <div key={idx} style={{ marginBottom: idx < destek.length - 1 ? 8 : 0 }}>
                      <div style={{ color: C.metin, fontSize: 13, fontWeight: 600 }}>{d.organ}</div>
@@ -6875,7 +6875,7 @@ export default function App() {
                      <div style={{ color: C.soluk, fontSize: 11, marginTop: 3, fontStyle: "italic" }}>{d.not}</div>
                    </div>
                  ))}
-                 <div style={{ marginTop: 10, paddingTop: 8, borderTop: "1px solid #8A60C030", color: C.cok, fontSize: 10, lineHeight: 1.5, fontStyle: "italic" }}>
+                 <div style={{ marginTop: 10, paddingTop: 8, borderTop: `1px solid ${C.s}`, color: C.cok, fontSize: 10, lineHeight: 1.5, fontStyle: "italic" }}>
                    ⚠ Tıbbi tavsiye değildir. Geleneksel fitoterapi ve İbn Sina geleneğine dayalı bilgi notudur. Mevcut bir hastalığınız, gebelik veya ilaç kullanımı varsa hekiminize/eczacınıza danışın. Kaynaklar Hakkında sekmesinde.
                  </div>
                </div>
@@ -6885,8 +6885,8 @@ export default function App() {
    const uyarilar = saglikUyarilari(r);
    if (!uyarilar.length) return null;
    return (
-     <div style={{ background: "#E74C3C12", border: "1px solid #E74C3C50", borderRadius: 10, padding: 12, marginTop: 12 }}>
-       <div style={{ color: "#E74C3C", fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
+     <div style={{ background: C.kirmizi + "0D", border: `1px solid ${C.kirmizi}40`, borderRadius: 10, padding: 12, marginTop: 12 }}>
+       <div style={{ color: C.kirmizi, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
        {uyarilar.map(u => (
          <div key={u.k} style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 3 }}>
            <b>{u.ad}:</b> bu maddenin etki/içerik metni senin durumunla eşleşiyor — dikkatli ol.
@@ -9484,8 +9484,8 @@ export default function App() {
    const uyarilar = saglikUyarilari(modal);
    if (!uyarilar.length) return null;
    return (
-     <div style={{ background: "#E74C3C12", border: "1px solid #E74C3C50", borderRadius: 10, padding: 12, marginTop: 12 }}>
-       <div style={{ color: "#E74C3C", fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
+     <div style={{ background: C.kirmizi + "0D", border: `1px solid ${C.kirmizi}40`, borderRadius: 10, padding: 12, marginTop: 12 }}>
+       <div style={{ color: C.kirmizi, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>SANA ÖZEL UYARI</div>
        {uyarilar.map(u => (
          <div key={u.k} style={{ color: C.metin, fontSize: 12, lineHeight: 1.5, marginBottom: 3 }}>
            <b>{u.ad}:</b> bu madde senin durumunla eşleşiyor — dikkatli ol.
