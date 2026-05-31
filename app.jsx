@@ -7452,7 +7452,7 @@ export default function App() {
  {(liyakat.gunlukSeri || 0) > 0 && (
    <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `linear-gradient(135deg, ${C.altin}1F, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 999, padding: "6px 16px" }}>
-       <span style={{ fontSize: 15 }}>🔥</span>
+       <svg width="15" height="15" viewBox="0 0 24 24" fill={C.altin} style={{ flexShrink: 0 }}><path d="M12 2c1.5 3.5-1.5 5-1.5 8a3.5 3.5 0 0 0 7 0c0-1.2-.4-2.2-1-3 2.5 1.5 3.5 4 3.5 6.5a8 8 0 1 1-16 0c0-4 2.5-7 4.5-9 .8 1.2 2 1.8 3 2.5C12.8 5.5 12.5 3.5 12 2z"/></svg>
        <span style={{ color: C.altin, fontSize: 14, fontWeight: 800 }}>{liyakat.gunlukSeri}</span>
        <span style={{ color: C.soluk, fontSize: 11, fontWeight: 700, letterSpacing: 0.4 }}>günlük seri</span>
      </div>
@@ -7466,7 +7466,7 @@ export default function App() {
    return (
      <div onClick={() => setModal({ kod, ...v })} style={{ background: `linear-gradient(135deg, #E74C3C14, ${C.y2})`, border: `1px solid #E74C3C40`, borderRadius: 14, padding: "12px 14px", marginBottom: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
        <div style={{ width: 44, height: 44, borderRadius: "50%", border: "2px solid #E74C3C", background: "#E74C3C12", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-         <span style={{ color: "#E74C3C", fontSize: 18, fontWeight: 900, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>⚠</span>
+         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
        </div>
        <div style={{ flex: 1, minWidth: 0 }}>
          <div style={{ color: "#E74C3C", fontSize: 9, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase" }}>Günün Zararlısı</div>
