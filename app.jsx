@@ -10,7 +10,7 @@ const C = {
  metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
  kirmizi: "#C1121F", turuncu: "#D35400", sari: "#B8862F", yesil: "#2E7D32",
 };
-const rR = r => ({ kritik: C.kirmizi, yuksek: C.turuncu, orta: C.sari, dusuk: C.yesil }[r] || "#888");
+const rR = r => ({ kritik: C.kirmizi, yuksek: C.kirmizi, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
 
 // Açılır/kapanır bölüm kartı
@@ -6736,13 +6736,13 @@ export default function App() {
  sonuclar.forEach(r => sayim[r.risk]++);
  const kutular = [
  { k: "kritik", l: "KRİTİK", c: C.kirmizi },
- { k: "yuksek", l: "YÜKSEK", c: C.turuncu },
+ { k: "yuksek", l: "YÜKSEK", c: C.kirmizi },
  { k: "orta", l: "ORTA", c: C.sari },
  ].filter(x => sayim[x.k] > 0);
  return (
  <div style={{ display: "grid", gridTemplateColumns: `repeat(${kutular.length}, 1fr)`, gap: 8, marginBottom: 12 }}>
  {kutular.map(x => (
- <div key={x.k} style={{ background: x.c + "15", border: `1px solid ${x.c}44`, borderRadius: 14, padding: "14px 8px", textAlign: "center" }}>
+ <div key={x.k} style={{ background: x.c + "0A", border: `1px solid ${x.c}33`, borderRadius: 14, padding: "14px 8px", textAlign: "center" }}>
  <div style={{ color: x.c, fontSize: 28, fontWeight: 700, lineHeight: 1 }}>{sayim[x.k]}</div>
  <div style={{ color: x.c, fontSize: 10, fontWeight: 700, letterSpacing: 0, marginTop: 4 }}>{x.l}</div>
  </div>
@@ -6764,18 +6764,18 @@ export default function App() {
    if (!urunTuru) return null;
    const tarif = urunTuru.tarifKey && DOGAL_TARIF[urunTuru.tarifKey] ? DOGAL_TARIF[urunTuru.tarifKey] : null;
    return (
-     <div style={{ background: "#2ecc7112", border: "1px solid #2ecc7140", borderRadius: 14, padding: 14, marginBottom: 14 }}>
+     <div style={{ background: C.yesil + "08", border: `1px solid ${C.yesil}26`, borderRadius: 14, padding: 14, marginBottom: 14 }}>
        <div style={{ color: C.yesil, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, marginBottom: 6 }}>{urunTuru.baslik.toUpperCase()} — DOĞAL ALTERNATİF</div>
        <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.5, marginBottom: 10 }}>{urunTuru.alternatif}</div>
        {tarif && (
-         <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background:"#8B450020", border:"1px solid #8B4500", borderRadius:8, padding:"10px 12px", color:"#D2691E", fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
+         <button onClick={() => setTarifModal(tarif)} style={{ width:"100%", background: C.y2, border:`1px solid ${C.s}`, borderRadius:8, padding:"10px 12px", color: C.metin, fontWeight:700, fontSize:13, cursor:"pointer", marginBottom: kategori === "gida" ? 8 : 0 }}>
            Tarif: {tarif.baslik}
          </button>
        )}
        {kategori === "gida" && (
-         <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, border:"none", borderRadius:8, padding:"10px 12px", color:"#1A1200", fontWeight:700, fontSize:13, cursor:"pointer", position:"relative" }}>
+         <button onClick={() => { setSekme("market"); setEkran("ana"); }} style={{ width:"100%", background: C.y2, border:`1px solid ${C.s}`, borderRadius:8, padding:"10px 12px", color: C.metin, fontWeight:700, fontSize:13, cursor:"pointer", position:"relative" }}>
            {urunTuru.marketUrun ? `Marketten Al: ${urunTuru.marketUrun.split(" · ")[0]}` : "Marketten Al"}
-           <span style={{ position:"absolute", top:-6, right:6, background:"#1A1200", color: C.altin, fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
+           <span style={{ position:"absolute", top:-6, right:6, background: C.altin, color: "#fff", fontSize:8, fontWeight:700, padding:"1px 5px", borderRadius:6, letterSpacing:0.3 }}>YAKINDA</span>
          </button>
        )}
      </div>
@@ -6896,7 +6896,7 @@ export default function App() {
    );
  })()}
  <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
-   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, minWidth: 120, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={(e) => { e.stopPropagation(); setPaylasMaddesi(r); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, minWidth: 120, background: C.altin + "12", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={(e) => {
      e.stopPropagation();
      const konu = `Hata: ${r.ad} (${r.kod})`;
@@ -7194,9 +7194,9 @@ export default function App() {
          <div style={{ color: C.altin, fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{taramaSayisi}</div>
          <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
        </div>
-       <div style={{ background: `linear-gradient(135deg, #2ecc7118, ${C.y2})`, border: `1px solid #2ecc7140`, borderRadius: 12, padding: "10px 10px" }}>
+       <div style={{ background: C.yesil + "08", border: `1px solid ${C.yesil}26`, borderRadius: 12, padding: "10px 10px" }}>
          <div style={{ color: C.soluk, fontSize: 9, fontWeight: 700, letterSpacing: 0.5 }}>BU HAFTA</div>
-         <div style={{ color: "#2ecc71", fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHafta}</div>
+         <div style={{ color: C.yesil, fontSize: 22, fontWeight: 800, lineHeight: 1, marginTop: 2 }}>{buHafta}</div>
          <div style={{ color: C.cok, fontSize: 10, marginTop: 1 }}>tarama</div>
        </div>
        <div style={{ background: `linear-gradient(135deg, #E74C3C18, ${C.y2})`, border: `1px solid #E74C3C40`, borderRadius: 12, padding: "10px 10px" }}>
@@ -9496,7 +9496,7 @@ export default function App() {
  })()}
 
  <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.altin}, ${C.altinA})`, color: "#1A1200", border: "none", borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
+   <button onClick={() => { setPaylasMaddesi(modal); puanEkle(5, "paylas"); sefaatEkle("paylas"); }} style={{ flex: 1, background: C.altin + "12", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "Inter, sans-serif" }}>Paylaş</button>
    <button onClick={() => {
      const konu = `Hata: ${modal.ad} (${modal.kod})`;
      const body = `Aşağıdaki madde hakkındaki bilginin yanlış olduğunu düşünüyorum:\n\nMadde: ${modal.ad}\nKod: ${modal.kod}\nKategori: ${modal.kat}\nMevcut etki metni: ${modal.etki}\n\nDoğrusu / kaynağı şudur:\n\n[Buraya yaz]\n\n---\nBesin Dedektifi`;
