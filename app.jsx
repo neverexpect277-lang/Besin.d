@@ -7398,6 +7398,25 @@ export default function App() {
    </div>
  )}
  {(() => {
+   const tehlikeli = Object.entries(GIDA_DB).filter(([, v]) => v.risk === "kritik" || v.risk === "yuksek");
+   if (!tehlikeli.length) return null;
+   const gunNo = Math.floor(Date.now() / 86400000);
+   const [kod, v] = tehlikeli[gunNo % tehlikeli.length];
+   return (
+     <div onClick={() => setModal({ kod, ...v })} style={{ background: `linear-gradient(135deg, #E74C3C14, ${C.y2})`, border: `1px solid #E74C3C40`, borderRadius: 14, padding: "12px 14px", marginBottom: 12, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}>
+       <div style={{ width: 44, height: 44, borderRadius: "50%", border: "2px solid #E74C3C", background: "#E74C3C12", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+         <span style={{ color: "#E74C3C", fontSize: 18, fontWeight: 900, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>⚠</span>
+       </div>
+       <div style={{ flex: 1, minWidth: 0 }}>
+         <div style={{ color: "#E74C3C", fontSize: 9, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase" }}>Günün Zararlısı</div>
+         <div style={{ color: C.metin, fontSize: 14, fontWeight: 700, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.ad}</div>
+         <div style={{ color: C.cok, fontSize: 11, marginTop: 1 }}>{v.kat} · detay için dokun</div>
+       </div>
+       <span style={{ color: C.cok, fontSize: 16, flexShrink: 0 }}>→</span>
+     </div>
+   );
+ })()}
+ {(() => {
    const haftaBas = Date.now() - 7 * 86400000;
    const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
    const buHaftaKritik = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).reduce((a, g) => a + (g.kritik || 0), 0);
