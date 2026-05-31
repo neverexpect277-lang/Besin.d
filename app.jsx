@@ -4410,11 +4410,11 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
 
   function organRenk(anahtar) {
     const h = organHasar[anahtar];
-    if (!h) return "#2ecc71";
+    if (!h) return C.yesil;
     if (h.kritik > 0) return "#FF4444";
     if (h.yuksek > 1) return "#FF9500";
     if (h.yuksek > 0) return "#FFD700";
-    return "#2ecc71";
+    return C.yesil;
   }
 
   function organPuan(anahtar) {
@@ -4427,7 +4427,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
     Object.keys(TUM_ORGAN).reduce((s, k) => s + organPuan(k), 0) / Object.keys(TUM_ORGAN).length
   );
 
-  const genel = toplamPuan >= 80 ? { renk: "#2ecc71", yazi: "Sağlıklı" } :
+  const genel = toplamPuan >= 80 ? { renk: C.yesil, yazi: "Sağlıklı" } :
                 toplamPuan >= 60 ? { renk: "#FFD700", yazi: "Dikkat" } :
                 toplamPuan >= 40 ? { renk: "#FF9500", yazi: "Riskli" } :
                                    { renk: "#FF4444", yazi: "Tehlikeli" };
@@ -4535,7 +4535,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
                   </div>
                 </>
               ) : (
-                <div style={{ color: "#2ecc71", fontSize: 13 }}>Bu organı etkileyen zararlı madde bulunamadı.</div>
+                <div style={{ color: C.yesil, fontSize: 13 }}>Bu organı etkileyen zararlı madde bulunamadı.</div>
               )}
             </div>
           );
@@ -4544,7 +4544,7 @@ function OrganVucutHaritasi({ sonuclar, gecmis, profil }) {
 
       {/* Alt efsane */}
       <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 12 }}>
-        {[["#2ecc71","Sağlıklı"],["#FFD700","Dikkat"],["#FF9500","Riskli"],["#FF4444","Kritik"]].map(([r,l]) => (
+        {[[C.yesil,"Sağlıklı"],["#FFD700","Dikkat"],["#FF9500","Riskli"],["#FF4444","Kritik"]].map(([r,l]) => (
           <div key={l} style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: r, boxShadow: `0 0 4px ${r}` }}/>
             <span style={{ color: C.soluk, fontSize: 10 }}>{l}</span>
@@ -4563,11 +4563,11 @@ function TarifModal({ tarif, onKapat }) {
     <div style={{ position:"fixed", inset:0, background:"#000000A0", display:"flex", alignItems:"flex-end", justifyContent:"center", zIndex:1001, backdropFilter:"blur(4px)" }} onClick={onKapat}>
       <div style={{ background:C.bg, borderRadius:"20px 20px 0 0", padding:24, width:"100%", maxWidth:480, maxHeight:"85vh", overflowY:"auto" }} onClick={e=>e.stopPropagation()}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
-          <h2 style={{ color:"#2ecc71", fontSize:18, margin:0 }}>{tarif.baslik}</h2>
+          <h2 style={{ color:C.yesil, fontSize:18, margin:0 }}>{tarif.baslik}</h2>
           <button onClick={onKapat} style={{ background:C.y2, border:`1px solid ${C.s}`, borderRadius:"50%", width:30, height:30, color:C.soluk, cursor:"pointer" }}>✕</button>
         </div>
-        <div style={{ background:"#2ecc7115", borderRadius:10, padding:"6px 12px", marginBottom:16, display:"inline-block" }}>
-          <span style={{ color:"#2ecc71", fontSize:12 }}>{tarif.sure}</span>
+        <div style={{ background:C.yesil + "0A", borderRadius:10, padding:"6px 12px", marginBottom:16, display:"inline-block" }}>
+          <span style={{ color:C.yesil, fontSize:12 }}>{tarif.sure}</span>
         </div>
 
         <div style={{ color:C.metin, fontWeight:700, marginBottom:8 }}>Malzemeler</div>
@@ -4582,7 +4582,7 @@ function TarifModal({ tarif, onKapat }) {
               } else {
                 window.open(`https://www.google.com/search?q=${encodeURIComponent(m+" doğal organik satın al")}`, "_blank");
               }
-            }} style={{ background:"#2ecc71", border:"none", borderRadius:8, padding:"4px 10px", color:"#000", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+            }} style={{ background: C.yesil, border:"none", borderRadius:8, padding:"4px 10px", color:"#fff", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
               Al
             </button>
           </div>
@@ -4598,7 +4598,7 @@ function TarifModal({ tarif, onKapat }) {
           const msg = `🛒 ${tarif.baslik} için alışveriş listesi:\n\n${liste}\n\nBesin Dedektifi tarifi`;
           if (navigator.share) { navigator.share({ title:"Alışveriş Listesi", text:msg }).catch(()=>{}); }
           else { navigator.clipboard.writeText(msg).then(()=>alert("Liste kopyalandı!")).catch(()=>{}); }
-        }} style={{ width:"100%", marginTop:16, background:"#2ecc71", border:"none", borderRadius:12, padding:"12px 0", color:"#000", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+        }} style={{ width:"100%", marginTop:16, background: C.yesil, border:"none", borderRadius:12, padding:"12px 0", color:"#fff", fontWeight:700, fontSize:14, cursor:"pointer" }}>
           📤 Tüm Malzeme Listesini Paylaş
         </button>
       </div>
@@ -6667,7 +6667,7 @@ export default function App() {
           }
         }}>Sesli Oku</button>
         {sonuclar.filter(r => r.risk === "kritik" || r.risk === "yuksek").length > 0 && (
-          <button style={{ ...S.anaBtn, background: "#2ecc7120", border: "1px solid #2ecc71", color: "#2ecc71", marginTop: 8 }} onClick={() => {
+          <button style={{ ...S.anaBtn, background: C.yesil + "14", border: `1px solid ${C.yesil}80`, color: C.yesil, marginTop: 8 }} onClick={() => {
             const zarar = sonuclar.filter(r => r.risk === "kritik" || r.risk === "yuksek");
             const liste = zarar.map(r => `${r.ad} → ${r.alternatif ? r.alternatif.split("·")[0].trim() : "doğal alternatif"}`).join("\n");
             const toplam = zarar.length;
@@ -9475,7 +9475,7 @@ export default function App() {
  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>{(modal.organlar || []).map(o => <span key={o} style={S.orgTag}>{o}</span>)}</div>
  <div style={S.kB}>Etki</div><div style={S.mT}>{modal.etki}</div>
  <div style={S.kB}>Kaynak</div><div style={{ color: C.cok, fontSize: 12, fontStyle: "normal", marginBottom: 12 }}>{modal.kaynak}</div>
- <div style={{ background: "#2ecc7115", border: "1px solid #2ecc7130", borderRadius: 10, padding: 12 }}>
+ <div style={{ background: C.yesil + "0A", border: `1px solid ${C.yesil}26`, borderRadius: 10, padding: 12 }}>
  <div style={{ color: C.yesil, fontSize: 12, fontWeight: 700, marginBottom: 4 }}> Doğal Alternatif</div>
  <div style={{ color: C.metin, fontSize: 13 }}>{modal.alternatif}</div>
  </div>
