@@ -7388,6 +7388,15 @@ export default function App() {
    </div>
    <div style={{ color: C.cok, fontSize: 9, marginTop: 6, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Besin Dedektifi ·</div>
  </div>
+ {(liyakat.gunlukSeri || 0) > 0 && (
+   <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+     <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `linear-gradient(135deg, ${C.altin}1F, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 999, padding: "6px 16px" }}>
+       <span style={{ fontSize: 15 }}>🔥</span>
+       <span style={{ color: C.altin, fontSize: 14, fontWeight: 800 }}>{liyakat.gunlukSeri}</span>
+       <span style={{ color: C.soluk, fontSize: 11, fontWeight: 700, letterSpacing: 0.4 }}>günlük seri</span>
+     </div>
+   </div>
+ )}
  {(() => {
    const haftaBas = Date.now() - 7 * 86400000;
    const buHafta = (gecmis || []).filter(g => g.zaman && g.zaman >= haftaBas).length;
