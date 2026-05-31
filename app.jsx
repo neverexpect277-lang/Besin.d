@@ -208,11 +208,11 @@ function SuAtmSekmesi() {
        <div style={S.kB}>BAYİLİK & İLETİŞİM</div>
        <div style={{ background: `linear-gradient(135deg, ${C.altin}1A, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
          <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ ANA BAYİ — ANTEP</div>
-         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Antep'teki Besin Dedektifi Su ATM makinaları, üzerinde <b>"Besin Dedektifi"</b> ibaresiyle hizmet veriyor. Temiz, C vitaminli ve uygun fiyatlı su.</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Antep'teki Besin Dedektifi Su ATM makinaları, üzerinde <b>"Besin Dedektifi"</b> ibaresiyle hizmet veriyor. <b>11.5 pH'a kadar</b> alkali, C vitaminli ve uygun fiyatlı su.</div>
        </div>
        <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16 }}>
          <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ BAYİLİK İÇİN</div>
-         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>Kendi makinanı Besin Dedektifi haritasına eklemek, bayilik ve iş birliği için bize e-posta gönder.</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65, marginBottom: 12 }}>Kendi makinan mı var? Besin Dedektifi haritasına eklenmek ve müşterilerinin seni bulması için aylık <b>100₺</b> abonelik ücreti karşılığında yerini ekleyebilirsin. Bayilik ve iş birliği için bize e-posta gönder.</div>
          <a href={`mailto:besindedektifii@gmail.com?subject=${encodeURIComponent("Su ATM Bayilik Başvurusu")}`} style={{ display: "block", width: "100%", background: C.altin, color: "#fff", padding: "12px", borderRadius: 12, fontWeight: 700, fontSize: 14, textDecoration: "none", textAlign: "center", boxSizing: "border-box" }}>Bayilik için Mail Gönder</a>
          <div style={{ color: C.cok, fontSize: 11, marginTop: 8, textAlign: "center" }}>besindedektifii@gmail.com</div>
        </div>
