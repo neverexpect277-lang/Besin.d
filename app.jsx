@@ -7494,11 +7494,6 @@ export default function App() {
        <div style={S.kB}>HİZMETLER PANOSU</div>
        <div style={S.ipucu}>Tüm modüller kategorilere göre düzenli. Hepsi yakında aktif olacak.</div>
 
-       <div style={{ position: "relative", marginBottom: 12 }}>
-         <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: C.cok, fontSize: 14, pointerEvents: "none" }}>⌕</span>
-         <input type="text" value={hizArama} onChange={e => setHizArama(e.target.value)} placeholder="Hizmet ara…" style={{ width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "11px 36px 11px 32px", color: C.metin, fontSize: 13, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", outline: "none", boxSizing: "border-box" }} />
-         {hizArama && <button onClick={() => setHizArama("")} style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.cok, fontSize: 18, cursor: "pointer", padding: "0 6px", lineHeight: 1 }}>×</button>}
-       </div>
 
        <div style={{ display: "flex", gap: 8, marginBottom: 18, overflowX: "auto", paddingBottom: 2 }}>
          {[["hepsi", "Hepsi"], ...HIZ_GRUPLAR.map(g => [g.baslik, g.baslik])].map(([k, l]) => (
