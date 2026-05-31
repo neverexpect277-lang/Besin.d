@@ -5373,21 +5373,21 @@ export default function App() {
    "Sofranı koruyan, soyunu korur",
  ];
  const ORGAN_KONUSMALARI = {
-   "Karaciğer": "der ki: bu yağı sindiremem, beni yorma.",
-   "Mide": "der ki: bu çok ağır, eritmeye gücüm yok.",
-   "Böbrek": "der ki: bu sodyum yükünü tek başıma süzemem.",
-   "Bağırsak": "der ki: bu katkıyı tanımıyorum, beni kaşır.",
-   "Kalp": "der ki: damarlarıma sıkıştırıyorsun, derdimi bil.",
-   "Beyin": "der ki: bu şekerin ardı kesilmiyor — benimle alay etme.",
-   "Sinir Sistemi": "der ki: bu tatlandırıcı beni delirtiyor.",
-   "Cilt": "der ki: içerideki iltihap bana çıkıyor, sebep sensin.",
-   "Akciğer": "der ki: bu nefes bana yetmiyor, temizini iste.",
-   "Pankreas": "der ki: insülin makinem yoruldu, rahat ver.",
-   "Tiroid": "der ki: hormonum sallanıyor, ben de sallanıyorum.",
-   "Damar": "der ki: çeperim sertleşiyor, sebep bu yağdır.",
-   "Kemikler": "der ki: kalsiyumumu çalıyorlar, dur engelle.",
-   "Bağışıklık": "der ki: ben senin ordunum, bana zehir yedirme.",
-   "Üreme": "der ki: gelecek nesil benden geçer, bunu unutma.",
+   "Karaciğer": "Bu yağı sindiremem, beni yorma.",
+   "Mide": "Bu çok ağır, eritmeye gücüm yok.",
+   "Böbrek": "Bu sodyum yükünü tek başıma süzemem.",
+   "Bağırsak": "Bu katkıyı tanımıyorum, beni kaşır.",
+   "Kalp": "Damarlarıma sıkıştırıyorsun, derdimi bil.",
+   "Beyin": "Bu şekerin ardı kesilmiyor — benimle alay etme.",
+   "Sinir Sistemi": "Bu tatlandırıcı beni delirtiyor.",
+   "Cilt": "İçerideki iltihap bana çıkıyor, sebep sensin.",
+   "Akciğer": "Bu nefes bana yetmiyor, temizini iste.",
+   "Pankreas": "İnsülin makinem yoruldu, rahat ver.",
+   "Tiroid": "Hormonum sallanıyor, ben de sallanıyorum.",
+   "Damar": "Çeperim sertleşiyor, sebep bu yağdır.",
+   "Kemikler": "Kalsiyumumu çalıyorlar, dur engelle.",
+   "Bağışıklık": "Ben senin ordunum, bana zehir yedirme.",
+   "Üreme": "Gelecek nesil benden geçer, bunu unutma.",
  };
  const zamanOgutSec = (pir, hit) => {
    const s = new Date().getHours();
@@ -7064,8 +7064,8 @@ export default function App() {
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
        <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
-       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <div style={{ color: C.metin, fontSize: 20, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8, letterSpacing: 0.2 }}>{bedenKonusuyor.organ} der ki</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, fontStyle: "italic", marginBottom: 22 }}>“{bedenKonusuyor.soz}”</div>
        <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
      </div>
    </div>
@@ -9324,8 +9324,8 @@ export default function App() {
      <div style={{ background: C.y, borderRadius: 18, padding: 28, maxWidth: 340, width: "100%", border: `1px solid ${C.s}`, textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }} onClick={e => e.stopPropagation()}>
        <div style={{ color: C.altin, fontSize: 10, fontWeight: 600, letterSpacing: 2, marginBottom: 12 }}>BEDENİM KONUŞUYOR</div>
        <div style={{ fontSize: 18, marginBottom: 12, color: C.altin, fontFamily: "'Cormorant Garamond', Georgia, serif", opacity: 0.7 }}>✦</div>
-       <div style={{ color: C.metin, fontSize: 17, fontWeight: 600, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 6, letterSpacing: 0.2 }}>{bedenKonusuyor.organ}</div>
-       <div style={{ color: C.metin, fontSize: 14, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, marginBottom: 22 }}>{bedenKonusuyor.soz}</div>
+       <div style={{ color: C.metin, fontSize: 20, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif", marginBottom: 8, letterSpacing: 0.2 }}>{bedenKonusuyor.organ} der ki</div>
+       <div style={{ color: C.metin, fontSize: 15, lineHeight: 1.65, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 400, fontStyle: "italic", marginBottom: 22 }}>“{bedenKonusuyor.soz}”</div>
        <button onClick={() => setBedenKonusuyor(null)} style={{ width: "100%", background: "transparent", color: C.altin, border: `1px solid ${C.altin}80`, borderRadius: 10, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Duydum, Bedenim</button>
      </div>
    </div>
