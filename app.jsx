@@ -6168,6 +6168,7 @@ export default function App() {
  const [asudeKalan, setAsudeKalan] = useState(0);
  const [asudeNefes, setAsudeNefes] = useState(5);
  const [asudeHakkinda, setAsudeHakkinda] = useState(false);
+ const [asudeArsiv, setAsudeArsiv] = useState(false);
  const suAudioRef = useRef(null);
  const neyAudioRef = useRef(null);
  const asudeTimerRef = useRef(null);
