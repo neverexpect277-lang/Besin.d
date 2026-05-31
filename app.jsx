@@ -40,6 +40,145 @@ function BolumKart({ ikon, renk, baslik, ozet, items }) {
  );
 }
 
+/* ── SU ATM · Aqua ATM (Besin Dedektifi) ──────── */
+const ATM_KONUMLAR = [
+ { ad: "Şehitkamil · İncilipınar", not: "Besin Dedektifi · Aqua ATM", lat: 37.0662, lng: 37.3833, durum: "Yakında" },
+ { ad: "Şahinbey · Bağlar", not: "Besin Dedektifi · Aqua ATM", lat: 37.0560, lng: 37.3690, durum: "Yakında" },
+];
+
+// Haversine — iki konum arası km
+function atmMesafe(la1, lo1, la2, lo2) {
+ const R = 6371, t = x => x * Math.PI / 180;
+ const dLa = t(la2 - la1), dLo = t(lo2 - lo1);
+ const h = Math.sin(dLa / 2) ** 2 + Math.cos(t(la1)) * Math.cos(t(la2)) * Math.sin(dLo / 2) ** 2;
+ return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
+// Gerçek fotoğraf public/atm/aqua-atm.jpg eklenince otomatik görünür; yoksa SVG çizim.
+function AquaAtmGorsel() {
+ const base = import.meta.env.BASE_URL || "/";
+ const [hata, setHata] = useState(false);
+ if (!hata) {
+   return <img src={base + "atm/aqua-atm.jpg"} alt="Aqua ATM — Besin Dedektifi su otomatı" onError={() => setHata(true)} style={{ width: "100%", borderRadius: 16, border: `1px solid ${C.s}`, display: "block" }} />;
+ }
+ return (
+   <svg viewBox="0 0 360 220" width="100%" style={{ display: "block", borderRadius: 16, border: `1px solid ${C.s}` }}>
+     <rect x="0" y="0" width="360" height="220" rx="16" fill="url(#atmBg)" />
+     <defs>
+       <linearGradient id="atmBg" x1="0" y1="0" x2="1" y2="1">
+         <stop offset="0" stopColor="#EAF4FB" /><stop offset="1" stopColor={C.altin + "14"} />
+       </linearGradient>
+     </defs>
+     <circle cx="300" cy="44" r="6" fill="#7FB8D9" opacity="0.4" />
+     <circle cx="320" cy="80" r="4" fill="#7FB8D9" opacity="0.3" />
+     <circle cx="48" cy="60" r="5" fill="#7FB8D9" opacity="0.35" />
+     <circle cx="40" cy="150" r="7" fill="#7FB8D9" opacity="0.25" />
+     {/* gövde */}
+     <rect x="126" y="32" width="108" height="156" rx="14" fill="#FFFFFF" stroke={C.altin} strokeWidth="2.5" />
+     {/* üst bant */}
+     <path d="M126 46 a14 14 0 0 1 14 -14 h80 a14 14 0 0 1 14 14 v8 h-108 z" fill={C.altin} />
+     <text x="180" y="48" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="10" fontWeight="700" fill="#fff" letterSpacing="0.5">BESİN DEDEKTİFİ</text>
+     {/* ekran */}
+     <rect x="140" y="68" width="80" height="46" rx="6" fill="#10243A" />
+     <path d="M180 80 C188 92 192 98 180 106 C168 98 172 92 180 80 Z" fill="#7FB8D9" />
+     {/* dolum bölmesi */}
+     <rect x="150" y="124" width="60" height="38" rx="6" fill="#F2F6FA" stroke="#CBD5E0" strokeWidth="1.5" />
+     <rect x="178" y="120" width="4" height="16" rx="2" fill="#7FB8D9" opacity="0.7" />
+     <rect x="169" y="138" width="22" height="20" rx="3" fill="none" stroke="#7FB8D9" strokeWidth="1.5" />
+     <rect x="169" y="150" width="22" height="8" rx="2" fill="#7FB8D9" opacity="0.5" />
+     {/* taban */}
+     <rect x="140" y="172" width="80" height="8" rx="3" fill={C.altin} opacity="0.8" />
+     <text x="180" y="208" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="11" fontWeight="700" fill={C.altin} letterSpacing="0.3">Aqua ATM · C Vitaminli Su</text>
+   </svg>
+ );
+}
+
+function SuAtmSekmesi() {
+ const [konum, setKonum] = useState(null);
+ const [durum, setDurum] = useState("");
+ const [yukleniyor, setYukleniyor] = useState(false);
+
+ const enYakinBul = () => {
+   if (!navigator.geolocation) { setDurum("Cihazınız konum servisini desteklemiyor."); return; }
+   setYukleniyor(true); setDurum("Konumun alınıyor…");
+   navigator.geolocation.getCurrentPosition(
+     pos => { setKonum({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setDurum(""); setYukleniyor(false); },
+     () => { setDurum("Konum alınamadı — izin verip tekrar dene."); setYukleniyor(false); },
+     { enableHighAccuracy: true, timeout: 10000 }
+   );
+ };
+
+ const liste = konum
+   ? [...ATM_KONUMLAR].map(k => ({ ...k, mesafe: atmMesafe(konum.lat, konum.lng, k.lat, k.lng) })).sort((a, b) => a.mesafe - b.mesafe)
+   : ATM_KONUMLAR;
+
+ const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "5L · 3₺ / 19L · 12₺", "Plastik Atığını Azalt"];
+
+ return (
+   <div>
+     <div style={{ textAlign: "center", padding: "4px 0 12px" }}>
+       <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 26, color: C.altin, fontWeight: 700, letterSpacing: 0.5 }}>Su ATM</div>
+       <div style={{ color: C.cok, fontSize: 9, marginTop: 4, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Aqua ATM × Besin Dedektifi ·</div>
+     </div>
+
+     <AquaAtmGorsel />
+
+     <div style={{ marginTop: 14, color: C.metin, fontSize: 14, lineHeight: 1.65 }}>
+       <b style={{ color: C.altin }}>Yakında Antep'te hizmette.</b> Kaliteli, C vitaminli suyu uygun fiyatla sizlerle buluşturuyoruz. Kendi şişeni getir, ozonla dezenfekte edilmiş suyu doldur — hem cebine hem doğaya iyi gelsin.
+     </div>
+
+     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
+       {rozetler.map(r => (
+         <span key={r} style={{ background: `${C.altin}14`, border: `1px solid ${C.altin}40`, color: C.altin, fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 20 }}>{r}</span>
+       ))}
+     </div>
+
+     <button onClick={() => window.open("https://aquaatm.com.tr/", "_blank", "noopener")} style={{ width: "100%", marginTop: 14, background: C.altin, color: "#fff", border: "none", borderRadius: 12, padding: "13px", fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: 0.3 }}>Siteye Git →</button>
+
+     {/* HARİTA / KONUMLAR */}
+     <div style={{ marginTop: 22 }}>
+       <div style={S.kB}>HARİTADA MAKİNALAR</div>
+       <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.6, marginBottom: 10 }}>Antep'teki Aqua ATM makinalarının konumları. En yakını cihaz konumuna göre sıralanır.</div>
+
+       <button onClick={enYakinBul} disabled={yukleniyor} style={{ width: "100%", background: konum ? C.y2 : `${C.altin}14`, color: C.altin, border: `1px solid ${C.altin}66`, borderRadius: 12, padding: "11px", fontWeight: 700, fontSize: 13, cursor: yukleniyor ? "default" : "pointer", fontFamily: "inherit", marginBottom: durum ? 6 : 10 }}>
+         {konum ? "↻ Konumu Güncelle" : "◎ En Yakın ATM'yi Bul"}
+       </button>
+       {durum && <div style={{ color: C.soluk, fontSize: 12, textAlign: "center", marginBottom: 10 }}>{durum}</div>}
+
+       {liste.map((k, i) => (
+         <div key={k.ad} style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 14, marginBottom: 8, borderLeft: `4px solid ${C.altin}` }}>
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+             <div>
+               <div style={{ color: C.metin, fontWeight: 700, fontSize: 14 }}>{k.ad}</div>
+               <div style={{ color: C.altin, fontSize: 11, fontWeight: 600, marginTop: 2 }}>{k.not}</div>
+               {k.mesafe != null && <div style={{ color: C.soluk, fontSize: 12, marginTop: 4 }}>≈ {k.mesafe < 1 ? Math.round(k.mesafe * 1000) + " m" : k.mesafe.toFixed(1) + " km"} uzakta</div>}
+             </div>
+             <span style={{ background: `${C.altin}18`, color: C.altin, fontSize: 9, fontWeight: 700, padding: "3px 8px", borderRadius: 6, letterSpacing: 0.3, whiteSpace: "nowrap" }}>{k.durum}</span>
+           </div>
+           <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${k.lat},${k.lng}`, "_blank", "noopener")} style={{ marginTop: 10, width: "100%", background: C.y2, color: C.altin, border: `1px solid ${C.s}`, borderRadius: 10, padding: "9px", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>Yol Tarifi</button>
+         </div>
+       ))}
+     </div>
+
+     {/* BAYİLİK + İLETİŞİM */}
+     <div style={{ marginTop: 22 }}>
+       <div style={S.kB}>BAYİLİK & İLETİŞİM</div>
+       <div style={{ background: `linear-gradient(135deg, ${C.altin}1A, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+         <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ ANA BAYİ — ANTEP</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Antep'te <b>2 Aqua ATM</b> makinası Besin Dedektifi çatısı altında hizmete giriyor. Üzerinde <b>"Besin Dedektifi"</b> ibaresiyle, güvenilir ve uygun fiyatlı su.</div>
+       </div>
+       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 14, padding: 16 }}>
+         <div style={{ color: C.altin, fontWeight: 700, fontSize: 13, marginBottom: 6, letterSpacing: 0.3 }}>◆ MAKİNAN MI VAR?</div>
+         <div style={{ color: C.metin, fontSize: 13, lineHeight: 1.65 }}>Türkiye genelinde <b>700+ Aqua ATM</b> bulunuyor. Kendi makinanı haritaya ekle, müşterilerin seni bulsun — aylık <b>100₺</b>. Başvuru kanalı yakında açılacak.</div>
+       </div>
+       <div style={{ color: C.cok, fontSize: 11, lineHeight: 1.6, marginTop: 12, padding: 12, background: C.y2, borderRadius: 8, fontStyle: "italic", border: `1px dashed ${C.s}` }}>
+         Fiyatlar ve hizmet durumu bölgeye göre değişebilir. Bilgiler tanıtım amaçlıdır.
+       </div>
+     </div>
+   </div>
+ );
+}
+
 /* ── YASAL ──────────────────────────────────── */
 const YASAL = [
  "Bu uygulama bir tıbbi cihaz, teşhis aracı veya ilaç değildir.",
@@ -7173,7 +7312,7 @@ export default function App() {
  })()}
  </div>
 
- <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","mertebe","hizmetler","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
+ <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","mertebe","hizmetler","atm","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
@@ -8999,6 +9138,9 @@ export default function App() {
    );
  })()}
 
+ {/* SU ATM */}
+ {sekme === "atm" && <SuAtmSekmesi />}
+
  {/* HAKKINDA */}
  {sekme === "hakkinda" && (
  <div>
@@ -9074,7 +9216,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["mertebe", "", "Mertebe"], ["hizmetler", "", "Hizmetler"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["mertebe", "", "Mertebe"], ["hizmetler", "", "Hizmetler"], ["atm", "", "Su ATM"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
