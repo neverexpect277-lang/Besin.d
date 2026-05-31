@@ -6535,7 +6535,13 @@ export default function App() {
    setTimeout(() => { sualTetikle(); hediyeAl(); }, 2200);
  }
  setEkran("tartiliyor");
- setTimeout(() => setEkran("sonuc"), 2400);
+ setTimeout(() => {
+   setEkran("sonuc");
+   const tehlike = sonuc.filter(r => r.risk === "kritik" || r.risk === "yuksek").length;
+   if (tehlike > 0 && navigator.vibrate) {
+     try { navigator.vibrate(tehlike >= 3 ? [60, 40, 90] : [50, 30, 60]); } catch {}
+   }
+ }, 2400);
     if (!seslerAcik) return;
     try {
       const ac = new (window.AudioContext || window.webkitAudioContext)();
