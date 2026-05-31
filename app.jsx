@@ -4861,6 +4861,30 @@ function HaftalikRapor({ gecmis, onKapat }) {
 /* ══════════════════════════════════════════════
    MİZAÇ MARKET LİSTESİ BİLEŞENİ
    ══════════════════════════════════════════════ */
+function SkorHalkasi({ skor, renk, boyut = 52 }) {
+  const [g, setG] = useState(0);
+  useEffect(() => {
+    let raf; const t0 = performance.now(); const sure = 950;
+    const tik = (now) => {
+      const p = Math.min(1, (now - t0) / sure);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setG(Math.round(skor * eased));
+      if (p < 1) raf = requestAnimationFrame(tik);
+    };
+    raf = requestAnimationFrame(tik);
+    return () => cancelAnimationFrame(raf);
+  }, [skor]);
+  const m = boyut / 2;
+  const r = m - 6;
+  const cevre = 2 * Math.PI * r;
+  return (
+    <svg width={boyut} height={boyut} viewBox={`0 0 ${boyut} ${boyut}`} style={{ flexShrink: 0, filter: `drop-shadow(0 0 5px ${renk}55)` }}>
+      <circle cx={m} cy={m} r={r} fill="none" stroke={C.s} strokeWidth="5" />
+      <circle cx={m} cy={m} r={r} fill="none" stroke={renk} strokeWidth="5" strokeLinecap="round" strokeDasharray={`${cevre * g / 100} ${cevre}`} transform={`rotate(-90 ${m} ${m})`} />
+      <text x={m} y={m + 5} textAnchor="middle" fill={renk} fontSize="15" fontWeight="800" fontFamily="Inter, sans-serif">{g}</text>
+    </svg>
+  );
+}
 function PaylasModal({ madde, onKapat, rutbeAd, rutbeRenk, lakap }) {
   const kartRef = useRef(null);
   const [yapiyor, setYapiyor] = useState(false);
@@ -6935,14 +6959,7 @@ export default function App() {
    const yuk = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
    const skor = Math.max(5, Math.round(100 - yuk * 11));
    const sRenk = skor >= 70 ? C.yesil : skor >= 40 ? C.turuncu : C.kirmizi;
-   const cevre = 2 * Math.PI * 20;
-   return (
-     <svg width="52" height="52" viewBox="0 0 52 52" style={{ flexShrink: 0 }}>
-       <circle cx="26" cy="26" r="20" fill="none" stroke={C.s} strokeWidth="5" />
-       <circle cx="26" cy="26" r="20" fill="none" stroke={sRenk} strokeWidth="5" strokeLinecap="round" strokeDasharray={`${cevre * skor / 100} ${cevre}`} transform="rotate(-90 26 26)" />
-       <text x="26" y="29" textAnchor="middle" fill={sRenk} fontSize="15" fontWeight="800" fontFamily="Inter, sans-serif">{skor}</text>
-     </svg>
-   );
+   return <SkorHalkasi skor={skor} renk={sRenk} />;
  })()}
  <div style={{ flex: 1, minWidth: 0 }}>
  <div style={{ display: "inline-block", background: rR(genelRisk), borderRadius: 10, padding: "5px 12px", color: "#fff", fontWeight: 700, fontSize: 13 }}>{rE(genelRisk)}</div>
