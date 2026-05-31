@@ -6183,19 +6183,22 @@ export default function App() {
 
  const asudeDurdur = () => {
    if (asudeTimerRef.current) { clearInterval(asudeTimerRef.current); asudeTimerRef.current = null; }
-   const eng = asudeRef.current, ac = audioCtxRef.current;
-   if (eng && ac) {
+   const eng = asudeRef.current;
+   if (eng) {
      eng.stopped = true;
      (eng.timers || []).forEach(id => clearTimeout(id));
+     const ac = audioCtxRef.current;
      try {
-       const t = ac.currentTime;
-       eng.master.gain.cancelScheduledValues(t);
-       eng.master.gain.setValueAtTime(eng.master.gain.value, t);
-       eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+       if (ac && eng.master) {
+         const t = ac.currentTime;
+         eng.master.gain.cancelScheduledValues(t);
+         eng.master.gain.setValueAtTime(eng.master.gain.value, t);
+         eng.master.gain.linearRampToValueAtTime(0.0001, t + 0.6);
+       }
      } catch {}
      setTimeout(() => {
        (eng.sources || []).forEach(s => { try { s.stop(); } catch {} });
-       try { eng.master.disconnect(); } catch {}
+       try { eng.master && eng.master.disconnect(); } catch {}
      }, 700);
      asudeRef.current = null;
    }
@@ -6208,17 +6211,19 @@ export default function App() {
    asudeDurdur();
    const makam = makamAdi || asudeMakam || (profil && MAKAMLAR[profil.makam] ? profil.makam : "Rast");
    setAsudeMakam(makam);
-   let ac;
-   try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch { return; }
+   let ac = audioCtxRef.current;
+   try {
+     if (!ac || ac.state === "closed") { ac = new (window.AudioContext || window.webkitAudioContext)(); audioCtxRef.current = ac; }
+   } catch { return; }
    // iOS/Safari otoplay kilidi: gesture içinde sessiz unlock buffer
    try { const ub = ac.createBufferSource(); ub.buffer = ac.createBuffer(1, 1, ac.sampleRate); ub.connect(ac.destination); ub.start(0); } catch {}
-   const eng = { ac, master: null, timers: [], stopped: false };
+   const eng = { master: null, sources: [], timers: [], stopped: false };
    asudeRef.current = eng;
 
    // Grafiği resume tamamlandıktan SONRA kur — iOS'ta context "running" olmadan
-   // currentTime donar, ses rampası ilerlemez ve hiç ses çıkmazdı.
+   // currentTime ilerlemez ve hiç ses çıkmaz. Tek kalıcı context kullanılır.
    const kur = () => {
-     if (eng.stopped) return;
+     if (eng.stopped || asudeRef.current !== eng || eng.master) return;
      try {
        const comp = ac.createDynamicsCompressor();
        comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = 0.01; comp.release.value = 0.3;
@@ -6245,7 +6250,7 @@ export default function App() {
        const bed = ac.createBufferSource(); bed.buffer = bedBuf; bed.loop = true;
        const bedLp = ac.createBiquadFilter(); bedLp.type = "lowpass"; bedLp.frequency.value = 420;
        const bedG = ac.createGain(); bedG.gain.value = 0.13;
-       bed.connect(bedLp).connect(bedG).connect(master); bed.start();
+       bed.connect(bedLp).connect(bedG).connect(master); bed.start(); eng.sources.push(bed);
 
        // SU — şırıltı (beyaz gürültü, bandpass + yavaş LFO)
        const triBuf = ac.createBuffer(1, 2 * sn, sn), tdd = triBuf.getChannelData(0);
@@ -6253,10 +6258,10 @@ export default function App() {
        const tri = ac.createBufferSource(); tri.buffer = triBuf; tri.loop = true;
        const triBp = ac.createBiquadFilter(); triBp.type = "bandpass"; triBp.frequency.value = 1500; triBp.Q.value = 0.8;
        const triG = ac.createGain(); triG.gain.value = 0.09;
-       tri.connect(triBp).connect(triG).connect(master); tri.start();
+       tri.connect(triBp).connect(triG).connect(master); tri.start(); eng.sources.push(tri);
        const triLfo = ac.createOscillator(); triLfo.frequency.value = 0.25;
        const triLfoG = ac.createGain(); triLfoG.gain.value = 600;
-       triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start();
+       triLfo.connect(triLfoG).connect(triBp.frequency); triLfo.start(); eng.sources.push(triLfo);
 
        // SU — rastgele damlalar (cam "plink", reverb'e gider)
        const damla = () => {
@@ -6305,21 +6310,22 @@ export default function App() {
        };
        eng.timers.push(setTimeout(ezgi, 800));
      } catch { asudeDurdur(); return; }
-
-     setAsudeOynar(true);
-     setAsudeKalan(asudeSure);
-     setAsudeNefes(5);
-     const bitis = Date.now() + asudeSure * 1000;
-     asudeTimerRef.current = setInterval(() => {
-       const kalan = Math.max(0, Math.round((bitis - Date.now()) / 1000));
-       setAsudeKalan(kalan);
-       const gecen = asudeSure - kalan;
-       setAsudeNefes(gecen > asudeSure * 0.66 ? 9 : gecen > asudeSure * 0.33 ? 7 : 5);
-       if (kalan <= 0) asudeDurdur();
-     }, 1000);
    };
 
-   Promise.resolve(ac.resume()).then(kur).catch(kur);
+   try { ac.resume().then(kur).catch(kur); } catch { kur(); }
+   setTimeout(() => { if (!eng.stopped && !eng.master) kur(); }, 400);
+
+   setAsudeOynar(true);
+   setAsudeKalan(asudeSure);
+   setAsudeNefes(5);
+   const bitis = Date.now() + asudeSure * 1000;
+   asudeTimerRef.current = setInterval(() => {
+     const kalan = Math.max(0, Math.round((bitis - Date.now()) / 1000));
+     setAsudeKalan(kalan);
+     const gecen = asudeSure - kalan;
+     setAsudeNefes(gecen > asudeSure * 0.66 ? 9 : gecen > asudeSure * 0.33 ? 7 : 5);
+     if (kalan <= 0) asudeDurdur();
+   }, 1000);
  };
 
  useEffect(() => { if (sekme !== "asude" && asudeOynar) asudeDurdur(); }, [sekme]);
