@@ -6887,27 +6887,6 @@ export default function App() {
  ) : (
  <>
  {(() => {
-   const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
-   const yuk = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
-   const skor = Math.max(5, Math.round(100 - yuk * 11));
-   const sRenk = skor >= 70 ? C.yesil : skor >= 40 ? C.turuncu : C.kirmizi;
-   const cevre = 2 * Math.PI * 34;
-   return (
-     <div style={{ display: "flex", alignItems: "center", gap: 14, background: C.y, border: `1.5px solid ${sRenk}55`, borderRadius: 18, padding: 14, marginBottom: 12 }}>
-       <svg width="84" height="84" viewBox="0 0 84 84" style={{ flexShrink: 0 }}>
-         <circle cx="42" cy="42" r="34" fill="none" stroke={C.s} strokeWidth="8" />
-         <circle cx="42" cy="42" r="34" fill="none" stroke={sRenk} strokeWidth="8" strokeLinecap="round" strokeDasharray={`${cevre * skor / 100} ${cevre}`} transform="rotate(-90 42 42)" />
-         <text x="42" y="40" textAnchor="middle" fill={sRenk} fontSize="22" fontWeight="800" fontFamily="Inter, sans-serif">{skor}</text>
-         <text x="42" y="55" textAnchor="middle" fill={C.cok} fontSize="9" fontWeight="700" fontFamily="Inter, sans-serif">/ 100</text>
-       </svg>
-       <div>
-         <div style={{ color: sRenk, fontSize: 15, fontWeight: 800 }}>Temizlik Skoru</div>
-         <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginTop: 3 }}>{skor >= 70 ? "Görece temiz — yine de etiketi oku." : skor >= 40 ? "Orta riskli — dikkatli tüket." : "Yüksek riskli — alternatif düşün."}</div>
-       </div>
-     </div>
-   );
- })()}
- {(() => {
  const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
  const zararli = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
  const aci = Math.min(20, 4 + zararli * 1.6);
@@ -6944,9 +6923,25 @@ export default function App() {
  })()}
  {/* RİSK ÖZET KUTUSU + ORGANLAR BİR ARADA */}
  <div style={{ background: C.y, border: `2px solid ${rR(genelRisk)}`, borderRadius: 18, padding: 18, marginBottom: 12 }}>
- <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
- <div style={{ background: rR(genelRisk), borderRadius: 10, padding: "8px 16px", color: "#fff", fontWeight: 700, fontSize: 14 }}>{rE(genelRisk)}</div>
- <div style={{ color: C.metin, fontSize: 14, fontWeight: 600 }}>{sonuclar.length} zararlı madde tespit edildi</div>
+ <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+ {(() => {
+   const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
+   const yuk = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
+   const skor = Math.max(5, Math.round(100 - yuk * 11));
+   const sRenk = skor >= 70 ? C.yesil : skor >= 40 ? C.turuncu : C.kirmizi;
+   const cevre = 2 * Math.PI * 20;
+   return (
+     <svg width="52" height="52" viewBox="0 0 52 52" style={{ flexShrink: 0 }}>
+       <circle cx="26" cy="26" r="20" fill="none" stroke={C.s} strokeWidth="5" />
+       <circle cx="26" cy="26" r="20" fill="none" stroke={sRenk} strokeWidth="5" strokeLinecap="round" strokeDasharray={`${cevre * skor / 100} ${cevre}`} transform="rotate(-90 26 26)" />
+       <text x="26" y="29" textAnchor="middle" fill={sRenk} fontSize="15" fontWeight="800" fontFamily="Inter, sans-serif">{skor}</text>
+     </svg>
+   );
+ })()}
+ <div style={{ flex: 1, minWidth: 0 }}>
+ <div style={{ display: "inline-block", background: rR(genelRisk), borderRadius: 10, padding: "5px 12px", color: "#fff", fontWeight: 700, fontSize: 13 }}>{rE(genelRisk)}</div>
+ <div style={{ color: C.metin, fontSize: 13, fontWeight: 600, marginTop: 5 }}>{sonuclar.length} zararlı madde tespit edildi</div>
+ </div>
  </div>
  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
  {tumOrganlar.map(o => <span key={o} style={{ background: rR(genelRisk), color: "#fff", borderRadius: 8, padding: "5px 14px", fontSize: 13, fontWeight: 600 }}>{o}</span>)}
@@ -7449,15 +7444,6 @@ export default function App() {
    </div>
    <div style={{ color: C.cok, fontSize: 9, marginTop: 6, letterSpacing: 2.5, textTransform: "uppercase", fontWeight: 700 }}>· Besin Dedektifi ·</div>
  </div>
- {(liyakat.gunlukSeri || 0) > 0 && (
-   <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-     <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: `linear-gradient(135deg, ${C.altin}1F, ${C.y2})`, border: `1px solid ${C.altin}55`, borderRadius: 999, padding: "6px 16px" }}>
-       <svg width="15" height="15" viewBox="0 0 24 24" fill={C.altin} style={{ flexShrink: 0 }}><path d="M12 2c1.5 3.5-1.5 5-1.5 8a3.5 3.5 0 0 0 7 0c0-1.2-.4-2.2-1-3 2.5 1.5 3.5 4 3.5 6.5a8 8 0 1 1-16 0c0-4 2.5-7 4.5-9 .8 1.2 2 1.8 3 2.5C12.8 5.5 12.5 3.5 12 2z"/></svg>
-       <span style={{ color: C.altin, fontSize: 14, fontWeight: 800 }}>{liyakat.gunlukSeri}</span>
-       <span style={{ color: C.soluk, fontSize: 11, fontWeight: 700, letterSpacing: 0.4 }}>günlük seri</span>
-     </div>
-   </div>
- )}
  {(() => {
    const tehlikeli = Object.entries(GIDA_DB).filter(([, v]) => v.risk === "kritik" || v.risk === "yuksek");
    if (!tehlikeli.length) return null;
