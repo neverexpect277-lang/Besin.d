@@ -5865,6 +5865,7 @@ export default function App() {
  const [paritiAcik, setParitiAcik] = useState(false);
  const [serefKart, setSerefKart] = useState(null);
  const serefKartRef = useRef(null);
+ const skorKartRef = useRef(null);
  const [parallaxEgim, setParallaxEgim] = useState({ x: 0, y: 0 });
  const [parallaxAktif, setParallaxAktif] = useState(false);
  const parallaxAc = async () => {
@@ -5905,6 +5906,23 @@ export default function App() {
        }
      });
    } catch {}
+ };
+ const skorKartPaylas = async () => {
+   if (!skorKartRef.current) return;
+   try {
+     const canvas = await html2canvas(skorKartRef.current, { backgroundColor: null, scale: 2, useCORS: true });
+     const blob = await new Promise(res => canvas.toBlob(b => res(b), "image/png", 1));
+     if (!blob) return;
+     const dosya = new File([blob], "besin-dedektifi-sonuc.png", { type: "image/png" });
+     if (navigator.canShare && navigator.canShare({ files: [dosya] })) {
+       try { await navigator.share({ files: [dosya], text: "Besin Dedektifi ile taradım · https://besin-d.vercel.app" }); return; } catch {}
+     }
+     const url = URL.createObjectURL(blob);
+     const a = document.createElement("a");
+     a.href = url; a.download = "besin-dedektifi-sonuc.png"; a.click();
+     setTimeout(() => URL.revokeObjectURL(url), 5000);
+     bdToast("Kart indirildi.");
+   } catch { bdToast("Kart oluşturulamadı."); }
  };
  const damgaSesi = () => {
    if (!seslerAcik) return;
@@ -7135,6 +7153,49 @@ export default function App() {
  <div style={{ color: C.soluk, fontSize: 12, marginTop: 4 }}>{profil.burc} · {profil.mizac} mizacı</div>
  </div>
  )}
+
+ {(() => {
+   const w = { kritik: 3, yuksek: 2, orta: 1, dusuk: 0.5 };
+   const yuk = sonuclar.reduce((a, r) => a + (w[r.risk] || 0), 0);
+   const skor = Math.max(5, Math.round(100 - yuk * 11));
+   const sRenk = skor >= 70 ? C.yesil : skor >= 40 ? C.turuncu : C.kirmizi;
+   const say = { kritik: 0, yuksek: 0, orta: 0, dusuk: 0 };
+   sonuclar.forEach(r => say[r.risk]++);
+   const cevre = 2 * Math.PI * 52;
+   const mert = mevcutMertebe();
+   return (
+     <div style={{ position: "absolute", left: -9999, top: 0 }} aria-hidden="true">
+       <div ref={skorKartRef} style={{ width: 380, background: `linear-gradient(180deg, ${C.y}, ${C.bg})`, border: `1.5px solid ${C.altin}55`, borderRadius: 22, padding: "26px 24px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box" }}>
+         <div style={{ textAlign: "center", color: C.altin, fontSize: 11, fontWeight: 800, letterSpacing: 4, textTransform: "uppercase" }}>Besin Dedektifi</div>
+         <div style={{ textAlign: "center", color: C.cok, fontSize: 10, letterSpacing: 1, marginTop: 4 }}>{KATEGORILER[kategori].ad} Analiz Sonucu</div>
+         <div style={{ display: "flex", justifyContent: "center", margin: "20px 0 14px" }}>
+           <svg width="140" height="140" viewBox="0 0 140 140">
+             <circle cx="70" cy="70" r="52" fill="none" stroke={C.s} strokeWidth="11" />
+             <circle cx="70" cy="70" r="52" fill="none" stroke={sRenk} strokeWidth="11" strokeLinecap="round" strokeDasharray={`${cevre * skor / 100} ${cevre}`} transform="rotate(-90 70 70)" />
+             <text x="70" y="68" textAnchor="middle" fill={sRenk} fontSize="40" fontWeight="800" fontFamily="Inter, sans-serif">{skor}</text>
+             <text x="70" y="90" textAnchor="middle" fill={C.cok} fontSize="13" fontWeight="700" fontFamily="Inter, sans-serif">/ 100</text>
+           </svg>
+         </div>
+         <div style={{ textAlign: "center", color: sRenk, fontSize: 17, fontWeight: 800 }}>Temizlik Skoru</div>
+         <div style={{ textAlign: "center", color: C.soluk, fontSize: 12, marginTop: 4 }}>{sonuclar.length} madde · {skor >= 70 ? "görece temiz" : skor >= 40 ? "orta riskli" : "yüksek riskli"}</div>
+         <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+           {[{ k: "kritik", l: "KRİTİK", c: C.kirmizi }, { k: "yuksek", l: "YÜKSEK", c: C.kirmizi }, { k: "orta", l: "ORTA", c: C.sari }].filter(x => say[x.k] > 0).map(x => (
+             <div key={x.k} style={{ background: x.c + "12", border: `1px solid ${x.c}40`, borderRadius: 12, padding: "8px 14px", textAlign: "center", minWidth: 64 }}>
+               <div style={{ color: x.c, fontSize: 22, fontWeight: 800, lineHeight: 1 }}>{say[x.k]}</div>
+               <div style={{ color: x.c, fontSize: 9, fontWeight: 700, marginTop: 3 }}>{x.l}</div>
+             </div>
+           ))}
+         </div>
+         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 20, paddingTop: 16, borderTop: `1px solid ${C.s}` }}>
+           <span style={{ color: mert.renk, fontSize: 12, fontWeight: 700 }}>{mert.ad}</span>
+           {liyakat.lakap && <span style={{ color: C.soluk, fontSize: 12 }}>· {liyakat.lakap}</span>}
+         </div>
+         <div style={{ textAlign: "center", color: C.cok, fontSize: 10, marginTop: 6, letterSpacing: 0.5 }}>besin-d.vercel.app</div>
+       </div>
+     </div>
+   );
+ })()}
+ <button style={{ ...S.anaBtn, background: C.altin + "14", border: `1px solid ${C.altin}80`, color: C.altin, marginBottom: 8 }} onClick={skorKartPaylas}>Sonucu Paylaş (görsel)</button>
 
  <button style={S.anaBtn} onClick={() => setEkran("ana")}>← Yeni Tarama</button>
 
