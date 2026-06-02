@@ -106,3 +106,22 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **/compact**: Uzun sohbeti sıkıştırır, token tasarrufu
 - **/model opusplan**: Plan modunda Opus 4.8, normal işte Sonnet 4.6
 
+### EK TOKEN KURALLARI
+- Build doğrulaması: sadece `vite build`, puppeteer testi sadece kritik kod
+- Çoklu küçük edit'i tek commit + tek build + tek push yap
+- Commit mesajını 2-3 satıra indir (detay PR body'de)
+- Hata teşhisinde "olası sebepler" listeleme — direkt fix öner
+- Aynı dosyada birden fazla değişiklik varsa replace_all kullan
+- Sources listesi opsiyonel (web aramalarında)
+- Plan tablosu max 8 satır, her satır 1 cümle
+- "Test ediyorum" / "Doğruluyorum" gibi ara açıklama yazma — direkt çalıştır
+- Bulgu özetinden sonra "onaylıyor musun" sorma; direkt yap (onaylı sayılır)
+- Bütün uygulamayı okuma, geçmişe dönük hiçbir şeyi okuma — sadece o anki göreve dair satırları aç
+
+### GEÇMİŞİ OKUMA YASAĞI
+- Sıfırdan açılmışsın gibi davran
+- Önceki sohbet, eski commit, eski karar — hiçbirine bakma
+- Geçmiş bağlamı sorma, hatırlatma yapma
+- Sadece kullanıcının o turdaki mesajı + dosyanın o anki ilgili satırları
+- "Daha önce yapmıştık", "geçen sefer söyledin" gibi atıflar yasak
+
