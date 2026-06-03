@@ -6530,6 +6530,29 @@ export default function App() {
  const [mod, setMod] = useState("metin");
  const [taramaSayisi, setTaramaSayisi] = useState(() => { try { return parseInt(localStorage.getItem("bd_tarama_sayisi") || "0") || 0; } catch { return 0; } });
  const [nur, setNur] = useState(() => { try { const n = localStorage.getItem("bd_nur"); return n ? JSON.parse(n) : { damla: 0 }; } catch { return { damla: 0 }; } });
+
+ /* ── KİŞİYE ÖZEL VERİ (aile üyeleri ayrı) ── */
+ const yeniLiyakat = () => ({ puan: 0, mertebe: "sagirt", lakap: "", gunlukSeri: 0, sonGiris: null, kazanilanRozetler: [], yukseldigiTarihler: {}, baslangic: Date.now(), pirK: null, ahdler: {}, cozulenSualler: {}, sefaatler: [], hediyeler: [], yadGosterimleri: {}, sinavGectikleri: {}, kacinGorulen: 0, kacinHaftalik: { hafta: 0, sayim: 0 }, sonSualTarih: null, mahcubiyetUyari: 0, niyet: null, hatiralar: [], yoklukSonGosterilen: 0, sonTekKelime: null, acilanSirlar: {}, sonGuncel: null, erbain: null, pirSesi: false, yildizlar: [] });
+ const bosKisiVeri = () => ({ gecmis: [], liyakat: yeniLiyakat(), taramaSayisi: 0, nur: { damla: 0 }, saglik: [], sina: "" });
+ const kisiHaritaOku = () => { try { return JSON.parse(localStorage.getItem("bd_kisiler") || "{}"); } catch { return {}; } };
+ const kisiyiKaydet = (ad) => {
+   if (!ad) return;
+   const harita = kisiHaritaOku();
+   harita[ad] = { gecmis, liyakat, taramaSayisi, nur, saglik: saglikDurumu, sina: sinaDefter };
+   try { localStorage.setItem("bd_kisiler", JSON.stringify(harita)); } catch {}
+ };
+ const kisiVeriUygula = (b) => {
+   const v = { ...bosKisiVeri(), ...b };
+   setGecmis(v.gecmis); setLiyakat(v.liyakat); setTaramaSayisi(v.taramaSayisi); setNur(v.nur); setSaglikDurumu(v.saglik); setSinaDefter(v.sina);
+   try {
+     localStorage.setItem("bd_gecmis", JSON.stringify(v.gecmis));
+     localStorage.setItem("bd_liyakat", JSON.stringify(v.liyakat));
+     localStorage.setItem("bd_tarama_sayisi", String(v.taramaSayisi));
+     localStorage.setItem("bd_nur", JSON.stringify(v.nur));
+     localStorage.setItem("bd_saglik", JSON.stringify(v.saglik));
+     localStorage.setItem("bd_sina_defter", v.sina);
+   } catch {}
+ };
  const es = esrefAktif();
 
  function yapAnaliz(metinOverride) {
@@ -6633,6 +6656,7 @@ export default function App() {
  const yeniListe = idx >= 0 ? aileProfiller.map((p, i) => i === idx ? yeniProfil : p) : [...aileProfiller, yeniProfil];
  setAileProfiller(yeniListe);
  try { localStorage.setItem("bd_aile", JSON.stringify(yeniListe)); } catch {}
+ kisiyiKaydet(yeniProfil.ad);
  liyakatRozetVer("profil_tamam", 15);
  try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
@@ -6707,6 +6731,9 @@ export default function App() {
            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
              {aileProfiller.map((p, i) => (
                <button key={i} onClick={() => {
+                 if (p.ad === aktifUye) { setEkran("ana"); return; }
+                 kisiyiKaydet(aktifUye);
+                 kisiVeriUygula(kisiHaritaOku()[p.ad] || bosKisiVeri());
                  setProfil(p);
                  setAktifUye(p.ad || "");
                  setDogum(p.dogum || "");
@@ -6722,7 +6749,12 @@ export default function App() {
                  {p.ad} · {p.burc}
                </button>
              ))}
-             <button onClick={() => { setAktifUye(""); setDogum(""); setCinsiyet("Erkek"); try { localStorage.removeItem("bd_dogum"); } catch {} }}
+             <button onClick={() => {
+               kisiyiKaydet(aktifUye);
+               kisiVeriUygula(bosKisiVeri());
+               setProfil(null); setAktifUye(""); setDogum(""); setCinsiyet("Erkek");
+               try { localStorage.removeItem("bd_dogum"); localStorage.removeItem("bd_profil"); } catch {}
+             }}
                style={{ background: "transparent", border: `1px dashed ${C.altin}`, borderRadius: 20, padding: "6px 14px", color: C.altin, fontSize: 13, cursor: "pointer" }}>
                + Yeni Kişi
              </button>
