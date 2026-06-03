@@ -9,16 +9,11 @@ import { TEMIZLIK_DB } from "./data/temizlik.js";
 import { BEBEK_DB } from "./data/bebek.js";
 import { EVCIL_DB } from "./data/evcil.js";
 import { ILAC_DB } from "./data/ilac.js";
+import { C, css, S } from "./theme.js";
 
 /* ══════════════════════════════════════════════
  SABITLER
  ══════════════════════════════════════════════ */
-const C = {
- bg: "#FFFFFF", y: "#FFFFFF", y2: "#FAFAFA", s: "#E5E5E7",
- altin: "#B8862F", altinA: "#C9A84C",
- metin: "#1D1D1F", soluk: "#6E6E73", cok: "#A1A1A6",
- kirmizi: "#C1121F", turuncu: "#D35400", sari: "#B8862F", yesil: "#2E7D32",
-};
 const rR = r => ({ kritik: C.kirmizi, yuksek: C.kirmizi, orta: C.sari, dusuk: C.yesil }[r] || "#888");
 const rE = r => ({ kritik: "● KRİTİK", yuksek: "️ YÜKSEK", orta: " ORTA", dusuk: " DÜŞÜK" }[r] || r);
 
@@ -1966,22 +1961,6 @@ function FotoIsim({ kategoriAd, onAra, onIptal }) {
 /* ══════════════════════════════════════════════
  STİLLER
  ══════════════════════════════════════════════ */
-const css = `*{box-sizing:border-box;margin:0;padding:0} body{background:${C.bg};color:${C.metin};letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} input,textarea,select{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif} button{font-family:inherit} textarea:focus,input:focus{outline:2px solid ${C.altin}50} ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:${C.s};border-radius:2px} @keyframes puls{0%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.3)}100%{opacity:1;transform:scale(1)}} @keyframes nefes{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.025);opacity:0.92}} @keyframes muhurGel{0%{transform:scale(0.8) rotate(-8deg);opacity:0}60%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}} @keyframes muhurNefes{0%,100%{transform:scale(1);filter:drop-shadow(0 0 6px #C9952C40)}50%{transform:scale(1.04);filter:drop-shadow(0 0 14px #C9952C80)}} @keyframes tekKelimeGel{0%{opacity:0;transform:scale(0.8)}30%{opacity:1;transform:scale(1.05)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}} @keyframes manifestoGec{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}} @keyframes pariltiYagmur{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}10%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(20px) scale(0.6);opacity:0}} @keyframes sayfaGec{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}} @keyframes altsayfaGir{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}} @keyframes modalGel{0%{opacity:0;transform:scale(0.96)}100%{opacity:1;transform:scale(1)}} @keyframes vakarTasma{0%{background-position:200% 0}100%{background-position:-200% 0}} @keyframes tartiSalla{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}} @keyframes nabizNokta{0%,100%{transform:scale(0.6);opacity:0.4}50%{transform:scale(1.1);opacity:1}} @keyframes mizanOtur{0%{transform:rotate(0deg)}30%{transform:rotate(var(--mizan-aci))}55%{transform:rotate(calc(var(--mizan-aci) * 0.6))}80%{transform:rotate(var(--mizan-aci))}100%{transform:rotate(var(--mizan-aci))}} @keyframes asudeNefes{0%,100%{transform:scale(1);opacity:0.85}50%{transform:scale(1.12);opacity:0.45}} @keyframes suAkis{to{stroke-dashoffset:-14}} @keyframes suHalka{0%{transform:scale(0.4);opacity:0.6}100%{transform:scale(1);opacity:0}} @keyframes fiskiye{0%,100%{transform:scaleY(0.8)}50%{transform:scaleY(1.25)}} @keyframes tartimDalga{0%{transform:scale(0.5);opacity:0.55}100%{transform:scale(2);opacity:0}} @keyframes tartiGiris{0%{transform:scale(0.6);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1);opacity:1}} @keyframes zerreDus{0%{transform:translateY(-26px);opacity:0}25%{opacity:1}100%{transform:translateY(0);opacity:0.9}}`;
-
-const S = {
- anaBtn: { width: "100%", background: `linear-gradient(135deg,${C.altin},${C.altinA})`, border: "none", borderRadius: 14, padding: "14px", color: "#1A1200", fontWeight: 700, fontSize: 16, cursor: "pointer", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
- hayaletBtn: { width: "100%", background: "none", border: `1px solid ${C.s}`, borderRadius: 14, padding: "12px", color: C.soluk, fontSize: 14, cursor: "pointer", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", marginBottom: 10 },
- geriDaire: { width: 34, height: 34, borderRadius: "50%", background: C.y2, border: `1px solid ${C.s}`, color: C.metin, cursor: "pointer", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" },
- geriYazi: { color: C.soluk, cursor: "pointer", marginBottom: 20, fontSize: 14, background: "none", border: "none", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
- kB: { color: C.altin, fontSize: 10, letterSpacing: 0, fontWeight: 700, marginBottom: 8, marginTop: 6, display: "block" },
- mT: { color: C.soluk, fontSize: 13, lineHeight: 1.6 },
- ipucu: { color: C.soluk, fontSize: 13, lineHeight: 1.6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "10px 14px", marginBottom: 14 },
- textarea: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 14, color: C.metin, fontSize: 13, lineHeight: 1.6, resize: "vertical", marginBottom: 10, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
- ornekBtn: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 10, padding: "11px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", marginBottom: 6, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
- dateInput: { width: "100%", background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: "12px 16px", color: C.metin, fontSize: 15, marginBottom: 14, colorScheme: "light", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif" },
- orgTag: { background: C.y, color: C.soluk, border: `1px solid ${C.s}`, borderRadius: 6, padding: "3px 8px", fontSize: 11 },
- notUyari: { color: C.cok, fontSize: 10, fontStyle: "normal", marginBottom: 12, lineHeight: 1.5 },
-};
 
 /* ══════════════════════════════════════════════
  ANA UYGULAMA
