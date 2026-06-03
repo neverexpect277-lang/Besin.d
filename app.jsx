@@ -6628,6 +6628,11 @@ export default function App() {
  const yeniProfil = { ad: aktifUye || "", burc: b, dogum, cinsiyet, ...BURCLAR[b] };
  setProfil(yeniProfil);
  try { localStorage.setItem("bd_profil", JSON.stringify(yeniProfil)); } catch {}
+ // Aile listesine isim bazlı ekle/güncelle
+ const idx = aileProfiller.findIndex(p => p.ad === yeniProfil.ad);
+ const yeniListe = idx >= 0 ? aileProfiller.map((p, i) => i === idx ? yeniProfil : p) : [...aileProfiller, yeniProfil];
+ setAileProfiller(yeniListe);
+ try { localStorage.setItem("bd_aile", JSON.stringify(yeniListe)); } catch {}
  liyakatRozetVer("profil_tamam", 15);
  try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
@@ -6701,11 +6706,26 @@ export default function App() {
            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 8 }}>Aile Profilleri</div>
            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
              {aileProfiller.map((p, i) => (
-               <button key={i} onClick={() => { setProfil(p); try { localStorage.setItem("bd_profil", JSON.stringify(p)); } catch {} setEkran("ana"); }}
+               <button key={i} onClick={() => {
+                 setProfil(p);
+                 setAktifUye(p.ad || "");
+                 setDogum(p.dogum || "");
+                 setCinsiyet(p.cinsiyet || "Erkek");
+                 try {
+                   localStorage.setItem("bd_profil", JSON.stringify(p));
+                   if (p.dogum) localStorage.setItem("bd_dogum", p.dogum);
+                   if (p.cinsiyet) localStorage.setItem("bd_cinsiyet", p.cinsiyet);
+                 } catch {}
+                 setEkran("ana");
+               }}
                  style={{ background: profil?.ad === p.ad ? C.altin+"22" : C.y2, border: `1px solid ${profil?.ad === p.ad ? C.altin : C.s}`, borderRadius: 20, padding: "6px 14px", color: profil?.ad === p.ad ? C.altin : C.metin, fontSize: 13, cursor: "pointer" }}>
                  {p.ad} · {p.burc}
                </button>
              ))}
+             <button onClick={() => { setAktifUye(""); setDogum(""); setCinsiyet("Erkek"); try { localStorage.removeItem("bd_dogum"); } catch {} }}
+               style={{ background: "transparent", border: `1px dashed ${C.altin}`, borderRadius: 20, padding: "6px 14px", color: C.altin, fontSize: 13, cursor: "pointer" }}>
+               + Yeni Kişi
+             </button>
            </div>
          </div>
        )}
