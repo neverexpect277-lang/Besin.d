@@ -17,8 +17,9 @@ Yeni oturum bunu okusun. Tek dosya: `app.jsx` (~9000 satır, tek React bileşeni
 - "Değiştir" ve "Profili Kaydet" butonları korundu.
 
 ## Önemli notlar / bilinen durumlar
-- Aile profilleri (`aileProfiller` / `bd_aile`): okunuyor ama `setAileProfiller` hiç çağrılmıyor → liste hep boş (ölü özellik, dokunulmadı).
-- localStorage anahtarları: `bd_profil`, `bd_dogum`, `bd_cinsiyet`, `bd_liyakat`, `bd_gecmis`, `bd_nur`, `bd_aile`.
+- TEK PROFİL. Aile/çoklu profil özelliği denendi ve KULLANICI İSTEĞİYLE TAMAMEN KALDIRILDI (`db1f09a`). Tekrar ekleme — istenmiyor.
+- Eski `bd_aile` / `bd_kisiler` localStorage anahtarları artık hiçbir kod tarafından okunmuyor (inert kalıntı).
+- localStorage anahtarları: `bd_profil`, `bd_dogum`, `bd_cinsiyet`, `bd_liyakat`, `bd_gecmis`, `bd_nur`, `bd_saglik`, `bd_sina_defter`.
 - Veritabanı: katkı maddeleri ~satır 406+ (E-kodları), burçlar `BURCLAR` ~370.
 
 ## Çalışma kuralları (CLAUDE.md)
