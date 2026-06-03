@@ -14,7 +14,9 @@ Yeni oturum bunu okusun. Build: `npm run build`.
 
 **Bağımlılık yönü (döngü yok):** `data → sabitler → helpers → components → app`. Bir bug'da sadece ilgili modülü oku.
 
-**Bilinen ölü kod:** `OrganVucutHaritasi` (components.jsx) hiçbir yerden kullanılmıyor — tree-shake ile bundle'a girmiyor. Silinmedi (kullanıcıya sormadan dokunma).
+**Dış API bağımlılıkları (bilerek):** OCR `api.ocr.space` (kamera, hardcoded key — kasıtlı), ayet `api.alquran.cloud`, eşref/namaz `api.aladhan.com`. Hepsinde `.catch()` var; internet yoksa o özellik sessizce devre dışı kalır.
+
+**Test durumu (son oturum):** Tüm uygulama headless tarayıcıda uçtan uca test edildi — profil/tarama/kamera/8 kategori/27 hizmet alt-ekranı/mertebe-liyakat/modallar → **0 JS hatası**. Profil değiştirme ve kamera çalışıyor. OCR ağ gerektirir.
 
 ## Bu oturumda yapılanlar (hepsi `main`'e push'landı)
 | Commit | İş | Yer |
