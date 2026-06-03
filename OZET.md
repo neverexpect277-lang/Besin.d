@@ -1,6 +1,20 @@
 # Devir Özeti (Besin Dedektifi)
 
-Yeni oturum bunu okusun. Tek dosya: `app.jsx` (~9000 satır, tek React bileşeni). Build: `npm run build`.
+Yeni oturum bunu okusun. Build: `npm run build`.
+
+## Dosya yapısı (artık modüler — eskiden tek app.jsx idi)
+| Dosya | İçerik | Satır |
+|-------|--------|-------|
+| `app.jsx` | Sadece `App()` bileşeni (tüm ekranlar/state) | ~4475 |
+| `components.jsx` | Bağımsız UI bileşenleri (KameraOCR, PaylasModal, SkorHalkasi, MizacMarket, TarifModal, HaftalikRapor, BolumKart, SuAtmSekmesi, AquaAtmGorsel, ToplulugaKatki, FotoIsim, OrganVucutHaritasi) | ~1071 |
+| `helpers.js` | Yardımcı fonksiyonlar (analiz, normalize, burcHesapla, rR/rE, bdToast, …) | ~202 |
+| `sabitler.js` | DB dışı statik veri (KATEGORILER, BURCLAR, MAKAMLAR, HAKKINDA, ORGAN_* …) | ~699 |
+| `theme.js` | `C` (renk), `css` (global stil), `S` (stil objesi) | ~24 |
+| `data/*.js` | 8 ürün veritabanı: gida, giyim, ev, kozmetik, temizlik, bebek, evcil, ilac | ~3400 |
+
+**Bağımlılık yönü (döngü yok):** `data → sabitler → helpers → components → app`. Bir bug'da sadece ilgili modülü oku.
+
+**Bilinen ölü kod:** `OrganVucutHaritasi` (components.jsx) hiçbir yerden kullanılmıyor — tree-shake ile bundle'a girmiyor. Silinmedi (kullanıcıya sormadan dokunma).
 
 ## Bu oturumda yapılanlar (hepsi `main`'e push'landı)
 | Commit | İş | Yer |
