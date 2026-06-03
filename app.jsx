@@ -7191,7 +7191,17 @@ export default function App() {
    const mert = mevcutMertebe();
    return (
      <div style={{ position: "absolute", left: -9999, top: 0 }} aria-hidden="true">
-       <div ref={skorKartRef} style={{ width: 380, background: `linear-gradient(180deg, ${C.y}, ${C.bg})`, border: `1.5px solid ${C.altin}55`, borderRadius: 22, padding: "26px 24px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box" }}>
+       <div ref={skorKartRef} style={{ position: "relative", overflow: "hidden", width: 380, background: `radial-gradient(circle at 50% 32%, ${C.altin}10, transparent 62%), linear-gradient(180deg, ${C.y}, ${C.bg})`, border: `1.5px solid ${C.altin}55`, borderRadius: 22, padding: "26px 24px", fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", boxSizing: "border-box" }}>
+         <svg width="300" height="300" viewBox="0 0 100 100" style={{ position: "absolute", left: "50%", top: "46%", transform: "translate(-50%,-50%)", opacity: 0.05, pointerEvents: "none" }}>
+           <g fill="none" stroke={C.altin} strokeWidth="1.2">
+             <circle cx="50" cy="50" r="46" />
+             <circle cx="50" cy="50" r="38" />
+             {Array.from({ length: 12 }).map((_, i) => { const a = (i * 30) * Math.PI / 180; return <line key={i} x1={50 + 38 * Math.cos(a)} y1={50 + 38 * Math.sin(a)} x2={50 + 46 * Math.cos(a)} y2={50 + 46 * Math.sin(a)} />; })}
+             <path d="M50 14 L61 43 L50 86 L39 43 Z" />
+             <path d="M14 50 L43 39 L86 50 L43 61 Z" />
+           </g>
+         </svg>
+         <div style={{ position: "relative", zIndex: 1 }}>
          <div style={{ textAlign: "center", color: C.altin, fontSize: 11, fontWeight: 800, letterSpacing: 4, textTransform: "uppercase" }}>Besin Dedektifi</div>
          <div style={{ textAlign: "center", color: C.cok, fontSize: 10, letterSpacing: 1, marginTop: 4 }}>{KATEGORILER[kategori].ad} Analiz Sonucu</div>
          <div style={{ display: "flex", justifyContent: "center", margin: "20px 0 14px" }}>
@@ -7217,6 +7227,7 @@ export default function App() {
            {liyakat.lakap && <span style={{ color: C.soluk, fontSize: 12 }}>· {liyakat.lakap}</span>}
          </div>
          <div style={{ textAlign: "center", color: C.cok, fontSize: 10, marginTop: 6, letterSpacing: 0.5 }}>besin-d.vercel.app</div>
+         </div>
        </div>
      </div>
    );
