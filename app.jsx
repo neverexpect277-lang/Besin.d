@@ -382,6 +382,8 @@ const BURCLAR = {
  "Balık": { element: "Su", mizac: "Balgami", organ: "Ayak · Lenf · Bağışıklık", renk: "#00FA9A", makam: "Uşşak", zikir: "Ya Vedud — 33 kere", bitki: "Echinacea · Lavanta · Melisa", tavsiye: "Bağışıklık için: kefir, zerdeçal, yeşil çay, C vitamini. Nemli ortamlardan kaçın, ayak sağlığına dikkat et.", kacinmasi: ["E102", "E211", "TİTANYUM DİOKSİT", "E407"] },
 };
 
+const yeniId = () => "k" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
 function burcHesapla(t) {
  if (!t) return null;
  const d = new Date(t), m = d.getMonth() + 1, g = d.getDate();
@@ -5453,6 +5455,32 @@ export default function App() {
    if (profil.ad && !aktifUye) setAktifUye(profil.ad);
    if (profil.cinsiyet) setCinsiyet(profil.cinsiyet);
  }, [ekran]);
+ // Tek seferlik taşıma: isim-anahtarlı kayıtları kalıcı id'ye çevir (rename'de veri kopmasın)
+ useEffect(() => {
+   try {
+     let aile = JSON.parse(localStorage.getItem("bd_aile") || "[]");
+     let prof = JSON.parse(localStorage.getItem("bd_profil") || "null");
+     let harita = JSON.parse(localStorage.getItem("bd_kisiler") || "{}");
+     let degisti = false;
+     const adId = {};
+     aile = aile.map(p => {
+       const id = p.id || yeniId();
+       if (!p.id) degisti = true;
+       if (p.ad) adId[p.ad] = id;
+       return { ...p, id };
+     });
+     if (prof && !prof.id) { prof.id = (prof.ad && adId[prof.ad]) || yeniId(); degisti = true; if (prof.ad) adId[prof.ad] = prof.id; }
+     const yeniHarita = {};
+     Object.entries(harita).forEach(([k, v]) => { const id = adId[k] || k; if (id !== k) degisti = true; yeniHarita[id] = v; });
+     if (degisti) {
+       localStorage.setItem("bd_aile", JSON.stringify(aile));
+       if (prof) localStorage.setItem("bd_profil", JSON.stringify(prof));
+       localStorage.setItem("bd_kisiler", JSON.stringify(yeniHarita));
+       setAileProfiller(aile);
+       if (prof) setProfil(prof);
+     }
+   } catch {}
+ }, []);
  const MERTEBELER = [
    { k: "sagirt", ad: "Çırak", anlam: "Sâlik · Tâlib", esik: 0, renk: "#9B7B4F", hikmet: "Görmek", sart: { gun: 0, urun: 1, hatm: 0, sefaat: 0 }, aciklama: "Fıtrat bilgisinin kapısında duran. Etiketi okumayı, gizli düşmanı görmeyi öğrenir. Hikmeti: Görmek." },
    { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", hikmet: "Ayırt Etmek", sart: { gun: 30, urun: 30, hatm: 7, sefaat: 3 }, aciklama: "Ahilik geleneğinde ustanın yanında üretim sırrını öğrenen ehil kimse. Aldatıcı pazarlamayı ayırt eder, helal ve sahte helali tefrik eder. Hikmeti: Ayırt Etmek." },
@@ -6648,15 +6676,17 @@ export default function App() {
  function kaydEt() {
  if (!dogum) return;
  const b = burcHesapla(dogum);
- const yeniProfil = { ad: aktifUye || "", burc: b, dogum, cinsiyet, ...BURCLAR[b] };
+ // Düzenlenen kişinin id'si korunur (isim değişse de kayıt kopmaz); yeni kişiye yeni id
+ const id = profil?.id || yeniId();
+ const yeniProfil = { id, ad: aktifUye || "", burc: b, dogum, cinsiyet, ...BURCLAR[b] };
  setProfil(yeniProfil);
  try { localStorage.setItem("bd_profil", JSON.stringify(yeniProfil)); } catch {}
- // Aile listesine isim bazlı ekle/güncelle
- const idx = aileProfiller.findIndex(p => p.ad === yeniProfil.ad);
+ // Aile listesine id bazlı ekle/güncelle
+ const idx = aileProfiller.findIndex(p => p.id === yeniProfil.id);
  const yeniListe = idx >= 0 ? aileProfiller.map((p, i) => i === idx ? yeniProfil : p) : [...aileProfiller, yeniProfil];
  setAileProfiller(yeniListe);
  try { localStorage.setItem("bd_aile", JSON.stringify(yeniListe)); } catch {}
- kisiyiKaydet(yeniProfil.ad);
+ kisiyiKaydet(yeniProfil.id);
  liyakatRozetVer("profil_tamam", 15);
  try { localStorage.setItem("bd_cinsiyet", cinsiyet); } catch {}
  setEkran("ana");
@@ -6730,10 +6760,10 @@ export default function App() {
            <div style={{ color: C.soluk, fontSize: 12, marginBottom: 8 }}>Aile Profilleri</div>
            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
              {aileProfiller.map((p, i) => (
-               <button key={i} onClick={() => {
-                 if (p.ad === aktifUye) { setEkran("ana"); return; }
-                 kisiyiKaydet(aktifUye);
-                 kisiVeriUygula(kisiHaritaOku()[p.ad] || bosKisiVeri());
+               <button key={p.id || i} onClick={() => {
+                 if (p.id === profil?.id) { setEkran("ana"); return; }
+                 kisiyiKaydet(profil?.id);
+                 kisiVeriUygula(kisiHaritaOku()[p.id] || bosKisiVeri());
                  setProfil(p);
                  setAktifUye(p.ad || "");
                  setDogum(p.dogum || "");
@@ -6745,12 +6775,12 @@ export default function App() {
                  } catch {}
                  setEkran("ana");
                }}
-                 style={{ background: profil?.ad === p.ad ? C.altin+"22" : C.y2, border: `1px solid ${profil?.ad === p.ad ? C.altin : C.s}`, borderRadius: 20, padding: "6px 14px", color: profil?.ad === p.ad ? C.altin : C.metin, fontSize: 13, cursor: "pointer" }}>
+                 style={{ background: profil?.id === p.id ? C.altin+"22" : C.y2, border: `1px solid ${profil?.id === p.id ? C.altin : C.s}`, borderRadius: 20, padding: "6px 14px", color: profil?.id === p.id ? C.altin : C.metin, fontSize: 13, cursor: "pointer" }}>
                  {p.ad} · {p.burc}
                </button>
              ))}
              <button onClick={() => {
-               kisiyiKaydet(aktifUye);
+               kisiyiKaydet(profil?.id);
                kisiVeriUygula(bosKisiVeri());
                setProfil(null); setAktifUye(""); setDogum(""); setCinsiyet("Erkek");
                try { localStorage.removeItem("bd_dogum"); localStorage.removeItem("bd_profil"); } catch {}
