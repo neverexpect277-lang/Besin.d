@@ -5443,6 +5443,16 @@ export default function App() {
    setLiyakat(yeni);
    try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}
  }, []);
+ // Profil ekranına her girişte kayıtlı profili forma doldur — tekrar tekrar tarih/isim girilmesin
+ useEffect(() => {
+   if (ekran !== "profil_kur" || !profil) return;
+   if (profil.dogum && (!dogum || !/^\d{4}-\d{2}-\d{2}$/.test(dogum))) {
+     setDogum(profil.dogum);
+     try { localStorage.setItem("bd_dogum", profil.dogum); } catch {}
+   }
+   if (profil.ad && !aktifUye) setAktifUye(profil.ad);
+   if (profil.cinsiyet) setCinsiyet(profil.cinsiyet);
+ }, [ekran]);
  const MERTEBELER = [
    { k: "sagirt", ad: "Çırak", anlam: "Sâlik · Tâlib", esik: 0, renk: "#9B7B4F", hikmet: "Görmek", sart: { gun: 0, urun: 1, hatm: 0, sefaat: 0 }, aciklama: "Fıtrat bilgisinin kapısında duran. Etiketi okumayı, gizli düşmanı görmeyi öğrenir. Hikmeti: Görmek." },
    { k: "kalfa", ad: "Kalfa", anlam: "Usta yardımcısı", esik: 50, renk: "#B87333", hikmet: "Ayırt Etmek", sart: { gun: 30, urun: 30, hatm: 7, sefaat: 3 }, aciklama: "Ahilik geleneğinde ustanın yanında üretim sırrını öğrenen ehil kimse. Aldatıcı pazarlamayı ayırt eder, helal ve sahte helali tefrik eder. Hikmeti: Ayırt Etmek." },
