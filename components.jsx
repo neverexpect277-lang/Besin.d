@@ -88,7 +88,7 @@ export function SuAtmSekmesi() {
    ? [...ATM_KONUMLAR].map(k => ({ ...k, mesafe: atmMesafe(konum.lat, konum.lng, k.lat, k.lng) })).sort((a, b) => a.mesafe - b.mesafe)
    : ATM_KONUMLAR;
 
- const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "11.5 pH'a kadar Alkali", "Plastik Atığını Azalt", "pH değeri 11.5 kadar"];
+ const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "11.5 pH'a kadar Alkali", "Plastik Atığını Azalt"];
  const fiyatlar = [
    { miktar: "5 Lt", fiyat: "15 ₺" },
    { miktar: "19 Lt", fiyat: "50 ₺" },
