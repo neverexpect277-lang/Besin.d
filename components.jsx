@@ -65,7 +65,6 @@ export function AquaAtmGorsel() {
      <rect x="169" y="150" width="22" height="8" rx="2" fill="#7FB8D9" opacity="0.5" />
      {/* taban */}
      <rect x="140" y="172" width="80" height="8" rx="3" fill={C.altin} opacity="0.8" />
-     <text x="180" y="208" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="11" fontWeight="700" fill={C.altin} letterSpacing="0.3">Aqua ATM · C Vitaminli Su</text>
    </svg>
  );
 }
@@ -89,7 +88,7 @@ export function SuAtmSekmesi() {
    ? [...ATM_KONUMLAR].map(k => ({ ...k, mesafe: atmMesafe(konum.lat, konum.lng, k.lat, k.lng) })).sort((a, b) => a.mesafe - b.mesafe)
    : ATM_KONUMLAR;
 
- const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "11.5 pH'a kadar Alkali", "Plastik Atığını Azalt"];
+ const rozetler = ["C Vitaminli Su", "Ozon Dezenfeksiyon", "Kendi Şişeni Doldur", "11.5 pH'a kadar Alkali", "Plastik Atığını Azalt", "pH değeri 11.5 kadar"];
  const fiyatlar = [
    { miktar: "5 Lt", fiyat: "15 ₺" },
    { miktar: "19 Lt", fiyat: "50 ₺" },
@@ -124,16 +123,6 @@ export function SuAtmSekmesi() {
              <div style={{ color: C.altin, fontSize: 24, fontWeight: 800, lineHeight: 1.1, marginTop: 4 }}>{f.fiyat}</div>
            </div>
          ))}
-       </div>
-       <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-         <div style={{ flex: 1, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-           <span style={{ color: C.soluk, fontSize: 12, fontWeight: 700 }}>C Vitaminli</span>
-           <span style={{ color: C.altin, fontSize: 13, fontWeight: 800 }}>✓ Var</span>
-         </div>
-         <div style={{ flex: 1, background: C.y2, border: `1px solid ${C.s}`, borderRadius: 12, padding: "10px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-           <span style={{ color: C.soluk, fontSize: 12, fontWeight: 700 }}>pH Değeri</span>
-           <span style={{ color: C.altin, fontSize: 13, fontWeight: 800 }}>11.5'a kadar</span>
-         </div>
        </div>
      </div>
 
