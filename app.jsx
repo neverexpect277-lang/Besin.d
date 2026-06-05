@@ -522,26 +522,6 @@ export default function App() {
  const [serefKart, setSerefKart] = useState(null);
  const serefKartRef = useRef(null);
  const skorKartRef = useRef(null);
- const [parallaxEgim, setParallaxEgim] = useState({ x: 0, y: 0 });
- const [parallaxAktif] = useState(true);
- useEffect(() => {
-   // iOS hareket izni yalnızca kullanıcı hareketiyle istenebilir; ilk dokunuşta bir kez otomatik iste
-   if (typeof DeviceOrientationEvent === "undefined" || typeof DeviceOrientationEvent.requestPermission !== "function") return;
-   const iste = async () => { try { await DeviceOrientationEvent.requestPermission(); } catch {} document.removeEventListener("touchend", iste); document.removeEventListener("click", iste); };
-   document.addEventListener("touchend", iste, { passive: true });
-   document.addEventListener("click", iste);
-   return () => { document.removeEventListener("touchend", iste); document.removeEventListener("click", iste); };
- }, []);
- useEffect(() => {
-   if (!parallaxAktif) return;
-   const h = (e) => {
-     const x = Math.max(-15, Math.min(15, (e.gamma || 0))) / 15;
-     const y = Math.max(-15, Math.min(15, (e.beta || 0) - 30)) / 15;
-     setParallaxEgim({ x, y });
-   };
-   window.addEventListener("deviceorientation", h);
-   return () => window.removeEventListener("deviceorientation", h);
- }, [parallaxAktif]);
  const serefKartIndir = async () => {
    if (!serefKartRef.current) return;
    try {
@@ -3522,7 +3502,7 @@ export default function App() {
      <div>
        <div style={S.kB}>MERTEBE — AHİLİK YOLU</div>
 
-       <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onTouchMove={longPressHareket} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ background: `${arkaplan}, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0 Q60 20 40 40 Q20 60 40 80 M0 40 Q20 20 40 40 Q60 60 80 40 M20 0 Q40 20 20 40 Q0 60 20 80 M60 0 Q80 20 60 40 Q40 60 60 80' stroke='%23B8862F' stroke-width='0.4' fill='none' opacity='0.5'/%3E%3Ccircle cx='40' cy='40' r='2' fill='%23B8862F' opacity='0.3'/%3E%3C/svg%3E")`, backgroundBlendMode: "normal", backgroundSize: "auto, 80px 80px", border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: parallaxAktif ? "transform 0.15s ease-out, filter .6s" : "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none", cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "manipulation", transform: parallaxAktif ? `perspective(1000px) rotateY(${parallaxEgim.x * 6}deg) rotateX(${-parallaxEgim.y * 6}deg)` : "none", transformStyle: "preserve-3d" }}>
+       <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onTouchMove={longPressHareket} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ background: `${arkaplan}, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0 Q60 20 40 40 Q20 60 40 80 M0 40 Q20 20 40 40 Q60 60 80 40 M20 0 Q40 20 20 40 Q0 60 20 80 M60 0 Q80 20 60 40 Q40 60 60 80' stroke='%23B8862F' stroke-width='0.4' fill='none' opacity='0.5'/%3E%3Ccircle cx='40' cy='40' r='2' fill='%23B8862F' opacity='0.3'/%3E%3C/svg%3E")`, backgroundBlendMode: "normal", backgroundSize: "auto, 80px 80px", border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none", cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "manipulation", transform: "none", transformStyle: "preserve-3d" }}>
          {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
          {mevcut.k === "kethuda" && <><div style={{ position: "absolute", top: 0, left: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "16px 0 0 0" }} /><div style={{ position: "absolute", top: 0, right: 0, width: 38, height: 38, borderTop: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 16px 0 0" }} /><div style={{ position: "absolute", bottom: 0, left: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderLeft: `2px solid ${mevcut.renk}`, borderRadius: "0 0 0 16px" }} /><div style={{ position: "absolute", bottom: 0, right: 0, width: 38, height: 38, borderBottom: `2px solid ${mevcut.renk}`, borderRight: `2px solid ${mevcut.renk}`, borderRadius: "0 0 16px 0" }} /><div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: `linear-gradient(180deg, transparent, ${mevcut.renk}40, transparent)`, transform: "translateX(-50%)" }} /></>}
          {mevcut.k === "hekimbasi" && <><div style={{ position: "absolute", inset: 6, border: `1px solid ${mevcut.renk}80`, borderRadius: 14, pointerEvents: "none" }} /><div style={{ position: "absolute", inset: 11, border: `0.5px solid ${mevcut.renk}50`, borderRadius: 10, pointerEvents: "none" }} /><div style={{ position: "absolute", top: -2, left: "50%", transform: "translateX(-50%)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div><div style={{ position: "absolute", bottom: -2, left: "50%", transform: "translateX(-50%) rotate(180deg)", color: mevcut.renk, fontSize: 16, fontFamily: "'Cormorant Garamond', Georgia, serif", lineHeight: 1 }}>❦</div></>}
