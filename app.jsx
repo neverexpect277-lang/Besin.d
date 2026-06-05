@@ -523,16 +523,15 @@ export default function App() {
  const serefKartRef = useRef(null);
  const skorKartRef = useRef(null);
  const [parallaxEgim, setParallaxEgim] = useState({ x: 0, y: 0 });
- const [parallaxAktif, setParallaxAktif] = useState(false);
- const parallaxAc = async () => {
-   try {
-     if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-       const izin = await DeviceOrientationEvent.requestPermission();
-       if (izin !== "granted") return;
-     }
-     setParallaxAktif(true);
-   } catch {}
- };
+ const [parallaxAktif] = useState(true);
+ useEffect(() => {
+   // iOS hareket izni yalnızca kullanıcı hareketiyle istenebilir; ilk dokunuşta bir kez otomatik iste
+   if (typeof DeviceOrientationEvent === "undefined" || typeof DeviceOrientationEvent.requestPermission !== "function") return;
+   const iste = async () => { try { await DeviceOrientationEvent.requestPermission(); } catch {} document.removeEventListener("touchend", iste); document.removeEventListener("click", iste); };
+   document.addEventListener("touchend", iste, { passive: true });
+   document.addEventListener("click", iste);
+   return () => { document.removeEventListener("touchend", iste); document.removeEventListener("click", iste); };
+ }, []);
  useEffect(() => {
    if (!parallaxAktif) return;
    const h = (e) => {
@@ -3558,15 +3557,6 @@ export default function App() {
            <div style={{ flex: 1, textAlign: "center" }}>
              <div style={{ color: C.altin, fontSize: 18, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>#<CountUp value={pirIcindeSiraNo()} duration={900} /></div>
              <div style={{ color: C.cok, fontSize: 10 }}>içinde sıran</div>
-           </div>
-         </div>
-         <div onClick={parallaxAktif ? () => setParallaxAktif(false) : parallaxAc} style={{ marginTop: 8, padding: "7px 12px", background: parallaxAktif ? C.altin + "20" : C.y2, border: `1px solid ${parallaxAktif ? C.altin : C.s}`, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
-           <div>
-             <div style={{ color: parallaxAktif ? C.altin : C.metin, fontSize: 12, fontWeight: 600 }}>Eğim hassasiyeti {parallaxAktif ? "açık" : "kapalı"}</div>
-             <div style={{ color: C.cok, fontSize: 9, marginTop: 1, fontStyle: "italic" }}>{parallaxAktif ? "telefonu eğ, kart hareket etsin" : "telefon eğimine duyarlı kart"}</div>
-           </div>
-           <div style={{ width: 32, height: 18, background: parallaxAktif ? C.altin : C.s, borderRadius: 9, position: "relative", transition: "background .2s" }}>
-             <div style={{ width: 14, height: 14, background: "#fff", borderRadius: "50%", position: "absolute", top: 2, left: parallaxAktif ? 16 : 2, transition: "left .2s" }} />
            </div>
          </div>
        </div>
