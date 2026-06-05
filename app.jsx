@@ -13,6 +13,7 @@ export default function App() {
  const [hizArama, setHizArama] = useState("");
  const [hizFiltre, setHizFiltre] = useState("hepsi");
  const [sekme, setSekme] = useState("tarama");
+ const [profilSekme, setProfilSekme] = useState("mizac");
  const [txt, setTxt] = useState("");
  const [sonuclar, setSonuclar] = useState([]);
  const [belirsizler, setBelirsizler] = useState([]);
@@ -720,12 +721,12 @@ export default function App() {
    setLiyakat(o => { const yeni = { ...o, yoklukSonGosterilen: gunDiff }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
  }, []);
  useEffect(() => {
-   if (sekme !== "mertebe") return;
+   if (sekme !== "profil" || profilSekme !== "mertebe") return;
    if (liyakat.niyet) return;
    if (!liyakat.lakap) return;
    const t = setTimeout(() => setNiyetModal(true), 800);
    return () => clearTimeout(t);
- }, [sekme, liyakat.niyet, liyakat.lakap]);
+ }, [sekme, profilSekme, liyakat.niyet, liyakat.lakap]);
  useEffect(() => {
    const bugun = new Date().toDateString();
    if (liyakat.sonTekKelime === bugun) return;
@@ -955,11 +956,12 @@ export default function App() {
    if (tarifModal) { setTarifModal(null); return true; }
    if (marketAcik) { setMarketAcik(false); return true; }
    if (ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis") { setEkran("ana"); return true; }
+   if (sekme === "profil" && profilSekme === "mertebe") { setProfilSekme("mizac"); return true; }
    const altSayfalar = ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"];
    if (altSayfalar.includes(sekme)) { setSekme("hizmetler"); return true; }
    return false;
  };
- const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || niyetUyari || niyetModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
+ const geriGerekli = !!(virdAcik || bedenKonusuyor || serefKart || longPressOgut || erbainTamamlandiModal || sirModal || guncelModal || yoklukModal || niyetUyari || niyetModal || selamModal || ahdModal || sualModal || hediyeModal || mahcubiyetModal || yeniMertebeBildirim || paylasMaddesi || saglikModalAcik || aylikRaporAcik || modal || tarifModal || marketAcik || ekran === "sonuc" || ekran === "profil_kur" || ekran === "gecmis" || (sekme === "profil" && profilSekme === "mertebe") || ["rabita","esref","burclar","toprak","bahce","uyku","koku","rota","asude","tohum","yildiz","market","uzman","sesrengi","hrv","nefes","nabiz","ses","zihin","emf","dopamin","biyofoton","goz"].includes(sekme));
  useEffect(() => {
    let sx = null, sy = null, st = 0;
    const onStart = (e) => {
@@ -983,7 +985,7 @@ export default function App() {
      document.removeEventListener("touchstart", onStart);
      document.removeEventListener("touchend", onEnd);
    };
- }, [sekme, ekran, modal, paylasMaddesi, saglikModalAcik, aylikRaporAcik, yeniMertebeBildirim, tarifModal, marketAcik]);
+ }, [sekme, profilSekme, ekran, modal, paylasMaddesi, saglikModalAcik, aylikRaporAcik, yeniMertebeBildirim, tarifModal, marketAcik]);
  const aylikIstatistik = () => {
    const simdi = new Date();
    const ayBas = new Date(simdi.getFullYear(), simdi.getMonth(), 1).getTime();
@@ -2049,7 +2051,7 @@ export default function App() {
  {profil ? (liyakat.lakap || profil.burc) : "Profil"}
  </span>
  </div>
- <div onClick={() => setSekme("mertebe")} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mevcutMertebe().renk + "20", border: `1px solid ${mevcutMertebe().renk}50` }}>
+ <div onClick={() => { setSekme("profil"); setProfilSekme("mertebe"); }} style={{ display: "flex", alignItems: "center", gap: 5, marginLeft: 6, cursor: "pointer", padding: "3px 8px", borderRadius: 14, background: mevcutMertebe().renk + "20", border: `1px solid ${mevcutMertebe().renk}50` }}>
    <Muhur k={mevcutMertebe().k} boyut={16} />
    <span style={{ color: mevcutMertebe().renk, fontSize: 11, fontWeight: 700 }}>{mevcutMertebe().ad}</span>
  </div>
@@ -2094,7 +2096,7 @@ export default function App() {
  })()}
  </div>
 
- <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","mertebe","hizmetler","atm","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
+ <div key={`sekme-${sekme}`} style={{ padding: 16, animation: ["tarama","profil","hizmetler","atm","hakkinda"].includes(sekme) ? "sayfaGec 0.22s ease-out" : "altsayfaGir 0.25s ease-out" }}>
  {/* TARAMA */}
  {sekme === "tarama" && (
  <div>
@@ -2261,6 +2263,14 @@ export default function App() {
 
  {/* PROFİL */}
  {sekme === "profil" && (
+ <div style={{ display: "flex", gap: 6, background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 4, marginBottom: 14 }}>
+ {[["mizac", "Mizaç"], ["mertebe", "Mertebe"]].map(([k, ad]) => (
+ <button key={k} onClick={() => setProfilSekme(k)} style={{ flex: 1, background: profilSekme === k ? C.altin : "transparent", color: profilSekme === k ? "#1A1200" : C.metin, border: "none", borderRadius: 9, padding: "9px 0", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "background .2s" }}>{ad}</button>
+ ))}
+ </div>
+ )}
+
+ {sekme === "profil" && profilSekme === "mizac" && (
  <div>
  {profil ? (
  <>
@@ -2305,27 +2315,6 @@ export default function App() {
  <div style={{ textAlign: "center" }}><div style={{ color: C.yesil, fontSize: 24, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>%<CountUp value={oran} /></div><div style={{ color: C.cok, fontSize: 10, letterSpacing: 0.5 }}>TEMİZ GEÇEN</div></div>
  </div>
  {enOrgan && <div style={{ color: C.soluk, fontSize: 12, lineHeight: 1.5, marginTop: 12, paddingTop: 10, borderTop: `1px solid ${C.s}` }}>Dosyana göre en çok <b style={{ color: profil.renk }}>{enOrgan[0]}</b> bölgen yoruldu · {gun}. gününde âsitânedesin</div>}
- </div>
- );
- })()}
- {/* PREMIUM: MERTEBE İLERLEME */}
- {(() => {
- const puan = liyakat.puan || 0;
- const cur = MERTEBELER.filter(m => puan >= m.esik).pop() || MERTEBELER[0];
- const sonraki = sonrakiMertebe(puan);
- const taban = cur.esik;
- const tavan = sonraki ? sonraki.esik : cur.esik;
- const yuzde = sonraki ? Math.min(100, Math.round((puan - taban) / (tavan - taban) * 100)) : 100;
- return (
- <div style={{ ...PK.kart, animation: "manifestoGec 0.4s ease-out 0.19s both" }}>
- <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
- <span style={{ color: cur.renk, fontSize: 14, fontWeight: 700, fontFamily: "'Cormorant Garamond', Georgia, serif" }}>{cur.ad}</span>
- <span style={{ color: C.cok, fontSize: 11 }}><CountUp value={puan} /> liyakat</span>
- </div>
- <div style={{ height: 8, background: C.s, borderRadius: 6, overflow: "hidden", position: "relative" }}>
- <div style={{ width: `${yuzde}%`, height: "100%", background: `linear-gradient(90deg, ${cur.renk}, ${C.altin})`, borderRadius: 6, transition: "width 1s ease 0.2s", boxShadow: `0 0 8px ${C.altin}80` }} />
- </div>
- <div style={{ color: C.soluk, fontSize: 12, marginTop: 8 }}>{sonraki ? `${sonraki.ad} olmana ${Math.max(0, tavan - puan)} liyakat kaldı` : "En yüksek mertebedesin"}</div>
  </div>
  );
  })()}
@@ -3516,7 +3505,7 @@ export default function App() {
    </div>
  )}
  {/* MERTEBE */}
- {sekme === "mertebe" && (() => {
+ {sekme === "profil" && profilSekme === "mertebe" && (() => {
    const mevcut = mevcutMertebe();
    const sonrakiIdx = MERTEBELER.findIndex(x => x.k === mevcut.k) + 1;
    const sonraki = MERTEBELER[sonrakiIdx] || null;
@@ -4017,7 +4006,7 @@ export default function App() {
 
  {/* ALT NAVİGASYON */}
  <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 520, background: C.y, borderTop: `1px solid ${C.s}`, display: "flex", zIndex: 30, paddingBottom: "env(safe-area-inset-bottom)" }}>
- {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["mertebe", "", "Mertebe"], ["hizmetler", "", "Hizmetler"], ["atm", "", "Su ATM"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
+ {[["tarama", "", "Tara"], ["profil", "", "Profil"], ["hizmetler", "", "Hizmetler"], ["atm", "", "Su ATM"], ["hakkinda", "", "Hakkında"]].map(([k, ikon, label, yakinda]) => (
  <button key={k} onClick={() => setSekme(k)} style={{ flex: 1, background: "none", border: "none", cursor: "pointer", padding: "10px 4px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", position: "relative" }}>
  <span style={{ fontSize: 18, filter: sekme === k ? `drop-shadow(0 0 6px ${C.altin})` : "none" }}>{ikon}</span>
  <span style={{ fontSize: 12, color: sekme === k ? C.altin : C.metin, fontWeight: sekme === k ? 700 : 500, letterSpacing: 0 }}>{label}</span>
