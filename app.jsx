@@ -1320,9 +1320,10 @@ export default function App() {
  <div style={{ fontSize: 36, color: C.altin, marginBottom: 12 }}></div>
  <h2 style={{ color: C.altin, fontSize: 22, marginBottom: 20 }}>Mizaç Profilin</h2>
        <label style={{ color: C.metin, fontSize: 13, display: "block", marginBottom: 6 }}>İsim</label>
-       <input value={aktifUye || ""} onChange={e => {
+       <input value={aktifUye || liyakat.lakap || ""} onChange={e => {
          const v = e.target.value;
          setAktifUye(v);
+         setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; });
          try {
            const mevcut = JSON.parse(localStorage.getItem("bd_profil") || "{}");
            localStorage.setItem("bd_profil", JSON.stringify({ ...mevcut, ad: v }));
@@ -2295,6 +2296,11 @@ export default function App() {
  return <div style={{ color: C.soluk, fontSize: 14, marginTop: 12, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", lineHeight: 1.45 }}>{selam}, <b style={{ color: m.renk, fontStyle: "normal" }}>{m.ad}</b>{liyakat.lakap ? ` ${liyakat.lakap}` : ""}. {hal}.</div>;
  })()}
  </div>
+ </div>
+ <div style={PK.kart}>
+ <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP</div>
+ <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+ <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr ve paylaşımlarda bu isim kullanılır.</div>
  </div>
  {/* PREMIUM: SİCİL-İ AHVÂL */}
  {(() => {
@@ -3521,12 +3527,6 @@ export default function App() {
    return (
      <div>
        <div style={S.kB}>MERTEBE — AHİLİK YOLU</div>
-
-       <div style={{ background: C.y, border: `1px solid ${C.s}`, borderRadius: 12, padding: 12, marginBottom: 12 }}>
-         <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP (İSTEĞE BAĞLI)</div>
-         <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
-         <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr seni bu isimle anar. Profil ve paylaşımlarda görünür.</div>
-       </div>
 
        <div onTouchStart={longPressBaslat} onTouchEnd={longPressBitir} onTouchCancel={longPressBitir} onTouchMove={longPressHareket} onMouseDown={longPressBaslat} onMouseUp={longPressBitir} onMouseLeave={longPressBitir} style={{ background: `${arkaplan}, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0 Q60 20 40 40 Q20 60 40 80 M0 40 Q20 20 40 40 Q60 60 80 40 M20 0 Q40 20 20 40 Q0 60 20 80 M60 0 Q80 20 60 40 Q40 60 60 80' stroke='%23B8862F' stroke-width='0.4' fill='none' opacity='0.5'/%3E%3Ccircle cx='40' cy='40' r='2' fill='%23B8862F' opacity='0.3'/%3E%3C/svg%3E")`, backgroundBlendMode: "normal", backgroundSize: "auto, 80px 80px", border: `${mevcut.k === "hekimbasi" ? 2.5 : mevcut.k === "kethuda" ? 2 : 1.5}px ${mevcut.k === "kalfa" ? "double" : "solid"} ${mevcut.renk}${mevcut.k === "hekimbasi" ? "" : "60"}`, borderRadius: mevcut.k === "hekimbasi" ? 20 : 16, padding: 18 + vakar * 10, marginBottom: 14, textAlign: "center", boxShadow: mevcut.k === "hekimbasi" ? `0 8px 32px ${mevcut.renk}30, inset 0 0 40px ${mevcut.renk}10` : mevcut.k === "kethuda" ? `inset 0 0 24px ${mevcut.renk}15` : "none", transition: parallaxAktif ? "transform 0.15s ease-out, filter .6s" : "all .6s", position: "relative", overflow: "hidden", filter: (liyakat.mahcubiyetHaftalari || []).length >= 3 ? "saturate(0.55) opacity(0.78)" : "none", cursor: "pointer", userSelect: "none", WebkitUserSelect: "none", WebkitTouchCallout: "none", touchAction: "manipulation", transform: parallaxAktif ? `perspective(1000px) rotateY(${parallaxEgim.x * 6}deg) rotateX(${-parallaxEgim.y * 6}deg)` : "none", transformStyle: "preserve-3d" }}>
          {mevcut.k === "kalfa" && <><div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /><div style={{ position: "absolute", bottom: 6, left: 6, right: 6, height: 1, background: `linear-gradient(90deg, transparent, ${mevcut.renk}, transparent)` }} /></>}
