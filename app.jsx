@@ -2297,11 +2297,6 @@ export default function App() {
  })()}
  </div>
  </div>
- <div style={PK.kart}>
- <div style={{ color: C.altin, fontSize: 11, fontWeight: 700, marginBottom: 6, letterSpacing: 0.3 }}>İSİM / LAKAP</div>
- <input type="text" value={liyakat.lakap || ""} maxLength={24} placeholder="Örn: Mahmut Bey" onChange={e => { const v = e.target.value; setLiyakat(o => { const yeni = { ...o, lakap: v }; try { localStorage.setItem("bd_liyakat", JSON.stringify(yeni)); } catch {}; return yeni; }); }} style={{ width: "100%", background: C.y2, border: `1px solid ${C.s}`, borderRadius: 8, padding: "9px 12px", color: C.metin, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
- <div style={{ color: C.cok, fontSize: 10, marginTop: 5 }}>Pîr ve paylaşımlarda bu isim kullanılır.</div>
- </div>
  {/* PREMIUM: SİCİL-İ AHVÂL */}
  {(() => {
  const top = taramaSayisi || gecmis.length;
